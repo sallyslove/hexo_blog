@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="常用k8s命令这篇记录一下常用的k8s命令，我怕我会忘啊  -_-#没错，这是docker那篇的姐妹篇哦。棒棒哒:P越写越乱了，有的概念解释也混在里面了。后面可以考虑分成两篇  kubectl cluster-info kubectl get nodes kubectl run first-deployment --image=katacoda/docker-http-server --port=">
+<meta name="description" content="常用k8s命令这篇记录一下常用的k8s命令，我怕我会忘啊  -_-#没错，这是docker那篇的姐妹篇哦。棒棒哒:P  kubectl cluster-info kubectl get nodes kubectl run first-deployment --image=katacoda/docker-http-server --port=80 这样就有一个pod啦。在get pods comma">
 <meta property="og:type" content="article">
 <meta property="og:title" content="常用k8s命令记录">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/02/15/常用k8s命令记录/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="常用k8s命令这篇记录一下常用的k8s命令，我怕我会忘啊  -_-#没错，这是docker那篇的姐妹篇哦。棒棒哒:P越写越乱了，有的概念解释也混在里面了。后面可以考虑分成两篇  kubectl cluster-info kubectl get nodes kubectl run first-deployment --image=katacoda/docker-http-server --port=">
+<meta property="og:description" content="常用k8s命令这篇记录一下常用的k8s命令，我怕我会忘啊  -_-#没错，这是docker那篇的姐妹篇哦。棒棒哒:P  kubectl cluster-info kubectl get nodes kubectl run first-deployment --image=katacoda/docker-http-server --port=80 这样就有一个pod啦。在get pods comma">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-02-19T05:38:14.668Z">
+<meta property="og:updated_time" content="2019-02-27T06:59:15.343Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="常用k8s命令记录">
-<meta name="twitter:description" content="常用k8s命令这篇记录一下常用的k8s命令，我怕我会忘啊  -_-#没错，这是docker那篇的姐妹篇哦。棒棒哒:P越写越乱了，有的概念解释也混在里面了。后面可以考虑分成两篇  kubectl cluster-info kubectl get nodes kubectl run first-deployment --image=katacoda/docker-http-server --port=">
+<meta name="twitter:description" content="常用k8s命令这篇记录一下常用的k8s命令，我怕我会忘啊  -_-#没错，这是docker那篇的姐妹篇哦。棒棒哒:P  kubectl cluster-info kubectl get nodes kubectl run first-deployment --image=katacoda/docker-http-server --port=80 这样就有一个pod啦。在get pods comma">
 
 
 
@@ -341,13 +341,12 @@
       
 
       
-        <h2 id="常用k8s命令"><a href="#常用k8s命令" class="headerlink" title="常用k8s命令"></a>常用k8s命令</h2><p>这篇记录一下常用的k8s命令，我怕我会忘啊  -_-#<br>没错，这是docker那篇的姐妹篇哦。棒棒哒:P<br>越写越乱了，有的概念解释也混在里面了。后面可以考虑分成两篇</p>
+        <h2 id="常用k8s命令"><a href="#常用k8s命令" class="headerlink" title="常用k8s命令"></a>常用k8s命令</h2><p>这篇记录一下常用的k8s命令，我怕我会忘啊  -_-#<br>没错，这是docker那篇的姐妹篇哦。棒棒哒:P</p>
 <ul>
 <li><code>kubectl cluster-info</code></li>
 <li><code>kubectl get nodes</code></li>
 <li><code>kubectl run first-deployment --image=katacoda/docker-http-server --port=80</code><ul>
 <li>这样就有一个pod啦。在get pods command里面能看到一个pod</li>
-<li>不过deployment和pod好像还有点不同来着</li>
 <li><code>-port</code>仍旧是内部的端口</li>
 <li>外部端口可以用<code>--hostport=8001</code>指定， 但是这样做的话， Under the covers, this exposes the Pod via Docker Port Mapping. As a result, you will not see the service listed using <code>kubectl get svc</code>。目前的理解是，因为是用的docker的方法，所以k8s不知道<ul>
 <li>用docker ps命令能看到这个container，然后可以注意到有两个ps进程。其中一个是paused状态，然后我们的端口8001其实开在这个paused的ps上面。</li>
@@ -358,19 +357,14 @@
 </ul>
 </li>
 <li><code>kubectl get pods</code><ul>
-<li>All containers described as Pods. A pod is a collection of containers that makes up a particular application, for example Redis. </li>
-<li>所以get pods的话，被把replication cotronller， service， deployment都给打印出来</li>
+<li>所以get pods的话，会把replication cotronller， service， deployment都给打印出来</li>
 </ul>
 </li>
 <li><code>kubectl get rc</code><ul>
-<li>The replication controller defines how many instances should be running, the Docker Image to use, and a name to identify the service.</li>
+<li>将replication controller打印出来。</li>
 </ul>
 </li>
-<li><code>kubectl get services</code><ul>
-<li>A Kubernetes service is a named load balancer that proxies traffic to one or more containers. The proxy works even if the containers are on different nodes. Services proxy communicate within the cluster and rarely expose ports to an outside interface.When you launch a service it looks like you cannot connect using curl or netcat unless you start it as part of Kubernetes. The recommended approach is to have a LoadBalancer service to handle external communications.没看懂啊</li>
-<li>Service有很多种，包括targetPort，经常用到的，还有：Cluster IP， NodePort ，External IPs， Load Balancer之类</li>
-</ul>
-</li>
+<li><code>kubectl get services</code>      </li>
 <li><code>kubectl get deployments</code><ul>
 <li>感受一下这两个的区别</li>
 </ul>
@@ -390,10 +384,10 @@ $ kubectl get deployments
 <li><code>kubectl describe deployment http</code></li>
 <li><code>kubectl describe svc http</code> 能看到很多信息，包括整个cluster对外的ip，各个node的内部ip之类</li>
 <li><code>kubectl expose deployment first-deployment --port=80 --type=NodePort</code><ul>
-<li>这条命令有的复杂，解释说：Once the container is running it can be exposed via different networking options, depending on requirements. </li>
+<li>这条命令有点复杂，解释说：Once the container is running it can be exposed via different networking options, depending on requirements. </li>
 <li>将资源暴露为新的Kubernetes Service。</li>
 <li>expose后面的资源有很多种，包括：pod（po），service（svc），replication controller（rc），deployment（deploy），replica set（rs）</li>
-<li>A Kubernetes service deployment has, at least, two parts. A replication controller and a service. 稍微有点理解了。一个service部署的时候一般有两个yaml文件。一个是</li>
+<li>A Kubernetes service deployment has, at least, two parts. A replication controller and a service. 稍微有点理解了。一个service部署的时候一般有两个yaml文件</li>
 <li>‘first-deployment’是deployment的名字</li>
 <li><code>-port</code> 是内部的端口</li>
 <li><code></code>–target-port`是外部访问的端口</li>
@@ -411,7 +405,12 @@ $ kubectl get deployments
 <pre><code>$ kubectl apply -f deployment.yaml
   Warning: kubectl apply should be used on resource created by either kubectl create --save-config or kubectl apply
  deployment.extensions/webapp1 configured
-</code></pre><h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
+</code></pre><ul>
+<li><code>kubectl exec $pod -- /usr/bin/curl -s localhost/unhealthy</code></li>
+<li><code>kubectl get ing</code> 可以用来看Ingress</li>
+<li><code>kubectl create namespace</code>创建namespace</li>
+</ul>
+<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
 <li><a href="http://docs.kubernetes.org.cn/475.html" target="_blank" rel="noopener">k8s中文文档</a></li>
 <li><a href="https://www.katacoda.com/courses/kubernetes/kubectl-run-containers" target="_blank" rel="noopener">codekara的在线课程</a><h3 id="主要特性"><a href="#主要特性" class="headerlink" title="主要特性"></a>主要特性</h3></li>
 </ul>
@@ -535,7 +534,7 @@ $ kubectl get deployments
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">17</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

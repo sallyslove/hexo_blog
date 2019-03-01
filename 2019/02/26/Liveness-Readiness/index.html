@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="35岁开始的博客，有点晚哦">
+<meta name="description" content="Liveness &amp;amp; ReadinessReadiness Readiness Probes checks if an application is ready to start processing traffic. This probe solves the problem of the container having started, but the process still w">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java Vilolate">
-<meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/01/18/Java-Vilolate/index.html">
+<meta property="og:title" content="Liveness &amp; Readiness">
+<meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/02/26/Liveness-Readiness/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="35岁开始的博客，有点晚哦">
+<meta property="og:description" content="Liveness &amp;amp; ReadinessReadiness Readiness Probes checks if an application is ready to start processing traffic. This probe solves the problem of the container having started, but the process still w">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-01-18T06:03:58.000Z">
+<meta property="og:updated_time" content="2019-02-26T06:29:14.158Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Java Vilolate">
-<meta name="twitter:description" content="35岁开始的博客，有点晚哦">
+<meta name="twitter:title" content="Liveness &amp; Readiness">
+<meta name="twitter:description" content="Liveness &amp;amp; ReadinessReadiness Readiness Probes checks if an application is ready to start processing traffic. This probe solves the problem of the container having started, but the process still w">
 
 
 
@@ -119,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="https://sallyslove.github.io/hexo_blog/2019/01/18/Java-Vilolate/">
+  <link rel="canonical" href="https://sallyslove.github.io/hexo_blog/2019/02/26/Liveness-Readiness/">
 
 
 
 
 
-  <title>Java Vilolate | 跬步</title>
+  <title>Liveness & Readiness | 跬步</title>
   
 
 
@@ -242,7 +242,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/01/18/Java-Vilolate/">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/02/26/Liveness-Readiness/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Lynn Shen">
@@ -259,7 +259,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Java Vilolate</h1>
+          <h1 class="post-title" itemprop="name headline">Liveness & Readiness</h1>
         
 
         <div class="post-meta">
@@ -271,8 +271,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-18T14:03:58+08:00">
-                2019-01-18
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-26T14:29:11+08:00">
+                2019-02-26
               </time>
             
 
@@ -290,8 +290,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/hexo_blog/2019/01/18/Java-Vilolate/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count gitment-comments-count" data-xid="/hexo_blog/2019/01/18/Java-Vilolate/" itemprop="commentsCount"></span>
+                <a href="/hexo_blog/2019/02/26/Liveness-Readiness/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/hexo_blog/2019/02/26/Liveness-Readiness/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -319,7 +319,28 @@
       
 
       
-        
+        <h2 id="Liveness-amp-Readiness"><a href="#Liveness-amp-Readiness" class="headerlink" title="Liveness &amp; Readiness"></a>Liveness &amp; Readiness</h2><h3 id="Readiness"><a href="#Readiness" class="headerlink" title="Readiness"></a>Readiness</h3><ul>
+<li>Readiness Probes checks if an application is ready to start processing traffic.</li>
+<li>This probe solves the problem of the container having started, but the process still warming up and configuring itself meaning it’s not ready to receive traffic.</li>
+<li>The configuration is as following:<pre><code>readinessProbe:
+   httpGet:
+      path: /
+      port: 80
+   initialDelaySeconds: 1
+   timeoutSeconds: 1
+</code></pre></li>
+</ul>
+<h3 id="Liveness"><a href="#Liveness" class="headerlink" title="Liveness"></a>Liveness</h3><ul>
+<li>Liveness Probes ensure that the application is healthy and capable of processing requests.</li>
+<li>The configuration is as following:<pre><code>livenessProbe:
+httpGet:
+   path: /
+   port: 80
+   initialDelaySeconds: 1
+   timeoutSeconds: 1
+</code></pre></li>
+</ul>
+
       
     </div>
     
@@ -343,8 +364,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/hexo_blog/2019/01/17/Cassandra-写数据过程/" rel="next" title="Cassandra 写数据过程">
-                <i class="fa fa-chevron-left"></i> Cassandra 写数据过程
+              <a href="/hexo_blog/2019/02/22/Jetty-Graceful-shutdown/" rel="next" title="Jetty Graceful shutdown">
+                <i class="fa fa-chevron-left"></i> Jetty Graceful shutdown
               </a>
             
           </div>
@@ -353,8 +374,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/hexo_blog/2019/01/18/Java-GC-机制-CMS-G1/" rel="prev" title="Java GC 机制 CMS & G1">
-                Java GC 机制 CMS & G1 <i class="fa fa-chevron-right"></i>
+              <a href="/hexo_blog/2019/02/26/Helm入门/" rel="prev" title="Helm入门">
+                Helm入门 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -414,8 +435,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -466,6 +496,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Liveness-amp-Readiness"><span class="nav-number">1.</span> <span class="nav-text">Liveness &amp; Readiness</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Readiness"><span class="nav-number">1.1.</span> <span class="nav-text">Readiness</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Liveness"><span class="nav-number">1.2.</span> <span class="nav-text">Liveness</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
