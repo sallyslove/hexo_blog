@@ -242,6 +242,155 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/01/21/Cassandra读数据过程/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/01/21/Cassandra读数据过程/" itemprop="url">Cassandra读数据过程</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-21T15:35:32+08:00">
+                2019-01-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/cassandra/" itemprop="url" rel="index">
+                    <span itemprop="name">cassandra</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Cassandra读数据过程"><a href="#Cassandra读数据过程" class="headerlink" title="Cassandra读数据过程"></a>Cassandra读数据过程</h2><p>  数据库读数据过程必须知道。这篇也作为KeyCache和RowCache学习的blog.<br>  RowCache缓存的是数据，而KeyCache缓存的是在SSTable文件中的位置。<br>  Cassandra的是读数据慢，写数据快。</p>
+<h3 id="KeyCache"><a href="#KeyCache" class="headerlink" title="KeyCache"></a>KeyCache</h3><h3 id="RowCache"><a href="#RowCache" class="headerlink" title="RowCache"></a>RowCache</h3><h3 id="Limit"><a href="#Limit" class="headerlink" title="Limit"></a>Limit</h3><ul>
+<li>Cassandra根据primary key来读取数据，这个key就是存在keyCache里面的内容。然后会读取一片数据。</li>
+<li>读取时候可以指定limit值，这样会读取有限的内容，而不是一大片。</li>
+</ul>
+<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
+<li>非常详尽清晰的一篇文档：<a href="https://www.oschina.net/question/12_11855" target="_blank" rel="noopener">Cassandra数据结构和写入读取</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/01/18/Java-GC-机制-CMS-G1/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1389,7 +1538,7 @@ logger.info(String.format(&quot;%-25s%20s&quot;,
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

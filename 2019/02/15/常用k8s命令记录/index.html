@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="跬步">
 <meta property="og:description" content="常用k8s命令这篇记录一下常用的k8s命令，我怕我会忘啊  -_-#没错，这是docker那篇的姐妹篇哦。棒棒哒:P  kubectl cluster-info kubectl get nodes kubectl run first-deployment --image=katacoda/docker-http-server --port=80 这样就有一个pod啦。在get pods comma">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-02-27T06:59:15.343Z">
+<meta property="og:updated_time" content="2019-03-05T09:25:34.528Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="常用k8s命令记录">
 <meta name="twitter:description" content="常用k8s命令这篇记录一下常用的k8s命令，我怕我会忘啊  -_-#没错，这是docker那篇的姐妹篇哦。棒棒哒:P  kubectl cluster-info kubectl get nodes kubectl run first-deployment --image=katacoda/docker-http-server --port=80 这样就有一个pod啦。在get pods comma">
@@ -409,6 +409,10 @@ $ kubectl get deployments
 <li><code>kubectl exec $pod -- /usr/bin/curl -s localhost/unhealthy</code></li>
 <li><code>kubectl get ing</code> 可以用来看Ingress</li>
 <li><code>kubectl create namespace</code>创建namespace</li>
+<li><code>kubectl config set-context $(kubectl config current-context) --namespace=&lt;insert-namespace-name-here&gt;</code></li>
+<li><code>kubectl config get-contexts</code> 这个context不知道是啥</li>
+<li><code>kubectl get namespaces</code></li>
+<li><code>kubectl delete pvc --all --namespace default</code> 用这个命令来做delete。一堆都行。pvc换成pod，deployments，secret，configmap，service啥的</li>
 </ul>
 <h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
 <li><a href="http://docs.kubernetes.org.cn/475.html" target="_blank" rel="noopener">k8s中文文档</a></li>
@@ -534,7 +538,7 @@ $ kubectl get deployments
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

@@ -242,6 +242,131 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/03/04/KeyStore格式/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/03/04/KeyStore格式/" itemprop="url">KeyStore格式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-04T14:50:11+08:00">
+                2019-03-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="KeyStore的格式"><a href="#KeyStore的格式" class="headerlink" title="KeyStore的格式"></a>KeyStore的格式</h2><p>KeyStore工作中碰到的不少。话说那个SSL的三次握手，我老是会忘啊。ORZ<br>下回还是得写下来才行。先弄这个格式吧。<br>相关的问题先放这里吧。</p>
+<h3 id="KeyStore和TrustStore"><a href="#KeyStore和TrustStore" class="headerlink" title="KeyStore和TrustStore"></a>KeyStore和TrustStore</h3><ul>
+<li>keystore和truststore从其文件格式来看其实是一个东西，只是为了方便管理将其分开</li>
+<li>keystore中一般保存的是我们的私钥，用来加解密或者为别人做签名</li>
+<li>truststore中保存的是一些可信任的证书，主要是java在代码中访问某个https的时候对被访问者进行认证的，以确保其实可信任的</li>
+</ul>
+<h3 id="KeyStore的格式-1"><a href="#KeyStore的格式-1" class="headerlink" title="KeyStore的格式"></a>KeyStore的格式</h3>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/02/27/K8s概念理解/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -335,11 +460,32 @@
       
         
           
-            <h2 id="K8s概念理解"><a href="#K8s概念理解" class="headerlink" title="K8s概念理解"></a>K8s概念理解</h2><p>这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了</p>
-<h3 id="Pod"><a href="#Pod" class="headerlink" title="Pod"></a>Pod</h3><p>pod实在是K8s里面很重要的一个概念，也是很宽泛的一个概念。很多都可以是一个pod。</p>
+            <h2 id="K8s概念"><a href="#K8s概念" class="headerlink" title="K8s概念"></a>K8s概念</h2><p>这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。</p>
+<h3 id="configmap"><a href="#configmap" class="headerlink" title="configmap"></a>configmap</h3><h3 id="secrets"><a href="#secrets" class="headerlink" title="secrets"></a>secrets</h3><h3 id="PersistentVolumnClumns"><a href="#PersistentVolumnClumns" class="headerlink" title="PersistentVolumnClumns"></a>PersistentVolumnClumns</h3><h3 id="Pod"><a href="#Pod" class="headerlink" title="Pod"></a>Pod</h3><p>pod实在是K8s里面很重要的一个概念，也是很宽泛的一个概念。很多都可以是一个pod。</p>
 <ul>
 <li>All containers described as Pods.包括replication cotronller， service， deployment。<br><strong>不知道是不是所有的service类型都会被当做是pod，这一点有待确认</strong></li>
 <li>A pod is a collection of containers that makes up a particular application, for example Redis.<br><strong>这句没有很明白啊，不是说pod是一个container嘛，又变成一堆container了</strong></li>
+</ul>
+<h3 id="namespace"><a href="#namespace" class="headerlink" title="namespace"></a>namespace</h3><ul>
+<li>当团队或项目中具有许多用户时，可以考虑使用Namespace来区分。</li>
+<li>默认情况下，相同Namespace中的对象将具有相同的访问控制策略。</li>
+<li><p>Kubernetes从两个初始的Namespace开始：</p>
+<ul>
+<li>default</li>
+<li>kube-system 由Kubernetes系统创建的对象的Namespace</li>
+<li><p>自己电脑上面装好的docker for desktop里面有以下的namespace</p>
+<pre><code>$ kubectl get namespaces
+NAME           STATUS    AGE
+default        Active    15d
+docker         Active    15d
+kube-public    Active    15d
+kube-system    Active    15d
+</code></pre></li>
+</ul>
+</li>
+<li><p>大多数Kubernetes资源（例如pod、services、replication controllers或其他）都在某些Namespace中，但Namespace资源本身并不在Namespace中。而低级别资源（如Node和persistentVolumes）不在任何Namespace中。Events是一个例外：它们可能有也可能没有Namespace，具体取决于Events的对象。</p>
+</li>
+<li>参考链接：<a href="http://docs.kubernetes.org.cn/242.html" target="_blank" rel="noopener">Kubernetes Namespaces</a></li>
 </ul>
 <h3 id="replication-controller"><a href="#replication-controller" class="headerlink" title="replication controller"></a>replication controller</h3><ul>
 <li>The replication controller defines how many instances should be running, the Docker Image to use, and a name to identify the service.<br><strong>决定多少个instance可以理解，不同的instance可以使用不同的image吗</strong></li>
@@ -499,15 +645,24 @@
 <li>Helm是在Kubernetes中安装部署容器的一个工具。</li>
 <li>Helm is a tool for managing Kubernetes charts.所以Charts可能是K8s的一个概念。中文的博客不一定对。</li>
 <li>Helm由Helm客户端、Tiller服务器端和Chart仓库所组成<ul>
-<li>Helm客户端</li>
-<li>Tiller服务器端</li>
-<li>Chart仓库：创建Kubernetes应用实例的信息集合</li>
+<li>Helm客户端： 客户端交互</li>
+<li>Tiller服务器端： 装在k8s的cluster里面，管理chart</li>
+<li>Chart仓库：创建Kubernetes应用实例的信息集合<ul>
+<li>Chart由两个部分组成，第一个部分是A description of the package (Chart.yaml)</li>
+<li>One or more templates, which contain Kubernetes manifest files。这个templates的话，应该也是yaml文件吧。</li>
 </ul>
 </li>
+</ul>
+</li>
+</ul>
+<h3 id="常用的helm命令"><a href="#常用的helm命令" class="headerlink" title="常用的helm命令"></a>常用的helm命令</h3><ul>
+<li><code>helm status &lt;namespace&gt;</code> 查看helm的状态</li>
+<li><code>helm install</code></li>
 </ul>
 <h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
 <li><a href="https://www.cnblogs.com/Erik_Xu/p/8893725.html" target="_blank" rel="noopener">Helm介绍</a></li>
 <li><a href="https://github.com/helm/helm" target="_blank" rel="noopener">Helm GitHub页面</a></li>
+<li><a href="https://helm.sh/docs/using_helm/#quickstart-guide" target="_blank" rel="noopener">Helm使用文档</a></li>
 </ul>
 
           
@@ -1020,6 +1175,10 @@ $ kubectl get deployments
 <li><code>kubectl exec $pod -- /usr/bin/curl -s localhost/unhealthy</code></li>
 <li><code>kubectl get ing</code> 可以用来看Ingress</li>
 <li><code>kubectl create namespace</code>创建namespace</li>
+<li><code>kubectl config set-context $(kubectl config current-context) --namespace=&lt;insert-namespace-name-here&gt;</code></li>
+<li><code>kubectl config get-contexts</code> 这个context不知道是啥</li>
+<li><code>kubectl get namespaces</code></li>
+<li><code>kubectl delete pvc --all --namespace default</code> 用这个命令来做delete。一堆都行。pvc换成pod，deployments，secret，configmap，service啥的</li>
 </ul>
 <h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
 <li><a href="http://docs.kubernetes.org.cn/475.html" target="_blank" rel="noopener">k8s中文文档</a></li>
@@ -1653,155 +1812,6 @@ $ kubectl get deployments
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/01/21/Cassandra读数据过程/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/01/21/Cassandra读数据过程/" itemprop="url">Cassandra读数据过程</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-21T15:35:32+08:00">
-                2019-01-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/cassandra/" itemprop="url" rel="index">
-                    <span itemprop="name">cassandra</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="Cassandra读数据过程"><a href="#Cassandra读数据过程" class="headerlink" title="Cassandra读数据过程"></a>Cassandra读数据过程</h2><p>  数据库读数据过程必须知道。这篇也作为KeyCache和RowCache学习的blog.<br>  RowCache缓存的是数据，而KeyCache缓存的是在SSTable文件中的位置。<br>  Cassandra的是读数据慢，写数据快。</p>
-<h3 id="KeyCache"><a href="#KeyCache" class="headerlink" title="KeyCache"></a>KeyCache</h3><h3 id="RowCache"><a href="#RowCache" class="headerlink" title="RowCache"></a>RowCache</h3><h3 id="Limit"><a href="#Limit" class="headerlink" title="Limit"></a>Limit</h3><ul>
-<li>Cassandra根据primary key来读取数据，这个key就是存在keyCache里面的内容。然后会读取一片数据。</li>
-<li>读取时候可以指定limit值，这样会读取有限的内容，而不是一大片。</li>
-</ul>
-<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
-<li>非常详尽清晰的一篇文档：<a href="https://www.oschina.net/question/12_11855" target="_blank" rel="noopener">Cassandra数据结构和写入读取</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1852,7 +1862,7 @@ $ kubectl get deployments
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
