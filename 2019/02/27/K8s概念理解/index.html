@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="K8s概念这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。 configmapsecretsPersistentVolumnClumnsPodpod实在是K8s里面很重要的一个概念，也是很宽泛的一个概念。很多都可以是一个pod。  All containers described as Pods.包括replication cotronller， service，">
+<meta name="description" content="K8s概念这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。 configmapsecretsPersistentVolumnClumns PVC在定义的时候有个storageclass。这个storageclass是定义在kube-system的namespace里面的 在安装时候，share C盘遇到了问题，用“docker for desktop”的默认的sto">
 <meta property="og:type" content="article">
 <meta property="og:title" content="K8s概念理解">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/02/27/K8s概念理解/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="K8s概念这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。 configmapsecretsPersistentVolumnClumnsPodpod实在是K8s里面很重要的一个概念，也是很宽泛的一个概念。很多都可以是一个pod。  All containers described as Pods.包括replication cotronller， service，">
+<meta property="og:description" content="K8s概念这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。 configmapsecretsPersistentVolumnClumns PVC在定义的时候有个storageclass。这个storageclass是定义在kube-system的namespace里面的 在安装时候，share C盘遇到了问题，用“docker for desktop”的默认的sto">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-03-05T09:29:52.586Z">
+<meta property="og:updated_time" content="2019-03-06T09:11:09.699Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="K8s概念理解">
-<meta name="twitter:description" content="K8s概念这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。 configmapsecretsPersistentVolumnClumnsPodpod实在是K8s里面很重要的一个概念，也是很宽泛的一个概念。很多都可以是一个pod。  All containers described as Pods.包括replication cotronller， service，">
+<meta name="twitter:description" content="K8s概念这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。 configmapsecretsPersistentVolumnClumns PVC在定义的时候有个storageclass。这个storageclass是定义在kube-system的namespace里面的 在安装时候，share C盘遇到了问题，用“docker for desktop”的默认的sto">
 
 
 
@@ -342,7 +342,18 @@
 
       
         <h2 id="K8s概念"><a href="#K8s概念" class="headerlink" title="K8s概念"></a>K8s概念</h2><p>这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。</p>
-<h3 id="configmap"><a href="#configmap" class="headerlink" title="configmap"></a>configmap</h3><h3 id="secrets"><a href="#secrets" class="headerlink" title="secrets"></a>secrets</h3><h3 id="PersistentVolumnClumns"><a href="#PersistentVolumnClumns" class="headerlink" title="PersistentVolumnClumns"></a>PersistentVolumnClumns</h3><h3 id="Pod"><a href="#Pod" class="headerlink" title="Pod"></a>Pod</h3><p>pod实在是K8s里面很重要的一个概念，也是很宽泛的一个概念。很多都可以是一个pod。</p>
+<h3 id="configmap"><a href="#configmap" class="headerlink" title="configmap"></a>configmap</h3><h3 id="secrets"><a href="#secrets" class="headerlink" title="secrets"></a>secrets</h3><h3 id="PersistentVolumnClumns"><a href="#PersistentVolumnClumns" class="headerlink" title="PersistentVolumnClumns"></a>PersistentVolumnClumns</h3><ul>
+<li>PVC在定义的时候有个storageclass。这个storageclass是定义在<code>kube-system</code>的namespace里面的</li>
+<li>在安装时候，share C盘遇到了问题，用“docker for desktop”的默认的storageclass：hostpath来创PVC，就起不来了。于是在大神的教导下另创了一个StorageClass，将其映射到docker machine的虚机里面。解决了这个问题。</li>
+<li>在尝试解决这个C盘没法share的问题时候参考了很多资料。工作电脑由于系统关系，没有办法创建administrator group的user，所以绕不过去。</li>
+<li>参考的链接有：<ul>
+<li><a href="https://dotblogs.com.tw/swater111/2017/01/26/101009" target="_blank" rel="noopener">share C盘总结</a>：这篇资料还是不错的，里面汇总了可能遇到的好几个问题。</li>
+<li><a href="https://blogs.msdn.microsoft.com/stevelasker/2016/06/14/configuring-docker-for-windows-volumes/" target="_blank" rel="noopener">share C盘家里咋整</a></li>
+<li><a href="https://tomssl.com/2018/01/11/sharing-your-c-drive-with-docker-for-windows-when-using-azure-active-directory-azuread-aad/" target="_blank" rel="noopener">local user方法</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="Pod"><a href="#Pod" class="headerlink" title="Pod"></a>Pod</h3><p>pod实在是K8s里面很重要的一个概念，也是很宽泛的一个概念。很多都可以是一个pod。</p>
 <ul>
 <li>All containers described as Pods.包括replication cotronller， service， deployment。<br><strong>不知道是不是所有的service类型都会被当做是pod，这一点有待确认</strong></li>
 <li>A pod is a collection of containers that makes up a particular application, for example Redis.<br><strong>这句没有很明白啊，不是说pod是一个container嘛，又变成一堆container了</strong></li>
@@ -522,7 +533,7 @@ kube-system    Active    15d
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-count">19</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

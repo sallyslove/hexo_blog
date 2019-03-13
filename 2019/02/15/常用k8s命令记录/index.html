@@ -86,10 +86,12 @@
 <meta property="og:site_name" content="跬步">
 <meta property="og:description" content="常用k8s命令这篇记录一下常用的k8s命令，我怕我会忘啊  -_-#没错，这是docker那篇的姐妹篇哦。棒棒哒:P  kubectl cluster-info kubectl get nodes kubectl run first-deployment --image=katacoda/docker-http-server --port=80 这样就有一个pod啦。在get pods comma">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-03-05T09:25:34.528Z">
+<meta property="og:image" content="https://user-images.githubusercontent.com/5803001/34945022-c57b369a-fa3c-11e7-85e7-83f716d10705.png">
+<meta property="og:updated_time" content="2019-03-06T09:24:32.606Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="常用k8s命令记录">
 <meta name="twitter:description" content="常用k8s命令这篇记录一下常用的k8s命令，我怕我会忘啊  -_-#没错，这是docker那篇的姐妹篇哦。棒棒哒:P  kubectl cluster-info kubectl get nodes kubectl run first-deployment --image=katacoda/docker-http-server --port=80 这样就有一个pod啦。在get pods comma">
+<meta name="twitter:image" content="https://user-images.githubusercontent.com/5803001/34945022-c57b369a-fa3c-11e7-85e7-83f716d10705.png">
 
 
 
@@ -413,6 +415,22 @@ $ kubectl get deployments
 <li><code>kubectl config get-contexts</code> 这个context不知道是啥</li>
 <li><code>kubectl get namespaces</code></li>
 <li><code>kubectl delete pvc --all --namespace default</code> 用这个命令来做delete。一堆都行。pvc换成pod，deployments，secret，configmap，service啥的</li>
+<li>安装k8s的dashboard：<ul>
+<li>使用“docker for desktop“的时候，这个dashboard貌似不是事先装好的。印象不深刻了。需要装一下：<ul>
+<li><code>kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml</code></li>
+<li><code>kubectl proxy</code> 再将proxy给弄出来，就可以访问了。</li>
+<li>如下图：<br><img src="https://user-images.githubusercontent.com/5803001/34945022-c57b369a-fa3c-11e7-85e7-83f716d10705.png" alt=""></li>
+<li>参考链接登录：<ul>
+<li><a href="https://segmentfault.com/a/1190000012850396" target="_blank" rel="noopener">config登录方式</a></li>
+<li><a href="https://www.cnblogs.com/guigujun/p/8366530.html" target="_blank" rel="noopener">config登录方式2</a></li>
+<li><a href="https://www.cnblogs.com/jackyfei/p/10180465.html" target="_blank" rel="noopener">token方式登录</a></li>
+</ul>
+</li>
+<li>获取token的命令：<code>kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk &#39;{print $1}&#39;)</code></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 <h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
 <li><a href="http://docs.kubernetes.org.cn/475.html" target="_blank" rel="noopener">k8s中文文档</a></li>
@@ -538,7 +556,7 @@ $ kubectl get deployments
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-count">19</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

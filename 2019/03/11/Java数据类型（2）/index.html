@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="Scala概念快速解释Scala有很多特有的概念。如果要看懂代码就得大致明白含义，这篇博客就是快速解释一下，其中可能会有不够准确的地方，就是不求甚解，只求迅速读懂scala代码了 trait Scala Trait(特征) 类似java的Interface，其实更近似于抽象类 但是可以使用with关键字多重继承，很好用的感觉哦 scala本身还是有interface关键字的，本身也可以使用with">
+<meta name="description" content="这篇记录一些数据类型。暂时写在这里吧 java.Util.Function.Supplier 这个接口只有一个方法，Get方法。void，返回一个T 把它当工厂方法看就是了。 顾名思义，提供者。 JAVA8 Supplier接口 感觉就是一次性生成。同一个接口，在初始化时候给出get函数，可以有不同实现 supplier作为function interface，有@FunctionalInterf">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Scala概念快速解释">
-<meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/02/14/Scala概念快速解释/index.html">
+<meta property="og:title" content="Java数据类型（2）">
+<meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/03/11/Java数据类型（2）/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="Scala概念快速解释Scala有很多特有的概念。如果要看懂代码就得大致明白含义，这篇博客就是快速解释一下，其中可能会有不够准确的地方，就是不求甚解，只求迅速读懂scala代码了 trait Scala Trait(特征) 类似java的Interface，其实更近似于抽象类 但是可以使用with关键字多重继承，很好用的感觉哦 scala本身还是有interface关键字的，本身也可以使用with">
+<meta property="og:description" content="这篇记录一些数据类型。暂时写在这里吧 java.Util.Function.Supplier 这个接口只有一个方法，Get方法。void，返回一个T 把它当工厂方法看就是了。 顾名思义，提供者。 JAVA8 Supplier接口 感觉就是一次性生成。同一个接口，在初始化时候给出get函数，可以有不同实现 supplier作为function interface，有@FunctionalInterf">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-02-14T06:37:55.271Z">
+<meta property="og:updated_time" content="2019-03-11T07:13:40.496Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Scala概念快速解释">
-<meta name="twitter:description" content="Scala概念快速解释Scala有很多特有的概念。如果要看懂代码就得大致明白含义，这篇博客就是快速解释一下，其中可能会有不够准确的地方，就是不求甚解，只求迅速读懂scala代码了 trait Scala Trait(特征) 类似java的Interface，其实更近似于抽象类 但是可以使用with关键字多重继承，很好用的感觉哦 scala本身还是有interface关键字的，本身也可以使用with">
+<meta name="twitter:title" content="Java数据类型（2）">
+<meta name="twitter:description" content="这篇记录一些数据类型。暂时写在这里吧 java.Util.Function.Supplier 这个接口只有一个方法，Get方法。void，返回一个T 把它当工厂方法看就是了。 顾名思义，提供者。 JAVA8 Supplier接口 感觉就是一次性生成。同一个接口，在初始化时候给出get函数，可以有不同实现 supplier作为function interface，有@FunctionalInterf">
 
 
 
@@ -119,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="https://sallyslove.github.io/hexo_blog/2019/02/14/Scala概念快速解释/">
+  <link rel="canonical" href="https://sallyslove.github.io/hexo_blog/2019/03/11/Java数据类型（2）/">
 
 
 
 
 
-  <title>Scala概念快速解释 | 跬步</title>
+  <title>Java数据类型（2） | 跬步</title>
   
 
 
@@ -242,7 +242,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/02/14/Scala概念快速解释/">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/03/11/Java数据类型（2）/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Lynn Shen">
@@ -259,7 +259,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Scala概念快速解释</h1>
+          <h1 class="post-title" itemprop="name headline">Java数据类型（2）</h1>
         
 
         <div class="post-meta">
@@ -271,8 +271,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-14T10:18:49+08:00">
-                2019-02-14
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-11T10:22:53+08:00">
+                2019-03-11
               </time>
             
 
@@ -294,8 +294,8 @@
               
               
                 <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/Scala/" itemprop="url" rel="index">
-                    <span itemprop="name">Scala</span>
+                  <a href="/hexo_blog/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
                   </a>
                 </span>
 
@@ -312,8 +312,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/hexo_blog/2019/02/14/Scala概念快速解释/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count gitment-comments-count" data-xid="/hexo_blog/2019/02/14/Scala概念快速解释/" itemprop="commentsCount"></span>
+                <a href="/hexo_blog/2019/03/11/Java数据类型（2）/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/hexo_blog/2019/03/11/Java数据类型（2）/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -341,17 +341,60 @@
       
 
       
-        <h2 id="Scala概念快速解释"><a href="#Scala概念快速解释" class="headerlink" title="Scala概念快速解释"></a>Scala概念快速解释</h2><p>Scala有很多特有的概念。如果要看懂代码就得大致明白含义，这篇博客就是快速解释一下，其中可能会有不够准确的地方，就是不求甚解，只求迅速读懂scala代码了</p>
-<h3 id="trait"><a href="#trait" class="headerlink" title="trait"></a>trait</h3><ul>
-<li><a href="http://www.runoob.com/scala/scala-traits.html" target="_blank" rel="noopener">Scala Trait(特征)</a></li>
-<li>类似java的Interface，其实更近似于抽象类</li>
-<li>但是可以使用<code>with</code>关键字多重继承，很好用的感觉哦</li>
-<li><code>scala</code>本身还是有<code>interface</code>关键字的，本身也可以使用<code>with</code>关键字来实现接口</li>
+        <p>这篇记录一些数据类型。暂时写在这里吧</p>
+<h3 id="java-Util-Function-Supplier"><a href="#java-Util-Function-Supplier" class="headerlink" title="java.Util.Function.Supplier"></a>java.Util.Function.Supplier</h3><ul>
+<li>这个接口只有一个方法，Get方法。void，返回一个T</li>
+<li>把它当工厂方法看就是了。</li>
+<li>顾名思义，提供者。</li>
+<li><a href="https://blog.csdn.net/qq_28410283/article/details/80625482" target="_blank" rel="noopener">JAVA8 Supplier接口</a></li>
+<li>感觉就是一次性生成。同一个接口，在初始化时候给出get函数，可以有不同实现</li>
+<li>supplier作为function interface，有@FunctionalInterface annotation。所以可以直接用lamda来作为实现。比如：<code>()-&gt;getString()</code>可以作为<code>Supplier&lt;String&gt;</code>的实现</li>
 </ul>
-<h3 id="case-class"><a href="#case-class" class="headerlink" title="case class"></a>case class</h3><ul>
-<li><a href="https://blog.csdn.net/bluishglc/article/details/50914001" target="_blank" rel="noopener">csdn上的一篇文章</a></li>
-<li>简单来说，case class会默认生成很多东西，比如伴生对象，比如工厂方法，比如toString， copy，构造方法参数同名的属性</li>
-<li>最开心的用法，应该就是不用<code>new</code>出一个对象来。而是可以直接<code>methodName(构造函数参数)</code>这样来获取一个对象。其实是同名的工厂方法</li>
+<h3 id="ThreadPoolExecutor"><a href="#ThreadPoolExecutor" class="headerlink" title="ThreadPoolExecutor"></a>ThreadPoolExecutor</h3><pre><code>public abstract class AbstractExecutorService implements ExecutorService
+public class ThreadPoolExecutor extends AbstractExecutorService    
+</code></pre><ul>
+<li>从上面可以看出来，ThreadPoolExecutor也是一种Executor，继承自AbstractExecutorService，自然也实现了ExecutorService.</li>
+<li><a href="https://www.cnblogs.com/zedosu/p/6665306.html" target="_blank" rel="noopener">ThreadPoolExecutor使用详解</a></li>
+</ul>
+<h3 id="ExecutorService"><a href="#ExecutorService" class="headerlink" title="ExecutorService"></a>ExecutorService</h3><h4 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h4><pre><code>public interface ExecutorService extends Executor
+</code></pre><ul>
+<li>所以首先来说，这是一个接口</li>
+<li>Executor接口很简单，只有一个execute方法。ExecutorService除了这一个方法，还增加了一些方法。  </li>
+<li><a href="https://www.cnblogs.com/Steven0805/p/6393443.html" target="_blank" rel="noopener">Java线程池ExecutorService</a></li>
+</ul>
+<h4 id="几种常用线程池的具体实现"><a href="#几种常用线程池的具体实现" class="headerlink" title="几种常用线程池的具体实现"></a>几种常用线程池的具体实现</h4><ul>
+<li>然后有意思的来了：<ul>
+<li>Java通过Executors class提供了好几种线程池，这就是我们常用的几种了。这个Executors没有继承或者实现任何其他类。就是说，他嘎嘣自己一个。</li>
+<li><code>newFixedThreadPool</code>：就是说这个玩意，限定好了最大数目，核心数目，然后本质是一个LinkedBlockingQueue套了runnable</li>
+</ul>
+</li>
+</ul>
+<pre><code>public static ExecutorService newFixedThreadPool(int nThreads) {
+   return new ThreadPoolExecutor(nThreads, nThreads,
+                                 0L, TimeUnit.MILLISECONDS,
+                                 new LinkedBlockingQueue&lt;Runnable&gt;());
+</code></pre><ul>
+<li><code>newCachedThreadPool</code>：</li>
+</ul>
+<pre><code>public static ExecutorService newCachedThreadPool() {
+ return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
+                               60L, TimeUnit.SECONDS,
+                               new SynchronousQueue&lt;Runnable&gt;());    }
+</code></pre><ul>
+<li>还有<code>newScheduledThreadPool</code>和<code>newSingleThreadExecutor</code></li>
+</ul>
+<h4 id="一些要点"><a href="#一些要点" class="headerlink" title="一些要点"></a>一些要点</h4><ul>
+<li>submit与execute的区别： <ul>
+<li>submit接受runnable和callable  有返回值。</li>
+<li>execute接受runnable 无返回值</li>
+<li>submit方便Exception处理</li>
+</ul>
+</li>
+<li>Runnable与Callable区别<ul>
+<li>runnable接口实现的没有返回值的并发编程。</li>
+<li>callable实现的存在返回值的并发编程。使用Future获取返回值。</li>
+</ul>
+</li>
 </ul>
 
       
@@ -377,8 +420,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/hexo_blog/2019/01/28/hello-world/" rel="next" title="Hello World">
-                <i class="fa fa-chevron-left"></i> Hello World
+              <a href="/hexo_blog/2019/03/04/KeyStore格式/" rel="next" title="KeyStore格式">
+                <i class="fa fa-chevron-left"></i> KeyStore格式
               </a>
             
           </div>
@@ -386,10 +429,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/hexo_blog/2019/02/14/常用Docker命令记录/" rel="prev" title="常用Docker命令记录">
-                常用Docker命令记录 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -519,7 +558,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Scala概念快速解释"><span class="nav-number">1.</span> <span class="nav-text">Scala概念快速解释</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#trait"><span class="nav-number">1.1.</span> <span class="nav-text">trait</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#case-class"><span class="nav-number">1.2.</span> <span class="nav-text">case class</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#java-Util-Function-Supplier"><span class="nav-number">1.</span> <span class="nav-text">java.Util.Function.Supplier</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ThreadPoolExecutor"><span class="nav-number">2.</span> <span class="nav-text">ThreadPoolExecutor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ExecutorService"><span class="nav-number">3.</span> <span class="nav-text">ExecutorService</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#概览"><span class="nav-number">3.1.</span> <span class="nav-text">概览</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#几种常用线程池的具体实现"><span class="nav-number">3.2.</span> <span class="nav-text">几种常用线程池的具体实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#一些要点"><span class="nav-number">3.3.</span> <span class="nav-text">一些要点</span></a></li></ol></li></ol></div>
             
 
           </div>
