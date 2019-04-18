@@ -335,8 +335,24 @@
       
         
           
-            <h2 id="Cassandra里面的Batch操作"><a href="#Cassandra里面的Batch操作" class="headerlink" title="Cassandra里面的Batch操作"></a>Cassandra里面的Batch操作</h2><p>最近工作比较忙活，一个月都没写blog喽。工作中碰到了一些与cassandra相关的同步异步，simpleStatement，batchStatement的东西。顺势多研究一下。</p>
-<h3 id="execute-与-executeAsync"><a href="#execute-与-executeAsync" class="headerlink" title="execute 与 executeAsync"></a>execute 与 executeAsync</h3><h3 id="BatchStatement"><a href="#BatchStatement" class="headerlink" title="BatchStatement"></a>BatchStatement</h3><h4 id="BatchStatement-Type"><a href="#BatchStatement-Type" class="headerlink" title="BatchStatement.Type"></a>BatchStatement.Type</h4><p>这个是BatchStatement class的一个子类</p>
+            <h2 id="Cassandra里面的Batch操作"><a href="#Cassandra里面的Batch操作" class="headerlink" title="Cassandra里面的Batch操作"></a>Cassandra里面的Batch操作</h2><p>最近工作比较忙活，一个月都没写blog喽。工作中碰到了一些与cassandra相关的同步异步，simpleStatement，batchStatement的东西。顺势多研究一下。<br>研究发现，这玩意还挺复杂的啊。cassandra挺复杂啊，还是其他数据库也这样啊</p>
+<h3 id="execute-与-executeAsync"><a href="#execute-与-executeAsync" class="headerlink" title="execute 与 executeAsync"></a>execute 与 executeAsync</h3><ul>
+<li>cassandra driver在执行语句时候提供了<code>execute</code>和<code>executeAsync</code> 两个接口</li>
+<li>对于batch来说，只能调用前者</li>
+<li><p>但是进入代码会看到，<code>execute</code>最后调用的也是<code>executeAsync</code></p>
+<pre><code>public ResultSet execute(Statement statement) {
+       this.checkNotInEventLoop();
+       return this.executeAsync(statement).getUninterruptibly();
+}
+</code></pre></li>
+</ul>
+<h3 id="BatchStatement"><a href="#BatchStatement" class="headerlink" title="BatchStatement"></a>BatchStatement</h3><p>严格说来，cassanda里面的batch称为LOGGED batch，而不应该是atomic batch。 Cassanda的策略始终是Eventually Consistent。而且由于cassandra里面add一个数据比delete一个数据要方便太多。所以cassandra会记一堆log啥的，而不是回滚。</p>
+<ul>
+<li>cassandra是基于co-ordinator来实现的。batch在co-ordinator开始处理之前就留会写到其他node去</li>
+<li>如果batch里面的某些失败了，那么是不会回滚的。而是会不断尝试。</li>
+<li>LOGGER的batch操作会比unlogged的多做很多事情。除了写hint log。</li>
+</ul>
+<h4 id="BatchStatement-Type"><a href="#BatchStatement-Type" class="headerlink" title="BatchStatement.Type"></a>BatchStatement.Type</h4><p>这个是BatchStatement class的一个子类</p>
 <ul>
 <li><code>COUNTER</code>: A counter batch. Note that such batch is the only type that can contain counter operations and it can only contain these. 这个解释也太简单了。意思是说可以知道多少个成功了？</li>
 <li><code>LOGGED</code>:  <ul>
@@ -346,6 +362,29 @@
 </li>
 <li><code>UNLOGGED</code>： A batch that doesn’t use Cassandra’s distributed batch log. Such batch are not guaranteed to be atomic.</li>
 </ul>
+<h4 id="LOGGED-Batch的过程"><a href="#LOGGED-Batch的过程" class="headerlink" title="LOGGED Batch的过程"></a>LOGGED Batch的过程</h4><p><img src="http://3.bp.blogspot.com/-dv9zIC84QD4/VNoNE0YXn8I/AAAAAAAAAX0/b3wtV48fuB0/s1600/Screenshot%2B2015-02-10%2B13.51.56.png" alt=""></p>
+<blockquote>
+<p>图片来自参考链接2</p>
+<ul>
+<li>所以从图片里面看出来，cassandra收到一个batch的request的时候：<ul>
+<li>由co-ordinator来处理，也就是种子节点</li>
+<li>会先写batch log，通常写两个node？</li>
+<li>然后再从种子节点写到各个分节点</li>
+</ul>
+</li>
+<li>按照参考链接2里面的描述，performance hit，performance会下降的。因为多做了很多事情，而且是从种子节点分发出去的。</li>
+<li>结论就是：只有在为了保证一致性的情况下，才使用batch，而不是说改善performance</li>
+</ul>
+</blockquote>
+<h4 id="LOGGED-Batch-Fail"><a href="#LOGGED-Batch-Fail" class="headerlink" title="LOGGED Batch Fail"></a>LOGGED Batch Fail</h4><ul>
+<li>首先不会回滚</li>
+<li>WriteTimeoutException with write type of BATCH_LOG. 说明在写batch log时候挂了。需要手动再发一下。</li>
+<li>WriteTimeoutException with the write type of BATCH。 在真正写request的时候出错了。cassandra会不断重复，直至成功。</li>
+</ul>
+<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><ol>
+<li><a href="https://stackoverflow.com/questions/22664129/atomic-batches-in-cassandra" target="_blank" rel="noopener">Atomic Batches in Cassandra</a></li>
+<li><a href="http://christopher-batey.blogspot.com/2015/03/cassandra-anti-pattern-cassandra-logged.html" target="_blank" rel="noopener">Cassandra anti-pattern: Logged batches</a></li>
+</ol>
 
           
         
