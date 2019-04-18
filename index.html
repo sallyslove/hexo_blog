@@ -350,7 +350,7 @@
 <ul>
 <li>cassandra是基于co-ordinator来实现的。batch在co-ordinator开始处理之前就留会写到其他node去</li>
 <li>如果batch里面的某些失败了，那么是不会回滚的。而是会不断尝试。</li>
-<li>LOGGER的batch操作会比unlogged的多做很多事情。除了写hint log。</li>
+<li>LOGGER的batch操作会比unlogged的多做很多事情</li>
 </ul>
 <h4 id="BatchStatement-Type"><a href="#BatchStatement-Type" class="headerlink" title="BatchStatement.Type"></a>BatchStatement.Type</h4><p>这个是BatchStatement class的一个子类</p>
 <ul>
@@ -540,6 +540,23 @@ public class ThreadPoolExecutor extends AbstractExecutorService
 </code></pre><ul>
 <li>从上面可以看出来，ThreadPoolExecutor也是一种Executor，继承自AbstractExecutorService，自然也实现了ExecutorService.</li>
 <li><a href="https://www.cnblogs.com/zedosu/p/6665306.html" target="_blank" rel="noopener">ThreadPoolExecutor使用详解</a></li>
+</ul>
+<h4 id="ThreadPoolExecutor-shutdown"><a href="#ThreadPoolExecutor-shutdown" class="headerlink" title="ThreadPoolExecutor shutdown"></a>ThreadPoolExecutor shutdown</h4><p>  ThreadPoolExecutor 有三个shutdown方法： <code>shutdown</code>、<code>shutdownNow</code>、<code>awaitTermination</code></p>
+<ul>
+<li><code>shutdown</code>： 停止接收外部submit的任务；内部正在跑的任务和队列里等待的任务，会执行完。其实graceful shutdown的感觉啊</li>
+<li><code>shutdownNow</code>： 停止接收外部提交的任务；忽略队列里等待的任务；尝试将正在跑的任务interrupt中断；返回未执行的任务列表。强制中断。线程会收到InterupptedException</li>
+<li><p><code>awaitTermination</code>：跟shutdown方法基本一样，只是加了一个wait时间的限制。当wait时间到了的时候，会强制退出。？ 这是某篇博客里面的解释</p>
+<ul>
+<li>很多博客的里面，这个函数会返回boolean的返回值。就是说<code>awaitTermination</code>一般和<code>shutdown</code>搭配使用，<code>awaitTermination</code>来监控线程有没有结束好。结束了返回<code>true</code>，没结束返回<code>false</code></li>
+<li>这个函数还会抛出InterupptedException，但是看代码没太明白什么状况下会抛这个<code>exception</code></li>
+<li>有一点不太明白，线程处于阻塞状态，处于阻塞状态时候，还会接收消息？只是不处理？</li>
+<li>这个函数最不好理解啦。</li>
+</ul>
+</li>
+<li><p><a href="https://blog.csdn.net/u012168222/article/details/52790400" target="_blank" rel="noopener">shutdown 方法</a></p>
+</li>
+<li><a href="https://blog.csdn.net/zaozi/article/details/38854561#commentBox" target="_blank" rel="noopener">ExecutorService的正确关闭方法</a>： 这篇文章比喻得很清楚，只是不知道正确与否</li>
+<li><a href="https://blog.csdn.net/liwenxia626/article/details/80754886" target="_blank" rel="noopener">csdn的另一篇博客</a></li>
 </ul>
 <h3 id="ExecutorService"><a href="#ExecutorService" class="headerlink" title="ExecutorService"></a>ExecutorService</h3><h4 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h4><pre><code>public interface ExecutorService extends Executor
 </code></pre><ul>

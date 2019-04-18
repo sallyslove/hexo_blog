@@ -87,7 +87,7 @@
 <meta property="og:description" content="Cassandra里面的Batch操作最近工作比较忙活，一个月都没写blog喽。工作中碰到了一些与cassandra相关的同步异步，simpleStatement，batchStatement的东西。顺势多研究一下。研究发现，这玩意还挺复杂的啊。cassandra挺复杂啊，还是其他数据库也这样啊 execute 与 executeAsync cassandra driver在执行语句时候提供了ex">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://3.bp.blogspot.com/-dv9zIC84QD4/VNoNE0YXn8I/AAAAAAAAAX0/b3wtV48fuB0/s1600/Screenshot%2B2015-02-10%2B13.51.56.png">
-<meta property="og:updated_time" content="2019-04-18T06:13:25.788Z">
+<meta property="og:updated_time" content="2019-04-18T08:52:12.264Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Cassandra里面的Batch操作">
 <meta name="twitter:description" content="Cassandra里面的Batch操作最近工作比较忙活，一个月都没写blog喽。工作中碰到了一些与cassandra相关的同步异步，simpleStatement，batchStatement的东西。顺势多研究一下。研究发现，这玩意还挺复杂的啊。cassandra挺复杂啊，还是其他数据库也这样啊 execute 与 executeAsync cassandra driver在执行语句时候提供了ex">
@@ -358,7 +358,7 @@
 <ul>
 <li>cassandra是基于co-ordinator来实现的。batch在co-ordinator开始处理之前就留会写到其他node去</li>
 <li>如果batch里面的某些失败了，那么是不会回滚的。而是会不断尝试。</li>
-<li>LOGGER的batch操作会比unlogged的多做很多事情。除了写hint log。</li>
+<li>LOGGER的batch操作会比unlogged的多做很多事情</li>
 </ul>
 <h4 id="BatchStatement-Type"><a href="#BatchStatement-Type" class="headerlink" title="BatchStatement.Type"></a>BatchStatement.Type</h4><p>这个是BatchStatement class的一个子类</p>
 <ul>
