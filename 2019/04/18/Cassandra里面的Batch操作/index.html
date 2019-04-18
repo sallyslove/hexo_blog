@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="Cassandra system log分析  最近一周可能都会在看Cassandra的system log，看Cassandra在干嘛。其中会涉及到cassandra的一些机制，概念记录下来。  文档名字暂时的，其中的概念可能后期会移走。 Nodetool  Cassandra的状态可以用NodeTool来check，如果采用了ssl 认证，那么命令是 NodeTool --ssl Gossip">
+<meta name="description" content="Cassandra里面的Batch操作最近工作比较忙活，一个月都没写blog喽。工作中碰到了一些与cassandra相关的同步异步，simpleStatement，batchStatement的东西。顺势多研究一下。 execute 与 executeAsyncBatchStatementBatchStatement.Type这个是BatchStatement class的一个子类  COUNTE">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Cassandra system log分析">
-<meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/01/17/还没想好/index.html">
+<meta property="og:title" content="Cassandra里面的Batch操作">
+<meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/04/18/Cassandra里面的Batch操作/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="Cassandra system log分析  最近一周可能都会在看Cassandra的system log，看Cassandra在干嘛。其中会涉及到cassandra的一些机制，概念记录下来。  文档名字暂时的，其中的概念可能后期会移走。 Nodetool  Cassandra的状态可以用NodeTool来check，如果采用了ssl 认证，那么命令是 NodeTool --ssl Gossip">
+<meta property="og:description" content="Cassandra里面的Batch操作最近工作比较忙活，一个月都没写blog喽。工作中碰到了一些与cassandra相关的同步异步，simpleStatement，batchStatement的东西。顺势多研究一下。 execute 与 executeAsyncBatchStatementBatchStatement.Type这个是BatchStatement class的一个子类  COUNTE">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-02-13T09:25:27.065Z">
+<meta property="og:updated_time" content="2019-04-18T02:46:50.994Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Cassandra system log分析">
-<meta name="twitter:description" content="Cassandra system log分析  最近一周可能都会在看Cassandra的system log，看Cassandra在干嘛。其中会涉及到cassandra的一些机制，概念记录下来。  文档名字暂时的，其中的概念可能后期会移走。 Nodetool  Cassandra的状态可以用NodeTool来check，如果采用了ssl 认证，那么命令是 NodeTool --ssl Gossip">
+<meta name="twitter:title" content="Cassandra里面的Batch操作">
+<meta name="twitter:description" content="Cassandra里面的Batch操作最近工作比较忙活，一个月都没写blog喽。工作中碰到了一些与cassandra相关的同步异步，simpleStatement，batchStatement的东西。顺势多研究一下。 execute 与 executeAsyncBatchStatementBatchStatement.Type这个是BatchStatement class的一个子类  COUNTE">
 
 
 
@@ -119,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="https://sallyslove.github.io/hexo_blog/2019/01/17/还没想好/">
+  <link rel="canonical" href="https://sallyslove.github.io/hexo_blog/2019/04/18/Cassandra里面的Batch操作/">
 
 
 
 
 
-  <title>Cassandra system log分析 | 跬步</title>
+  <title>Cassandra里面的Batch操作 | 跬步</title>
   
 
 
@@ -242,7 +242,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/01/17/还没想好/">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/04/18/Cassandra里面的Batch操作/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Lynn Shen">
@@ -259,7 +259,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Cassandra system log分析</h1>
+          <h1 class="post-title" itemprop="name headline">Cassandra里面的Batch操作</h1>
         
 
         <div class="post-meta">
@@ -271,8 +271,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-17T14:28:35+08:00">
-                2019-01-17
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-18T10:17:44+08:00">
+                2019-04-18
               </time>
             
 
@@ -312,8 +312,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/hexo_blog/2019/01/17/还没想好/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count gitment-comments-count" data-xid="/hexo_blog/2019/01/17/还没想好/" itemprop="commentsCount"></span>
+                <a href="/hexo_blog/2019/04/18/Cassandra里面的Batch操作/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/hexo_blog/2019/04/18/Cassandra里面的Batch操作/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -341,66 +341,16 @@
       
 
       
-        <h2 id="Cassandra-system-log分析"><a href="#Cassandra-system-log分析" class="headerlink" title="Cassandra system log分析"></a>Cassandra system log分析</h2><p>  最近一周可能都会在看Cassandra的system log，看Cassandra在干嘛。其中会涉及到cassandra的一些机制，概念记录下来。<br>  文档名字暂时的，其中的概念可能后期会移走。</p>
-<h3 id="Nodetool"><a href="#Nodetool" class="headerlink" title="Nodetool"></a>Nodetool</h3><p>  Cassandra的状态可以用<code>NodeTool</code>来check，如果采用了ssl 认证，那么命令是 <code>NodeTool --ssl</code></p>
-<h3 id="Gossip-Tasks"><a href="#Gossip-Tasks" class="headerlink" title="Gossip Tasks"></a>Gossip Tasks</h3><h4 id="Pending-task-log"><a href="#Pending-task-log" class="headerlink" title="Pending task log"></a>Pending task log</h4><p>  名字太好记 ，有没有 :)<br>  Cassandra 的各个节点是无中心化对待的。能做到这一点的一个关键是使用了Gossip协议。这是一个很适用于不可信网络的协议</p>
+        <h2 id="Cassandra里面的Batch操作"><a href="#Cassandra里面的Batch操作" class="headerlink" title="Cassandra里面的Batch操作"></a>Cassandra里面的Batch操作</h2><p>最近工作比较忙活，一个月都没写blog喽。工作中碰到了一些与cassandra相关的同步异步，simpleStatement，batchStatement的东西。顺势多研究一下。</p>
+<h3 id="execute-与-executeAsync"><a href="#execute-与-executeAsync" class="headerlink" title="execute 与 executeAsync"></a>execute 与 executeAsync</h3><h3 id="BatchStatement"><a href="#BatchStatement" class="headerlink" title="BatchStatement"></a>BatchStatement</h3><h4 id="BatchStatement-Type"><a href="#BatchStatement-Type" class="headerlink" title="BatchStatement.Type"></a>BatchStatement.Type</h4><p>这个是BatchStatement class的一个子类</p>
 <ul>
-<li>参考链接， 后续需要更为仔细深入的学习： <a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-apache-cassandra3x3/index.html" target="_blank" rel="noopener">Apache Cassandra 3.X 系列</a></li>
-<li>Cassandra中Gossip协议被实现在类<code>Gossiper</code>中。</li>
-<li>Gossiper 类维护了一个节点列表，这个列表里包括存活的和死亡的节点。</li>
-<li><code>GossipTask</code> 是位于 <code>org.apche.cassandra.gms.Gossip</code> 类下的一个内部类。</li>
-<li>GossipTask会向其他节点发消息，默认时间是1s</li>
-<li>在log里面会有：<br>[GossipTasks:1] 2019-01-03 04:19:33,680 Gossiper.java:751 - Gossip stage has 378 pending tasks; skipping status check (no nodes will be marked down)</li>
+<li><code>COUNTER</code>: A counter batch. Note that such batch is the only type that can contain counter operations and it can only contain these. 这个解释也太简单了。意思是说可以知道多少个成功了？</li>
+<li><code>LOGGED</code>:  <ul>
+<li>Cassandra will first write the batch to its distributed batch log to ensure the atomicity of the batch (atomicity meaning that if any statement in the batch succeeds, all will eventually succeed).这个解释也不太懂啊，到底怎么保证的。 ORZ</li>
+<li>默认调用<code>new BatchStatement()</code>就会创一个LOGGED type的Batch-</li>
 </ul>
-<h4 id="Pause-Error-Not-making-Nodes-Down"><a href="#Pause-Error-Not-making-Nodes-Down" class="headerlink" title="Pause Error: Not making Nodes Down"></a>Pause Error: Not making Nodes Down</h4><ul>
-<li>在log里面经常会出现:以下是说cassandra在做其他事情，导致Gossip停顿了， hang住了。但是并不标示node状态。</li>
-<li>通常是GC的时候，这一句的上一句log确实提示了一次55742ms的GC，但是GC通常也发生在有很多task的时候，所以应该看看其他在做什么task</li>
-</ul>
-<pre><code>WARN  [GossipTasks:1] 2019-01-02 00:00:04,546 FailureDetector.java:287 - Not marking nodes down due to local pause of 54491963082 &gt; 5000000000
-</code></pre><ul>
-<li><a href="http://www.cnblogs.com/jobforlife/p/7092467.html" target="_blank" rel="noopener">error解释</a></li>
-</ul>
-<h3 id="Service-Thread"><a href="#Service-Thread" class="headerlink" title="Service Thread"></a>Service Thread</h3><p>没有看到这个Service Thread的具体解释。从log里面看有很多功能</p>
-<h4 id="StatusLogger"><a href="#StatusLogger" class="headerlink" title="StatusLogger"></a>StatusLogger</h4><p>如此简单的一个函数也有好几种log啦。</p>
-<h5 id="ThreadPoolMetrics：-Stage"><a href="#ThreadPoolMetrics：-Stage" class="headerlink" title="ThreadPoolMetrics： Stage"></a>ThreadPoolMetrics： Stage</h5><p>打印出各种stage的状态，一个接一个的pool的状态。真心不少啊。</p>
-<ul>
-<li>在log里面会有：<br>INFO  [Service Thread] 2019-01-02 00:00:04,547 StatusLogger.java:52 - Pool Name                    Active   Pending      Completed   Blocked  All Time Blocked</li>
-<li>鉴于stage比较多，另外写一篇blog来解释这堆。请看本站的stage。</li>
-</ul>
-<h5 id="Cache"><a href="#Cache" class="headerlink" title="Cache"></a>Cache</h5><p>输出KeyCache 和 RowCache的状态</p>
-<ul>
-<li>在log里面是：<br>INFO  [Service Thread] 2019-01-02 00:00:05,130 StatusLogger.java:88 - Cache Type                     Size                 Capacity               KeysToSave<br>INFO  [Service Thread] 2019-01-02 00:00:05,130 StatusLogger.java:90 - KeyCache                    1406343                104857600</li>
-<li>这篇 log已经很长了。KeyCache和RowCache另开一篇log。</li>
-</ul>
-<h5 id="per-CF-stats"><a href="#per-CF-stats" class="headerlink" title="per-CF stats"></a>per-CF stats</h5><p>per-CF stats是源码里面的注释，我也不知道是啥哦</p>
-<ul>
-<li>在log里面是：(产品的表名字，不能暴露啦)<br>INFO  [Service Thread] 2019-01-03 02:54:45,722 StatusLogger.java:106 (table_name)    6284,288376</li>
-<li>Cassandra的API里面对于<code>StatusLogger</code>也没有解释。 ORZ，看来是个很直白的文件啊<br>-<code>org.apache.cassandra.utils.StatusLogger</code> 只有一个函数<code>log()</code></li>
-</ul>
-<pre><code>logger.info(String.format(&quot;%-25s%20s&quot;, &quot;Table&quot;, &quot;Memtable ops,data&quot;));
-logger.info(String.format(&quot;%-25s%20s&quot;,
-                   cfs.keyspace.getName() 
-                   + &quot;.&quot; + cfs.name,                                      cfs.metric.memtableColumnsCount.getValue() 
-                   + &quot;,&quot; + cfs.metric.memtableLiveDataSize.getValue()));
-    }。
-</code></pre><ul>
-<li>所以，第一个数值是memTable的column的个数，第二个是data的size</li>
-<li>一个问题是： 这个column也太多了吧。。。。。。</li>
-<li>被大神吊打了。这个值是表访问次数。</li>
-</ul>
-<h4 id="GCInspector"><a href="#GCInspector" class="headerlink" title="GCInspector"></a>GCInspector</h4><p>  -在log里面是：<br>  INFO  [Service Thread] 2019-01-02 00:00:04,546 GCInspector.java:284 - ConcurrentMarkSweep GC in 55742ms.  CMS Old Gen: 7331643368 -&gt; 7331643360; Par Eden Space: 1006632960 -&gt; 784484600; Par Survivor Space: 125829104 -&gt; 0</p>
-<ul>
-<li>这句log的意思是：做了一次CMS GC。然后数字对应，11位是G，9位是M，所以 eden区是784M</li>
-<li>参考本站GC的文章了解更多CMS算法的内容</li>
-</ul>
-<h3 id="PERIODIC-COMMIT-LOG-SYNCER"><a href="#PERIODIC-COMMIT-LOG-SYNCER" class="headerlink" title="PERIODIC-COMMIT-LOG-SYNCER"></a>PERIODIC-COMMIT-LOG-SYNCER</h3><ul>
-<li>在log里面是：<br>WARN  [PERIODIC-COMMIT-LOG-SYNCER] 2019-01-03 04:04:17,232 AbstractCommitLogService.java:117 - Out of 5 commit log syncs over the past 573s with average duration of 9734.40ms…</li>
-<li>这个应该是将commit log写到disk上面的task。没有再查资料。参考本站cassandra写过程那篇博客</li>
-</ul>
-<h3 id="RMI-TCP-Connection-idle"><a href="#RMI-TCP-Connection-idle" class="headerlink" title="RMI TCP Connection(idle)"></a>RMI TCP Connection(idle)</h3><h3 id="IndexSummaryManager"><a href="#IndexSummaryManager" class="headerlink" title="IndexSummaryManager"></a>IndexSummaryManager</h3><ul>
-<li>在log里面是：<br>INFO  [IndexSummaryManager:1] 2019-01-02 03:21:59,849 IndexSummaryRedistribution.java:74 - Redistributing index summaries</li>
-<li>Manages the fixed-size memory pool for index summaries, periodically resizing them in order to give more memory to hot sstables and less memory to cold sstables.</li>
-<li>还不是很理解，就是说index summary一开始也是存在内存中的吗？确实在参数配置里面有index_summary_capacity_in_mb和index_summary_resize_interval_in_minutes</li>
+</li>
+<li><code>UNLOGGED</code>： A batch that doesn’t use Cassandra’s distributed batch log. Such batch are not guaranteed to be atomic.</li>
 </ul>
 
       
@@ -426,8 +376,8 @@ logger.info(String.format(&quot;%-25s%20s&quot;,
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/hexo_blog/2019/01/14/React入门-1/" rel="next" title="React入门(1)">
-                <i class="fa fa-chevron-left"></i> React入门(1)
+              <a href="/hexo_blog/2019/03/11/Java数据类型（2）/" rel="next" title="Java数据类型（2）">
+                <i class="fa fa-chevron-left"></i> Java数据类型（2）
               </a>
             
           </div>
@@ -435,10 +385,6 @@ logger.info(String.format(&quot;%-25s%20s&quot;,
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/hexo_blog/2019/01/17/Cassandra-写数据过程/" rel="prev" title="Cassandra 写数据过程">
-                Cassandra 写数据过程 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -568,7 +514,7 @@ logger.info(String.format(&quot;%-25s%20s&quot;,
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Cassandra-system-log分析"><span class="nav-number">1.</span> <span class="nav-text">Cassandra system log分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Nodetool"><span class="nav-number">1.1.</span> <span class="nav-text">Nodetool</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Gossip-Tasks"><span class="nav-number">1.2.</span> <span class="nav-text">Gossip Tasks</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Pending-task-log"><span class="nav-number">1.2.1.</span> <span class="nav-text">Pending task log</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Pause-Error-Not-making-Nodes-Down"><span class="nav-number">1.2.2.</span> <span class="nav-text">Pause Error: Not making Nodes Down</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Service-Thread"><span class="nav-number">1.3.</span> <span class="nav-text">Service Thread</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#StatusLogger"><span class="nav-number">1.3.1.</span> <span class="nav-text">StatusLogger</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#ThreadPoolMetrics：-Stage"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">ThreadPoolMetrics： Stage</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Cache"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">Cache</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#per-CF-stats"><span class="nav-number">1.3.1.3.</span> <span class="nav-text">per-CF stats</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GCInspector"><span class="nav-number">1.3.2.</span> <span class="nav-text">GCInspector</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PERIODIC-COMMIT-LOG-SYNCER"><span class="nav-number">1.4.</span> <span class="nav-text">PERIODIC-COMMIT-LOG-SYNCER</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RMI-TCP-Connection-idle"><span class="nav-number">1.5.</span> <span class="nav-text">RMI TCP Connection(idle)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IndexSummaryManager"><span class="nav-number">1.6.</span> <span class="nav-text">IndexSummaryManager</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Cassandra里面的Batch操作"><span class="nav-number">1.</span> <span class="nav-text">Cassandra里面的Batch操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#execute-与-executeAsync"><span class="nav-number">1.1.</span> <span class="nav-text">execute 与 executeAsync</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BatchStatement"><span class="nav-number">1.2.</span> <span class="nav-text">BatchStatement</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#BatchStatement-Type"><span class="nav-number">1.2.1.</span> <span class="nav-text">BatchStatement.Type</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
