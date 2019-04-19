@@ -87,7 +87,7 @@
 <meta property="og:description" content="Cassandra里面的Batch操作最近工作比较忙活，一个月都没写blog喽。工作中碰到了一些与cassandra相关的同步异步，simpleStatement，batchStatement的东西。顺势多研究一下。研究发现，这玩意还挺复杂的啊。cassandra挺复杂啊，还是其他数据库也这样啊 execute 与 executeAsync cassandra driver在执行语句时候提供了ex">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://3.bp.blogspot.com/-dv9zIC84QD4/VNoNE0YXn8I/AAAAAAAAAX0/b3wtV48fuB0/s1600/Screenshot%2B2015-02-10%2B13.51.56.png">
-<meta property="og:updated_time" content="2019-04-18T08:52:12.264Z">
+<meta property="og:updated_time" content="2019-04-19T06:57:06.712Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Cassandra里面的Batch操作">
 <meta name="twitter:description" content="Cassandra里面的Batch操作最近工作比较忙活，一个月都没写blog喽。工作中碰到了一些与cassandra相关的同步异步，simpleStatement，batchStatement的东西。顺势多研究一下。研究发现，这玩意还挺复杂的啊。cassandra挺复杂啊，还是其他数据库也这样啊 execute 与 executeAsync cassandra driver在执行语句时候提供了ex">
@@ -353,6 +353,19 @@
        return this.executeAsync(statement).getUninterruptibly();
 }
 </code></pre></li>
+<li><p>这个<code>executeAsync</code>api是在<code>SessionManager</code>里面定义的</p>
+</li>
+<li>按照参考链接1里面所述的，从以上代码也可以看出来的<code>execute</code>在于是block的。就是不可打断的。必须得cassandra返回一些数据才能返回。所以它可以保证在invalid request的情况下报错，但是不能保证request就一点执行成功了。</li>
+<li><code>executeAsync</code>就是非blocking的，也不能保证这个request一定被执行或者在invalid的request的情况下报错</li>
+<li>参考链接1里面有这么一段话：看起来少量batch，并且是同样partition key的时候，会比较快。<blockquote>
+<p>To further improve throughput, you might want to consider using BatchStatement and submitting requests in batches. This is a good option if you keep your batches small (50-250 is a good number) and if your inserts in a batch all share the same partition key. </p>
+</blockquote>
+</li>
+<li>参考链接：<ol>
+<li><a href="https://stackoverflow.com/questions/34949292/how-cassandra-handle-blocking-execute-statement-in-datastax-java-driver" target="_blank" rel="noopener">How Cassandra handle blocking execute statement in datastax java driver
+</a></li>
+</ol>
+</li>
 </ul>
 <h3 id="BatchStatement"><a href="#BatchStatement" class="headerlink" title="BatchStatement"></a>BatchStatement</h3><p>严格说来，cassanda里面的batch称为LOGGED batch，而不应该是atomic batch。 Cassanda的策略始终是Eventually Consistent。而且由于cassandra里面add一个数据比delete一个数据要方便太多。所以cassandra会记一堆log啥的，而不是回滚。</p>
 <ul>
