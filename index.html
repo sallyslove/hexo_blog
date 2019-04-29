@@ -356,6 +356,7 @@
 <li>参考链接：<ol>
 <li><a href="https://stackoverflow.com/questions/34949292/how-cassandra-handle-blocking-execute-statement-in-datastax-java-driver" target="_blank" rel="noopener">How Cassandra handle blocking execute statement in datastax java driver
 </a></li>
+<li><a href="http://zqhxuyuan.github.io/2015/11/10/2015-11-10-Cassandra-Client/" target="_blank" rel="noopener">Cassandra Client查询优化</a>: 这篇有点看不明白。但是瞅着还挺好的，先放在这里。</li>
 </ol>
 </li>
 </ul>
@@ -678,7 +679,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/hexo_blog/2019/03/04/KeyStore格式/" itemprop="url">KeyStore格式</a></h1>
+                <a class="post-title-link" href="/hexo_blog/2019/03/04/KeyStore格式/" itemprop="url">SSL相关知识</a></h1>
         
 
         <div class="post-meta">
@@ -730,13 +731,18 @@ public class ThreadPoolExecutor extends AbstractExecutorService
       
         
           
-            <h2 id="KeyStore的格式"><a href="#KeyStore的格式" class="headerlink" title="KeyStore的格式"></a>KeyStore的格式</h2><p>KeyStore工作中碰到的不少。话说那个SSL的三次握手，我老是会忘啊。ORZ<br>下回还是得写下来才行。先弄这个格式吧。<br>相关的问题先放这里吧。</p>
-<h3 id="KeyStore和TrustStore"><a href="#KeyStore和TrustStore" class="headerlink" title="KeyStore和TrustStore"></a>KeyStore和TrustStore</h3><ul>
+            <h2 id="SSL相关知识"><a href="#SSL相关知识" class="headerlink" title="SSL相关知识"></a>SSL相关知识</h2><p>KeyStore工作中碰到的不少。话说那个SSL的三次握手，我老是会忘啊。ORZ<br>下回还是得写下来才行。先弄这个格式吧。<br>相关的问题先放这里吧。</p>
+<h3 id="SSL双向握手"><a href="#SSL双向握手" class="headerlink" title="SSL双向握手"></a>SSL双向握手</h3><h3 id="KeyStore和TrustStore"><a href="#KeyStore和TrustStore" class="headerlink" title="KeyStore和TrustStore"></a>KeyStore和TrustStore</h3><ul>
 <li>keystore和truststore从其文件格式来看其实是一个东西，只是为了方便管理将其分开</li>
 <li>keystore中一般保存的是我们的私钥，用来加解密或者为别人做签名</li>
-<li>truststore中保存的是一些可信任的证书，主要是java在代码中访问某个https的时候对被访问者进行认证的，以确保其实可信任的</li>
+<li>truststore中保存的是一些可信任的证书，主要是java在代码中访问某个https的时候对被访问者进行认证的，以确保其实可信任的。一般为公钥</li>
+<li>只有HTTPS才需要这些吗？</li>
+<li>参考链接<ol>
+<li><a href="https://www.cnblogs.com/gsls200808/p/4500246.html" target="_blank" rel="noopener">KeyStore和TrustStore</a></li>
+</ol>
+</li>
 </ul>
-<h3 id="KeyStore的格式-1"><a href="#KeyStore的格式-1" class="headerlink" title="KeyStore的格式"></a>KeyStore的格式</h3>
+<h3 id="KeyStore的格式"><a href="#KeyStore的格式" class="headerlink" title="KeyStore的格式"></a>KeyStore的格式</h3>
           
         
       
@@ -1038,6 +1044,28 @@ kube-system    Active    15d
             
           </span>
 
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/docker/" itemprop="url" rel="index">
+                    <span itemprop="name">docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -1935,7 +1963,17 @@ $ kubectl get deployments
       
         
           
-            <h2 id="Scala概念快速解释"><a href="#Scala概念快速解释" class="headerlink" title="Scala概念快速解释"></a>Scala概念快速解释</h2><p>Scala有很多特有的概念。如果要看懂代码就得大致明白含义，这篇博客就是快速解释一下，其中可能会有不够准确的地方，就是不求甚解，只求迅速读懂scala代码了</p>
+            <h2 id="Scala概念快速解释"><a href="#Scala概念快速解释" class="headerlink" title="Scala概念快速解释"></a>Scala概念快速解释</h2><p>Scala有很多特有的概念。如果要看懂代码就得大致明白含义，这篇博客就是快速解释一下，其中可能会有不够准确的地方，就是不求甚解，只求迅速读懂scala代码了.<br>隔了一段时间又开始看scala的代码，结果发现这篇博客写得太不声情并茂了。scala还是比较复杂的。这么简单写几句不太成，得给一点例子才行。</p>
+<h3 id="object"><a href="#object" class="headerlink" title="object"></a>object</h3><p>看了几篇博客，解释都不够清晰的感觉，还是stackoverflow上面解释得更清楚</p>
+<ul>
+<li><p>作为static函数的class文件，这是最常见到的用法：</p>
+<pre><code>object A {
+   def twice(i: Int): Int = 2*i
+}
+</code></pre></li>
+<li></li>
+<li>参考链接：<br>-<a href="https://stackoverflow.com/questions/1755345/difference-between-object-and-class-in-scala" target="_blank" rel="noopener">difference-between-object-and-class-in-scala</a></li>
+</ul>
 <h3 id="trait"><a href="#trait" class="headerlink" title="trait"></a>trait</h3><ul>
 <li><a href="http://www.runoob.com/scala/scala-traits.html" target="_blank" rel="noopener">Scala Trait(特征)</a></li>
 <li>类似java的Interface，其实更近似于抽象类</li>

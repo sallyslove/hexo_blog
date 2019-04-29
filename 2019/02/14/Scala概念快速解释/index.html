@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="Scala概念快速解释Scala有很多特有的概念。如果要看懂代码就得大致明白含义，这篇博客就是快速解释一下，其中可能会有不够准确的地方，就是不求甚解，只求迅速读懂scala代码了 trait Scala Trait(特征) 类似java的Interface，其实更近似于抽象类 但是可以使用with关键字多重继承，很好用的感觉哦 scala本身还是有interface关键字的，本身也可以使用with">
+<meta name="description" content="Scala概念快速解释Scala有很多特有的概念。如果要看懂代码就得大致明白含义，这篇博客就是快速解释一下，其中可能会有不够准确的地方，就是不求甚解，只求迅速读懂scala代码了.隔了一段时间又开始看scala的代码，结果发现这篇博客写得太不声情并茂了。scala还是比较复杂的。这么简单写几句不太成，得给一点例子才行。 object看了几篇博客，解释都不够清晰的感觉，还是stackoverflow">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Scala概念快速解释">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/02/14/Scala概念快速解释/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="Scala概念快速解释Scala有很多特有的概念。如果要看懂代码就得大致明白含义，这篇博客就是快速解释一下，其中可能会有不够准确的地方，就是不求甚解，只求迅速读懂scala代码了 trait Scala Trait(特征) 类似java的Interface，其实更近似于抽象类 但是可以使用with关键字多重继承，很好用的感觉哦 scala本身还是有interface关键字的，本身也可以使用with">
+<meta property="og:description" content="Scala概念快速解释Scala有很多特有的概念。如果要看懂代码就得大致明白含义，这篇博客就是快速解释一下，其中可能会有不够准确的地方，就是不求甚解，只求迅速读懂scala代码了.隔了一段时间又开始看scala的代码，结果发现这篇博客写得太不声情并茂了。scala还是比较复杂的。这么简单写几句不太成，得给一点例子才行。 object看了几篇博客，解释都不够清晰的感觉，还是stackoverflow">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-02-14T06:37:55.271Z">
+<meta property="og:updated_time" content="2019-04-23T09:47:36.728Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Scala概念快速解释">
-<meta name="twitter:description" content="Scala概念快速解释Scala有很多特有的概念。如果要看懂代码就得大致明白含义，这篇博客就是快速解释一下，其中可能会有不够准确的地方，就是不求甚解，只求迅速读懂scala代码了 trait Scala Trait(特征) 类似java的Interface，其实更近似于抽象类 但是可以使用with关键字多重继承，很好用的感觉哦 scala本身还是有interface关键字的，本身也可以使用with">
+<meta name="twitter:description" content="Scala概念快速解释Scala有很多特有的概念。如果要看懂代码就得大致明白含义，这篇博客就是快速解释一下，其中可能会有不够准确的地方，就是不求甚解，只求迅速读懂scala代码了.隔了一段时间又开始看scala的代码，结果发现这篇博客写得太不声情并茂了。scala还是比较复杂的。这么简单写几句不太成，得给一点例子才行。 object看了几篇博客，解释都不够清晰的感觉，还是stackoverflow">
 
 
 
@@ -341,7 +341,17 @@
       
 
       
-        <h2 id="Scala概念快速解释"><a href="#Scala概念快速解释" class="headerlink" title="Scala概念快速解释"></a>Scala概念快速解释</h2><p>Scala有很多特有的概念。如果要看懂代码就得大致明白含义，这篇博客就是快速解释一下，其中可能会有不够准确的地方，就是不求甚解，只求迅速读懂scala代码了</p>
+        <h2 id="Scala概念快速解释"><a href="#Scala概念快速解释" class="headerlink" title="Scala概念快速解释"></a>Scala概念快速解释</h2><p>Scala有很多特有的概念。如果要看懂代码就得大致明白含义，这篇博客就是快速解释一下，其中可能会有不够准确的地方，就是不求甚解，只求迅速读懂scala代码了.<br>隔了一段时间又开始看scala的代码，结果发现这篇博客写得太不声情并茂了。scala还是比较复杂的。这么简单写几句不太成，得给一点例子才行。</p>
+<h3 id="object"><a href="#object" class="headerlink" title="object"></a>object</h3><p>看了几篇博客，解释都不够清晰的感觉，还是stackoverflow上面解释得更清楚</p>
+<ul>
+<li><p>作为static函数的class文件，这是最常见到的用法：</p>
+<pre><code>object A {
+   def twice(i: Int): Int = 2*i
+}
+</code></pre></li>
+<li></li>
+<li>参考链接：<br>-<a href="https://stackoverflow.com/questions/1755345/difference-between-object-and-class-in-scala" target="_blank" rel="noopener">difference-between-object-and-class-in-scala</a></li>
+</ul>
 <h3 id="trait"><a href="#trait" class="headerlink" title="trait"></a>trait</h3><ul>
 <li><a href="http://www.runoob.com/scala/scala-traits.html" target="_blank" rel="noopener">Scala Trait(特征)</a></li>
 <li>类似java的Interface，其实更近似于抽象类</li>
@@ -519,7 +529,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Scala概念快速解释"><span class="nav-number">1.</span> <span class="nav-text">Scala概念快速解释</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#trait"><span class="nav-number">1.1.</span> <span class="nav-text">trait</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#case-class"><span class="nav-number">1.2.</span> <span class="nav-text">case class</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Scala概念快速解释"><span class="nav-number">1.</span> <span class="nav-text">Scala概念快速解释</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#object"><span class="nav-number">1.1.</span> <span class="nav-text">object</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#trait"><span class="nav-number">1.2.</span> <span class="nav-text">trait</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#case-class"><span class="nav-number">1.3.</span> <span class="nav-text">case class</span></a></li></ol></li></ol></div>
             
 
           </div>
