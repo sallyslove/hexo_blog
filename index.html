@@ -242,6 +242,156 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/05/15/Cassandra的repair机制/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/05/15/Cassandra的repair机制/" itemprop="url">Cassandra的repair机制</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-15T17:52:05+08:00">
+                2019-05-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Cassandra的repair机制"><a href="#Cassandra的repair机制" class="headerlink" title="Cassandra的repair机制"></a>Cassandra的repair机制</h2><p>这篇讨论一些robustness的东西。主要就是一个节点down了会怎么样。其实目前知道的就是hint，但是记录下来。<br>从一些文档里面看，这个属于写流程的一部分。确实是，读的话，如果node down了应该不会从上面读取了。会写到the coordinator node上面。version 1.0有所不同，但是这个版本太旧了。</p>
+<blockquote>
+<p>By design, hinted handoff inherently allows Cassandra to continue performing the same number of writes even when the cluster is operating at reduced capacity.</p>
+</blockquote>
+<h3 id="Hinted-Handoff简述"><a href="#Hinted-Handoff简述" class="headerlink" title="Hinted Handoff简述"></a>Hinted Handoff简述</h3><ul>
+<li><strong><code>hinted handoff</code> 和 一般说的<code>hint</code>应该是同一个东西。</strong> 前者是一个机制，后者就是这个机制产生的事件或者记录。</li>
+<li><code>hinted handoff</code>跟consistency level 相关，毕竟这个是写机制的一部分。</li>
+<li>cassandra的config文件里面需要配置几个参数：<ul>
+<li><code>hinted_handoff_enabled</code>：默认为true，打开这个机制</li>
+<li><code>max_hint_window_in_ms</code>： 为已经down掉的node记录hint log的时间长度</li>
+<li><code>hinted_handoff_throttle_in_kb</code> 和 <code>max_hints_delivery_threads</code> 这两个没咋研究过，先放着吧</li>
+</ul>
+</li>
+<li>按照文档，当写入发生时候，并且a replica node for the key is down。就可能会触发hinted handoff的机制</li>
+</ul>
+<h4 id="Hint-详述"><a href="#Hint-详述" class="headerlink" title="Hint 详述"></a>Hint 详述</h4><ul>
+<li><blockquote>
+<p>The hint consists of a target ID for the downed node, a hint ID that is a time UUID for the data, a message ID that identifies the Cassandra version, and the data itself as a blob. </p>
+<ul>
+<li>hint里面有：down node的target ID， 标注这条数据的hint ID， 标注cassandra version的message ID以及数据本身</li>
+<li>这是cassandra 3.0之后的。之前的可能不一样</li>
+</ul>
+</blockquote>
+</li>
+<li>和想象地一样，当Gossipy发现downed node起来之后，coordinator node会将hint记录的数据写过去，并且删除掉hint</li>
+</ul>
+<p>#### </p>
+<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><ul>
+<li><a href="https://wiki.apache.org/cassandra/HintedHandoff" target="_blank" rel="noopener">wiki上面的简介</a>：有点没看明白。大致含义和开头引用的话有点相似，这个机制会让写操作成功，即使只是写了hint也算</li>
+<li><a href="https://docs.datastax.com/en/cassandra/3.0/cassandra/operations/opsRepairNodesHintedHandoff.html" target="_blank" rel="noopener">官方</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/04/18/Cassandra里面的Batch操作/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -338,7 +488,7 @@
             <h2 id="Cassandra里面的Batch操作"><a href="#Cassandra里面的Batch操作" class="headerlink" title="Cassandra里面的Batch操作"></a>Cassandra里面的Batch操作</h2><p>最近工作比较忙活，一个月都没写blog喽。工作中碰到了一些与cassandra相关的同步异步，simpleStatement，batchStatement的东西。顺势多研究一下。<br>研究发现，这玩意还挺复杂的啊。cassandra挺复杂啊，还是其他数据库也这样啊</p>
 <h3 id="execute-与-executeAsync"><a href="#execute-与-executeAsync" class="headerlink" title="execute 与 executeAsync"></a>execute 与 executeAsync</h3><ul>
 <li>cassandra driver在执行语句时候提供了<code>execute</code>和<code>executeAsync</code> 两个接口</li>
-<li>对于batch来说，只能调用前者</li>
+<li>对于batch来说，只能调用前者，这个好像不太对。</li>
 <li><p>但是进入代码会看到，<code>execute</code>最后调用的也是<code>executeAsync</code></p>
 <pre><code>public ResultSet execute(Statement statement) {
        this.checkNotInEventLoop();
@@ -347,9 +497,10 @@
 </code></pre></li>
 <li><p>这个<code>executeAsync</code>api是在<code>SessionManager</code>里面定义的</p>
 </li>
-<li>按照参考链接1里面所述的，从以上代码也可以看出来的<code>execute</code>在于是block的。就是不可打断的。必须得cassandra返回一些数据才能返回。所以它可以保证在invalid request的情况下报错，但是不能保证request就一点执行成功了。</li>
+<li>按照参考链接1里面所述的，从以上代码也可以看出来的<code>execute</code>在于是block的。就是不可打断的。必须得cassandra返回一些数据才能返回。所以它可以保证在invalid request的情况下报错，但是不能保证request就一定执行成功了。</li>
 <li><code>executeAsync</code>就是非blocking的，也不能保证这个request一定被执行或者在invalid的request的情况下报错</li>
-<li>参考链接1里面有这么一段话：看起来少量batch，并且是同样partition key的时候，会比较快。<blockquote>
+<li>参考链接1里面有这么一段话：看起来少量batch，并且是同样partition key的时候，会比较快。</li>
+<li>我们在产品中的改进在有些场景下面确实performance变好了<blockquote>
 <p>To further improve throughput, you might want to consider using BatchStatement and submitting requests in batches. This is a good option if you keep your batches small (50-250 is a good number) and if your inserts in a batch all share the same partition key. </p>
 </blockquote>
 </li>
@@ -558,13 +709,17 @@ public class ThreadPoolExecutor extends AbstractExecutorService
 <h4 id="ThreadPoolExecutor-shutdown"><a href="#ThreadPoolExecutor-shutdown" class="headerlink" title="ThreadPoolExecutor shutdown"></a>ThreadPoolExecutor shutdown</h4><p>  ThreadPoolExecutor 有三个shutdown方法： <code>shutdown</code>、<code>shutdownNow</code>、<code>awaitTermination</code></p>
 <ul>
 <li><code>shutdown</code>： 停止接收外部submit的任务；内部正在跑的任务和队列里等待的任务，会执行完。其实graceful shutdown的感觉啊</li>
-<li><code>shutdownNow</code>： 停止接收外部提交的任务；忽略队列里等待的任务；尝试将正在跑的任务interrupt中断；返回未执行的任务列表。强制中断。线程会收到InterupptedException</li>
+<li><code>shutdownNow</code>： 停止接收外部提交的任务；忽略队列里等待的任务；尝试将正在跑的任务interrupt中断；返回未执行的任务列表。强制中断。线程会收到InterupptedException.<ul>
+<li>需要注意的是这个方法仅仅是尝试中断线程，它通过的是调用interrupt方法，这种方法的作用有限，如果线程中没有sleep 、wait、Condition、定时锁等应用, interrupt()方法是无法中断当前的线程的。</li>
+</ul>
+</li>
 <li><p><code>awaitTermination</code>：跟shutdown方法基本一样，只是加了一个wait时间的限制。当wait时间到了的时候，会强制退出。？ 这是某篇博客里面的解释</p>
 <ul>
 <li>很多博客的里面，这个函数会返回boolean的返回值。就是说<code>awaitTermination</code>一般和<code>shutdown</code>搭配使用，<code>awaitTermination</code>来监控线程有没有结束好。结束了返回<code>true</code>，没结束返回<code>false</code></li>
 <li>这个函数还会抛出InterupptedException，但是看代码没太明白什么状况下会抛这个<code>exception</code></li>
 <li>有一点不太明白，线程处于阻塞状态，处于阻塞状态时候，还会接收消息？只是不处理？</li>
 <li>这个函数最不好理解啦。</li>
+<li>在实际工作中解决bug碰到了这组函数。事实上就是要三个一起用的。<code>awaitTermination</code>只会返回一个状态，并不会做任何的事情。所以在这个函数返回false的时候应该要调用<code>shutdownNow</code>方法来进一步中断线程</li>
 </ul>
 </li>
 <li><p><a href="https://blog.csdn.net/u012168222/article/details/52790400" target="_blank" rel="noopener">shutdown 方法</a></p>
@@ -924,8 +1079,9 @@ kube-system    Active    15d
 <h3 id="replication-controller"><a href="#replication-controller" class="headerlink" title="replication controller"></a>replication controller</h3><ul>
 <li>The replication controller defines how many instances should be running, the Docker Image to use, and a name to identify the service.<br><strong>决定多少个instance可以理解，不同的instance可以使用不同的image吗</strong></li>
 </ul>
-<h3 id="Services"><a href="#Services" class="headerlink" title="Services"></a>Services</h3><p>service是K8s里面另一个非常重要的概念，而且实在是有点复杂。类型比较多。</p>
+<h3 id="Services"><a href="#Services" class="headerlink" title="Services"></a>Services</h3><p>service是K8s里面另一个非常重要的概念，而且实在是有点复杂。类型比较多。K8s中文文档里面的名词解释还是比较清楚的，并且给出了为什么需要service，service和pod有什么区别</p>
 <ul>
+<li>Kubernete Service 是一个定义了一组Pod的策略的抽象，我们也有时候叫做宏观服务。这些被服务标记的Pod都是（一般）通过label Selector决定的（下面我们会讲到我们为什么需要一个没有label selector的服务）</li>
 <li>A Kubernetes service is a named load balancer that proxies traffic to one or more containers.</li>
 <li>The proxy works even if the containers are on different nodes. Services proxy communicate within the cluster and rarely expose ports to an outside interface.When you launch a service it looks like you cannot connect using curl or netcat unless you start it as part of Kubernetes. The recommended approach is to have a LoadBalancer service to handle external communications.<br><strong>好吧，这段话基本没看懂，暂时就不管它了。service不仅仅是load balancer吧，难道每一种service都是load balancer的一种体现吗？</strong></li>
 <li>Kubernetes Services are an abstract that defines a policy and approach on how to access a set of Pods. The set of Pods accessed via a Service is based on a Label Selector.<br><strong>之前是有课程说service起起来时候需要配套一个Selector的。也可以和deployment一起用？ 反正不是独立存在的。</strong><br><strong>这个理解也不一定对啊，不独立，哪里能在get pods里面看到</strong></li>
@@ -938,20 +1094,30 @@ kube-system    Active    15d
 <li>结合上面的，我觉得都需要啊。</li>
 </ul>
 </li>
+<li>参考链接<ul>
+<li><a href="https://www.kubernetes.org.cn/kubernetes-services" target="_blank" rel="noopener">名词解释 Services</a></li>
+</ul>
+</li>
 </ul>
 <h3 id="Ingress"><a href="#Ingress" class="headerlink" title="Ingress"></a>Ingress</h3><ul>
 <li>Ingress：An Ingress enables inbound connections to the cluster, allowing external traffic to reach the correct Pod.前一句没看懂。</li>
 <li>Ingress enables externally-reachable urls, load balance traffic, terminate SSL, offer name based virtual hosting for a Kubernetes cluster.</li>
+<li>通常情况下，service和pod的IP仅可在集群内部访问。集群外部的请求需要通过负载均衡转发到service在Node上暴露的NodePort上，然后再由kube-proxy将其转发给相关的Pod。而Ingress就是为进入集群的请求提供路由规则的集合</li>
 <li>Ingress.yaml里面的信息不可能完全列这里，有以下一些元素和类型:<ul>
 <li>Kind: namespace 从这边看ingress的实质是namespace？</li>
 <li>Kind：secret  type：Opaque，里面的数据看起来是证书形式 The default server secret is a self-signed certificate for other Nginx example SSL connections and is required by the Nginx Default Example.</li>
 <li>Kind：ServiceAccount: The ServiceAccount defines the account with a set of permissions on how to access the cluster to access the defined Ingress Rules. </li>
 <li>Kind：ConfigMap</li>
-<li>总的来说，没看懂啊</li>
+<li>现在看来，上面这一段有点误解。因为当时是学习k8s的在线training，我想这个Ingress.yaml只不过是部署一个元素。真正起作用的是ingress-rules.yaml文件。这个才是如何生成一个ingress。</li>
 </ul>
 </li>
 <li>还有个ingress-rules的yaml文件。里面的内容如下：<ul>
-<li>Kind: Ingress 看来namespace和Ingress不是同一种啊。这个rule就是rule，哪个endPoint进哪个deployment</li>
+<li>Kind: Ingress 这个rule就是rule，哪个endPoint进哪个deployment</li>
+<li>每个Ingress都需要配置rules，目前Kubernetes仅支持http规则。所以最关键的就是rule</li>
+</ul>
+</li>
+<li>参考链接：<ul>
+<li><a href="https://www.kubernetes.org.cn/ingress" target="_blank" rel="noopener">官方文档 名词解释：Ingress</a></li>
 </ul>
 </li>
 </ul>
@@ -1116,6 +1282,7 @@ kube-system    Active    15d
 <li><code>helm install</code></li>
 <li><code>helm init</code>:安装tiller服务器端</li>
 <li><code>helm delete --purge &lt;release name&gt;</code></li>
+<li><code>helm repo add &lt;repo name&gt; &lt;repo address&gt;</code></li>
 </ul>
 <h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
 <li><a href="https://www.cnblogs.com/Erik_Xu/p/8893725.html" target="_blank" rel="noopener">Helm介绍</a></li>
@@ -1857,174 +2024,11 @@ $ kubectl get deployments
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/02/14/Scala概念快速解释/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/02/14/Scala概念快速解释/" itemprop="url">Scala概念快速解释</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-14T10:18:49+08:00">
-                2019-02-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/Scala/" itemprop="url" rel="index">
-                    <span itemprop="name">Scala</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="Scala概念快速解释"><a href="#Scala概念快速解释" class="headerlink" title="Scala概念快速解释"></a>Scala概念快速解释</h2><p>Scala有很多特有的概念。如果要看懂代码就得大致明白含义，这篇博客就是快速解释一下，其中可能会有不够准确的地方，就是不求甚解，只求迅速读懂scala代码了.<br>隔了一段时间又开始看scala的代码，结果发现这篇博客写得太不声情并茂了。scala还是比较复杂的。这么简单写几句不太成，得给一点例子才行。</p>
-<h3 id="object"><a href="#object" class="headerlink" title="object"></a>object</h3><p>看了几篇博客，解释都不够清晰的感觉，还是stackoverflow上面解释得更清楚</p>
-<ul>
-<li><p>作为static函数的class文件，这是最常见到的用法：</p>
-<pre><code>object A {
-   def twice(i: Int): Int = 2*i
-}
-</code></pre></li>
-<li></li>
-<li>参考链接：<br>-<a href="https://stackoverflow.com/questions/1755345/difference-between-object-and-class-in-scala" target="_blank" rel="noopener">difference-between-object-and-class-in-scala</a></li>
-</ul>
-<h3 id="trait"><a href="#trait" class="headerlink" title="trait"></a>trait</h3><ul>
-<li><a href="http://www.runoob.com/scala/scala-traits.html" target="_blank" rel="noopener">Scala Trait(特征)</a></li>
-<li>类似java的Interface，其实更近似于抽象类</li>
-<li>但是可以使用<code>with</code>关键字多重继承，很好用的感觉哦</li>
-<li><code>scala</code>本身还是有<code>interface</code>关键字的，本身也可以使用<code>with</code>关键字来实现接口</li>
-</ul>
-<h3 id="case-class"><a href="#case-class" class="headerlink" title="case class"></a>case class</h3><ul>
-<li><a href="https://blog.csdn.net/bluishglc/article/details/50914001" target="_blank" rel="noopener">csdn上的一篇文章</a></li>
-<li>简单来说，case class会默认生成很多东西，比如伴生对象，比如工厂方法，比如toString， copy，构造方法参数同名的属性</li>
-<li>最开心的用法，应该就是不用<code>new</code>出一个对象来。而是可以直接<code>methodName(构造函数参数)</code>这样来获取一个对象。其实是同名的工厂方法</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/hexo_blog/page/2/">2</a><a class="extend next" rel="next" href="/hexo_blog/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/hexo_blog/page/2/">2</a><a class="page-number" href="/hexo_blog/page/3/">3</a><a class="extend next" rel="next" href="/hexo_blog/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2070,7 +2074,7 @@ $ kubectl get deployments
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

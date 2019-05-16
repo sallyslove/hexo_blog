@@ -242,6 +242,169 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/02/14/Scala概念快速解释/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/02/14/Scala概念快速解释/" itemprop="url">Scala概念快速解释</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-14T10:18:49+08:00">
+                2019-02-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/Scala/" itemprop="url" rel="index">
+                    <span itemprop="name">Scala</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Scala概念快速解释"><a href="#Scala概念快速解释" class="headerlink" title="Scala概念快速解释"></a>Scala概念快速解释</h2><p>Scala有很多特有的概念。如果要看懂代码就得大致明白含义，这篇博客就是快速解释一下，其中可能会有不够准确的地方，就是不求甚解，只求迅速读懂scala代码了.<br>隔了一段时间又开始看scala的代码，结果发现这篇博客写得太不声情并茂了。scala还是比较复杂的。这么简单写几句不太成，得给一点例子才行。</p>
+<h3 id="object"><a href="#object" class="headerlink" title="object"></a>object</h3><p>看了几篇博客，解释都不够清晰的感觉，还是stackoverflow上面解释得更清楚</p>
+<ul>
+<li><p>作为static函数的class文件，这是最常见到的用法：</p>
+<pre><code>object A {
+   def twice(i: Int): Int = 2*i
+}
+</code></pre></li>
+<li></li>
+<li>参考链接：<br>-<a href="https://stackoverflow.com/questions/1755345/difference-between-object-and-class-in-scala" target="_blank" rel="noopener">difference-between-object-and-class-in-scala</a></li>
+</ul>
+<h3 id="trait"><a href="#trait" class="headerlink" title="trait"></a>trait</h3><ul>
+<li><a href="http://www.runoob.com/scala/scala-traits.html" target="_blank" rel="noopener">Scala Trait(特征)</a></li>
+<li>类似java的Interface，其实更近似于抽象类</li>
+<li>但是可以使用<code>with</code>关键字多重继承，很好用的感觉哦</li>
+<li><code>scala</code>本身还是有<code>interface</code>关键字的，本身也可以使用<code>with</code>关键字来实现接口</li>
+</ul>
+<h3 id="case-class"><a href="#case-class" class="headerlink" title="case class"></a>case class</h3><ul>
+<li><a href="https://blog.csdn.net/bluishglc/article/details/50914001" target="_blank" rel="noopener">csdn上的一篇文章</a></li>
+<li>简单来说，case class会默认生成很多东西，比如伴生对象，比如工厂方法，比如toString， copy，构造方法参数同名的属性</li>
+<li>最开心的用法，应该就是不用<code>new</code>出一个对象来。而是可以直接<code>methodName(构造函数参数)</code>这样来获取一个对象。其实是同名的工厂方法</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/01/28/hello-world/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1602,184 +1765,11 @@ logger.info(String.format(&quot;%-25s%20s&quot;,
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/01/09/在windows上面安装Cassandra/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/01/09/在windows上面安装Cassandra/" itemprop="url">Windows上面安装cassandra</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-09T16:31:00+08:00">
-                2019-01-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/cassandra/" itemprop="url" rel="index">
-                    <span itemprop="name">cassandra</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="下载安装包"><a href="#下载安装包" class="headerlink" title="下载安装包"></a>下载安装包</h3><ul>
-<li><a href="http://www.apache.org/dyn/closer.lua/cassandra" target="_blank" rel="noopener">http://www.apache.org/dyn/closer.lua/cassandra</a> 上面下载安装包。没有linux和windows两个安装包；</li>
-<li>安装步骤就是解压即可。比如解压到c盘下面的cassandra目录</li>
-</ul>
-<hr>
-<h3 id="配置更新"><a href="#配置更新" class="headerlink" title="配置更新"></a>配置更新</h3><h4 id="配置文件更新"><a href="#配置文件更新" class="headerlink" title="配置文件更新"></a>配置文件更新</h4><p>配置文件是conf目录下面的cassandra.yaml文件，包括以下参数。每个参数的含义在配置文件的注释里面都有。</p>
-<ul>
-<li>data_file_directories： cassandra数据存储目录</li>
-<li>commitlog_directory</li>
-<li>saved_caches_directory</li>
-</ul>
-<p>将这几个参数的目录替换成为实际的安装目录：</p>
-<pre><code>&quot;commitlog_directory: 
- - C:\cassandra\apache-cassandra-2.2.14\commitlog&quot;
-</code></pre><h4 id="日志配置"><a href="#日志配置" class="headerlink" title="日志配置"></a>日志配置</h4><p>日志文件是logback.xml文件，讲其中的cassandra.logdir替换成实际的安装目录</p>
-<hr>
-<h3 id="配置cassandra-home环境变量"><a href="#配置cassandra-home环境变量" class="headerlink" title="配置cassandra home环境变量"></a>配置cassandra home环境变量</h3><p>在系统的环境变量里面加入CASSANDRA_HOME变量，并且加入到path里面</p>
-<hr>
-<h3 id="启动cassandra"><a href="#启动cassandra" class="headerlink" title="启动cassandra"></a>启动cassandra</h3><p>直接在新打开的cmd窗口中敲入cassandra即可启动</p>
-<hr>
-<h3 id="问题解决"><a href="#问题解决" class="headerlink" title="问题解决"></a>问题解决</h3><ul>
-<li><p>WARNING! Powershell script execution unavailable.<br> Please use ‘powershell Set-ExecutionPolicy Unrestricted’<br> on this user-account to run cassandra with fully featured<br> functionality on this platform.<br>在bin目录下面的cassandra.bat文件和cassandra.in.bat文件里面加入：<br>set JAVA_HOME=C:\Program Files (x86)\Java\jdk1.8.0_162<br>set CASSANDRA_HOME=C:\cassandra\apache-cassandra-2.2.13<br>即可解决这个问题</p>
-</li>
-<li><p>Could not reserve enough space for 2097152KB object heap<br>修改 cassandra.bat 中的JVM参数<br>set JAVA_OPTS=-ea^<br>-javaagent:”%CASSANDRA_HOME%\lib\jamm-0.2.8.jar”^<br>-Xms512m^<br>-Xmx512m^</p>
-</li>
-<li><p>config.yaml not valid<br>saved_caches_directory几个参数前面不能空格</p>
-</li>
-<li><p>cqlsh在装好cassandra之后可以直接启动，需要注意的是，cqlsh在cassandra2.x时候只支持python2.7.其他版本可能报错，语法不兼容</p>
-</li>
-</ul>
-<hr>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://blog.csdn.net/qq_28289405/article/details/80308539" target="_blank" rel="noopener">https://blog.csdn.net/qq_28289405/article/details/80308539</a><br><a href="https://blog.csdn.net/maosijunzi/article/details/42120889" target="_blank" rel="noopener">https://blog.csdn.net/maosijunzi/article/details/42120889</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/hexo_blog/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/hexo_blog/">1</a><span class="page-number current">2</span>
+    <a class="extend prev" rel="prev" href="/hexo_blog/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/hexo_blog/">1</a><span class="page-number current">2</span><a class="page-number" href="/hexo_blog/page/3/">3</a><a class="extend next" rel="next" href="/hexo_blog/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1825,7 +1815,7 @@ logger.info(String.format(&quot;%-25s%20s&quot;,
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

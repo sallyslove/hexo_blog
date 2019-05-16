@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="跬步">
 <meta property="og:description" content="K8s概念这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。 configmapsecretsPersistentVolumnClumns PVC在定义的时候有个storageclass。这个storageclass是定义在kube-system的namespace里面的 在安装时候，share C盘遇到了问题，用“docker for desktop”的默认的sto">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-03-06T09:11:09.699Z">
+<meta property="og:updated_time" content="2019-04-29T09:32:57.034Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="K8s概念理解">
 <meta name="twitter:description" content="K8s概念这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。 configmapsecretsPersistentVolumnClumns PVC在定义的时候有个storageclass。这个storageclass是定义在kube-system的namespace里面的 在安装时候，share C盘遇到了问题，用“docker for desktop”的默认的sto">
@@ -382,8 +382,9 @@ kube-system    Active    15d
 <h3 id="replication-controller"><a href="#replication-controller" class="headerlink" title="replication controller"></a>replication controller</h3><ul>
 <li>The replication controller defines how many instances should be running, the Docker Image to use, and a name to identify the service.<br><strong>决定多少个instance可以理解，不同的instance可以使用不同的image吗</strong></li>
 </ul>
-<h3 id="Services"><a href="#Services" class="headerlink" title="Services"></a>Services</h3><p>service是K8s里面另一个非常重要的概念，而且实在是有点复杂。类型比较多。</p>
+<h3 id="Services"><a href="#Services" class="headerlink" title="Services"></a>Services</h3><p>service是K8s里面另一个非常重要的概念，而且实在是有点复杂。类型比较多。K8s中文文档里面的名词解释还是比较清楚的，并且给出了为什么需要service，service和pod有什么区别</p>
 <ul>
+<li>Kubernete Service 是一个定义了一组Pod的策略的抽象，我们也有时候叫做宏观服务。这些被服务标记的Pod都是（一般）通过label Selector决定的（下面我们会讲到我们为什么需要一个没有label selector的服务）</li>
 <li>A Kubernetes service is a named load balancer that proxies traffic to one or more containers.</li>
 <li>The proxy works even if the containers are on different nodes. Services proxy communicate within the cluster and rarely expose ports to an outside interface.When you launch a service it looks like you cannot connect using curl or netcat unless you start it as part of Kubernetes. The recommended approach is to have a LoadBalancer service to handle external communications.<br><strong>好吧，这段话基本没看懂，暂时就不管它了。service不仅仅是load balancer吧，难道每一种service都是load balancer的一种体现吗？</strong></li>
 <li>Kubernetes Services are an abstract that defines a policy and approach on how to access a set of Pods. The set of Pods accessed via a Service is based on a Label Selector.<br><strong>之前是有课程说service起起来时候需要配套一个Selector的。也可以和deployment一起用？ 反正不是独立存在的。</strong><br><strong>这个理解也不一定对啊，不独立，哪里能在get pods里面看到</strong></li>
@@ -396,20 +397,30 @@ kube-system    Active    15d
 <li>结合上面的，我觉得都需要啊。</li>
 </ul>
 </li>
+<li>参考链接<ul>
+<li><a href="https://www.kubernetes.org.cn/kubernetes-services" target="_blank" rel="noopener">名词解释 Services</a></li>
+</ul>
+</li>
 </ul>
 <h3 id="Ingress"><a href="#Ingress" class="headerlink" title="Ingress"></a>Ingress</h3><ul>
 <li>Ingress：An Ingress enables inbound connections to the cluster, allowing external traffic to reach the correct Pod.前一句没看懂。</li>
 <li>Ingress enables externally-reachable urls, load balance traffic, terminate SSL, offer name based virtual hosting for a Kubernetes cluster.</li>
+<li>通常情况下，service和pod的IP仅可在集群内部访问。集群外部的请求需要通过负载均衡转发到service在Node上暴露的NodePort上，然后再由kube-proxy将其转发给相关的Pod。而Ingress就是为进入集群的请求提供路由规则的集合</li>
 <li>Ingress.yaml里面的信息不可能完全列这里，有以下一些元素和类型:<ul>
 <li>Kind: namespace 从这边看ingress的实质是namespace？</li>
 <li>Kind：secret  type：Opaque，里面的数据看起来是证书形式 The default server secret is a self-signed certificate for other Nginx example SSL connections and is required by the Nginx Default Example.</li>
 <li>Kind：ServiceAccount: The ServiceAccount defines the account with a set of permissions on how to access the cluster to access the defined Ingress Rules. </li>
 <li>Kind：ConfigMap</li>
-<li>总的来说，没看懂啊</li>
+<li>现在看来，上面这一段有点误解。因为当时是学习k8s的在线training，我想这个Ingress.yaml只不过是部署一个元素。真正起作用的是ingress-rules.yaml文件。这个才是如何生成一个ingress。</li>
 </ul>
 </li>
 <li>还有个ingress-rules的yaml文件。里面的内容如下：<ul>
-<li>Kind: Ingress 看来namespace和Ingress不是同一种啊。这个rule就是rule，哪个endPoint进哪个deployment</li>
+<li>Kind: Ingress 这个rule就是rule，哪个endPoint进哪个deployment</li>
+<li>每个Ingress都需要配置rules，目前Kubernetes仅支持http规则。所以最关键的就是rule</li>
+</ul>
+</li>
+<li>参考链接：<ul>
+<li><a href="https://www.kubernetes.org.cn/ingress" target="_blank" rel="noopener">官方文档 名词解释：Ingress</a></li>
 </ul>
 </li>
 </ul>
@@ -533,7 +544,7 @@ kube-system    Active    15d
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

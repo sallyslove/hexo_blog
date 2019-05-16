@@ -87,7 +87,7 @@
 <meta property="og:description" content="Cassandra里面的Batch操作最近工作比较忙活，一个月都没写blog喽。工作中碰到了一些与cassandra相关的同步异步，simpleStatement，batchStatement的东西。顺势多研究一下。研究发现，这玩意还挺复杂的啊。cassandra挺复杂啊，还是其他数据库也这样啊 execute 与 executeAsync cassandra driver在执行语句时候提供了ex">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://3.bp.blogspot.com/-dv9zIC84QD4/VNoNE0YXn8I/AAAAAAAAAX0/b3wtV48fuB0/s1600/Screenshot%2B2015-02-10%2B13.51.56.png">
-<meta property="og:updated_time" content="2019-04-19T07:02:34.643Z">
+<meta property="og:updated_time" content="2019-05-15T09:39:49.901Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Cassandra里面的Batch操作">
 <meta name="twitter:description" content="Cassandra里面的Batch操作最近工作比较忙活，一个月都没写blog喽。工作中碰到了一些与cassandra相关的同步异步，simpleStatement，batchStatement的东西。顺势多研究一下。研究发现，这玩意还挺复杂的啊。cassandra挺复杂啊，还是其他数据库也这样啊 execute 与 executeAsync cassandra driver在执行语句时候提供了ex">
@@ -346,7 +346,7 @@
         <h2 id="Cassandra里面的Batch操作"><a href="#Cassandra里面的Batch操作" class="headerlink" title="Cassandra里面的Batch操作"></a>Cassandra里面的Batch操作</h2><p>最近工作比较忙活，一个月都没写blog喽。工作中碰到了一些与cassandra相关的同步异步，simpleStatement，batchStatement的东西。顺势多研究一下。<br>研究发现，这玩意还挺复杂的啊。cassandra挺复杂啊，还是其他数据库也这样啊</p>
 <h3 id="execute-与-executeAsync"><a href="#execute-与-executeAsync" class="headerlink" title="execute 与 executeAsync"></a>execute 与 executeAsync</h3><ul>
 <li>cassandra driver在执行语句时候提供了<code>execute</code>和<code>executeAsync</code> 两个接口</li>
-<li>对于batch来说，只能调用前者</li>
+<li>对于batch来说，只能调用前者，这个好像不太对。</li>
 <li><p>但是进入代码会看到，<code>execute</code>最后调用的也是<code>executeAsync</code></p>
 <pre><code>public ResultSet execute(Statement statement) {
        this.checkNotInEventLoop();
@@ -355,9 +355,10 @@
 </code></pre></li>
 <li><p>这个<code>executeAsync</code>api是在<code>SessionManager</code>里面定义的</p>
 </li>
-<li>按照参考链接1里面所述的，从以上代码也可以看出来的<code>execute</code>在于是block的。就是不可打断的。必须得cassandra返回一些数据才能返回。所以它可以保证在invalid request的情况下报错，但是不能保证request就一点执行成功了。</li>
+<li>按照参考链接1里面所述的，从以上代码也可以看出来的<code>execute</code>在于是block的。就是不可打断的。必须得cassandra返回一些数据才能返回。所以它可以保证在invalid request的情况下报错，但是不能保证request就一定执行成功了。</li>
 <li><code>executeAsync</code>就是非blocking的，也不能保证这个request一定被执行或者在invalid的request的情况下报错</li>
-<li>参考链接1里面有这么一段话：看起来少量batch，并且是同样partition key的时候，会比较快。<blockquote>
+<li>参考链接1里面有这么一段话：看起来少量batch，并且是同样partition key的时候，会比较快。</li>
+<li>我们在产品中的改进在有些场景下面确实performance变好了<blockquote>
 <p>To further improve throughput, you might want to consider using BatchStatement and submitting requests in batches. This is a good option if you keep your batches small (50-250 is a good number) and if your inserts in a batch all share the same partition key. </p>
 </blockquote>
 </li>
@@ -441,6 +442,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/hexo_blog/2019/05/15/Cassandra的repair机制/" rel="prev" title="Cassandra的repair机制">
+                Cassandra的repair机制 <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -523,7 +528,7 @@
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

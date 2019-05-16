@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="跬步">
 <meta property="og:description" content="这篇记录一些数据类型。暂时写在这里吧 java.Util.Function.Supplier 这个接口只有一个方法，Get方法。void，返回一个T 把它当工厂方法看就是了。 顾名思义，提供者。 JAVA8 Supplier接口 感觉就是一次性生成。同一个接口，在初始化时候给出get函数，可以有不同实现 supplier作为function interface，有@FunctionalInterf">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-04-18T08:55:04.315Z">
+<meta property="og:updated_time" content="2019-05-15T09:43:21.645Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java数据类型（2）">
 <meta name="twitter:description" content="这篇记录一些数据类型。暂时写在这里吧 java.Util.Function.Supplier 这个接口只有一个方法，Get方法。void，返回一个T 把它当工厂方法看就是了。 顾名思义，提供者。 JAVA8 Supplier接口 感觉就是一次性生成。同一个接口，在初始化时候给出get函数，可以有不同实现 supplier作为function interface，有@FunctionalInterf">
@@ -359,13 +359,17 @@ public class ThreadPoolExecutor extends AbstractExecutorService
 <h4 id="ThreadPoolExecutor-shutdown"><a href="#ThreadPoolExecutor-shutdown" class="headerlink" title="ThreadPoolExecutor shutdown"></a>ThreadPoolExecutor shutdown</h4><p>  ThreadPoolExecutor 有三个shutdown方法： <code>shutdown</code>、<code>shutdownNow</code>、<code>awaitTermination</code></p>
 <ul>
 <li><code>shutdown</code>： 停止接收外部submit的任务；内部正在跑的任务和队列里等待的任务，会执行完。其实graceful shutdown的感觉啊</li>
-<li><code>shutdownNow</code>： 停止接收外部提交的任务；忽略队列里等待的任务；尝试将正在跑的任务interrupt中断；返回未执行的任务列表。强制中断。线程会收到InterupptedException</li>
+<li><code>shutdownNow</code>： 停止接收外部提交的任务；忽略队列里等待的任务；尝试将正在跑的任务interrupt中断；返回未执行的任务列表。强制中断。线程会收到InterupptedException.<ul>
+<li>需要注意的是这个方法仅仅是尝试中断线程，它通过的是调用interrupt方法，这种方法的作用有限，如果线程中没有sleep 、wait、Condition、定时锁等应用, interrupt()方法是无法中断当前的线程的。</li>
+</ul>
+</li>
 <li><p><code>awaitTermination</code>：跟shutdown方法基本一样，只是加了一个wait时间的限制。当wait时间到了的时候，会强制退出。？ 这是某篇博客里面的解释</p>
 <ul>
 <li>很多博客的里面，这个函数会返回boolean的返回值。就是说<code>awaitTermination</code>一般和<code>shutdown</code>搭配使用，<code>awaitTermination</code>来监控线程有没有结束好。结束了返回<code>true</code>，没结束返回<code>false</code></li>
 <li>这个函数还会抛出InterupptedException，但是看代码没太明白什么状况下会抛这个<code>exception</code></li>
 <li>有一点不太明白，线程处于阻塞状态，处于阻塞状态时候，还会接收消息？只是不处理？</li>
 <li>这个函数最不好理解啦。</li>
+<li>在实际工作中解决bug碰到了这组函数。事实上就是要三个一起用的。<code>awaitTermination</code>只会返回一个状态，并不会做任何的事情。所以在这个函数返回false的时候应该要调用<code>shutdownNow</code>方法来进一步中断线程</li>
 </ul>
 </li>
 <li><p><a href="https://blog.csdn.net/u012168222/article/details/52790400" target="_blank" rel="noopener">shutdown 方法</a></p>
@@ -533,7 +537,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
