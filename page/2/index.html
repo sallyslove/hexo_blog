@@ -607,20 +607,31 @@
             <h2 id="Cassandra-数据结构"><a href="#Cassandra-数据结构" class="headerlink" title="Cassandra 数据结构"></a>Cassandra 数据结构</h2><p>  必须了解Cassandra的数据结构。本身并不是多么复杂，而且有足够多的文档，所以简单写一下。</p>
 <h3 id="KeySpace"><a href="#KeySpace" class="headerlink" title="KeySpace"></a>KeySpace</h3><ul>
 <li>好像没啥需要解释的。</li>
+<li>在论文里面看到说namespace的另一个作用的可以做数据重复。</li>
 </ul>
 <h3 id="Column"><a href="#Column" class="headerlink" title="Column"></a>Column</h3><ul>
 <li>Column是Cassandra中最小的数据单元，它是一个三元的数据类型，包含name,value,timestamp.</li>
-<li>name是必须的，value不是必须的</li>
-</ul>
-<h3 id="ColumnFamily"><a href="#ColumnFamily" class="headerlink" title="ColumnFamily"></a>ColumnFamily</h3><ul>
-<li>columnFamily相当于数据库中的表</li>
-<li>每一行有一个row的名字，然后每一行里面是一个个的column</li>
-<li>每一行里面的column的名字可以是不变的。也可以是可变的。静态和动态column</li>
-<li>需要注意的是，数据写入的时候已经经过排序了。就是说一行的所有column，会根据它的名字来进行排序。</li>
+<li>name是必须的，value不是必须的，timestamp经常可以忽略不计，如下图<br><img src="https://img-blog.csdn.net/20140302154940656?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="引用自第一篇参考链接"><blockquote>
+<p>引用自csdn</p>
+</blockquote>
+</li>
 </ul>
 <h3 id="Super-Column"><a href="#Super-Column" class="headerlink" title="Super Column"></a>Super Column</h3><ul>
 <li>可以将SuperColumn想象成Column的数组，它包含一个name以及一系列Column.</li>
-<li>SuperColumn本身不包含timestamp属性。使用SuperColumn有一个限制，要读取其中一个子列的值，必须把所有子列都反序列化，且不能在子列中建索引</li>
+<li>SuperColumn本身不包含timestamp属性。使用SuperColumn有一个限制，要读取其中一个子列的值，必须把所有子列都反序列化，且不能在子列中建索引<br><img src="https://img-blog.csdn.net/20140302154945843?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""><blockquote>
+<p>引用自csdn</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="ColumnFamily"><a href="#ColumnFamily" class="headerlink" title="ColumnFamily"></a>ColumnFamily</h3><ul>
+<li>columnFamily相当于数据库中的表</li>
+<li>每一行有一个row的名字，然后每一行里面是一个个的column，也可以是super column</li>
+<li>ColumnFamily是一个包含了许多Row的结构，每一个Row都包含有client提供的Key以及和该Key关联的一系列Column。</li>
+<li>每一行里面的column的名字可以是不变的。也可以是可变的。静态和动态column</li>
+<li>需要注意的是，数据写入的时候已经经过排序了。就是说一行的所有column，会根据它的名字来进行排序。<br><img src="https://img-blog.csdn.net/20140302154950812?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""><blockquote>
+<p>引用自csdn</p>
+</blockquote>
+</li>
 </ul>
 <h3 id="对应到表里面"><a href="#对应到表里面" class="headerlink" title="对应到表里面"></a>对应到表里面</h3><p>目前对于表结构的理解是这样的，可能后面有更正：</p>
 <ul>
