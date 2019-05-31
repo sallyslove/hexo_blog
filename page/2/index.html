@@ -1283,14 +1283,23 @@
           
             <h2 id="Cassandra-写流程"><a href="#Cassandra-写流程" class="headerlink" title="Cassandra 写流程"></a>Cassandra 写流程</h2><h3 id="大致流程"><a href="#大致流程" class="headerlink" title="大致流程"></a>大致流程</h3><p>到把数据写到磁盘中分为以下几个步骤：</p>
 <ol>
+<li>先找到应该往哪几个节点写</li>
 <li>写log到commit log</li>
 <li>写数据到memtable</li>
 <li>从memtable中flush数据</li>
 <li>将数据存储在SSTables中的磁盘中</li>
 </ol>
+<ul>
+<li>客户端写一条数据必须指定 Keyspace、ColumnFamily、Key、Column Name 和 Value，还可以指定 Timestamp，以及数据的安全等级。<strong><em>看了看产品代码里面的语句，不知道这个Key是哪个?这个key又是什么key呢，partition Key, primary Key,是后文说根据key算出token，然后再根据token算出partition Index的</em></strong></li>
+</ul>
 <p>Cassandra Node —&gt;Commitlog—&gt; Memtable</p>
 <p>Commitlog —&gt; Periodically sync to  disk</p>
 <p>Memtable  —&gt; Periodically flush to SSTable</p>
+<p>第二篇参考链接非常好，但是图片忒不清楚。</p>
+<p><img src="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image010-large.jpg" alt=""></p>
+<blockquote>
+<p>引用自第二篇参考链接</p>
+</blockquote>
 <h3 id="Replica-Factor"><a href="#Replica-Factor" class="headerlink" title="Replica Factor"></a>Replica Factor</h3><ul>
 <li>CassandraServer 接收到要写入的数据时：<ul>
 <li>创建一个 RowMutation 对象，再创建一个 QueryPath 对象，这个对象中保存了 ColumnFamily、Column Name 或者 Super Column Name。</li>
@@ -1339,10 +1348,23 @@ Index.db
 <ul>
 <li>存贮的目录就是yaml文件里面配置的<code>data_file_directories</code>确定</li>
 <li>For example, /data/data/ks1/cf1-5be396077b811e3a3ab9dc4b9ac088d/la-1-big-Data.db represents a data file. ks1 represents the keyspace name to distinguish the keyspace for streaming or bulk loading data. A hexadecimal string, 5be396077b811e3a3ab9dc4b9ac088d in this example, is appended to table names to represent unique table IDs.<br>同样会有：la-1-big-Index.db</li>
-<li><strong><em>la是啥？</em></strong></li>
-<li><blockquote>
-<p>Consequently, a partition is typically stored across multiple SSTable files.</p>
-</blockquote>
+<li><p><strong><em>la是啥？</em></strong></p>
+</li>
+<li><p>用<code>./tools/bin/sstable2json</code>可以打开这堆data文件来看。下面是打开一个data文件的输出。</p>
+<ul>
+<li>从输出来看，存储的时候的key就是partition key。如果有多个，会用<code>：</code>隔开</li>
+<li><p>然后它是这样的：</p>
+<ul>
+<li>不是partition key的primary key会作为第一个column的名字，同样用:隔开。</li>
+<li>接下来不是key的column和不是partition key的primary key联合起来作为column的名字。</li>
+<li>比如：那么key就是”name:age”, 然后cells里面的第一行会是,最后是时间戳<br><code>[&quot;address:salary&quot;,&quot;&quot;,1558958953681000]</code></li>
+<li><p>第二行会是：<br><code>[&quot;address:salary:character&quot;,character_value,1558958953681000]</code></p>
+<p>  name text PRIMARY KEY,<br>  age bigint,<br>  address int,<br>  salary int,<br>  character blob,<br>  PRIMARY KEY ((name, age), address, salary)</p>
+</li>
+</ul>
+<p>{“key”: “23”,<br> “cells”:                [[“5:counter:value”,”000180003d96b9d9c5e147bf8d359d944a327738000000000000005e00000000000019a8”,1558959081706000,”c”,-9223372036854775808]]}</p>
+</li>
+</ul>
 </li>
 </ul>
 <h3 id="从memTables到SSTable"><a href="#从memTables到SSTable" class="headerlink" title="从memTables到SSTable"></a>从memTables到SSTable</h3><ul>
@@ -1359,6 +1381,10 @@ Index.db
 </blockquote>
 </li>
 <li>You can manually flush a table using nodetool flush. </li>
+<li><blockquote>
+<p>Consequently, a partition is typically stored across multiple SSTable files.</p>
+</blockquote>
+</li>
 </ul>
 <h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
 <li><a href="https://blog.csdn.net/fs1360472174/article/details/55005335/" target="_blank" rel="noopener">官方文档–读写数据</a></li>
