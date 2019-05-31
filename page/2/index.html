@@ -575,6 +575,28 @@
           </span>
 
           
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/cassandra/" itemprop="url" rel="index">
+                    <span itemprop="name">cassandra</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -622,23 +644,69 @@
 <p>引用自csdn</p>
 </blockquote>
 </li>
+<li><p>参考链接里面有以下的例子，但是从这个例子里面，</p>
+<pre><code> {   // 这是一个SuperColumn
+     name: &quot;info&quot;,
+     // 包含一系列的Columns
+     value: {
+        street: {name: &quot;street&quot;, value: &quot;1234 x street&quot;, timestamp: 123456789},
+        city: {name: &quot;city&quot;, value: &quot;san francisco&quot;, timestamp: 123456789},
+        zip: {name: &quot;zip&quot;, value: &quot;94107&quot;, timestamp: 123456789},
+  }
+}
+</code></pre><ul>
+<li><strong><em>感觉例子和图片不太对得上啊。例子反而更像一个columnFamily了?</em></strong></li>
+</ul>
+</li>
 </ul>
 <h3 id="ColumnFamily"><a href="#ColumnFamily" class="headerlink" title="ColumnFamily"></a>ColumnFamily</h3><ul>
 <li>columnFamily相当于数据库中的表</li>
 <li>每一行有一个row的名字，然后每一行里面是一个个的column，也可以是super column</li>
 <li>ColumnFamily是一个包含了许多Row的结构，每一个Row都包含有client提供的Key以及和该Key关联的一系列Column。</li>
 <li>每一行里面的column的名字可以是不变的。也可以是可变的。静态和动态column</li>
-<li>需要注意的是，数据写入的时候已经经过排序了。就是说一行的所有column，会根据它的名字来进行排序。<br><img src="https://img-blog.csdn.net/20140302154950812?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""><blockquote>
+<li><p>需要注意的是，数据写入的时候已经经过排序了。就是说一行的所有column，会根据它的名字来进行排序。<br><img src="https://img-blog.csdn.net/20140302154950812?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""></p>
+<blockquote>
 <p>引用自csdn</p>
 </blockquote>
 </li>
+<li><p>第二个参考链接里面的例子：</p>
+<pre><code>UserProfile = { // 这是一个ColumnFamily
+     phatduckk: {   // 这是对应ColumnFamily的key
+         // 这是Key下对应的Column
+         username: &quot;gpcuster&quot;,
+         email: &quot;gpcuster@gmail.com&quot;,
+         phone: &quot;6666&quot;
+     }, // 第一个row结束
+     ieure: {   // 这是ColumnFamily的另一个key
+       //这是另一个Key对应的column
+       username: &quot;pengguo&quot;,
+       email: &quot;pengguo@live.com&quot;,
+       phone: &quot;888&quot;
+     }
+</code></pre></li>
 </ul>
 <h3 id="对应到表里面"><a href="#对应到表里面" class="headerlink" title="对应到表里面"></a>对应到表里面</h3><p>目前对于表结构的理解是这样的，可能后面有更正：</p>
 <ul>
 <li>如果用<code>desc tables</code>去查看一张表。那么可以看到primaryKey字样，类似<code>PRIMARY KEY ()</code>，还有<code>CLUSTERING ORDER</code> 字样</li>
-<li>那么这个primary key就是对应数据模型里面的row的名字。也就是super column的名字。只不过这个名字是几个primaryKey联合起来组成的。</li>
+<li><strong><em>那么这个primary key就是对应数据模型里面的row的名字。也就是super column的名字。只不过这个名字是几个primaryKey联合起来组成的。？</em></strong></li>
 <li>primaryKey可以用来查询数据。每个primary Key可以单独使用来查询。</li>
 <li>然后cassandra的数据存储的时候是排序的，这个clustering order的属性，就是说基于这个属性来进行排序</li>
+</ul>
+<p><img src="http://images.cnblogs.com/cnblogs_com/gpcuster/WindowsLiveWriter/Cassandra_8E88/image_2.png" alt=""></p>
+<blockquote>
+<p>引用自第二篇参考链接文档</p>
+</blockquote>
+<h3 id="data-moduling"><a href="#data-moduling" class="headerlink" title="data moduling"></a>data moduling</h3><ul>
+<li>最近看了一些关于建模的文章。文章里面一些反复强调的事如下：<ul>
+<li>cassandra不同于其他数据库的是，它写的成本低，读的成本高。</li>
+<li>基于这一点，必须在一开始先考虑query的需求，然后数据可以duplicated。而在关系数据库建模时候，完全是不一样的。</li>
+<li>基于cassandra的写和存储的方式，需要读取的数据应该放在同一个partition里面。这个partition是cassandra里面的一个概念</li>
+<li>文章里面的这句话说明了partition的定义和重要性：<blockquote>
+<p>a set of rows that share a partition key is called a partition<br>Cassandra is a partitioned row store with tunable consistency.<br>You perform several optimizations in the physical data modeling stage, including the specifying of partition sizes and ordering.</p>
+</blockquote>
+</li>
+</ul>
+</li>
 </ul>
 <h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
 <li><a href="https://blog.csdn.net/aesop_wubo/article/details/20289837" target="_blank" rel="noopener">数据模型</a></li>
