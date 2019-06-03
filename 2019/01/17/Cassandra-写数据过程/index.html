@@ -86,12 +86,13 @@
 <meta property="og:site_name" content="跬步">
 <meta property="og:description" content="Cassandra 写流程大致流程到把数据写到磁盘中分为以下几个步骤：  先找到应该往哪几个节点写 写log到commit log 写数据到memtable 从memtable中flush数据 将数据存储在SSTables中的磁盘中   客户端写一条数据必须指定 Keyspace、ColumnFamily、Key、Column Name 和 Value，还可以指定 Timestamp，以及数据的安">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image012-large.jpg">
 <meta property="og:image" content="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image010-large.jpg">
-<meta property="og:updated_time" content="2019-05-31T09:44:07.872Z">
+<meta property="og:updated_time" content="2019-06-03T02:43:45.326Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Cassandra 写数据过程">
 <meta name="twitter:description" content="Cassandra 写流程大致流程到把数据写到磁盘中分为以下几个步骤：  先找到应该往哪几个节点写 写log到commit log 写数据到memtable 从memtable中flush数据 将数据存储在SSTables中的磁盘中   客户端写一条数据必须指定 Keyspace、ColumnFamily、Key、Column Name 和 Value，还可以指定 Timestamp，以及数据的安">
-<meta name="twitter:image" content="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image010-large.jpg">
+<meta name="twitter:image" content="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image012-large.jpg">
 
 
 
@@ -353,15 +354,20 @@
 </ol>
 <ul>
 <li>客户端写一条数据必须指定 Keyspace、ColumnFamily、Key、Column Name 和 Value，还可以指定 Timestamp，以及数据的安全等级。<strong><em>看了看产品代码里面的语句，不知道这个Key是哪个?这个key又是什么key呢，partition Key, primary Key,是后文说根据key算出token，然后再根据token算出partition Index的</em></strong></li>
+<li><strong><em>看代码里面没看出来有给key</em></strong></li>
 </ul>
-<p>Cassandra Node —&gt;Commitlog—&gt; Memtable</p>
-<p>Commitlog —&gt; Periodically sync to  disk</p>
-<p>Memtable  —&gt; Periodically flush to SSTable</p>
-<p>第二篇参考链接非常好，但是图片忒不清楚。</p>
-<p><img src="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image010-large.jpg" alt=""></p>
+<pre><code>Cassandra Node ---&gt;Commitlog---&gt; Memtable
+
+Commitlog ---&gt; Periodically sync to  disk
+
+Memtable  ---&gt; Periodically flush to SSTable
+</code></pre><p><img src="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image012-large.jpg" alt=""></p>
 <blockquote>
-<p>引用自第二篇参考链接</p>
+<p>引用自第二篇链接</p>
 </blockquote>
+<ul>
+<li>这张图里面有的结构可能不太对了。没有找到RowMutation这个结构，只有Mutation</li>
+</ul>
 <h3 id="Replica-Factor"><a href="#Replica-Factor" class="headerlink" title="Replica Factor"></a>Replica Factor</h3><ul>
 <li>CassandraServer 接收到要写入的数据时：<ul>
 <li>创建一个 RowMutation 对象，再创建一个 QueryPath 对象，这个对象中保存了 ColumnFamily、Column Name 或者 Super Column Name。</li>
@@ -387,9 +393,14 @@
 </blockquote>
 </li>
 </ul>
-<h3 id="SSTable"><a href="#SSTable" class="headerlink" title="SSTable"></a>SSTable</h3><ul>
+<h3 id="SSTable"><a href="#SSTable" class="headerlink" title="SSTable"></a>SSTable</h3><p>第二篇参考链接非常好，但是图片忒不清楚。</p>
+<p><img src="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image010-large.jpg" alt=""></p>
+<blockquote>
+<p>引用自第二篇参考链接</p>
+<ul>
 <li>SSTable分为data、index、filter三个文件写到磁盘上面，其实还有好几个其他文件:<br>以下是一个目录里面的文件</li>
 </ul>
+</blockquote>
 <pre><code>Filter.db
 Statistics.db
 CompressionInfo.db
