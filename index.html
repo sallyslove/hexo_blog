@@ -242,6 +242,131 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/05/31/Cassandra-Performance-Tuning/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/05/31/Cassandra-Performance-Tuning/" itemprop="url">Cassandra Performance Tuning</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-31T15:09:09+08:00">
+                2019-05-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Cassandra-Performance-Tuning"><a href="#Cassandra-Performance-Tuning" class="headerlink" title="Cassandra Performance Tuning"></a>Cassandra Performance Tuning</h2><p>Cassandra的设计理念有点极端，写的效率很高，并且秉承最终一致的理念，并且并不会真的删除数据</p>
+<h3 id="Limitation"><a href="#Limitation" class="headerlink" title="Limitation"></a>Limitation</h3><h4 id="Write-Limitation"><a href="#Write-Limitation" class="headerlink" title="Write Limitation"></a>Write Limitation</h4><ul>
+<li>不支持传统数据库的事务操作</li>
+<li>写SSTTable的时候可能会写到多节点上门</li>
+<li>Delete数据只是插墓碑。真正的delete操作会在compaction的时候进行</li>
+</ul>
+<h4 id="Read-Limitation"><a href="#Read-Limitation" class="headerlink" title="Read Limitation"></a>Read Limitation</h4>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/05/15/Cassandra的repair机制/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1597,14 +1722,29 @@ httpGet:
 </ul>
 <h3 id="How-it-works"><a href="#How-it-works" class="headerlink" title="How it works"></a>How it works</h3><ul>
 <li>As soon as the shutdown command is given, the container will close the connectors so that they do not accept any more inbound connections.</li>
+<li>所以在<code>ServerControllerImpl</code>里面，如果HTTP的配置参数是false，Connector确实是一上来就停掉了。但是怎么都到<code>JettyServer的</code>getContext（）`函数里面的</li>
+<li><code>ServerControllerImpl</code> 应该是HTTP server的controller</li>
+</ul>
+<pre><code>if (!ServerControllerImpl.this.configuration.isHttpEnabled()) {
+               connectorsx = ServerControllerImpl.this.jettyServer.getConnectors();
+               if (connectorsx != null) {
+                    ...
+                     this.stopConnector(backupConnector);
+                           ServerControllerImpl.this.jettyServer.removeConnector(backupConnector);
+ ...
+</code></pre><ul>
 <li>This will inform most load balancers that the server is no longer part of the cluster.</li>
 <li>The contexts are closed so that they do not accept any more requests, but the requests currently inside the container will drain out and the Server instance will shutdown after the grace period expires.<br>not very sure here. It seems that connector and context are different. I think the connector is more related with port. But context is more related with servlet.</li>
 </ul>
 <h3 id="Elements"><a href="#Elements" class="headerlink" title="Elements"></a>Elements</h3><p>我理解在整个jetty server shutdown的时候有几个东西： connector、context、server。以下是理解，不一定准确：</p>
 <ul>
-<li>servlet 是在context里面的，context一旦stop掉，servlet也会跟着destroy。context是WebAppHttpContext，servlet是其中的一个web Element</li>
-<li>可能有两个context，一个是HttpServiceContext， 一个是WebAppHttpContext。后者是jetty stop context时候停掉的。前者是jetty server停掉的时候停掉的。感觉server停掉的时候，webAppHttpContext不一定都结束了。但是jetty server停掉的时候，HttpServiceContext是停止了</li>
-<li>connector是在jetty里面定义的,有几种connector，比如<code>org.eclipse.jetty.server.ssl.SslSelectChannelConnector</code>，<code>org.eclipse.jetty.server.nio.SelectChannelConnector</code>。在Connector的interface里面有个maxIdleTimeout的参数，标示这个connection在idle时候会等多久从ESTABLISH状态变成TIME_WAIT状态。但是并没有在代码里面找到调用的地方</li>
+<li>servlet 是在context里面的，context一旦stop掉，servlet也会跟着destroy。context是WebAppHttpContext，servlet是其中的一个web Element。</li>
+<li>有三个context，一个是HttpServiceContext， 一个是WebAppHttpContext，还有servlet的context。WebAppHttpContext是jetty stop context时候停掉的，每个web app对应一个。前者是jetty server停掉的时候停掉的。感觉server停掉的时候，webAppHttpContext不一定都结束了。但是jetty server停掉的时候，HttpServiceContext是停止了。servlet的context结构是servlet里面的一个internal class，跟每个uri绑定。</li>
+<li>connector是在jetty里面定义的,有几种connector，比如<code>org.eclipse.jetty.server.ssl.SslSelectChannelConnector</code>，<code>org.eclipse.jetty.server.nio.SelectChannelConnector</code>。</li>
+</ul>
+<p>在Connector的interface里面有个maxIdleTimeout的参数，标示这个connection在idle时候会等多久从ESTABLISH状态变成TIME_WAIT状态。但是并没有在代码里面找到调用的地方。</p>
+<p><strong>_ 这个是在停的时候调用的那个吗？果然写blog要再清楚一点才好_</strong></p>
+<ul>
 <li>Connector是在jetty的配置文件里面配置的</li>
 </ul>
 <h3 id="Jetty启动过程"><a href="#Jetty启动过程" class="headerlink" title="Jetty启动过程"></a>Jetty启动过程</h3><p>大部分web容器的启动过程都差不多，分为如下几步：</p>
@@ -1901,170 +2041,6 @@ $ kubectl get deployments
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/02/14/常用Docker命令记录/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/02/14/常用Docker命令记录/" itemprop="url">常用Docker命令记录</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-14T15:16:01+08:00">
-                2019-02-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/docker/" itemprop="url" rel="index">
-                    <span itemprop="name">docker</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="常用docker命令"><a href="#常用docker命令" class="headerlink" title="常用docker命令"></a>常用docker命令</h2><p>这篇记录一下常用的docker命令，我怕我会忘啊  -_-#<br>这篇博客写得好随意的感觉啊</p>
-<ul>
-<li><code>docker run</code> -d / -it / -v / -p /–name/-l<ul>
-<li>-d: background; -v: 磁盘映射 ；-p：端口映射; -l: label</li>
-</ul>
-</li>
-<li><code>docker build -t （build-directory） dockerfile</code> build docker image <ul>
-<li>-t 指定编译出来的image的名字。可以带上版本。比如：firstImage:v1</li>
-<li>-f 指定dockerfile的名字</li>
-</ul>
-</li>
-<li><code>docker inspect</code>看一个image的信息或者container的信息<ul>
-<li>docker inspect -f ““ katacoda-label-example</li>
-<li>These labels will remain even if the image has been untagged. When an image is untagged, it will have the name <none></none></li>
-</ul>
-</li>
-<li>Label就是中文含义一样的标签，key-value的形式，比如user=lynn，这样子。除了user，还会有version啊<ul>
-<li>LABEL vendor=Katacoda \ com.katacoda.version=0.0.5 \ com.katacoda.build-date=2016-07-01T10:47:29Z \ com.katacoda.course=Docker</li>
-<li>container, image, demon都可以有label，在查看时候都可以用上</li>
-</ul>
-</li>
-<li>参考链接：<a href="https://www.katacoda.com/courses/docker/2" target="_blank" rel="noopener">karacoda docker在线课程</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2115,7 +2091,7 @@ $ kubectl get deployments
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

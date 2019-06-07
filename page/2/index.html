@@ -242,6 +242,170 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/02/14/常用Docker命令记录/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/02/14/常用Docker命令记录/" itemprop="url">常用Docker命令记录</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-14T15:16:01+08:00">
+                2019-02-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/docker/" itemprop="url" rel="index">
+                    <span itemprop="name">docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="常用docker命令"><a href="#常用docker命令" class="headerlink" title="常用docker命令"></a>常用docker命令</h2><p>这篇记录一下常用的docker命令，我怕我会忘啊  -_-#<br>这篇博客写得好随意的感觉啊</p>
+<ul>
+<li><code>docker run</code> -d / -it / -v / -p /–name/-l<ul>
+<li>-d: background; -v: 磁盘映射 ；-p：端口映射; -l: label</li>
+</ul>
+</li>
+<li><code>docker build -t （build-directory） dockerfile</code> build docker image <ul>
+<li>-t 指定编译出来的image的名字。可以带上版本。比如：firstImage:v1</li>
+<li>-f 指定dockerfile的名字</li>
+</ul>
+</li>
+<li><code>docker inspect</code>看一个image的信息或者container的信息<ul>
+<li>docker inspect -f ““ katacoda-label-example</li>
+<li>These labels will remain even if the image has been untagged. When an image is untagged, it will have the name <none></none></li>
+</ul>
+</li>
+<li>Label就是中文含义一样的标签，key-value的形式，比如user=lynn，这样子。除了user，还会有version啊<ul>
+<li>LABEL vendor=Katacoda \ com.katacoda.version=0.0.5 \ com.katacoda.build-date=2016-07-01T10:47:29Z \ com.katacoda.course=Docker</li>
+<li>container, image, demon都可以有label，在查看时候都可以用上</li>
+</ul>
+</li>
+<li>参考链接：<a href="https://www.katacoda.com/courses/docker/2" target="_blank" rel="noopener">karacoda docker在线课程</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/02/14/Scala概念快速解释/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1298,7 +1462,8 @@
 Commitlog ---&gt; Periodically sync to  disk
 
 Memtable  ---&gt; Periodically flush to SSTable
-</code></pre><p><img src="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image012-large.jpg" alt=""></p>
+</code></pre><p>   <strong><em>如果看下面的流程图的话，那么上面这个顺序是不对的。是先写到memtable，然后再写commitLog？看官方文档，上面的顺是正确的。应该是流程图不够好。或者是一个相对并行的过程</em></strong></p>
+<p><img src="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image012-large.jpg" alt=""></p>
 <blockquote>
 <p>引用自第二篇链接</p>
 </blockquote>
@@ -1306,7 +1471,8 @@ Memtable  ---&gt; Periodically flush to SSTable
 <li>这张图里面有的结构可能不太对了。没有找到RowMutation这个结构，只有Mutation</li>
 </ul>
 <h3 id="Replica-Factor"><a href="#Replica-Factor" class="headerlink" title="Replica Factor"></a>Replica Factor</h3><ul>
-<li>CassandraServer 接收到要写入的数据时：<ul>
+<li><p>CassandraServer 接收到要写入的数据时：</p>
+<ul>
 <li>创建一个 RowMutation 对象，再创建一个 QueryPath 对象，这个对象中保存了 ColumnFamily、Column Name 或者 Super Column Name。</li>
 <li>把用户提交的所有数据保存在 RowMutation 对象的 Map&lt;String, ColumnFamily&gt; 结构中。</li>
 <li>根据提交的 Key 计算集群中那个节点应该保存这条数据。这个计算的规则是：将 Key 转化成 Token，然后在整个集群的 Token 环中根据二分查找算法找到与给定的 Token 最接近的一个节点。</li>
@@ -1314,6 +1480,27 @@ Memtable  ---&gt; Periodically flush to SSTable
 <li><strong><em>所以在真正开始写入数据之前，cassandra会做这些事情？在commitLog之前？</em></strong> 我想应该是之前</li>
 </ul>
 </li>
+<li><p>Replica Factor和consistency level不是一个东西，然后有一个算法。我们自己的产品里面，replica set是3， consistency的策略是Querum。这样需要consistent的节点是replica set/2 +1 ，所以就是2 </p>
+</li>
+</ul>
+<h3 id="Eventual-Consistency"><a href="#Eventual-Consistency" class="headerlink" title="Eventual Consistency"></a>Eventual Consistency</h3><p>这在Cassandra里面是非常关键的一个概念。写在这里。因为与写的机制相关最多。</p>
+<ul>
+<li><p>Cassandra must make tradeoffs among data consistency,<br>availability, and partition tolerance</p>
+<ul>
+<li>Availability: all clients are able to access the data so they can read and write data.</li>
+<li><p>Consistency的概念：</p>
+<ul>
+<li>a read always return the latest written data</li>
+<li>All clients will read the same value for an element of data even when the database is simultaneously updating data</li>
+<li>Partition tolerance：a database can be split into multiple machines and be able keep functioning even during network segmentation breaks.</li>
+</ul>
+<p>这里应该和关系型的传统数据库不一样。Cassandra是分布式数据库，所有node的地位是一样的。<strong><em>说好的seed呢，怎么感觉有seed</em></strong><br>Oracle这种数据库一般是单机版的，没有cluster， 但是有主从备份，所有不一样的</p>
+</li>
+</ul>
+</li>
+<li><p>严格意义上面的Consistency对于分布式数据库来说很难做到。所以有Eventual consistency requires that all updates must be present on all the copies (replicas) of data in a distributed database, but allows for the fact that the process can take a bit of time.<br>就是说更新是都要进行的，但是可以有一段时间差</p>
+</li>
+<li>tuneable consistency： 可配置的consistency。写和读都可以配。</li>
 </ul>
 <h3 id="commit-log"><a href="#commit-log" class="headerlink" title="commit log"></a>commit log</h3><p><a href="https://stackoverflow.com/questions/34592948/what-is-the-purpose-of-cassandras-commit-log" target="_blank" rel="noopener">stackoverflow问答</a><br>这篇文章里面解释得挺清楚的。这里基本就是翻译以下。这个commit log也就是装机时候配置的那个<code>commitlog_directory</code>的配置项。</p>
 <ul>
@@ -1342,18 +1529,18 @@ Memtable  ---&gt; Periodically flush to SSTable
 Statistics.db
 CompressionInfo.db
 Digest.adler32
-TOC.txt
+TOC.txt(就是文件列表)
 Summary.db
 Data.db
 Index.db
 </code></pre><ul>
 <li>Partition index: A list of partition keys and the start position of rows in the data file written on disk(记得读的时候蛮有用的)</li>
-<li>Partition summary： 这个summary文件跟上面的Index Summary应该就是一个文件。解释也是一样。<strong><em>但是这个sample每个都弄一个，想咋样啊?</em></strong></li>
+<li>Partition summary： 这个summary文件跟上面的Index Summary应该就是一个文件。解释也是一样。A sample of the partition index stored in memory</li>
 <li>Bloom filter：<blockquote>
 <p>A structure stored in memory that checks if row data exists in the memtable before accessing SSTables on disk<br>按照这个解释，有点不明白，这么说应该是memory里面才有的。</p>
 </blockquote>
 </li>
-<li>找到解释了：Filter 文件存的内容就是 BloomFilter 对象的序列化结果。<strong><em>但是这样的话，有什么用呢</em></strong></li>
+<li>找到解释了：Filter 文件存的内容就是 BloomFilter 对象的序列化结果。<strong><em>但是这样的话，将其序列化后保存到disk上面有什么用呢</em></strong></li>
 </ul>
 <ul>
 <li>存贮的目录就是yaml文件里面配置的<code>data_file_directories</code>确定</li>
@@ -1379,7 +1566,7 @@ Index.db
 </ul>
 <h3 id="从memTables到SSTable"><a href="#从memTables到SSTable" class="headerlink" title="从memTables到SSTable"></a>从memTables到SSTable</h3><ul>
 <li><blockquote>
-<p>To flush the data, Cassandra sorts memtables by token and then writes the data to disk sequentially.<br>Cassandra在将数据写到disk的时候，同时会将memtables按照token排序。<strong>_这个token是不是就是key算出来的那个token？但是table怎么按照token排序呢 _</strong></p>
+<p>To flush the data, Cassandra sorts memtables by token and then writes the data to disk sequentially.<br>Cassandra在将数据写到disk的时候，同时会将memtables按照token排序。<strong>_这个token是不是就是key算出来的那个token？但是table怎么按照token排序呢，应该说的是table里面的数据吧 _</strong></p>
 </blockquote>
 </li>
 <li><blockquote>
@@ -1807,125 +1994,6 @@ logger.info(String.format(&quot;%-25s%20s&quot;,
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/01/14/java数据类型比较1/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/01/14/java数据类型比较1/" itemprop="url">Java数据类型(1)  -- 数据类型比较</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-14T10:46:27+08:00">
-                2019-01-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="HashMap-amp-HashTable"><a href="#HashMap-amp-HashTable" class="headerlink" title="HashMap &amp; HashTable"></a>HashMap &amp; HashTable</h3><h3 id="List-amp-Set-amp-Vector"><a href="#List-amp-Set-amp-Vector" class="headerlink" title="List &amp; Set &amp; Vector"></a>List &amp; Set &amp; Vector</h3><h3 id="HashSet-amp-TreeSet-amp-LinkedHashSet"><a href="#HashSet-amp-TreeSet-amp-LinkedHashSet" class="headerlink" title="HashSet &amp; TreeSet &amp; LinkedHashSet"></a>HashSet &amp; TreeSet &amp; LinkedHashSet</h3><h3 id="TreeSet-amp-TreeMap"><a href="#TreeSet-amp-TreeMap" class="headerlink" title="TreeSet &amp; TreeMap"></a>TreeSet &amp; TreeMap</h3>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1976,7 +2044,7 @@ logger.info(String.format(&quot;%-25s%20s&quot;,
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
