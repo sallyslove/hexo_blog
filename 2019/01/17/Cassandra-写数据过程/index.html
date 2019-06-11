@@ -88,7 +88,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image012-large.jpg">
 <meta property="og:image" content="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image010-large.jpg">
-<meta property="og:updated_time" content="2019-06-07T13:53:52.712Z">
+<meta property="og:updated_time" content="2019-06-11T09:52:03.235Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Cassandra 写数据过程">
 <meta name="twitter:description" content="Cassandra 写流程大致流程到把数据写到磁盘中分为以下几个步骤：  先找到应该往哪几个节点写 写log到commit log 写数据到memtable 从memtable中flush数据 将数据存储在SSTables中的磁盘中   客户端写一条数据必须指定 Keyspace、ColumnFamily、Key、Column Name 和 Value，还可以指定 Timestamp，以及数据的安">
@@ -401,10 +401,11 @@ Memtable  ---&gt; Periodically flush to SSTable
 </li>
 <li>tuneable consistency： 可配置的consistency。写和读都可以配。</li>
 </ul>
-<h3 id="commit-log"><a href="#commit-log" class="headerlink" title="commit log"></a>commit log</h3><p><a href="https://stackoverflow.com/questions/34592948/what-is-the-purpose-of-cassandras-commit-log" target="_blank" rel="noopener">stackoverflow问答</a><br>这篇文章里面解释得挺清楚的。这里基本就是翻译以下。这个commit log也就是装机时候配置的那个<code>commitlog_directory</code>的配置项。</p>
+<h3 id="commit-log"><a href="#commit-log" class="headerlink" title="commit log"></a>commit log</h3><p><a href="https://stackoverflow.com/questions/34592948/what-is-the-purpose-of-cassandras-commit-log" target="_blank" rel="noopener">stackoverflow问答</a><br>这篇文章里面解释得挺清楚的。这里基本就是翻译以下。这个commit log也就是装机时候配置的那个<code>commitlog_directory</code>的配置项。<br>commit log大小配置是per-node来配置的，所有的table share这个配置。而Memtable和SSTable是per-table配置的</p>
 <ul>
 <li>cassandra是先写到内存，再写到disk上面的，但是如果当机了。那么内存的数据就会丢。</li>
 <li>这个时候就需要commitLog，cassandra会从当机的时间点开始，将commitlog里面的数据再写到memTable里面。</li>
+<li>A commit log serves just one purpose: to hold committed data until it’s permanently written to disk in the SSTables</li>
 <li>commitLog需要写的数据少，并且只写到一个地方，所以比写SSTable要快</li>
 <li>在工作中碰到的一个问题就是commitLog损坏了，然后cassandra就起不来了。有一个配置项可以忽略commitLog报错。</li>
 <li><blockquote>
@@ -415,6 +416,24 @@ Memtable  ---&gt; Periodically flush to SSTable
 <p>Commit log replay is the process of reading the commit log to recover lost writes in the event of interrupted operations.<br>这个过程并不快，所以最好在restart之前手动进行一下memTable的flush</p>
 </blockquote>
 </li>
+<li><p>The database flushes memtables to disk when the space configured for the commit log reaches its limit.</p>
+</li>
+<li><p>By default, the database doesn’t compress the commit log, but you can make it compress.</p>
+</li>
+<li><p>The database archives the commit log at the following times. You configure commit log archiving in the commitlog_archiving.properties file. <strong>__archive和compress不是一个概念的感觉。但是前者是指什么呢_</strong></p>
+<ul>
+<li>When the node starts up</li>
+<li>When it writes a commit log to disk</li>
+<li>At a point in time that you specify</li>
+</ul>
+</li>
+</ul>
+<h3 id="MemTable"><a href="#MemTable" class="headerlink" title="MemTable"></a>MemTable</h3><ul>
+<li><blockquote>
+<p>Each memtable is dedicated to storing data for a specific table, and there may be multiple memtables per table.</p>
+</blockquote>
+</li>
+<li>每次写的时候只写其中一张memtable memTable在内存里面看不到哦</li>
 </ul>
 <h3 id="SSTable"><a href="#SSTable" class="headerlink" title="SSTable"></a>SSTable</h3><p>第二篇参考链接非常好，但是图片忒不清楚。</p>
 <p><img src="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image010-large.jpg" alt=""></p>
@@ -464,6 +483,7 @@ Index.db
 </li>
 </ul>
 <h3 id="从memTables到SSTable"><a href="#从memTables到SSTable" class="headerlink" title="从memTables到SSTable"></a>从memTables到SSTable</h3><ul>
+<li>Cassandra flushes the memtables to disk when either the commit log space threshold or the memtable cleanup threshold is reached.<br><strong>确实是不止一种情况下会写</strong></li>
 <li><blockquote>
 <p>To flush the data, Cassandra sorts memtables by token and then writes the data to disk sequentially.<br>Cassandra在将数据写到disk的时候，同时会将memtables按照token排序。<strong>_这个token是不是就是key算出来的那个token？但是table怎么按照token排序呢，应该说的是table里面的数据吧 _</strong></p>
 </blockquote>
@@ -481,11 +501,13 @@ Index.db
 <p>Consequently, a partition is typically stored across multiple SSTable files.</p>
 </blockquote>
 </li>
+<li>相同partition key的记录应该是存贮在一个node上面，但是也有可能是多个文件，要看数据量。</li>
 </ul>
 <h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
 <li><a href="https://blog.csdn.net/fs1360472174/article/details/55005335/" target="_blank" rel="noopener">官方文档–读写数据</a></li>
 <li><a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/index.html" target="_blank" rel="noopener">cassandra数据库详解</a></li>
 <li><a href="https://docs.datastax.com/en/cassandra/3.0/cassandra/dml/dmlHowDataWritten.html" target="_blank" rel="noopener">cassandra读写过程</a></li>
+<li><a href="https://blog.csdn.net/qinzhihu/article/details/8807776" target="_blank" rel="noopener">一篇很通俗的blog</a></li>
 </ul>
 
       
@@ -653,7 +675,7 @@ Index.db
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Cassandra-写流程"><span class="nav-number">1.</span> <span class="nav-text">Cassandra 写流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#大致流程"><span class="nav-number">1.1.</span> <span class="nav-text">大致流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Replica-Factor"><span class="nav-number">1.2.</span> <span class="nav-text">Replica Factor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Eventual-Consistency"><span class="nav-number">1.3.</span> <span class="nav-text">Eventual Consistency</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#commit-log"><span class="nav-number">1.4.</span> <span class="nav-text">commit log</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSTable"><span class="nav-number">1.5.</span> <span class="nav-text">SSTable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从memTables到SSTable"><span class="nav-number">1.6.</span> <span class="nav-text">从memTables到SSTable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文档"><span class="nav-number">1.7.</span> <span class="nav-text">参考文档</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Cassandra-写流程"><span class="nav-number">1.</span> <span class="nav-text">Cassandra 写流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#大致流程"><span class="nav-number">1.1.</span> <span class="nav-text">大致流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Replica-Factor"><span class="nav-number">1.2.</span> <span class="nav-text">Replica Factor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Eventual-Consistency"><span class="nav-number">1.3.</span> <span class="nav-text">Eventual Consistency</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#commit-log"><span class="nav-number">1.4.</span> <span class="nav-text">commit log</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MemTable"><span class="nav-number">1.5.</span> <span class="nav-text">MemTable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSTable"><span class="nav-number">1.6.</span> <span class="nav-text">SSTable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从memTables到SSTable"><span class="nav-number">1.7.</span> <span class="nav-text">从memTables到SSTable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文档"><span class="nav-number">1.8.</span> <span class="nav-text">参考文档</span></a></li></ol></li></ol></div>
             
 
           </div>

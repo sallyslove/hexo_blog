@@ -502,6 +502,10 @@
 </li>
 <li>接上文，如果将consistency level设置成为Any，那么hint就算了。所以即使只是写了hint，写操作也会成功，但是这时候读数据是读不出来的。</li>
 </ul>
+<h3 id="Repairing-Data"><a href="#Repairing-Data" class="headerlink" title="Repairing Data"></a>Repairing Data</h3><ul>
+<li>Read repair: The reconciliation or correction happens when a read finds an inconsistency.</li>
+<li>When data is read, a read repair can resolve any data inconsistencies. When data isn’t read, you need to use either the hinted handoff or anti-entropy mechanism to resolve any data inconsistences.</li>
+</ul>
 <h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><ul>
 <li><a href="https://wiki.apache.org/cassandra/HintedHandoff" target="_blank" rel="noopener">wiki上面的简介</a></li>
 <li><a href="https://docs.datastax.com/en/cassandra/3.0/cassandra/operations/opsRepairNodesHintedHandoff.html" target="_blank" rel="noopener">官方</a></li>
