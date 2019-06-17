@@ -88,7 +88,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image012-large.jpg">
 <meta property="og:image" content="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image010-large.jpg">
-<meta property="og:updated_time" content="2019-06-11T09:52:03.235Z">
+<meta property="og:updated_time" content="2019-06-12T09:52:01.237Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Cassandra 写数据过程">
 <meta name="twitter:description" content="Cassandra 写流程大致流程到把数据写到磁盘中分为以下几个步骤：  先找到应该往哪几个节点写 写log到commit log 写数据到memtable 从memtable中flush数据 将数据存储在SSTables中的磁盘中   客户端写一条数据必须指定 Keyspace、ColumnFamily、Key、Column Name 和 Value，还可以指定 Timestamp，以及数据的安">
@@ -404,7 +404,7 @@ Memtable  ---&gt; Periodically flush to SSTable
 <h3 id="commit-log"><a href="#commit-log" class="headerlink" title="commit log"></a>commit log</h3><p><a href="https://stackoverflow.com/questions/34592948/what-is-the-purpose-of-cassandras-commit-log" target="_blank" rel="noopener">stackoverflow问答</a><br>这篇文章里面解释得挺清楚的。这里基本就是翻译以下。这个commit log也就是装机时候配置的那个<code>commitlog_directory</code>的配置项。<br>commit log大小配置是per-node来配置的，所有的table share这个配置。而Memtable和SSTable是per-table配置的</p>
 <ul>
 <li>cassandra是先写到内存，再写到disk上面的，但是如果当机了。那么内存的数据就会丢。</li>
-<li>这个时候就需要commitLog，cassandra会从当机的时间点开始，将commitlog里面的数据再写到memTable里面。</li>
+<li>这个时候就需要commitLog，cassandra会从当机的时间点开始，将commitlog里面的数据再写到memTable里面。这个过程并不快，所以最好在restart之前手动进行一下memTable的flush。</li>
 <li>A commit log serves just one purpose: to hold committed data until it’s permanently written to disk in the SSTables</li>
 <li>commitLog需要写的数据少，并且只写到一个地方，所以比写SSTable要快</li>
 <li>在工作中碰到的一个问题就是commitLog损坏了，然后cassandra就起不来了。有一个配置项可以忽略commitLog报错。</li>
@@ -413,13 +413,11 @@ Memtable  ---&gt; Periodically flush to SSTable
 </blockquote>
 </li>
 <li><blockquote>
-<p>Commit log replay is the process of reading the commit log to recover lost writes in the event of interrupted operations.<br>这个过程并不快，所以最好在restart之前手动进行一下memTable的flush</p>
+<p>Commit log replay is the process of reading the commit log to recover lost writes in the event of interrupted operations. </p>
 </blockquote>
 </li>
-<li><p>The database flushes memtables to disk when the space configured for the commit log reaches its limit.</p>
-</li>
-<li><p>By default, the database doesn’t compress the commit log, but you can make it compress.</p>
-</li>
+<li>The database flushes memtables to disk when the space configured for the commit log reaches its limit. 这里配置的应该是磁盘空间大小，commit log只会写到磁盘上面。不会写到内存里面。</li>
+<li>By default, the database doesn’t compress the commit log, but you can make it compress.</li>
 <li><p>The database archives the commit log at the following times. You configure commit log archiving in the commitlog_archiving.properties file. <strong>__archive和compress不是一个概念的感觉。但是前者是指什么呢_</strong></p>
 <ul>
 <li>When the node starts up</li>
@@ -434,6 +432,8 @@ Memtable  ---&gt; Periodically flush to SSTable
 </blockquote>
 </li>
 <li>每次写的时候只写其中一张memtable memTable在内存里面看不到哦</li>
+<li>memTable有两种，一种是写的这种，另外一种是从SSTable读进来的，这种不会重新写回到磁盘里面</li>
+<li><code>nodetool flush</code> or the <code>nodetool drain</code> command 来触法手动的flush。前者是指定table。后一个命令是flush这个node。期间会停止任何connection的接听，所以需要在执行命令之后重启整个node</li>
 </ul>
 <h3 id="SSTable"><a href="#SSTable" class="headerlink" title="SSTable"></a>SSTable</h3><p>第二篇参考链接非常好，但是图片忒不清楚。</p>
 <p><img src="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image010-large.jpg" alt=""></p>
