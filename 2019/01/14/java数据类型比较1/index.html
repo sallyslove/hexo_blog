@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="HashMap &amp;amp; HashTableList &amp;amp; Set &amp;amp; VectorHashSet &amp;amp; TreeSet &amp;amp; LinkedHashSetTreeSet &amp;amp; TreeMap">
+<meta name="description" content="HashMap &amp;amp; HashTableList &amp;amp; Set &amp;amp; VectorHashSet &amp;amp; TreeSet &amp;amp; LinkedHashSetTreeSet &amp;amp; TreeMapCallable &amp;amp; Runnable这两个都是线程池可以调用的。  共同点有二： 是都是用来实现线程的接口 都需要thread.start来启动。 线程只能用thre">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java数据类型(1)  -- 数据类型比较">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/01/14/java数据类型比较1/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="HashMap &amp;amp; HashTableList &amp;amp; Set &amp;amp; VectorHashSet &amp;amp; TreeSet &amp;amp; LinkedHashSetTreeSet &amp;amp; TreeMap">
+<meta property="og:description" content="HashMap &amp;amp; HashTableList &amp;amp; Set &amp;amp; VectorHashSet &amp;amp; TreeSet &amp;amp; LinkedHashSetTreeSet &amp;amp; TreeMapCallable &amp;amp; Runnable这两个都是线程池可以调用的。  共同点有二： 是都是用来实现线程的接口 都需要thread.start来启动。 线程只能用thre">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-03-11T01:35:55.062Z">
+<meta property="og:updated_time" content="2019-06-17T05:14:03.962Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java数据类型(1)  -- 数据类型比较">
-<meta name="twitter:description" content="HashMap &amp;amp; HashTableList &amp;amp; Set &amp;amp; VectorHashSet &amp;amp; TreeSet &amp;amp; LinkedHashSetTreeSet &amp;amp; TreeMap">
+<meta name="twitter:description" content="HashMap &amp;amp; HashTableList &amp;amp; Set &amp;amp; VectorHashSet &amp;amp; TreeSet &amp;amp; LinkedHashSetTreeSet &amp;amp; TreeMapCallable &amp;amp; Runnable这两个都是线程池可以调用的。  共同点有二： 是都是用来实现线程的接口 都需要thread.start来启动。 线程只能用thre">
 
 
 
@@ -319,7 +319,30 @@
       
 
       
-        <h3 id="HashMap-amp-HashTable"><a href="#HashMap-amp-HashTable" class="headerlink" title="HashMap &amp; HashTable"></a>HashMap &amp; HashTable</h3><h3 id="List-amp-Set-amp-Vector"><a href="#List-amp-Set-amp-Vector" class="headerlink" title="List &amp; Set &amp; Vector"></a>List &amp; Set &amp; Vector</h3><h3 id="HashSet-amp-TreeSet-amp-LinkedHashSet"><a href="#HashSet-amp-TreeSet-amp-LinkedHashSet" class="headerlink" title="HashSet &amp; TreeSet &amp; LinkedHashSet"></a>HashSet &amp; TreeSet &amp; LinkedHashSet</h3><h3 id="TreeSet-amp-TreeMap"><a href="#TreeSet-amp-TreeMap" class="headerlink" title="TreeSet &amp; TreeMap"></a>TreeSet &amp; TreeMap</h3>
+        <h3 id="HashMap-amp-HashTable"><a href="#HashMap-amp-HashTable" class="headerlink" title="HashMap &amp; HashTable"></a>HashMap &amp; HashTable</h3><h3 id="List-amp-Set-amp-Vector"><a href="#List-amp-Set-amp-Vector" class="headerlink" title="List &amp; Set &amp; Vector"></a>List &amp; Set &amp; Vector</h3><h3 id="HashSet-amp-TreeSet-amp-LinkedHashSet"><a href="#HashSet-amp-TreeSet-amp-LinkedHashSet" class="headerlink" title="HashSet &amp; TreeSet &amp; LinkedHashSet"></a>HashSet &amp; TreeSet &amp; LinkedHashSet</h3><h3 id="TreeSet-amp-TreeMap"><a href="#TreeSet-amp-TreeMap" class="headerlink" title="TreeSet &amp; TreeMap"></a>TreeSet &amp; TreeMap</h3><h3 id="Callable-amp-Runnable"><a href="#Callable-amp-Runnable" class="headerlink" title="Callable &amp; Runnable"></a>Callable &amp; Runnable</h3><p>这两个都是线程池可以调用的。</p>
+<ul>
+<li>共同点有二：<ul>
+<li>是都是用来实现线程的接口</li>
+<li>都需要thread.start来启动。 <strong><em>线程只能用thread.start来启动吧。貌似没有其他方式</em></strong></li>
+</ul>
+</li>
+<li>不同点有二： <ul>
+<li>callable可以返回执行结果。runnable不行。 callable的要获得执行结果的话，需要调用FutureTask.get()方法实现，此方法会阻塞主线程直到获取‘将来’结果；当不调用此方法时，主线程不会阻塞！</li>
+<li>callable的exception异常可以往上面跑，而runnable的只能自己处理。说明函数声明时候一个有抛exception啊。</li>
+</ul>
+</li>
+</ul>
+<pre><code>public interface Callable&lt;V&gt; {
+    V call() throws Exception;
+}
+
+public interface Runnable {
+    public abstract void run();
+}
+</code></pre><ul>
+<li>参考链接： <a href="https://www.cnblogs.com/frinder6/p/5507082.html" target="_blank" rel="noopener">已经说得很清楚的一篇博客</a></li>
+</ul>
+
       
     </div>
     
@@ -439,7 +462,7 @@
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -485,7 +508,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#HashMap-amp-HashTable"><span class="nav-number">1.</span> <span class="nav-text">HashMap &amp; HashTable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#List-amp-Set-amp-Vector"><span class="nav-number">2.</span> <span class="nav-text">List &amp; Set &amp; Vector</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HashSet-amp-TreeSet-amp-LinkedHashSet"><span class="nav-number">3.</span> <span class="nav-text">HashSet &amp; TreeSet &amp; LinkedHashSet</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TreeSet-amp-TreeMap"><span class="nav-number">4.</span> <span class="nav-text">TreeSet &amp; TreeMap</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#HashMap-amp-HashTable"><span class="nav-number">1.</span> <span class="nav-text">HashMap &amp; HashTable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#List-amp-Set-amp-Vector"><span class="nav-number">2.</span> <span class="nav-text">List &amp; Set &amp; Vector</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HashSet-amp-TreeSet-amp-LinkedHashSet"><span class="nav-number">3.</span> <span class="nav-text">HashSet &amp; TreeSet &amp; LinkedHashSet</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TreeSet-amp-TreeMap"><span class="nav-number">4.</span> <span class="nav-text">TreeSet &amp; TreeMap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Callable-amp-Runnable"><span class="nav-number">5.</span> <span class="nav-text">Callable &amp; Runnable</span></a></li></ol></div>
             
 
           </div>

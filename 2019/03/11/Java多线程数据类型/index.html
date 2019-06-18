@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="这篇记录一些数据类型。暂时写在这里吧 java.Util.Function.Supplier 这个接口只有一个方法，Get方法。void，返回一个T 把它当工厂方法看就是了。 顾名思义，提供者。 JAVA8 Supplier接口 感觉就是一次性生成。同一个接口，在初始化时候给出get函数，可以有不同实现 supplier作为function interface，有@FunctionalInterf">
+<meta name="description" content="这篇记录改成专门记录和多线程相关的数据类型 Executors这个Executors没有继承或者实现任何其他类。就是说，他嘎嘣自己一个。实际上是一个工具类啊，更确切地说，像一个工厂类。主要功能是返回各种ExecutorService。其实就是new出各种ThreadPoolExecutor。如下： public static ExecutorService newSingleThreadExecu">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java数据类型（2）">
-<meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/03/11/Java数据类型（2）/index.html">
+<meta property="og:title" content="Java多线程数据类型">
+<meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/03/11/Java多线程数据类型/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="这篇记录一些数据类型。暂时写在这里吧 java.Util.Function.Supplier 这个接口只有一个方法，Get方法。void，返回一个T 把它当工厂方法看就是了。 顾名思义，提供者。 JAVA8 Supplier接口 感觉就是一次性生成。同一个接口，在初始化时候给出get函数，可以有不同实现 supplier作为function interface，有@FunctionalInterf">
+<meta property="og:description" content="这篇记录改成专门记录和多线程相关的数据类型 Executors这个Executors没有继承或者实现任何其他类。就是说，他嘎嘣自己一个。实际上是一个工具类啊，更确切地说，像一个工厂类。主要功能是返回各种ExecutorService。其实就是new出各种ThreadPoolExecutor。如下： public static ExecutorService newSingleThreadExecu">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-05-15T09:43:21.645Z">
+<meta property="og:updated_time" content="2019-06-17T05:42:50.525Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Java数据类型（2）">
-<meta name="twitter:description" content="这篇记录一些数据类型。暂时写在这里吧 java.Util.Function.Supplier 这个接口只有一个方法，Get方法。void，返回一个T 把它当工厂方法看就是了。 顾名思义，提供者。 JAVA8 Supplier接口 感觉就是一次性生成。同一个接口，在初始化时候给出get函数，可以有不同实现 supplier作为function interface，有@FunctionalInterf">
+<meta name="twitter:title" content="Java多线程数据类型">
+<meta name="twitter:description" content="这篇记录改成专门记录和多线程相关的数据类型 Executors这个Executors没有继承或者实现任何其他类。就是说，他嘎嘣自己一个。实际上是一个工具类啊，更确切地说，像一个工厂类。主要功能是返回各种ExecutorService。其实就是new出各种ThreadPoolExecutor。如下： public static ExecutorService newSingleThreadExecu">
 
 
 
@@ -119,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="https://sallyslove.github.io/hexo_blog/2019/03/11/Java数据类型（2）/">
+  <link rel="canonical" href="https://sallyslove.github.io/hexo_blog/2019/03/11/Java多线程数据类型/">
 
 
 
 
 
-  <title>Java数据类型（2） | 跬步</title>
+  <title>Java多线程数据类型 | 跬步</title>
   
 
 
@@ -242,7 +242,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/03/11/Java数据类型（2）/">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/03/11/Java多线程数据类型/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Lynn Shen">
@@ -259,7 +259,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Java数据类型（2）</h1>
+          <h1 class="post-title" itemprop="name headline">Java多线程数据类型</h1>
         
 
         <div class="post-meta">
@@ -312,8 +312,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/hexo_blog/2019/03/11/Java数据类型（2）/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count gitment-comments-count" data-xid="/hexo_blog/2019/03/11/Java数据类型（2）/" itemprop="commentsCount"></span>
+                <a href="/hexo_blog/2019/03/11/Java多线程数据类型/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/hexo_blog/2019/03/11/Java多线程数据类型/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -341,14 +341,53 @@
       
 
       
-        <p>这篇记录一些数据类型。暂时写在这里吧</p>
-<h3 id="java-Util-Function-Supplier"><a href="#java-Util-Function-Supplier" class="headerlink" title="java.Util.Function.Supplier"></a>java.Util.Function.Supplier</h3><ul>
-<li>这个接口只有一个方法，Get方法。void，返回一个T</li>
-<li>把它当工厂方法看就是了。</li>
-<li>顾名思义，提供者。</li>
-<li><a href="https://blog.csdn.net/qq_28410283/article/details/80625482" target="_blank" rel="noopener">JAVA8 Supplier接口</a></li>
-<li>感觉就是一次性生成。同一个接口，在初始化时候给出get函数，可以有不同实现</li>
-<li>supplier作为function interface，有@FunctionalInterface annotation。所以可以直接用lamda来作为实现。比如：<code>()-&gt;getString()</code>可以作为<code>Supplier&lt;String&gt;</code>的实现</li>
+        <p>这篇记录改成专门记录和多线程相关的数据类型</p>
+<h3 id="Executors"><a href="#Executors" class="headerlink" title="Executors"></a>Executors</h3><p>这个<code>Executors</code>没有继承或者实现任何其他类。就是说，他嘎嘣自己一个。实际上是一个工具类啊，更确切地说，像一个工厂类。主要功能是返回各种<code>ExecutorService</code>。<br>其实就是<code>new</code>出各种<code>ThreadPoolExecutor</code>。如下：</p>
+<pre><code>public static ExecutorService newSingleThreadExecutor() {
+    return new FinalizableDelegatedExecutorService
+        (new ThreadPoolExecutor(1, 1,
+                                0L, TimeUnit.MILLISECONDS,
+                      new LinkedBlockingQueue&lt;Runnable&gt;()));
+}
+</code></pre><h3 id="ExecutorService"><a href="#ExecutorService" class="headerlink" title="ExecutorService"></a>ExecutorService</h3><h4 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h4><pre><code>public interface ExecutorService extends Executor
+</code></pre><ul>
+<li>所以首先来说，这是一个接口</li>
+<li>Executor接口很简单，只有一个execute方法。ExecutorService除了这一个方法，还增加了一些方法，增加的方法包括：<code>awaitTerminate</code>，<code>invokeAll</code>，<code>invokeAny</code>，<code>shutdown</code>，<code>shutdownNow</code>，<code>submit</code>等。</li>
+<li><a href="https://www.cnblogs.com/Steven0805/p/6393443.html" target="_blank" rel="noopener">Java线程池ExecutorService</a></li>
+</ul>
+<h4 id="几种常用线程池的具体实现"><a href="#几种常用线程池的具体实现" class="headerlink" title="几种常用线程池的具体实现"></a>几种常用线程池的具体实现</h4><ul>
+<li>然后有意思的来了：<ul>
+<li>Java通过Executors class提供了好几种线程池，这就是我们常用的几种了。</li>
+<li><code>newFixedThreadPool</code>：就是说这个玩意，限定好了最大数目，核心数目，然后本质是一个<code>LinkedBlockingQueue</code>套了<code>runnable</code></li>
+</ul>
+</li>
+</ul>
+<pre><code>public static ExecutorService newFixedThreadPool(int nThreads) {
+   return new ThreadPoolExecutor(nThreads, nThreads,
+                                 0L, TimeUnit.MILLISECONDS,
+                                 new LinkedBlockingQueue&lt;Runnable&gt;());
+</code></pre><ul>
+<li><code>newCachedThreadPool</code>：</li>
+</ul>
+<pre><code>public static ExecutorService newCachedThreadPool() {
+ return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
+                               60L, TimeUnit.SECONDS,
+                               new SynchronousQueue&lt;Runnable&gt;());    }
+</code></pre><ul>
+<li>还有<code>newScheduledThreadPool</code>和<code>newSingleThreadExecutor</code></li>
+</ul>
+<h4 id="一些要点"><a href="#一些要点" class="headerlink" title="一些要点"></a>一些要点</h4><ul>
+<li><code>submit</code>与<code>execute</code>的区别： <ul>
+<li>submit接受runnable和callable  有返回值。</li>
+<li>execute接受runnable 无返回值</li>
+<li>submit方便Exception处理</li>
+</ul>
+</li>
+<li>Runnable与Callable区别<ul>
+<li>runnable接口实现的没有返回值的并发编程。</li>
+<li>callable实现的存在返回值的并发编程。使用Future获取返回值。</li>
+</ul>
+</li>
 </ul>
 <h3 id="ThreadPoolExecutor"><a href="#ThreadPoolExecutor" class="headerlink" title="ThreadPoolExecutor"></a>ThreadPoolExecutor</h3><pre><code>public abstract class AbstractExecutorService implements ExecutorService
 public class ThreadPoolExecutor extends AbstractExecutorService    
@@ -376,46 +415,6 @@ public class ThreadPoolExecutor extends AbstractExecutorService
 </li>
 <li><a href="https://blog.csdn.net/zaozi/article/details/38854561#commentBox" target="_blank" rel="noopener">ExecutorService的正确关闭方法</a>： 这篇文章比喻得很清楚，只是不知道正确与否</li>
 <li><a href="https://blog.csdn.net/liwenxia626/article/details/80754886" target="_blank" rel="noopener">csdn的另一篇博客</a></li>
-</ul>
-<h3 id="ExecutorService"><a href="#ExecutorService" class="headerlink" title="ExecutorService"></a>ExecutorService</h3><h4 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h4><pre><code>public interface ExecutorService extends Executor
-</code></pre><ul>
-<li>所以首先来说，这是一个接口</li>
-<li>Executor接口很简单，只有一个execute方法。ExecutorService除了这一个方法，还增加了一些方法。  </li>
-<li><a href="https://www.cnblogs.com/Steven0805/p/6393443.html" target="_blank" rel="noopener">Java线程池ExecutorService</a></li>
-</ul>
-<h4 id="几种常用线程池的具体实现"><a href="#几种常用线程池的具体实现" class="headerlink" title="几种常用线程池的具体实现"></a>几种常用线程池的具体实现</h4><ul>
-<li>然后有意思的来了：<ul>
-<li>Java通过Executors class提供了好几种线程池，这就是我们常用的几种了。这个Executors没有继承或者实现任何其他类。就是说，他嘎嘣自己一个。</li>
-<li><code>newFixedThreadPool</code>：就是说这个玩意，限定好了最大数目，核心数目，然后本质是一个LinkedBlockingQueue套了runnable</li>
-</ul>
-</li>
-</ul>
-<pre><code>public static ExecutorService newFixedThreadPool(int nThreads) {
-   return new ThreadPoolExecutor(nThreads, nThreads,
-                                 0L, TimeUnit.MILLISECONDS,
-                                 new LinkedBlockingQueue&lt;Runnable&gt;());
-</code></pre><ul>
-<li><code>newCachedThreadPool</code>：</li>
-</ul>
-<pre><code>public static ExecutorService newCachedThreadPool() {
- return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
-                               60L, TimeUnit.SECONDS,
-                               new SynchronousQueue&lt;Runnable&gt;());    }
-</code></pre><ul>
-<li>还有<code>newScheduledThreadPool</code>和<code>newSingleThreadExecutor</code></li>
-</ul>
-<h4 id="一些要点"><a href="#一些要点" class="headerlink" title="一些要点"></a>一些要点</h4><ul>
-<li>submit与execute的区别： <ul>
-<li>submit接受runnable和callable  有返回值。</li>
-<li>execute接受runnable 无返回值</li>
-<li>submit方便Exception处理</li>
-</ul>
-</li>
-<li>Runnable与Callable区别<ul>
-<li>runnable接口实现的没有返回值的并发编程。</li>
-<li>callable实现的存在返回值的并发编程。使用Future获取返回值。</li>
-</ul>
-</li>
 </ul>
 
       
@@ -537,7 +536,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -583,7 +582,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#java-Util-Function-Supplier"><span class="nav-number">1.</span> <span class="nav-text">java.Util.Function.Supplier</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ThreadPoolExecutor"><span class="nav-number">2.</span> <span class="nav-text">ThreadPoolExecutor</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ThreadPoolExecutor-shutdown"><span class="nav-number">2.1.</span> <span class="nav-text">ThreadPoolExecutor shutdown</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ExecutorService"><span class="nav-number">3.</span> <span class="nav-text">ExecutorService</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#概览"><span class="nav-number">3.1.</span> <span class="nav-text">概览</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#几种常用线程池的具体实现"><span class="nav-number">3.2.</span> <span class="nav-text">几种常用线程池的具体实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#一些要点"><span class="nav-number">3.3.</span> <span class="nav-text">一些要点</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Executors"><span class="nav-number">1.</span> <span class="nav-text">Executors</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ExecutorService"><span class="nav-number">2.</span> <span class="nav-text">ExecutorService</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#概览"><span class="nav-number">2.1.</span> <span class="nav-text">概览</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#几种常用线程池的具体实现"><span class="nav-number">2.2.</span> <span class="nav-text">几种常用线程池的具体实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#一些要点"><span class="nav-number">2.3.</span> <span class="nav-text">一些要点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ThreadPoolExecutor"><span class="nav-number">3.</span> <span class="nav-text">ThreadPoolExecutor</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ThreadPoolExecutor-shutdown"><span class="nav-number">3.1.</span> <span class="nav-text">ThreadPoolExecutor shutdown</span></a></li></ol></li></ol></div>
             
 
           </div>

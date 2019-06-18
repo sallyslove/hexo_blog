@@ -242,6 +242,417 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/02/22/Jetty-Graceful-shutdown/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/02/22/Jetty-Graceful-shutdown/" itemprop="url">Jetty Graceful shutdown</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-22T15:21:42+08:00">
+                2019-02-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Jetty"><a href="#Jetty" class="headerlink" title="Jetty"></a>Jetty</h2><p>工作中需要了解Jetty启停的一些知识，可能不能看到全貌，这边记录下来。毕竟不是web的产品。了解得还不够深入啊。</p>
+<h3 id="what-is-graceful-shutdown"><a href="#what-is-graceful-shutdown" class="headerlink" title="what is graceful shutdown"></a>what is graceful shutdown</h3><ul>
+<li>Graceful shutdown of a server, context or connector is when existing request/connections are allowed to gracefully complete while no new requests and/or connections are accepted.</li>
+<li>It is configured on the Server instance with the setGracefulShutdown(long) method. Heres an example of setting this via the jetty.xml file, where we specify a “grace” period of 30000 milliseconds:<set name="gracefulShutdown">30000</set></li>
+<li>The parameter may be already not used any more</li>
+</ul>
+<h3 id="How-it-works"><a href="#How-it-works" class="headerlink" title="How it works"></a>How it works</h3><ul>
+<li>As soon as the shutdown command is given, the container will close the connectors so that they do not accept any more inbound connections.</li>
+<li>所以在<code>ServerControllerImpl</code>里面，如果HTTP的配置参数是false，Connector确实是一上来就停掉了。但是怎么都到<code>JettyServer的</code>getContext（）`函数里面的</li>
+<li><code>ServerControllerImpl</code> 应该是HTTP server的controller</li>
+</ul>
+<pre><code>if (!ServerControllerImpl.this.configuration.isHttpEnabled()) {
+               connectorsx = ServerControllerImpl.this.jettyServer.getConnectors();
+               if (connectorsx != null) {
+                    ...
+                     this.stopConnector(backupConnector);
+                           ServerControllerImpl.this.jettyServer.removeConnector(backupConnector);
+ ...
+</code></pre><ul>
+<li>This will inform most load balancers that the server is no longer part of the cluster.</li>
+<li>The contexts are closed so that they do not accept any more requests, but the requests currently inside the container will drain out and the Server instance will shutdown after the grace period expires.<br>not very sure here. It seems that connector and context are different. I think the connector is more related with port. But context is more related with servlet.</li>
+</ul>
+<h3 id="Elements"><a href="#Elements" class="headerlink" title="Elements"></a>Elements</h3><p>我理解在整个jetty server shutdown的时候有几个东西： connector、context、server。以下是理解，不一定准确：</p>
+<ul>
+<li>servlet 是在context里面的，context一旦stop掉，servlet也会跟着destroy。context是WebAppHttpContext，servlet是其中的一个web Element。</li>
+<li>有三个context，一个是HttpServiceContext， 一个是WebAppHttpContext，还有servlet的context。WebAppHttpContext是jetty stop context时候停掉的，每个web app对应一个。前者是jetty server停掉的时候停掉的。感觉server停掉的时候，webAppHttpContext不一定都结束了。但是jetty server停掉的时候，HttpServiceContext是停止了。servlet的context结构是servlet里面的一个internal class，跟每个uri绑定。</li>
+<li>connector是在jetty里面定义的,有几种connector，比如<code>org.eclipse.jetty.server.ssl.SslSelectChannelConnector</code>，<code>org.eclipse.jetty.server.nio.SelectChannelConnector</code>。</li>
+</ul>
+<p>在Connector的interface里面有个maxIdleTimeout的参数，标示这个connection在idle时候会等多久从ESTABLISH状态变成TIME_WAIT状态。但是并没有在代码里面找到调用的地方。</p>
+<p><strong>_ 这个是在停的时候调用的那个吗？果然写blog要再清楚一点才好_</strong></p>
+<ul>
+<li>Connector是在jetty的配置文件里面配置的</li>
+</ul>
+<h3 id="Jetty启动过程"><a href="#Jetty启动过程" class="headerlink" title="Jetty启动过程"></a>Jetty启动过程</h3><p>大部分web容器的启动过程都差不多，分为如下几步：</p>
+<ul>
+<li>创建用于连接的connector，创建线程池</li>
+<li>扫描当前的web程序的部署目录，为他们创建上下文环境，并对他们进行path的路由设置，这个的名字是WebAppHttpContext</li>
+<li>初始化创建的web程序上下文，这里就包括创建servlet啥的。，初始化linstener啥的。并做好自己的path路由。.</li>
+<li>启动connector，开始监听，整个server开始运行</li>
+<li>没看出来HttpServiceContext是什么</li>
+<li>参考文档：<ul>
+<li><a href="https://blog.csdn.net/kobejayandy/article/details/20291953" target="_blank" rel="noopener">Jetty的Server创建与启动</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="Filter、Servlet、Listener顺序"><a href="#Filter、Servlet、Listener顺序" class="headerlink" title="Filter、Servlet、Listener顺序"></a>Filter、Servlet、Listener顺序</h3><h4 id="启动顺序"><a href="#启动顺序" class="headerlink" title="启动顺序"></a>启动顺序</h4><ul>
+<li>filter的初始化是web server启动的时候初始化的</li>
+<li>servlet的初始化是收到对应的第一条request时候进行的</li>
+<li>执行时候是先执行filter，再执行servlet</li>
+<li>从启动日志来看，启动的顺序为listener-&gt;Filter-&gt;servlet.</li>
+</ul>
+<h4 id="停止顺序"><a href="#停止顺序" class="headerlink" title="停止顺序"></a>停止顺序</h4><ul>
+<li>容器关闭或者context重新部署，这时候servlet先destroy掉</li>
+<li>servlet之后才是filter关闭</li>
+</ul>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><ul>
+<li><a href="https://www.jianshu.com/p/612c3a6673b2" target="_blank" rel="noopener">Listener、Filter、Servlet执行顺序</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/02/15/常用k8s命令记录/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/02/15/常用k8s命令记录/" itemprop="url">常用k8s命令记录</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-15T14:15:01+08:00">
+                2019-02-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/docker/" itemprop="url" rel="index">
+                    <span itemprop="name">docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="常用k8s命令"><a href="#常用k8s命令" class="headerlink" title="常用k8s命令"></a>常用k8s命令</h2><p>这篇记录一下常用的k8s命令，我怕我会忘啊  -_-#<br>没错，这是docker那篇的姐妹篇哦。棒棒哒:P</p>
+<ul>
+<li><code>kubectl cluster-info</code></li>
+<li><code>kubectl get nodes</code></li>
+<li><code>kubectl run first-deployment --image=katacoda/docker-http-server --port=80</code><ul>
+<li>这样就有一个pod啦。在get pods command里面能看到一个pod</li>
+<li><code>-port</code>仍旧是内部的端口</li>
+<li>外部端口可以用<code>--hostport=8001</code>指定， 但是这样做的话， Under the covers, this exposes the Pod via Docker Port Mapping. As a result, you will not see the service listed using <code>kubectl get svc</code>。目前的理解是，因为是用的docker的方法，所以k8s不知道<ul>
+<li>用docker ps命令能看到这个container，然后可以注意到有两个ps进程。其中一个是paused状态，然后我们的端口8001其实开在这个paused的ps上面。</li>
+<li>The ports are exposed on the Pod, not the http container itself. The Pause container is responsible for defining the network for the Pod. Other containers in the pod share the same network namespace. This improves network performance and allow multiple containers to communicate over the same network interface..感觉这段解释很关键啊。这个container的名字是： k8s_POD_”httpexposed”,最后一个字段是我们起的pod的名字</li>
+</ul>
+</li>
+<li><code>--replicas</code>： 复制因子</li>
+</ul>
+</li>
+<li><code>kubectl get pods</code><ul>
+<li>所以get pods的话，会把replication cotronller， service， deployment都给打印出来</li>
+</ul>
+</li>
+<li><code>kubectl get rc</code><ul>
+<li>将replication controller打印出来。</li>
+</ul>
+</li>
+<li><code>kubectl get services</code>      </li>
+<li><code>kubectl get deployments</code><ul>
+<li>感受一下这两个的区别</li>
+</ul>
+</li>
+</ul>
+<pre><code>$ kubectl get pods
+   NAME                           READY     STATUS    RESTARTS   AGE
+   http-7b77c4cd66-74zqx          1/1       Running   0          4s
+   http-7b77c4cd66-fhlmx          1/1       Running   0          19m
+   http-7b77c4cd66-xrbpf          1/1       Running   0          4s
+   httpexposed-5c4cf8b7d8-qprzc   1/1       Running   0          11m
+$ kubectl get deployments
+   NAME          DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+   http          3         3         3            3           19m
+   httpexposed   1         1         1            1           11m
+</code></pre><ul>
+<li><code>kubectl describe deployment http</code></li>
+<li><code>kubectl describe svc http</code> 能看到很多信息，包括整个cluster对外的ip，各个node的内部ip之类</li>
+<li><code>kubectl expose deployment first-deployment --port=80 --type=NodePort</code><ul>
+<li>这条命令有点复杂，解释说：Once the container is running it can be exposed via different networking options, depending on requirements. </li>
+<li>将资源暴露为新的Kubernetes Service。</li>
+<li>expose后面的资源有很多种，包括：pod（po），service（svc），replication controller（rc），deployment（deploy），replica set（rs）</li>
+<li>A Kubernetes service deployment has, at least, two parts. A replication controller and a service. 稍微有点理解了。一个service部署的时候一般有两个yaml文件</li>
+<li>‘first-deployment’是deployment的名字</li>
+<li><code>-port</code> 是内部的端口</li>
+<li><code></code>–target-port`是外部访问的端口</li>
+<li>完整语法为：<code>expose (-f FILENAME | TYPE NAME) [--port=port] [--protocol=TCP|UDP] [--target-port=number-or-name] [--name=name] [--external-ip=external-ip-of-service] [--type=type]</code></li>
+</ul>
+</li>
+<li><code>kubectl scale --replicas=3 deployment http</code> scale的命令</li>
+<li><code>kubectl create -f deployment.yaml</code> 通过yaml文件创建一个deployment<ul>
+<li><code>kubectl create -f service.yaml</code> 也可以通过yaml文件创建service</li>
+<li>ymal文件里面的内容还不是非常清楚。参考<a href="https://blog.csdn.net/luanpeng825485697/article/details/83753260" target="_blank" rel="noopener">k8s yaml文件详解</a></li>
+</ul>
+</li>
+<li><code>kubectl apply -f deployment.yaml</code>如果yaml文件有改动的话，可以用这条命令来update</li>
+</ul>
+<pre><code>$ kubectl apply -f deployment.yaml
+  Warning: kubectl apply should be used on resource created by either kubectl create --save-config or kubectl apply
+ deployment.extensions/webapp1 configured
+</code></pre><ul>
+<li><code>kubectl exec $pod -- /usr/bin/curl -s localhost/unhealthy</code></li>
+<li><code>kubectl get ing</code> 可以用来看Ingress</li>
+<li><code>kubectl create namespace</code>创建namespace</li>
+<li><code>kubectl config set-context $(kubectl config current-context) --namespace=&lt;insert-namespace-name-here&gt;</code></li>
+<li><code>kubectl config get-contexts</code> 这个context不知道是啥</li>
+<li><code>kubectl get namespaces</code></li>
+<li><code>kubectl delete pvc --all --namespace default</code> 用这个命令来做delete。一堆都行。pvc换成pod，deployments，secret，configmap，service啥的</li>
+<li>安装k8s的dashboard：<ul>
+<li>使用“docker for desktop“的时候，这个dashboard貌似不是事先装好的。印象不深刻了。需要装一下：<ul>
+<li><code>kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml</code></li>
+<li><code>kubectl proxy</code> 再将proxy给弄出来，就可以访问了。</li>
+<li>如下图：<br><img src="https://user-images.githubusercontent.com/5803001/34945022-c57b369a-fa3c-11e7-85e7-83f716d10705.png" alt=""></li>
+<li>参考链接登录：<ul>
+<li><a href="https://segmentfault.com/a/1190000012850396" target="_blank" rel="noopener">config登录方式</a></li>
+<li><a href="https://www.cnblogs.com/guigujun/p/8366530.html" target="_blank" rel="noopener">config登录方式2</a></li>
+<li><a href="https://www.cnblogs.com/jackyfei/p/10180465.html" target="_blank" rel="noopener">token方式登录</a></li>
+</ul>
+</li>
+<li>获取token的命令：<code>kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk &#39;{print $1}&#39;)</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
+<li><a href="http://docs.kubernetes.org.cn/475.html" target="_blank" rel="noopener">k8s中文文档</a></li>
+<li><a href="https://www.katacoda.com/courses/kubernetes/kubectl-run-containers" target="_blank" rel="noopener">codekara的在线课程</a><h3 id="主要特性"><a href="#主要特性" class="headerlink" title="主要特性"></a>主要特性</h3></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/02/14/常用Docker命令记录/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1645,377 +2056,6 @@ Index.db
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/01/17/还没想好/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/01/17/还没想好/" itemprop="url">Cassandra system log分析</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-17T14:28:35+08:00">
-                2019-01-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/cassandra/" itemprop="url" rel="index">
-                    <span itemprop="name">cassandra</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="Cassandra-system-log分析"><a href="#Cassandra-system-log分析" class="headerlink" title="Cassandra system log分析"></a>Cassandra system log分析</h2><p>  最近一周可能都会在看Cassandra的system log，看Cassandra在干嘛。其中会涉及到cassandra的一些机制，概念记录下来。<br>  文档名字暂时的，其中的概念可能后期会移走。</p>
-<h3 id="Nodetool"><a href="#Nodetool" class="headerlink" title="Nodetool"></a>Nodetool</h3><p>  Cassandra的状态可以用<code>NodeTool</code>来check，如果采用了ssl 认证，那么命令是 <code>NodeTool --ssl</code></p>
-<h3 id="Gossip-Tasks"><a href="#Gossip-Tasks" class="headerlink" title="Gossip Tasks"></a>Gossip Tasks</h3><h4 id="Pending-task-log"><a href="#Pending-task-log" class="headerlink" title="Pending task log"></a>Pending task log</h4><p>  名字太好记 ，有没有 :)<br>  Cassandra 的各个节点是无中心化对待的。能做到这一点的一个关键是使用了Gossip协议。这是一个很适用于不可信网络的协议</p>
-<ul>
-<li>参考链接， 后续需要更为仔细深入的学习： <a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-apache-cassandra3x3/index.html" target="_blank" rel="noopener">Apache Cassandra 3.X 系列</a></li>
-<li>Cassandra中Gossip协议被实现在类<code>Gossiper</code>中。</li>
-<li>Gossiper 类维护了一个节点列表，这个列表里包括存活的和死亡的节点。</li>
-<li><code>GossipTask</code> 是位于 <code>org.apche.cassandra.gms.Gossip</code> 类下的一个内部类。</li>
-<li>GossipTask会向其他节点发消息，默认时间是1s</li>
-<li>在log里面会有：<br>[GossipTasks:1] 2019-01-03 04:19:33,680 Gossiper.java:751 - Gossip stage has 378 pending tasks; skipping status check (no nodes will be marked down)</li>
-</ul>
-<h4 id="Pause-Error-Not-making-Nodes-Down"><a href="#Pause-Error-Not-making-Nodes-Down" class="headerlink" title="Pause Error: Not making Nodes Down"></a>Pause Error: Not making Nodes Down</h4><ul>
-<li>在log里面经常会出现:以下是说cassandra在做其他事情，导致Gossip停顿了， hang住了。但是并不标示node状态。</li>
-<li>通常是GC的时候，这一句的上一句log确实提示了一次55742ms的GC，但是GC通常也发生在有很多task的时候，所以应该看看其他在做什么task</li>
-</ul>
-<pre><code>WARN  [GossipTasks:1] 2019-01-02 00:00:04,546 FailureDetector.java:287 - Not marking nodes down due to local pause of 54491963082 &gt; 5000000000
-</code></pre><ul>
-<li><a href="http://www.cnblogs.com/jobforlife/p/7092467.html" target="_blank" rel="noopener">error解释</a></li>
-</ul>
-<h3 id="Service-Thread"><a href="#Service-Thread" class="headerlink" title="Service Thread"></a>Service Thread</h3><p>没有看到这个Service Thread的具体解释。从log里面看有很多功能</p>
-<h4 id="StatusLogger"><a href="#StatusLogger" class="headerlink" title="StatusLogger"></a>StatusLogger</h4><p>如此简单的一个函数也有好几种log啦。</p>
-<h5 id="ThreadPoolMetrics：-Stage"><a href="#ThreadPoolMetrics：-Stage" class="headerlink" title="ThreadPoolMetrics： Stage"></a>ThreadPoolMetrics： Stage</h5><p>打印出各种stage的状态，一个接一个的pool的状态。真心不少啊。</p>
-<ul>
-<li>在log里面会有：<br>INFO  [Service Thread] 2019-01-02 00:00:04,547 StatusLogger.java:52 - Pool Name                    Active   Pending      Completed   Blocked  All Time Blocked</li>
-<li>鉴于stage比较多，另外写一篇blog来解释这堆。请看本站的stage。</li>
-</ul>
-<h5 id="Cache"><a href="#Cache" class="headerlink" title="Cache"></a>Cache</h5><p>输出KeyCache 和 RowCache的状态</p>
-<ul>
-<li>在log里面是：<br>INFO  [Service Thread] 2019-01-02 00:00:05,130 StatusLogger.java:88 - Cache Type                     Size                 Capacity               KeysToSave<br>INFO  [Service Thread] 2019-01-02 00:00:05,130 StatusLogger.java:90 - KeyCache                    1406343                104857600</li>
-<li>这篇 log已经很长了。KeyCache和RowCache另开一篇log。</li>
-</ul>
-<h5 id="per-CF-stats"><a href="#per-CF-stats" class="headerlink" title="per-CF stats"></a>per-CF stats</h5><p>per-CF stats是源码里面的注释，我也不知道是啥哦</p>
-<ul>
-<li>在log里面是：(产品的表名字，不能暴露啦)<br>INFO  [Service Thread] 2019-01-03 02:54:45,722 StatusLogger.java:106 (table_name)    6284,288376</li>
-<li>Cassandra的API里面对于<code>StatusLogger</code>也没有解释。 ORZ，看来是个很直白的文件啊<br>-<code>org.apache.cassandra.utils.StatusLogger</code> 只有一个函数<code>log()</code></li>
-</ul>
-<pre><code>logger.info(String.format(&quot;%-25s%20s&quot;, &quot;Table&quot;, &quot;Memtable ops,data&quot;));
-logger.info(String.format(&quot;%-25s%20s&quot;,
-                   cfs.keyspace.getName() 
-                   + &quot;.&quot; + cfs.name,                                      cfs.metric.memtableColumnsCount.getValue() 
-                   + &quot;,&quot; + cfs.metric.memtableLiveDataSize.getValue()));
-    }。
-</code></pre><ul>
-<li>所以，第一个数值是memTable的column的个数，第二个是data的size</li>
-<li>一个问题是： 这个column也太多了吧。。。。。。</li>
-<li>被大神吊打了。这个值是表访问次数。</li>
-</ul>
-<h4 id="GCInspector"><a href="#GCInspector" class="headerlink" title="GCInspector"></a>GCInspector</h4><p>  -在log里面是：<br>  INFO  [Service Thread] 2019-01-02 00:00:04,546 GCInspector.java:284 - ConcurrentMarkSweep GC in 55742ms.  CMS Old Gen: 7331643368 -&gt; 7331643360; Par Eden Space: 1006632960 -&gt; 784484600; Par Survivor Space: 125829104 -&gt; 0</p>
-<ul>
-<li>这句log的意思是：做了一次CMS GC。然后数字对应，11位是G，9位是M，所以 eden区是784M</li>
-<li>参考本站GC的文章了解更多CMS算法的内容</li>
-</ul>
-<h3 id="PERIODIC-COMMIT-LOG-SYNCER"><a href="#PERIODIC-COMMIT-LOG-SYNCER" class="headerlink" title="PERIODIC-COMMIT-LOG-SYNCER"></a>PERIODIC-COMMIT-LOG-SYNCER</h3><ul>
-<li>在log里面是：<br>WARN  [PERIODIC-COMMIT-LOG-SYNCER] 2019-01-03 04:04:17,232 AbstractCommitLogService.java:117 - Out of 5 commit log syncs over the past 573s with average duration of 9734.40ms…</li>
-<li>这个应该是将commit log写到disk上面的task。没有再查资料。参考本站cassandra写过程那篇博客</li>
-</ul>
-<h3 id="RMI-TCP-Connection-idle"><a href="#RMI-TCP-Connection-idle" class="headerlink" title="RMI TCP Connection(idle)"></a>RMI TCP Connection(idle)</h3><h3 id="IndexSummaryManager"><a href="#IndexSummaryManager" class="headerlink" title="IndexSummaryManager"></a>IndexSummaryManager</h3><ul>
-<li>在log里面是：<br>INFO  [IndexSummaryManager:1] 2019-01-02 03:21:59,849 IndexSummaryRedistribution.java:74 - Redistributing index summaries</li>
-<li>Manages the fixed-size memory pool for index summaries, periodically resizing them in order to give more memory to hot sstables and less memory to cold sstables.</li>
-<li>还不是很理解，就是说index summary一开始也是存在内存中的吗？确实在参数配置里面有index_summary_capacity_in_mb和index_summary_resize_interval_in_minutes</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/01/14/React入门-1/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/01/14/React入门-1/" itemprop="url">React入门(1)</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-14T16:35:28+08:00">
-                2019-01-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/React/" itemprop="url" rel="index">
-                    <span itemprop="name">React</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="React入门"><a href="#React入门" class="headerlink" title="React入门"></a>React入门</h1><h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a href="http://www.ruanyifeng.com/blog/2015/03/react.html" target="_blank" rel="noopener">阮一峰的博客</a></p>
-<h2 id="React-是什么"><a href="#React-是什么" class="headerlink" title="React 是什么"></a>React 是什么</h2><p>React是Facebook发布的前端框架</p>
-<h2 id="React的优势"><a href="#React的优势" class="headerlink" title="React的优势"></a>React的优势</h2><p>现在还不知道哪里有优势。最大的应该就是JXS，然后可以组件化。</p>
-<h2 id="React的一些相关概念"><a href="#React的一些相关概念" class="headerlink" title="React的一些相关概念"></a>React的一些相关概念</h2><h3 id="DOM"><a href="#DOM" class="headerlink" title="DOM"></a>DOM</h3><ul>
-<li><code>DOM</code>: 文档对象模型(Document Object Model). 这是表示和处理一个HTML或XML文档的常用方法。<br> <a href="https://baike.baidu.com/item/DOM/50288#1_2" target="_blank" rel="noopener">DOM:百度百科解释</a></li>
-<li>目前的理解是：DOM其实就是一套描述数据结构的方法。一开始大家不统一，后来有W3C给出了规范，可以分为DOM核心，HTML的DOM，XML的DOM这几个</li>
-<li>进一步的理解：DOM是前端原来就有的一个概念，然后React给这个概念赋予了一些新的内涵。所有有React DOM这个说法。React DOM其实就是组件。</li>
-</ul>
-<h3 id="JSX"><a href="#JSX" class="headerlink" title="JSX"></a>JSX</h3><p>JSX 语法是React独有的。目前的理解是：</p>
-<ul>
-<li>JSX语法在支持JS里面处理HTML。</li>
-<li>如果这样的脚本插在html里面，要用<code>text/babel</code>来标记。 babel命令可以将JSX语法编译成为JS语法。</li>
-<li>JSX 的基本语法规则：遇到 HTML 标签（以 <code>&lt;</code> 开头），就用 HTML 规则解析；遇到代码块（以 <code>{</code> 开头），就用 JavaScript 规则解析。</li>
-</ul>
-<p><a href="https://reactjs.org/docs/rendering-elements.html#jsx-syntax" target="_blank" rel="noopener">JSX语法</a></p>
-<h3 id="React组件"><a href="#React组件" class="headerlink" title="React组件"></a>React组件</h3><ul>
-<li>使用<code>React.createClass(</code> 来创建一个组件，组件可以认为和HTML的标签一样使用。e.g：MyComponents是创建出来的一个组件。</li>
-</ul>
-<pre><code>&lt;MyComponent
-    &quot;Hello world!&quot;;
-/MyComponent&gt;
-</code></pre><ul>
-<li>前面提到过React DOM，其实就是组件。组件在定义时候，只是内存里面的一个数据，但是因为可以作为HTML标签使用，然后render成为HTML里面的DOM，所有被称为virtual DOM</li>
-<li>组件类只能包含一个顶层元素。</li>
-<li>所有的组件类必须有自己的render方法，来</li>
-<li>组件的属性可以在组件类的 <code>this.props</code> 对象上获取, 其中的<code>this.props.children</code>代表所有的子节点。</li>
-<li><code>PropTypes</code> 可以用来限定参数的类型， <code>getDefaultProps</code> 方法可以用来设置组件属性的默认值</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2066,7 +2106,7 @@ logger.info(String.format(&quot;%-25s%20s&quot;,
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
