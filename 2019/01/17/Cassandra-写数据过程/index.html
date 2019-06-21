@@ -88,7 +88,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image012-large.jpg">
 <meta property="og:image" content="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image010-large.jpg">
-<meta property="og:updated_time" content="2019-06-12T09:52:01.237Z">
+<meta property="og:updated_time" content="2019-06-18T02:41:16.500Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Cassandra 写数据过程">
 <meta name="twitter:description" content="Cassandra 写流程大致流程到把数据写到磁盘中分为以下几个步骤：  先找到应该往哪几个节点写 写log到commit log 写数据到memtable 从memtable中flush数据 将数据存储在SSTables中的磁盘中   客户端写一条数据必须指定 Keyspace、ColumnFamily、Key、Column Name 和 Value，还可以指定 Timestamp，以及数据的安">
@@ -440,6 +440,7 @@ Memtable  ---&gt; Periodically flush to SSTable
 <blockquote>
 <p>引用自第二篇参考链接</p>
 <ul>
+<li>SSTable是<code>Sorted String Table</code></li>
 <li>SSTable分为data、index、filter三个文件写到磁盘上面，其实还有好几个其他文件:<br>以下是一个目录里面的文件</li>
 </ul>
 </blockquote>
