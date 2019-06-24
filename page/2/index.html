@@ -1873,7 +1873,7 @@ $ kubectl get deployments
 Commitlog ---&gt; Periodically sync to  disk
 
 Memtable  ---&gt; Periodically flush to SSTable
-</code></pre><p>   <strong><em>如果看下面的流程图的话，那么上面这个顺序是不对的。是先写到memtable，然后再写commitLog？看官方文档，上面的顺是正确的。应该是流程图不够好。或者是一个相对并行的过程</em></strong></p>
+</code></pre><p>   <strong><em>如果看下面的流程图的话，那么上面这个顺序是不对的。是先写到memtable，然后再写commitLog？看官方文档，上面的是正确的。应该是流程图不够好。或者是一个相对并行的过程</em></strong></p>
 <p><img src="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image012-large.jpg" alt=""></p>
 <blockquote>
 <p>引用自第二篇链接</p>
@@ -1884,28 +1884,29 @@ Memtable  ---&gt; Periodically flush to SSTable
 <h3 id="Replica-Factor"><a href="#Replica-Factor" class="headerlink" title="Replica Factor"></a>Replica Factor</h3><ul>
 <li><p>CassandraServer 接收到要写入的数据时：</p>
 <ul>
-<li>创建一个 RowMutation 对象，再创建一个 QueryPath 对象，这个对象中保存了 ColumnFamily、Column Name 或者 Super Column Name。</li>
-<li>把用户提交的所有数据保存在 RowMutation 对象的 Map&lt;String, ColumnFamily&gt; 结构中。</li>
-<li>根据提交的 Key 计算集群中那个节点应该保存这条数据。这个计算的规则是：将 Key 转化成 Token，然后在整个集群的 Token 环中根据二分查找算法找到与给定的 Token 最接近的一个节点。</li>
-<li>如果用户指定了数据要保存多个备份，那么将会顺序在 Token 环中返回与备份数相等的节点。这是一个基本的节点列表，后面 Cassandra 会判断这些节点是否正常工作，如果不正常寻找替换节点。还有还要检查是否有节点正在启动，这种节点也是要在考虑的范围内，最终会形成一个目标节点列表。最后把数据发送到这些节点。</li>
+<li>创建一个 <code>RowMutation</code> 对象，再创建一个 <code>QueryPath</code> 对象，这个对象中保存了 <code>ColumnFamily</code>、<code>Column Name</code> 或者 <code>Super Column Name</code>。</li>
+<li>把用户提交的所有数据保存在 <code>RowMutation</code> 对象的 Map&lt;String, ColumnFamily&gt; 结构中。</li>
+<li>根据提交的<code>Key</code>计算集群中那个节点应该保存这条数据。这个计算的规则是：将<code>Key</code>转化成<code>Token</code>，然后在整个集群的<code>Token</code>环中根据二分查找算法找到与给定的<code>Token</code>最接近的一个节点。</li>
+<li>如果用户指定了数据要保存多个备份，那么将会顺序在<code>Token</code>环中返回与备份数相等的节点。这是一个基本的节点列表，后面<code>Cassandra</code>会判断这些节点是否正常工作，如果不正常寻找替换节点。还有还要检查是否有节点正在启动，这种节点也是要在考虑的范围内，最终会形成一个目标节点列表。最后把数据发送到这些节点。</li>
 <li><strong><em>所以在真正开始写入数据之前，cassandra会做这些事情？在commitLog之前？</em></strong> 我想应该是之前</li>
 </ul>
 </li>
-<li><p>Replica Factor和consistency level不是一个东西，然后有一个算法。我们自己的产品里面，replica set是3， consistency的策略是Querum。这样需要consistent的节点是replica set/2 +1 ，所以就是2 </p>
+<li><p><code>Replica Factor</code>和<code>consistency level</code>不是一个东西，然后有一个算法。我们自己的产品里面，<code>replica set</code>是3， <code>consistency level</code>的策略是<code>Querum</code>。这样需要consistent的节点是replica set/2 +1 ，所以就是2 </p>
 </li>
 </ul>
 <h3 id="Eventual-Consistency"><a href="#Eventual-Consistency" class="headerlink" title="Eventual Consistency"></a>Eventual Consistency</h3><p>这在Cassandra里面是非常关键的一个概念。写在这里。因为与写的机制相关最多。</p>
 <ul>
-<li><p>Cassandra must make tradeoffs among data consistency,<br>availability, and partition tolerance</p>
+<li><p>Cassandra must make tradeoffs among data consistency, availability, and partition tolerance. Cassandra必须在数据一致性、可用性和分区容忍之间平衡</p>
 <ul>
-<li>Availability: all clients are able to access the data so they can read and write data.</li>
-<li><p>Consistency的概念：</p>
-<ul>
-<li>a read always return the latest written data</li>
-<li>All clients will read the same value for an element of data even when the database is simultaneously updating data</li>
-<li>Partition tolerance：a database can be split into multiple machines and be able keep functioning even during network segmentation breaks.</li>
+<li>Availability: all clients are able to access the data so they can read and write data. 可用性：所有客户都能够读取和写入数据</li>
+<li>Consistency的概念：<ul>
+<li>a read always return the latest written data： 读取时候返回最后一次写入的数据</li>
+<li>All clients will read the same value for an element of data even when the database is simultaneously updating data： 当数据库同步完成的时候，所有客户端应该得到同样的数据</li>
 </ul>
-<p>这里应该和关系型的传统数据库不一样。Cassandra是分布式数据库，所有node的地位是一样的。<strong><em>说好的seed呢，怎么感觉有seed</em></strong><br>Oracle这种数据库一般是单机版的，没有cluster， 但是有主从备份，所有不一样的</p>
+</li>
+<li><p>Partition tolerance：a database can be split into multiple machines and be able keep functioning even during network segmentation breaks： 一个数据库可以分布在不同的机器上面，并且能够在网络出现故障时候保持正常功能</p>
+<p>这里应该和关系型的传统数据库不一样。Cassandra是分布式数据库，所有node的地位是一样的。<strong><em>说好的seed呢，怎么感觉有seed， seed应该是Gossip机制里面提出的。参考博客内文档<code>Cassandra system log分析</code>后面也许会换一份文档放</em></strong></p>
+<p>Oracle这种数据库一般是单机版的，没有cluster， 但是有主从备份，所有不一样的</p>
 </li>
 </ul>
 </li>
