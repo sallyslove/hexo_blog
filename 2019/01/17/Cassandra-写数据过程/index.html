@@ -88,7 +88,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image012-large.jpg">
 <meta property="og:image" content="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image010-large.jpg">
-<meta property="og:updated_time" content="2019-06-24T02:29:43.053Z">
+<meta property="og:updated_time" content="2019-06-24T08:41:15.208Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Cassandra 写数据过程">
 <meta name="twitter:description" content="Cassandra 写流程大致流程到把数据写到磁盘中分为以下几个步骤：  先找到应该往哪几个节点写 写log到commit log 写数据到memtable 从memtable中flush数据 将数据存储在SSTables中的磁盘中   客户端写一条数据必须指定 Keyspace、ColumnFamily、Key、Column Name 和 Value，还可以指定 Timestamp，以及数据的安">
@@ -454,13 +454,17 @@ Summary.db
 Data.db
 Index.db
 </code></pre><ul>
-<li>Partition index: A list of partition keys and the start position of rows in the data file written on disk(记得读的时候蛮有用的)</li>
+<li>Primary index: A list of partition keys and the start position of rows in the data file written on disk(记得读的时候蛮有用的)</li>
 <li>Partition summary： 这个summary文件跟上面的Index Summary应该就是一个文件。解释也是一样。A sample of the partition index stored in memory</li>
-<li>Bloom filter：<blockquote>
+<li>Bloom filter：<ul>
+<li><blockquote>
 <p>A structure stored in memory that checks if row data exists in the memtable before accessing SSTables on disk<br>按照这个解释，有点不明白，这么说应该是memory里面才有的。</p>
 </blockquote>
 </li>
-<li>找到解释了：Filter 文件存的内容就是 BloomFilter 对象的序列化结果。<strong><em>但是这样的话，将其序列化后保存到disk上面有什么用呢</em></strong></li>
+<li>找到解释了：Filter 文件存的内容就是 BloomFilter 对象的序列化结果。<strong><em>但是这样的话，将其序列化后保存到disk上面有什么用呢？ Bloom filters for an SSTable enhance read performance。后面读的时候看看怎么来enhance的</em></strong></li>
+</ul>
+</li>
+<li>Statistics： Contains the statistical metadata about the SSTable’s data </li>
 </ul>
 <ul>
 <li>存贮的目录就是yaml文件里面配置的<code>data_file_directories</code>确定</li>

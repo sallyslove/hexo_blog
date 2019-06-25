@@ -1428,8 +1428,18 @@ $ kubectl get deployments
       
         
           
-            <h2 id="Cassandra读数据过程"><a href="#Cassandra读数据过程" class="headerlink" title="Cassandra读数据过程"></a>Cassandra读数据过程</h2><p>  数据库读数据过程必须知道。这篇也作为KeyCache和RowCache学习的blog.<br>  RowCache缓存的是数据，而KeyCache缓存的是在SSTable文件中的位置。<br>  Cassandra的是读数据慢，写数据快。</p>
-<h3 id="KeyCache"><a href="#KeyCache" class="headerlink" title="KeyCache"></a>KeyCache</h3><h3 id="RowCache"><a href="#RowCache" class="headerlink" title="RowCache"></a>RowCache</h3><h3 id="Limit"><a href="#Limit" class="headerlink" title="Limit"></a>Limit</h3><ul>
+            <h2 id="Cassandra读数据过程"><a href="#Cassandra读数据过程" class="headerlink" title="Cassandra读数据过程"></a>Cassandra读数据过程</h2><p>数据库读数据过程必须知道。这篇也作为<code>KeyCache</code>和<code>RowCache</code>学习的blog.<br><code>RowCache</code>缓存的是数据，而<code>KeyCache</code>缓存的是在<code>SSTable</code>文件中的位置。<br>Cassandra的是读数据慢，写数据快。</p>
+<p>以下几种<code>cache</code>都是针对<code>SSTable</code>来说的</p>
+<h3 id="keyCache"><a href="#keyCache" class="headerlink" title="keyCache"></a>keyCache</h3><ul>
+<li>key cache：stores a map of partition keys to row index entries。感觉和Index.db里面的内容有点相似。什么时候要把内存dump下来看看</li>
+</ul>
+<h3 id="rowCache"><a href="#rowCache" class="headerlink" title="rowCache"></a>rowCache</h3><ul>
+<li>row cache： caches frequently accessed rows to speed up access to those rows.</li>
+</ul>
+<h3 id="counter-cache"><a href="#counter-cache" class="headerlink" title="counter cache"></a>counter cache</h3><ul>
+<li>A counter cache improves performance for the counters that you’ll need to access frequently. 好像没怎么听说过counter的概念。这个cache也是第一次看到有。</li>
+</ul>
+<h3 id="Limit"><a href="#Limit" class="headerlink" title="Limit"></a>Limit</h3><ul>
 <li>Cassandra根据primary key来读取数据，这个key就是存在keyCache里面的内容。然后会读取一片数据。</li>
 <li>读取时候可以指定limit值，这样会读取有限的内容，而不是一大片。</li>
 </ul>
@@ -1966,13 +1976,17 @@ Summary.db
 Data.db
 Index.db
 </code></pre><ul>
-<li>Partition index: A list of partition keys and the start position of rows in the data file written on disk(记得读的时候蛮有用的)</li>
+<li>Primary index: A list of partition keys and the start position of rows in the data file written on disk(记得读的时候蛮有用的)</li>
 <li>Partition summary： 这个summary文件跟上面的Index Summary应该就是一个文件。解释也是一样。A sample of the partition index stored in memory</li>
-<li>Bloom filter：<blockquote>
+<li>Bloom filter：<ul>
+<li><blockquote>
 <p>A structure stored in memory that checks if row data exists in the memtable before accessing SSTables on disk<br>按照这个解释，有点不明白，这么说应该是memory里面才有的。</p>
 </blockquote>
 </li>
-<li>找到解释了：Filter 文件存的内容就是 BloomFilter 对象的序列化结果。<strong><em>但是这样的话，将其序列化后保存到disk上面有什么用呢</em></strong></li>
+<li>找到解释了：Filter 文件存的内容就是 BloomFilter 对象的序列化结果。<strong><em>但是这样的话，将其序列化后保存到disk上面有什么用呢？ Bloom filters for an SSTable enhance read performance。后面读的时候看看怎么来enhance的</em></strong></li>
+</ul>
+</li>
+<li>Statistics： Contains the statistical metadata about the SSTable’s data </li>
 </ul>
 <ul>
 <li>存贮的目录就是yaml文件里面配置的<code>data_file_directories</code>确定</li>
