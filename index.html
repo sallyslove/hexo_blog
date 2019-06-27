@@ -242,6 +242,144 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/06/25/Cassandra的数据维护/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/06/25/Cassandra的数据维护/" itemprop="url">Cassandra的数据维护</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-25T17:01:57+08:00">
+                2019-06-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Cassandra数据维护"><a href="#Cassandra数据维护" class="headerlink" title="Cassandra数据维护"></a>Cassandra数据维护</h2><h3 id="Compacting-SSTable-Data"><a href="#Compacting-SSTable-Data" class="headerlink" title="Compacting SSTable Data"></a>Compacting SSTable Data</h3><h4 id="Why-Do-We-Need-Compaction"><a href="#Why-Do-We-Need-Compaction" class="headerlink" title="Why Do We Need Compaction"></a>Why Do We Need Compaction</h4><ul>
+<li>cassandra并不会删除数据。当需要update一个数据的时候，也不是在SSTable里面进行覆盖，而是会插入一个新的数据，带上新的version。</li>
+<li>这样做的话，cassandra写入数据会非常快，因为不需要查询，但是弊端就是会有越来越多的数据。</li>
+<li>这个时候就需要进行compaction。</li>
+</ul>
+<h4 id="What-Is-Compaction"><a href="#What-Is-Compaction" class="headerlink" title="What Is Compaction"></a>What Is Compaction</h4><ul>
+<li>To keep the multiple versions of the SSTables from overwhelming it, the database merges SSTables on a regular basis to get rid of the older versions of the data。 cassandra会在一个基础之上对旧的版本的数据进行合并，这个就是compaction</li>
+<li>cassandra默认会进行很多次小的compaction</li>
+</ul>
+<h4 id="Campaction细节"><a href="#Campaction细节" class="headerlink" title="Campaction细节"></a>Campaction细节</h4><ul>
+<li>在compaction期间，cassandra会合并key和column，同时会将过期的墓碑删除，还会生成一个新的index？ <strong><em>这个index是什么东西啊</em></strong></li>
+<li>合并之后会生成一个新的SSTable。<strong><em>回头要试一下</em></strong></li>
+<li>compaction期间的资源耗用会上升，但是compaction结束之后应该会释放空间，因为它合并了SSTable</li>
+<li>旧的被合并的table会被加上deletion标签，并且在数据库重启或者在使用reference counting mechanism的时候。<strong><em>这个reference counting mechanism是什么啊</em></strong></li>
+<li>compaction的算法是可以配置的，默认的是<code>size-tiered compaction</code>。这个算法会合并大小相近的table，生成大table</li>
+</ul>
+<h4 id="Compaction对读数据的影响"><a href="#Compaction对读数据的影响" class="headerlink" title="Compaction对读数据的影响"></a>Compaction对读数据的影响</h4><ul>
+<li>compaction是per-node的，所以某个</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/06/17/软件衡量标准/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -787,7 +925,8 @@
 <li>cassandra的config文件里面需要配置几个参数：<ul>
 <li><code>hinted_handoff_enabled</code>：默认为true，打开这个机制</li>
 <li><code>max_hint_window_in_ms</code>： 为已经down掉的node记录hint log的时间长度</li>
-<li><code>hinted_handoff_throttle_in_kb</code> 和 <code>max_hints_delivery_threads</code> 这两个没咋研究过，先放着吧</li>
+<li><code>gc_grace_seconds</code>: Configures the time-to-live (TTL) period for a hint so that the database won’t replay the hint after this duration. Setting this parameter to 0 disables hints。 这个参数没用过，后面可以试试看</li>
+<li><code>hinted_handoff_throttle_in_kb</code> 和    <code>max_hints_delivery_threads</code> 这两个没咋研究过，先放着吧</li>
 </ul>
 </li>
 <li>按照文档，当写入发生时候，并且a replica node for the key is down。就可能会触发hinted handoff的机制</li>
@@ -1810,146 +1949,6 @@ kube-system    Active    15d
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/02/26/Liveness-Readiness/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/02/26/Liveness-Readiness/" itemprop="url">Liveness & Readiness</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-26T14:29:11+08:00">
-                2019-02-26
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="Liveness-amp-Readiness"><a href="#Liveness-amp-Readiness" class="headerlink" title="Liveness &amp; Readiness"></a>Liveness &amp; Readiness</h2><h3 id="Readiness"><a href="#Readiness" class="headerlink" title="Readiness"></a>Readiness</h3><ul>
-<li>Readiness Probes checks if an application is ready to start processing traffic.</li>
-<li>This probe solves the problem of the container having started, but the process still warming up and configuring itself meaning it’s not ready to receive traffic.</li>
-<li>The configuration is as following:<pre><code>readinessProbe:
-   httpGet:
-      path: /
-      port: 80
-   initialDelaySeconds: 1
-   timeoutSeconds: 1
-</code></pre></li>
-</ul>
-<h3 id="Liveness"><a href="#Liveness" class="headerlink" title="Liveness"></a>Liveness</h3><ul>
-<li>Liveness Probes ensure that the application is healthy and capable of processing requests.</li>
-<li>The configuration is as following:<pre><code>livenessProbe:
-httpGet:
-   path: /
-   port: 80
-   initialDelaySeconds: 1
-   timeoutSeconds: 1
-</code></pre></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2000,7 +1999,7 @@ httpGet:
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-count">25</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

@@ -88,7 +88,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image012-large.jpg">
 <meta property="og:image" content="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image010-large.jpg">
-<meta property="og:updated_time" content="2019-06-24T08:41:15.208Z">
+<meta property="og:updated_time" content="2019-06-25T05:19:55.742Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Cassandra 写数据过程">
 <meta name="twitter:description" content="Cassandra 写流程大致流程到把数据写到磁盘中分为以下几个步骤：  先找到应该往哪几个节点写 写log到commit log 写数据到memtable 从memtable中flush数据 将数据存储在SSTables中的磁盘中   客户端写一条数据必须指定 Keyspace、ColumnFamily、Key、Column Name 和 Value，还可以指定 Timestamp，以及数据的安">
@@ -489,7 +489,11 @@ Index.db
 </li>
 </ul>
 <h3 id="从memTables到SSTable"><a href="#从memTables到SSTable" class="headerlink" title="从memTables到SSTable"></a>从memTables到SSTable</h3><ul>
-<li>Cassandra flushes the memtables to disk when either the commit log space threshold or the memtable cleanup threshold is reached.<br><strong>确实是不止一种情况下会写</strong></li>
+<li>Cassandra flushes the memtables to disk when either the commit log space threshold or the memtable cleanup threshold is reached.<ul>
+<li><code>memtable_cleanup_threshold</code> 后面一种应该和这个参数有关</li>
+<li>在<code>expert cassandra</code>的书里有三种情况下面会flush。不包括手动flush</li>
+</ul>
+</li>
 <li><blockquote>
 <p>To flush the data, Cassandra sorts memtables by token and then writes the data to disk sequentially.<br>Cassandra在将数据写到disk的时候，同时会将memtables按照token排序。<strong>_这个token是不是就是key算出来的那个token？但是table怎么按照token排序呢，应该说的是table里面的数据吧 _</strong></p>
 </blockquote>
@@ -635,7 +639,7 @@ Index.db
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-count">25</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
