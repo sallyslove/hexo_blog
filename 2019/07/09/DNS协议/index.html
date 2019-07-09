@@ -79,19 +79,20 @@
 
 
 
-<meta name="description" content="常用k8s命令这篇记录一下常用的k8s命令，我怕我会忘啊  -_-#没错，这是docker那篇的姐妹篇哦。棒棒哒:P  kubectl cluster-info kubectl get nodes kubectl run first-deployment --image=katacoda/docker-http-server --port=80 这样就有一个pod啦。在get pods comma">
+<meta name="description" content="引言工作中要用到DNS协议，需要学习一下，省得碰到的时候每次都要再看一遍。 DNS也是TCP/IP里面的一个基础协议。所以也会涉及到一些TCP/IP协议的部分。话说一个简单的DNS协议也有一堆可以写啊。不容易啊。 DNS在TCP/IP协议里的位置 从参考链接名就能看出来， DNS是应用层的协议（几层几层的总是记不住啦） TCP/IP是四层。OSI是7层。（最烦协议啦。都差不多，还换来换去的） 图片">
 <meta property="og:type" content="article">
-<meta property="og:title" content="常用k8s命令记录">
-<meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/02/15/常用k8s命令记录/index.html">
+<meta property="og:title" content="DNS协议">
+<meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/07/09/DNS协议/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="常用k8s命令这篇记录一下常用的k8s命令，我怕我会忘啊  -_-#没错，这是docker那篇的姐妹篇哦。棒棒哒:P  kubectl cluster-info kubectl get nodes kubectl run first-deployment --image=katacoda/docker-http-server --port=80 这样就有一个pod啦。在get pods comma">
+<meta property="og:description" content="引言工作中要用到DNS协议，需要学习一下，省得碰到的时候每次都要再看一遍。 DNS也是TCP/IP里面的一个基础协议。所以也会涉及到一些TCP/IP协议的部分。话说一个简单的DNS协议也有一堆可以写啊。不容易啊。 DNS在TCP/IP协议里的位置 从参考链接名就能看出来， DNS是应用层的协议（几层几层的总是记不住啦） TCP/IP是四层。OSI是7层。（最烦协议啦。都差不多，还换来换去的） 图片">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://user-images.githubusercontent.com/5803001/34945022-c57b369a-fa3c-11e7-85e7-83f716d10705.png">
-<meta property="og:updated_time" content="2019-03-06T09:24:32.606Z">
+<meta property="og:image" content="https://ask.qcloudimg.com/http-save/yehe-1195962/e9uc1yy5n7.png?imageView2/2/w/1620">
+<meta property="og:image" content="https://ask.qcloudimg.com/http-save/yehe-1195962/vspbulgxi2.png?imageView2/2/w/1620">
+<meta property="og:updated_time" content="2019-07-09T08:21:40.928Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="常用k8s命令记录">
-<meta name="twitter:description" content="常用k8s命令这篇记录一下常用的k8s命令，我怕我会忘啊  -_-#没错，这是docker那篇的姐妹篇哦。棒棒哒:P  kubectl cluster-info kubectl get nodes kubectl run first-deployment --image=katacoda/docker-http-server --port=80 这样就有一个pod啦。在get pods comma">
-<meta name="twitter:image" content="https://user-images.githubusercontent.com/5803001/34945022-c57b369a-fa3c-11e7-85e7-83f716d10705.png">
+<meta name="twitter:title" content="DNS协议">
+<meta name="twitter:description" content="引言工作中要用到DNS协议，需要学习一下，省得碰到的时候每次都要再看一遍。 DNS也是TCP/IP里面的一个基础协议。所以也会涉及到一些TCP/IP协议的部分。话说一个简单的DNS协议也有一堆可以写啊。不容易啊。 DNS在TCP/IP协议里的位置 从参考链接名就能看出来， DNS是应用层的协议（几层几层的总是记不住啦） TCP/IP是四层。OSI是7层。（最烦协议啦。都差不多，还换来换去的） 图片">
+<meta name="twitter:image" content="https://ask.qcloudimg.com/http-save/yehe-1195962/e9uc1yy5n7.png?imageView2/2/w/1620">
 
 
 
@@ -121,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="https://sallyslove.github.io/hexo_blog/2019/02/15/常用k8s命令记录/">
+  <link rel="canonical" href="https://sallyslove.github.io/hexo_blog/2019/07/09/DNS协议/">
 
 
 
 
 
-  <title>常用k8s命令记录 | 跬步</title>
+  <title>DNS协议 | 跬步</title>
   
 
 
@@ -244,7 +245,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/02/15/常用k8s命令记录/">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/07/09/DNS协议/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Lynn Shen">
@@ -261,7 +262,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">常用k8s命令记录</h1>
+          <h1 class="post-title" itemprop="name headline">DNS协议</h1>
         
 
         <div class="post-meta">
@@ -273,8 +274,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-15T14:15:01+08:00">
-                2019-02-15
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-09T15:35:36+08:00">
+                2019-07-09
               </time>
             
 
@@ -284,28 +285,6 @@
           </span>
 
           
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/docker/" itemprop="url" rel="index">
-                    <span itemprop="name">docker</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
 
           
             
@@ -314,8 +293,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/hexo_blog/2019/02/15/常用k8s命令记录/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count gitment-comments-count" data-xid="/hexo_blog/2019/02/15/常用k8s命令记录/" itemprop="commentsCount"></span>
+                <a href="/hexo_blog/2019/07/09/DNS协议/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/hexo_blog/2019/07/09/DNS协议/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -343,100 +322,33 @@
       
 
       
-        <h2 id="常用k8s命令"><a href="#常用k8s命令" class="headerlink" title="常用k8s命令"></a>常用k8s命令</h2><p>这篇记录一下常用的k8s命令，我怕我会忘啊  -_-#<br>没错，这是docker那篇的姐妹篇哦。棒棒哒:P</p>
-<ul>
-<li><code>kubectl cluster-info</code></li>
-<li><code>kubectl get nodes</code></li>
-<li><code>kubectl run first-deployment --image=katacoda/docker-http-server --port=80</code><ul>
-<li>这样就有一个pod啦。在get pods command里面能看到一个pod</li>
-<li><code>-port</code>仍旧是内部的端口</li>
-<li>外部端口可以用<code>--hostport=8001</code>指定， 但是这样做的话， Under the covers, this exposes the Pod via Docker Port Mapping. As a result, you will not see the service listed using <code>kubectl get svc</code>。目前的理解是，因为是用的docker的方法，所以k8s不知道<ul>
-<li>用docker ps命令能看到这个container，然后可以注意到有两个ps进程。其中一个是paused状态，然后我们的端口8001其实开在这个paused的ps上面。</li>
-<li>The ports are exposed on the Pod, not the http container itself. The Pause container is responsible for defining the network for the Pod. Other containers in the pod share the same network namespace. This improves network performance and allow multiple containers to communicate over the same network interface..感觉这段解释很关键啊。这个container的名字是： k8s_POD_”httpexposed”,最后一个字段是我们起的pod的名字</li>
-</ul>
+        <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>工作中要用到DNS协议，需要学习一下，省得碰到的时候每次都要再看一遍。 DNS也是TCP/IP里面的一个基础协议。所以也会涉及到一些TCP/IP协议的部分。<br>话说一个简单的DNS协议也有一堆可以写啊。不容易啊。</p>
+<h3 id="DNS在TCP-IP协议里的位置"><a href="#DNS在TCP-IP协议里的位置" class="headerlink" title="DNS在TCP/IP协议里的位置"></a>DNS在TCP/IP协议里的位置</h3><ul>
+<li>从参考链接名就能看出来， DNS是应用层的协议（几层几层的总是记不住啦）</li>
+<li>TCP/IP是四层。OSI是7层。（最烦协议啦。都差不多，还换来换去的）<br><img src="https://ask.qcloudimg.com/http-save/yehe-1195962/e9uc1yy5n7.png?imageView2/2/w/1620" alt=""><blockquote>
+<p>图片来自参考链接1</p>
+</blockquote>
 </li>
-<li><code>--replicas</code>： 复制因子</li>
-</ul>
-</li>
-<li><code>kubectl get pods</code><ul>
-<li>所以get pods的话，会把replication cotronller， service， deployment都给打印出来</li>
-</ul>
-</li>
-<li><code>kubectl get rc</code><ul>
-<li>将replication controller打印出来。</li>
-</ul>
-</li>
-<li><code>kubectl get services</code>      </li>
-<li><code>kubectl get deployments</code><ul>
-<li>感受一下这两个的区别</li>
+<li>参考链接：<ul>
+<li><a href="https://cloud.tencent.com/developer/article/1023700" target="_blank" rel="noopener">TCP/IP（六）应用层（DNS和HTTP协议）</a></li>
+<li><a href="https://cloud.tencent.com/developer/article/1358564" target="_blank" rel="noopener">DNS协议入门</a></li>
+<li><a href="https://cloud.tencent.com/developer/information/dns%E7%9A%84%E5%8D%8F%E8%AE%AE" target="_blank" rel="noopener">DNS协议栈</a></li>
 </ul>
 </li>
 </ul>
-<pre><code>$ kubectl get pods
-   NAME                           READY     STATUS    RESTARTS   AGE
-   http-7b77c4cd66-74zqx          1/1       Running   0          4s
-   http-7b77c4cd66-fhlmx          1/1       Running   0          19m
-   http-7b77c4cd66-xrbpf          1/1       Running   0          4s
-   httpexposed-5c4cf8b7d8-qprzc   1/1       Running   0          11m
-$ kubectl get deployments
-   NAME          DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-   http          3         3         3            3           19m
-   httpexposed   1         1         1            1           11m
-</code></pre><ul>
-<li><code>kubectl describe deployment http</code></li>
-<li><code>kubectl describe svc http</code> 能看到很多信息，包括整个cluster对外的ip，各个node的内部ip之类</li>
-<li><code>kubectl expose deployment first-deployment --port=80 --type=NodePort</code><ul>
-<li>这条命令有点复杂，解释说：Once the container is running it can be exposed via different networking options, depending on requirements. </li>
-<li>将资源暴露为新的Kubernetes Service。</li>
-<li>expose后面的资源有很多种，包括：pod（po），service（svc），replication controller（rc），deployment（deploy），replica set（rs）</li>
-<li>A Kubernetes service deployment has, at least, two parts. A replication controller and a service. 稍微有点理解了。一个service部署的时候一般有两个yaml文件</li>
-<li>‘first-deployment’是deployment的名字</li>
-<li><code>-port</code> 是内部的端口</li>
-<li><code></code>–target-port`是外部访问的端口</li>
-<li>完整语法为：<code>expose (-f FILENAME | TYPE NAME) [--port=port] [--protocol=TCP|UDP] [--target-port=number-or-name] [--name=name] [--external-ip=external-ip-of-service] [--type=type]</code></li>
+<h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><ul>
+<li><code>Domain Name System</code> 域名系统。也可以叫做域名解析协议。</li>
+<li>简单的解释就是DNS协议会把网址，比如将”sallyslove.github.io/hexo_blog”的域名转换成为计算机能够理解的32位的IP，发到网络层去。</li>
 </ul>
-</li>
-<li><code>kubectl scale --replicas=3 deployment http</code> scale的命令</li>
-<li><code>kubectl create -f deployment.yaml</code> 通过yaml文件创建一个deployment<ul>
-<li><code>kubectl create -f service.yaml</code> 也可以通过yaml文件创建service</li>
-<li>ymal文件里面的内容还不是非常清楚。参考<a href="https://blog.csdn.net/luanpeng825485697/article/details/83753260" target="_blank" rel="noopener">k8s yaml文件详解</a></li>
-</ul>
-</li>
-<li><code>kubectl apply -f deployment.yaml</code>如果yaml文件有改动的话，可以用这条命令来update</li>
-</ul>
-<pre><code>$ kubectl apply -f deployment.yaml
-  Warning: kubectl apply should be used on resource created by either kubectl create --save-config or kubectl apply
- deployment.extensions/webapp1 configured
-</code></pre><ul>
-<li><code>kubectl exec $pod -- /usr/bin/curl -s localhost/unhealthy</code></li>
-<li><code>kubectl get ing</code> 可以用来看Ingress</li>
-<li><code>kubectl create namespace</code>创建namespace</li>
-<li><code>kubectl config set-context $(kubectl config current-context) --namespace=&lt;insert-namespace-name-here&gt;</code></li>
-<li><code>kubectl config get-contexts</code> 这个context不知道是啥</li>
-<li><code>kubectl get namespaces</code></li>
-<li><code>kubectl delete pvc --all --namespace default</code> 用这个命令来做delete。一堆都行。pvc换成pod，deployments，secret，configmap，service啥的</li>
-<li>安装k8s的dashboard：<ul>
-<li>使用“docker for desktop“的时候，这个dashboard貌似不是事先装好的。印象不深刻了。需要装一下：<ul>
-<li><code>kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml</code></li>
-<li><code>kubectl proxy</code> 再将proxy给弄出来，就可以访问了。</li>
-<li>如下图：<br><img src="https://user-images.githubusercontent.com/5803001/34945022-c57b369a-fa3c-11e7-85e7-83f716d10705.png" alt=""></li>
-<li>参考链接登录：<ul>
-<li><a href="https://segmentfault.com/a/1190000012850396" target="_blank" rel="noopener">config登录方式</a></li>
-<li><a href="https://www.cnblogs.com/guigujun/p/8366530.html" target="_blank" rel="noopener">config登录方式2</a></li>
-<li><a href="https://www.cnblogs.com/jackyfei/p/10180465.html" target="_blank" rel="noopener">token方式登录</a></li>
-</ul>
-</li>
-<li>获取token的命令：<code>kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk &#39;{print $1}&#39;)</code></li>
-</ul>
+<h3 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h3><ul>
+<li>过程相当的简单明了啊。client端发消息给域名解析服务器，服务器在自己里面一顿找，有就直接返回</li>
+<li>没有就去根服务器找，根服务器找了之后会存到低一次没找到的域名解析服务器进行缓存。</li>
+<li>再去找的时候就从缓存里面直接拿。不需要再去根服务器跑一趟了<br><img src="https://ask.qcloudimg.com/http-save/yehe-1195962/vspbulgxi2.png?imageView2/2/w/1620" alt=""><blockquote>
+<p>图片来自参考链接1</p>
+</blockquote>
 </li>
 </ul>
-</li>
-</ul>
-<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
-<li><a href="http://docs.kubernetes.org.cn/475.html" target="_blank" rel="noopener">k8s中文文档</a></li>
-<li><a href="https://www.katacoda.com/courses/kubernetes/kubectl-run-containers" target="_blank" rel="noopener">codekara的在线课程</a><h3 id="主要特性"><a href="#主要特性" class="headerlink" title="主要特性"></a>主要特性</h3></li>
-</ul>
-
+<h3 id="详解"><a href="#详解" class="headerlink" title="详解"></a>详解</h3><h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3>
       
     </div>
     
@@ -460,8 +372,8 @@ $ kubectl get deployments
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/hexo_blog/2019/02/14/常用Docker命令记录/" rel="next" title="常用Docker命令记录">
-                <i class="fa fa-chevron-left"></i> 常用Docker命令记录
+              <a href="/hexo_blog/2019/07/09/JVM-tool/" rel="next" title="JVM tool">
+                <i class="fa fa-chevron-left"></i> JVM tool
               </a>
             
           </div>
@@ -469,10 +381,6 @@ $ kubectl get deployments
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/hexo_blog/2019/02/22/Jetty-Graceful-shutdown/" rel="prev" title="Jetty Graceful shutdown">
-                Jetty Graceful shutdown <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -602,7 +510,7 @@ $ kubectl get deployments
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#常用k8s命令"><span class="nav-number">1.</span> <span class="nav-text">常用k8s命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文档"><span class="nav-number">1.1.</span> <span class="nav-text">参考文档</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主要特性"><span class="nav-number">1.2.</span> <span class="nav-text">主要特性</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#DNS在TCP-IP协议里的位置"><span class="nav-number">1.1.</span> <span class="nav-text">DNS在TCP/IP协议里的位置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#概述"><span class="nav-number">1.2.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#流程"><span class="nav-number">1.3.</span> <span class="nav-text">流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#详解"><span class="nav-number">1.4.</span> <span class="nav-text">详解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现"><span class="nav-number">1.5.</span> <span class="nav-text">实现</span></a></li></ol></li></ol></div>
             
 
           </div>
