@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="SSL相关知识KeyStore工作中碰到的不少。话说那个SSL的三次握手，我老是会忘啊。ORZ下回还是得写下来才行。先弄这个格式吧。相关的问题先放这里吧。 SSL双向握手KeyStore和TrustStore keystore和truststore从其文件格式来看其实是一个东西，只是为了方便管理将其分开 keystore中一般保存的是我们的私钥，用来加解密或者为别人做签名 truststore中保">
+<meta name="description" content="SSL相关知识KeyStore工作中碰到的不少。相关的问题先放这里吧。 SSL双向握手KeyStore和TrustStore keystore和truststore从其文件格式来看其实是一个东西，只是为了方便管理将其分开 keystore中一般保存的是我们的私钥，用来加解密或者为别人做签名 truststore中保存的是一些可信任的证书，主要是java在代码中访问某个https的时候对被访问者进行">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SSL相关知识">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/03/04/KeyStore格式/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="SSL相关知识KeyStore工作中碰到的不少。话说那个SSL的三次握手，我老是会忘啊。ORZ下回还是得写下来才行。先弄这个格式吧。相关的问题先放这里吧。 SSL双向握手KeyStore和TrustStore keystore和truststore从其文件格式来看其实是一个东西，只是为了方便管理将其分开 keystore中一般保存的是我们的私钥，用来加解密或者为别人做签名 truststore中保">
+<meta property="og:description" content="SSL相关知识KeyStore工作中碰到的不少。相关的问题先放这里吧。 SSL双向握手KeyStore和TrustStore keystore和truststore从其文件格式来看其实是一个东西，只是为了方便管理将其分开 keystore中一般保存的是我们的私钥，用来加解密或者为别人做签名 truststore中保存的是一些可信任的证书，主要是java在代码中访问某个https的时候对被访问者进行">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-04-23T09:35:39.035Z">
+<meta property="og:updated_time" content="2019-07-18T03:13:35.544Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SSL相关知识">
-<meta name="twitter:description" content="SSL相关知识KeyStore工作中碰到的不少。话说那个SSL的三次握手，我老是会忘啊。ORZ下回还是得写下来才行。先弄这个格式吧。相关的问题先放这里吧。 SSL双向握手KeyStore和TrustStore keystore和truststore从其文件格式来看其实是一个东西，只是为了方便管理将其分开 keystore中一般保存的是我们的私钥，用来加解密或者为别人做签名 truststore中保">
+<meta name="twitter:description" content="SSL相关知识KeyStore工作中碰到的不少。相关的问题先放这里吧。 SSL双向握手KeyStore和TrustStore keystore和truststore从其文件格式来看其实是一个东西，只是为了方便管理将其分开 keystore中一般保存的是我们的私钥，用来加解密或者为别人做签名 truststore中保存的是一些可信任的证书，主要是java在代码中访问某个https的时候对被访问者进行">
 
 
 
@@ -319,7 +319,7 @@
       
 
       
-        <h2 id="SSL相关知识"><a href="#SSL相关知识" class="headerlink" title="SSL相关知识"></a>SSL相关知识</h2><p>KeyStore工作中碰到的不少。话说那个SSL的三次握手，我老是会忘啊。ORZ<br>下回还是得写下来才行。先弄这个格式吧。<br>相关的问题先放这里吧。</p>
+        <h2 id="SSL相关知识"><a href="#SSL相关知识" class="headerlink" title="SSL相关知识"></a>SSL相关知识</h2><p>KeyStore工作中碰到的不少。相关的问题先放这里吧。</p>
 <h3 id="SSL双向握手"><a href="#SSL双向握手" class="headerlink" title="SSL双向握手"></a>SSL双向握手</h3><h3 id="KeyStore和TrustStore"><a href="#KeyStore和TrustStore" class="headerlink" title="KeyStore和TrustStore"></a>KeyStore和TrustStore</h3><ul>
 <li>keystore和truststore从其文件格式来看其实是一个东西，只是为了方便管理将其分开</li>
 <li>keystore中一般保存的是我们的私钥，用来加解密或者为别人做签名</li>

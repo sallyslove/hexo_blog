@@ -337,8 +337,8 @@
           
             <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>工作中要用到DNS协议，需要学习一下，省得碰到的时候每次都要再看一遍。 DNS也是TCP/IP里面的一个基础协议。所以也会涉及到一些TCP/IP协议的部分。<br>话说一个简单的DNS协议也有一堆可以写啊。不容易啊。</p>
 <h3 id="DNS在TCP-IP协议里的位置"><a href="#DNS在TCP-IP协议里的位置" class="headerlink" title="DNS在TCP/IP协议里的位置"></a>DNS在TCP/IP协议里的位置</h3><ul>
-<li>从参考链接名就能看出来， DNS是应用层的协议（几层几层的总是记不住啦）</li>
-<li>TCP/IP是四层。OSI是7层。（最烦协议啦。都差不多，还换来换去的）<br><img src="https://ask.qcloudimg.com/http-save/yehe-1195962/e9uc1yy5n7.png?imageView2/2/w/1620" alt=""><blockquote>
+<li>从参考链接名就能看出来， DNS是应用层的协议</li>
+<li>TCP/IP是四层。OSI是7层。<br><img src="https://ask.qcloudimg.com/http-save/yehe-1195962/e9uc1yy5n7.png?imageView2/2/w/1620" alt=""><blockquote>
 <p>图片来自参考链接1</p>
 </blockquote>
 </li>
@@ -1242,7 +1242,7 @@
       
         
           
-            <h2 id="Cassandra的repair机制"><a href="#Cassandra的repair机制" class="headerlink" title="Cassandra的repair机制"></a>Cassandra的repair机制</h2><p>这篇讨论一些robustness的东西。主要就是一个节点down了会怎么样。其实目前知道的就是hint，但是记录下来。<br>从一些文档里面看，这个属于写流程的一部分。确实是，读的话，如果node down了应该不会从上面读取了。会写到the coordinator node上面。version 1.0有所不同，但是这个版本太旧了。<br><strong><em>一个实际的问题就是： coordinator node是什么node？</em></strong></p>
+            <h2 id="Cassandra的repair机制"><a href="#Cassandra的repair机制" class="headerlink" title="Cassandra的repair机制"></a>Cassandra的repair机制</h2><p>这篇讨论一些robustness的东西。主要就是一个节点down了会怎么样。其实目前知道的就是hint，但是记录下来。<br>从一些文档里面看，这个属于写流程的一部分。确实是，读的话，如果node down了应该不会从上面读取了。会写到the coordinator node上面。version 1.0有所不同，但是这个版本太旧了。</p>
 <blockquote>
 <p>By design, hinted handoff inherently allows Cassandra to continue performing the same number of writes even when the cluster is operating at reduced capacity.</p>
 </blockquote>
@@ -1561,7 +1561,7 @@
       
         
           
-            <h2 id="Cassandra里面的Batch操作"><a href="#Cassandra里面的Batch操作" class="headerlink" title="Cassandra里面的Batch操作"></a>Cassandra里面的Batch操作</h2><p>最近工作比较忙活，一个月都没写blog喽。工作中碰到了一些与cassandra相关的同步异步，simpleStatement，batchStatement的东西。顺势多研究一下。<br>研究发现，这玩意还挺复杂的啊。cassandra挺复杂啊，还是其他数据库也这样啊</p>
+            <h2 id="Cassandra里面的Batch操作"><a href="#Cassandra里面的Batch操作" class="headerlink" title="Cassandra里面的Batch操作"></a>Cassandra里面的Batch操作</h2><p>最近工作比较忙活，一个月都没写blog喽。工作中碰到了一些与cassandra相关的同步异步，simpleStatement，batchStatement的东西。顺势多研究一下。<br>研究发现，这玩意还挺复杂的啊。</p>
 <h3 id="execute-与-executeAsync"><a href="#execute-与-executeAsync" class="headerlink" title="execute 与 executeAsync"></a>execute 与 executeAsync</h3><ul>
 <li>cassandra driver在执行语句时候提供了<code>execute</code>和<code>executeAsync</code> 两个接口</li>
 <li>对于batch来说，只能调用前者，这个好像不太对。</li>
@@ -1828,19 +1828,24 @@ public class ThreadPoolExecutor extends AbstractExecutorService
 <li>需要注意的是这个方法仅仅是尝试中断线程，它通过的是调用interrupt方法，这种方法的作用有限，如果线程中没有sleep 、wait、Condition、定时锁等应用, interrupt()方法是无法中断当前的线程的。</li>
 </ul>
 </li>
-<li><p><code>awaitTermination</code>：跟shutdown方法基本一样，只是加了一个wait时间的限制。当wait时间到了的时候，会强制退出。？ 这是某篇博客里面的解释</p>
+<li><p><code>awaitTermination</code>：只是加了一个wait时间的限制</p>
 <ul>
 <li>很多博客的里面，这个函数会返回boolean的返回值。就是说<code>awaitTermination</code>一般和<code>shutdown</code>搭配使用，<code>awaitTermination</code>来监控线程有没有结束好。结束了返回<code>true</code>，没结束返回<code>false</code></li>
-<li>这个函数还会抛出InterupptedException，但是看代码没太明白什么状况下会抛这个<code>exception</code></li>
+<li>这个函数还会抛出InterupptedException，但是看代码没太明白什么状况下会抛这个<code>exception</code>。但是是这个函数本身被interrupt了。</li>
 <li>有一点不太明白，线程处于阻塞状态，处于阻塞状态时候，还会接收消息？只是不处理？</li>
-<li>这个函数最不好理解啦。</li>
 <li>在实际工作中解决bug碰到了这组函数。事实上就是要三个一起用的。<code>awaitTermination</code>只会返回一个状态，并不会做任何的事情。所以在这个函数返回false的时候应该要调用<code>shutdownNow</code>方法来进一步中断线程</li>
 </ul>
 </li>
-<li><p><a href="https://blog.csdn.net/u012168222/article/details/52790400" target="_blank" rel="noopener">shutdown 方法</a></p>
-</li>
+<li><p>参考链接</p>
+<ul>
+<li><a href="https://blog.csdn.net/u012168222/article/details/52790400" target="_blank" rel="noopener">shutdown 方法</a></li>
 <li><a href="https://blog.csdn.net/zaozi/article/details/38854561#commentBox" target="_blank" rel="noopener">ExecutorService的正确关闭方法</a>： 这篇文章比喻得很清楚，只是不知道正确与否</li>
+</ul>
+</li>
+<li><ul>
 <li><a href="https://blog.csdn.net/liwenxia626/article/details/80754886" target="_blank" rel="noopener">csdn的另一篇博客</a></li>
+</ul>
+</li>
 </ul>
 
           

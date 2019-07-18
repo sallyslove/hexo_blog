@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="跬步">
 <meta property="og:description" content="这篇记录改成专门记录和多线程相关的数据类型 Executors这个Executors没有继承或者实现任何其他类。就是说，他嘎嘣自己一个。实际上是一个工具类啊，更确切地说，像一个工厂类。主要功能是返回各种ExecutorService。其实就是new出各种ThreadPoolExecutor。如下： public static ExecutorService newSingleThreadExecu">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-06-17T05:42:50.525Z">
+<meta property="og:updated_time" content="2019-07-18T03:12:59.159Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java多线程数据类型">
 <meta name="twitter:description" content="这篇记录改成专门记录和多线程相关的数据类型 Executors这个Executors没有继承或者实现任何其他类。就是说，他嘎嘣自己一个。实际上是一个工具类啊，更确切地说，像一个工厂类。主要功能是返回各种ExecutorService。其实就是new出各种ThreadPoolExecutor。如下： public static ExecutorService newSingleThreadExecu">
@@ -402,19 +402,24 @@ public class ThreadPoolExecutor extends AbstractExecutorService
 <li>需要注意的是这个方法仅仅是尝试中断线程，它通过的是调用interrupt方法，这种方法的作用有限，如果线程中没有sleep 、wait、Condition、定时锁等应用, interrupt()方法是无法中断当前的线程的。</li>
 </ul>
 </li>
-<li><p><code>awaitTermination</code>：跟shutdown方法基本一样，只是加了一个wait时间的限制。当wait时间到了的时候，会强制退出。？ 这是某篇博客里面的解释</p>
+<li><p><code>awaitTermination</code>：只是加了一个wait时间的限制</p>
 <ul>
 <li>很多博客的里面，这个函数会返回boolean的返回值。就是说<code>awaitTermination</code>一般和<code>shutdown</code>搭配使用，<code>awaitTermination</code>来监控线程有没有结束好。结束了返回<code>true</code>，没结束返回<code>false</code></li>
-<li>这个函数还会抛出InterupptedException，但是看代码没太明白什么状况下会抛这个<code>exception</code></li>
+<li>这个函数还会抛出InterupptedException，但是看代码没太明白什么状况下会抛这个<code>exception</code>。但是是这个函数本身被interrupt了。</li>
 <li>有一点不太明白，线程处于阻塞状态，处于阻塞状态时候，还会接收消息？只是不处理？</li>
-<li>这个函数最不好理解啦。</li>
 <li>在实际工作中解决bug碰到了这组函数。事实上就是要三个一起用的。<code>awaitTermination</code>只会返回一个状态，并不会做任何的事情。所以在这个函数返回false的时候应该要调用<code>shutdownNow</code>方法来进一步中断线程</li>
 </ul>
 </li>
-<li><p><a href="https://blog.csdn.net/u012168222/article/details/52790400" target="_blank" rel="noopener">shutdown 方法</a></p>
-</li>
+<li><p>参考链接</p>
+<ul>
+<li><a href="https://blog.csdn.net/u012168222/article/details/52790400" target="_blank" rel="noopener">shutdown 方法</a></li>
 <li><a href="https://blog.csdn.net/zaozi/article/details/38854561#commentBox" target="_blank" rel="noopener">ExecutorService的正确关闭方法</a>： 这篇文章比喻得很清楚，只是不知道正确与否</li>
+</ul>
+</li>
+<li><ul>
 <li><a href="https://blog.csdn.net/liwenxia626/article/details/80754886" target="_blank" rel="noopener">csdn的另一篇博客</a></li>
+</ul>
+</li>
 </ul>
 
       

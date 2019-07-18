@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="Cassandra里面的Batch操作最近工作比较忙活，一个月都没写blog喽。工作中碰到了一些与cassandra相关的同步异步，simpleStatement，batchStatement的东西。顺势多研究一下。研究发现，这玩意还挺复杂的啊。cassandra挺复杂啊，还是其他数据库也这样啊 execute 与 executeAsync cassandra driver在执行语句时候提供了ex">
+<meta name="description" content="Cassandra里面的Batch操作最近工作比较忙活，一个月都没写blog喽。工作中碰到了一些与cassandra相关的同步异步，simpleStatement，batchStatement的东西。顺势多研究一下。研究发现，这玩意还挺复杂的啊。 execute 与 executeAsync cassandra driver在执行语句时候提供了execute和executeAsync 两个接口 对">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Cassandra里面的Batch操作">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/04/18/Cassandra里面的Batch操作/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="Cassandra里面的Batch操作最近工作比较忙活，一个月都没写blog喽。工作中碰到了一些与cassandra相关的同步异步，simpleStatement，batchStatement的东西。顺势多研究一下。研究发现，这玩意还挺复杂的啊。cassandra挺复杂啊，还是其他数据库也这样啊 execute 与 executeAsync cassandra driver在执行语句时候提供了ex">
+<meta property="og:description" content="Cassandra里面的Batch操作最近工作比较忙活，一个月都没写blog喽。工作中碰到了一些与cassandra相关的同步异步，simpleStatement，batchStatement的东西。顺势多研究一下。研究发现，这玩意还挺复杂的啊。 execute 与 executeAsync cassandra driver在执行语句时候提供了execute和executeAsync 两个接口 对">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://3.bp.blogspot.com/-dv9zIC84QD4/VNoNE0YXn8I/AAAAAAAAAX0/b3wtV48fuB0/s1600/Screenshot%2B2015-02-10%2B13.51.56.png">
-<meta property="og:updated_time" content="2019-06-24T10:03:39.302Z">
+<meta property="og:updated_time" content="2019-07-18T03:09:43.520Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Cassandra里面的Batch操作">
-<meta name="twitter:description" content="Cassandra里面的Batch操作最近工作比较忙活，一个月都没写blog喽。工作中碰到了一些与cassandra相关的同步异步，simpleStatement，batchStatement的东西。顺势多研究一下。研究发现，这玩意还挺复杂的啊。cassandra挺复杂啊，还是其他数据库也这样啊 execute 与 executeAsync cassandra driver在执行语句时候提供了ex">
+<meta name="twitter:description" content="Cassandra里面的Batch操作最近工作比较忙活，一个月都没写blog喽。工作中碰到了一些与cassandra相关的同步异步，simpleStatement，batchStatement的东西。顺势多研究一下。研究发现，这玩意还挺复杂的啊。 execute 与 executeAsync cassandra driver在执行语句时候提供了execute和executeAsync 两个接口 对">
 <meta name="twitter:image" content="http://3.bp.blogspot.com/-dv9zIC84QD4/VNoNE0YXn8I/AAAAAAAAAX0/b3wtV48fuB0/s1600/Screenshot%2B2015-02-10%2B13.51.56.png">
 
 
@@ -343,7 +343,7 @@
       
 
       
-        <h2 id="Cassandra里面的Batch操作"><a href="#Cassandra里面的Batch操作" class="headerlink" title="Cassandra里面的Batch操作"></a>Cassandra里面的Batch操作</h2><p>最近工作比较忙活，一个月都没写blog喽。工作中碰到了一些与cassandra相关的同步异步，simpleStatement，batchStatement的东西。顺势多研究一下。<br>研究发现，这玩意还挺复杂的啊。cassandra挺复杂啊，还是其他数据库也这样啊</p>
+        <h2 id="Cassandra里面的Batch操作"><a href="#Cassandra里面的Batch操作" class="headerlink" title="Cassandra里面的Batch操作"></a>Cassandra里面的Batch操作</h2><p>最近工作比较忙活，一个月都没写blog喽。工作中碰到了一些与cassandra相关的同步异步，simpleStatement，batchStatement的东西。顺势多研究一下。<br>研究发现，这玩意还挺复杂的啊。</p>
 <h3 id="execute-与-executeAsync"><a href="#execute-与-executeAsync" class="headerlink" title="execute 与 executeAsync"></a>execute 与 executeAsync</h3><ul>
 <li>cassandra driver在执行语句时候提供了<code>execute</code>和<code>executeAsync</code> 两个接口</li>
 <li>对于batch来说，只能调用前者，这个好像不太对。</li>

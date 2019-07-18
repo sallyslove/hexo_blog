@@ -88,7 +88,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image012-large.jpg">
 <meta property="og:image" content="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image010-large.jpg">
-<meta property="og:updated_time" content="2019-06-25T05:19:55.742Z">
+<meta property="og:updated_time" content="2019-07-18T03:22:50.753Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Cassandra 写数据过程">
 <meta name="twitter:description" content="Cassandra 写流程大致流程到把数据写到磁盘中分为以下几个步骤：  先找到应该往哪几个节点写 写log到commit log 写数据到memtable 从memtable中flush数据 将数据存储在SSTables中的磁盘中   客户端写一条数据必须指定 Keyspace、ColumnFamily、Key、Column Name 和 Value，还可以指定 Timestamp，以及数据的安">
@@ -353,8 +353,7 @@
 <li>将数据存储在SSTables中的磁盘中</li>
 </ol>
 <ul>
-<li>客户端写一条数据必须指定 Keyspace、ColumnFamily、Key、Column Name 和 Value，还可以指定 Timestamp，以及数据的安全等级。<strong><em>看了看产品代码里面的语句，不知道这个Key是哪个?这个key又是什么key呢，partition Key, primary Key,是后文说根据key算出token，然后再根据token算出partition Index的</em></strong></li>
-<li><strong><em>看代码里面没看出来有给key</em></strong></li>
+<li>客户端写一条数据必须指定 Keyspace、ColumnFamily、Key、Column Name 和 Value，还可以指定 Timestamp，以及数据的安全等级。<strong><em>这个key又是什么key呢，partition Key, primary Key,是后文说根据key算出token，然后再根据token算出partition Index的</em></strong></li>
 </ul>
 <pre><code>Cassandra Node ---&gt;Commitlog---&gt; Memtable
 
@@ -474,21 +473,23 @@ Index.db
 <li><p>用<code>./tools/bin/sstable2json</code>可以打开这堆data文件来看。下面是打开一个data文件的输出。</p>
 <ul>
 <li>从输出来看，存储的时候的key就是partition key。如果有多个，会用<code>：</code>隔开</li>
-<li><p>然后它是这样的：</p>
-<ul>
+<li>然后它是这样的：<ul>
 <li>不是partition key的primary key会作为第一个column的名字，同样用:隔开。</li>
 <li>接下来不是key的column和不是partition key的primary key联合起来作为column的名字。</li>
 <li>比如：那么key就是”name:age”, 然后cells里面的第一行会是,最后是时间戳<br><code>[&quot;address:salary&quot;,&quot;&quot;,1558958953681000]</code></li>
-<li><p>第二行会是：<br><code>[&quot;address:salary:character&quot;,character_value,1558958953681000]</code></p>
-<p>  name text PRIMARY KEY,<br>  age bigint,<br>  address int,<br>  salary int,<br>  character blob,<br>  PRIMARY KEY ((name, age), address, salary)</p>
-</li>
+<li>第二行会是：<br><code>[&quot;address:salary:character&quot;,character_value,1558958953681000]</code></li>
 </ul>
-<p>{“key”: “23”,<br> “cells”:                [[“5:counter:value”,”000180003d96b9d9c5e147bf8d359d944a327738000000000000005e00000000000019a8”,1558959081706000,”c”,-9223372036854775808]]}</p>
 </li>
 </ul>
 </li>
 </ul>
-<h3 id="从memTables到SSTable"><a href="#从memTables到SSTable" class="headerlink" title="从memTables到SSTable"></a>从memTables到SSTable</h3><ul>
+<pre><code>name text PRIMARY KEY,
+age bigint,
+address int,
+salary int,
+character blob,
+PRIMARY KEY ((name, age), address, salary)
+</code></pre><h3 id="从memTables到SSTable"><a href="#从memTables到SSTable" class="headerlink" title="从memTables到SSTable"></a>从memTables到SSTable</h3><ul>
 <li>Cassandra flushes the memtables to disk when either the commit log space threshold or the memtable cleanup threshold is reached.<ul>
 <li><code>memtable_cleanup_threshold</code> 后面一种应该和这个参数有关</li>
 <li>在<code>expert cassandra</code>的书里有三种情况下面会flush。不包括手动flush</li>

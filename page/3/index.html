@@ -347,7 +347,7 @@
 <li>Checks partition key cache, if enabled</li>
 <li>Goes directly to the compression offset map if a partition key is found in the partition key cache, or checks the partition summary if not<br>If the partition summary is checked, then the partition index is accessed</li>
 <li>Locates the data on disk using the compression offset map</li>
-<li>Fetches the data from the SSTable on disk<br><strong><em><code>partition summary</code>是什么东西?记得之前桌就是一个例子呀</em></strong></li>
+<li>Fetches the data from the SSTable on disk<br><strong><em><code>partition summary</code>是什么东西?记得之前看的时候说就是一个例子呀</em></strong></li>
 </ul>
 <h3 id="Caches"><a href="#Caches" class="headerlink" title="Caches"></a>Caches</h3><p>这篇也作为<code>KeyCache</code>和<code>RowCache</code>学习的blog.<br><code>RowCache</code>缓存的是数据，而<code>KeyCache</code>缓存的是在<code>SSTable</code>文件中的位置。<br>Cassandra的是读数据慢，写数据快。</p>
 <p>以下几种<code>cache</code>都是针对<code>SSTable</code>来说的</p>
@@ -802,8 +802,7 @@
 <li>将数据存储在SSTables中的磁盘中</li>
 </ol>
 <ul>
-<li>客户端写一条数据必须指定 Keyspace、ColumnFamily、Key、Column Name 和 Value，还可以指定 Timestamp，以及数据的安全等级。<strong><em>看了看产品代码里面的语句，不知道这个Key是哪个?这个key又是什么key呢，partition Key, primary Key,是后文说根据key算出token，然后再根据token算出partition Index的</em></strong></li>
-<li><strong><em>看代码里面没看出来有给key</em></strong></li>
+<li>客户端写一条数据必须指定 Keyspace、ColumnFamily、Key、Column Name 和 Value，还可以指定 Timestamp，以及数据的安全等级。<strong><em>这个key又是什么key呢，partition Key, primary Key,是后文说根据key算出token，然后再根据token算出partition Index的</em></strong></li>
 </ul>
 <pre><code>Cassandra Node ---&gt;Commitlog---&gt; Memtable
 
@@ -923,21 +922,23 @@ Index.db
 <li><p>用<code>./tools/bin/sstable2json</code>可以打开这堆data文件来看。下面是打开一个data文件的输出。</p>
 <ul>
 <li>从输出来看，存储的时候的key就是partition key。如果有多个，会用<code>：</code>隔开</li>
-<li><p>然后它是这样的：</p>
-<ul>
+<li>然后它是这样的：<ul>
 <li>不是partition key的primary key会作为第一个column的名字，同样用:隔开。</li>
 <li>接下来不是key的column和不是partition key的primary key联合起来作为column的名字。</li>
 <li>比如：那么key就是”name:age”, 然后cells里面的第一行会是,最后是时间戳<br><code>[&quot;address:salary&quot;,&quot;&quot;,1558958953681000]</code></li>
-<li><p>第二行会是：<br><code>[&quot;address:salary:character&quot;,character_value,1558958953681000]</code></p>
-<p>  name text PRIMARY KEY,<br>  age bigint,<br>  address int,<br>  salary int,<br>  character blob,<br>  PRIMARY KEY ((name, age), address, salary)</p>
-</li>
+<li>第二行会是：<br><code>[&quot;address:salary:character&quot;,character_value,1558958953681000]</code></li>
 </ul>
-<p>{“key”: “23”,<br> “cells”:                [[“5:counter:value”,”000180003d96b9d9c5e147bf8d359d944a327738000000000000005e00000000000019a8”,1558959081706000,”c”,-9223372036854775808]]}</p>
 </li>
 </ul>
 </li>
 </ul>
-<h3 id="从memTables到SSTable"><a href="#从memTables到SSTable" class="headerlink" title="从memTables到SSTable"></a>从memTables到SSTable</h3><ul>
+<pre><code>name text PRIMARY KEY,
+age bigint,
+address int,
+salary int,
+character blob,
+PRIMARY KEY ((name, age), address, salary)
+</code></pre><h3 id="从memTables到SSTable"><a href="#从memTables到SSTable" class="headerlink" title="从memTables到SSTable"></a>从memTables到SSTable</h3><ul>
 <li>Cassandra flushes the memtables to disk when either the commit log space threshold or the memtable cleanup threshold is reached.<ul>
 <li><code>memtable_cleanup_threshold</code> 后面一种应该和这个参数有关</li>
 <li>在<code>expert cassandra</code>的书里有三种情况下面会flush。不包括手动flush</li>
@@ -1132,17 +1133,27 @@ Index.db
 <h4 id="StatusLogger"><a href="#StatusLogger" class="headerlink" title="StatusLogger"></a>StatusLogger</h4><p>如此简单的一个函数也有好几种log啦。</p>
 <h5 id="ThreadPoolMetrics：-Stage"><a href="#ThreadPoolMetrics：-Stage" class="headerlink" title="ThreadPoolMetrics： Stage"></a>ThreadPoolMetrics： Stage</h5><p>打印出各种stage的状态，一个接一个的pool的状态。真心不少啊。</p>
 <ul>
-<li>在log里面会有：<br>INFO  [Service Thread] 2019-01-02 00:00:04,547 StatusLogger.java:52 - Pool Name                    Active   Pending      Completed   Blocked  All Time Blocked</li>
+<li>在log里面会有：</li>
+</ul>
+<pre><code>INFO  [Service Thread] 2019-01-02 00:00:04,547 StatusLogger.java:52 - Pool Name Active   Pending      Completed   Blocked  All Time Blocked
+</code></pre><ul>
 <li>鉴于stage比较多，另外写一篇blog来解释这堆。请看本站的stage。</li>
 </ul>
 <h5 id="Cache"><a href="#Cache" class="headerlink" title="Cache"></a>Cache</h5><p>输出KeyCache 和 RowCache的状态</p>
 <ul>
-<li>在log里面是：<br>INFO  [Service Thread] 2019-01-02 00:00:05,130 StatusLogger.java:88 - Cache Type                     Size                 Capacity               KeysToSave<br>INFO  [Service Thread] 2019-01-02 00:00:05,130 StatusLogger.java:90 - KeyCache                    1406343                104857600</li>
+<li>在log里面是：</li>
+</ul>
+<pre><code>INFO  [Service Thread] 2019-01-02 00:00:05,130 StatusLogger.java:88 - Cache Type  Size Capacity KeysToSave
+INFO  [Service Thread] 2019-01-02 00:00:05,130 StatusLogger.java:90 - KeyCache   1406343  104857600
+</code></pre><ul>
 <li>这篇 log已经很长了。KeyCache和RowCache另开一篇log。</li>
 </ul>
 <h5 id="per-CF-stats"><a href="#per-CF-stats" class="headerlink" title="per-CF stats"></a>per-CF stats</h5><p>per-CF stats是源码里面的注释，我也不知道是啥哦</p>
 <ul>
-<li>在log里面是：(产品的表名字，不能暴露啦)<br>INFO  [Service Thread] 2019-01-03 02:54:45,722 StatusLogger.java:106 (table_name)    6284,288376</li>
+<li>在log里面是：</li>
+</ul>
+<pre><code>INFO  [Service Thread] 2019-01-03 02:54:45,722 StatusLogger.java:106 (table_name)    6284,288376
+</code></pre><ul>
 <li>Cassandra的API里面对于<code>StatusLogger</code>也没有解释。 ORZ，看来是个很直白的文件啊<br>-<code>org.apache.cassandra.utils.StatusLogger</code> 只有一个函数<code>log()</code></li>
 </ul>
 <pre><code>logger.info(String.format(&quot;%-25s%20s&quot;, &quot;Table&quot;, &quot;Memtable ops,data&quot;));
@@ -1156,17 +1167,24 @@ logger.info(String.format(&quot;%-25s%20s&quot;,
 <li>一个问题是： 这个column也太多了吧。。。。。。</li>
 <li>被大神吊打了。这个值是表访问次数。</li>
 </ul>
-<h4 id="GCInspector"><a href="#GCInspector" class="headerlink" title="GCInspector"></a>GCInspector</h4><p>  -在log里面是：<br>  INFO  [Service Thread] 2019-01-02 00:00:04,546 GCInspector.java:284 - ConcurrentMarkSweep GC in 55742ms.  CMS Old Gen: 7331643368 -&gt; 7331643360; Par Eden Space: 1006632960 -&gt; 784484600; Par Survivor Space: 125829104 -&gt; 0</p>
-<ul>
+<h4 id="GCInspector"><a href="#GCInspector" class="headerlink" title="GCInspector"></a>GCInspector</h4><p>  -在log里面是：</p>
+<pre><code>INFO  [Service Thread] 2019-01-02 00:00:04,546 GCInspector.java:284 - ConcurrentMarkSweep GC in 55742ms.  CMS Old Gen: 7331643368 -&gt; 7331643360; Par Eden Space: 1006632960 -&gt; 784484600; Par Survivor Space: 125829104 -&gt; 0
+</code></pre><ul>
 <li>这句log的意思是：做了一次CMS GC。然后数字对应，11位是G，9位是M，所以 eden区是784M</li>
 <li>参考本站GC的文章了解更多CMS算法的内容</li>
 </ul>
 <h3 id="PERIODIC-COMMIT-LOG-SYNCER"><a href="#PERIODIC-COMMIT-LOG-SYNCER" class="headerlink" title="PERIODIC-COMMIT-LOG-SYNCER"></a>PERIODIC-COMMIT-LOG-SYNCER</h3><ul>
-<li>在log里面是：<br>WARN  [PERIODIC-COMMIT-LOG-SYNCER] 2019-01-03 04:04:17,232 AbstractCommitLogService.java:117 - Out of 5 commit log syncs over the past 573s with average duration of 9734.40ms…</li>
+<li>在log里面是：</li>
+</ul>
+<pre><code>WARN  [PERIODIC-COMMIT-LOG-SYNCER] 2019-01-03 04:04:17,232 AbstractCommitLogService.java:117 - Out of 5 commit log syncs over the past 573s with average duration of 9734.40ms...
+</code></pre><ul>
 <li>这个应该是将commit log写到disk上面的task。没有再查资料。参考本站cassandra写过程那篇博客</li>
 </ul>
 <h3 id="RMI-TCP-Connection-idle"><a href="#RMI-TCP-Connection-idle" class="headerlink" title="RMI TCP Connection(idle)"></a>RMI TCP Connection(idle)</h3><h3 id="IndexSummaryManager"><a href="#IndexSummaryManager" class="headerlink" title="IndexSummaryManager"></a>IndexSummaryManager</h3><ul>
-<li>在log里面是：<br>INFO  [IndexSummaryManager:1] 2019-01-02 03:21:59,849 IndexSummaryRedistribution.java:74 - Redistributing index summaries</li>
+<li>在log里面是：</li>
+</ul>
+<pre><code>INFO  [IndexSummaryManager:1] 2019-01-02 03:21:59,849 IndexSummaryRedistribution.java:74 - Redistributing index summaries
+</code></pre><ul>
 <li>Manages the fixed-size memory pool for index summaries, periodically resizing them in order to give more memory to hot sstables and less memory to cold sstables.</li>
 <li>还不是很理解，就是说index summary一开始也是存在内存中的吗？确实在参数配置里面有index_summary_capacity_in_mb和index_summary_resize_interval_in_minutes</li>
 </ul>
