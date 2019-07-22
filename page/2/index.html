@@ -242,6 +242,227 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/03/11/Java多线程数据类型/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/03/11/Java多线程数据类型/" itemprop="url">Java多线程数据类型</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-11T10:22:53+08:00">
+                2019-03-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>这篇记录改成专门记录和多线程相关的数据类型</p>
+<h3 id="Executors"><a href="#Executors" class="headerlink" title="Executors"></a>Executors</h3><p>这个<code>Executors</code>没有继承或者实现任何其他类。就是说，他嘎嘣自己一个。实际上是一个工具类啊，更确切地说，像一个工厂类。主要功能是返回各种<code>ExecutorService</code>。<br>其实就是<code>new</code>出各种<code>ThreadPoolExecutor</code>。如下：</p>
+<pre><code>public static ExecutorService newSingleThreadExecutor() {
+    return new FinalizableDelegatedExecutorService
+        (new ThreadPoolExecutor(1, 1,
+                                0L, TimeUnit.MILLISECONDS,
+                      new LinkedBlockingQueue&lt;Runnable&gt;()));
+}
+</code></pre><h3 id="ExecutorService"><a href="#ExecutorService" class="headerlink" title="ExecutorService"></a>ExecutorService</h3><h4 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h4><pre><code>public interface ExecutorService extends Executor
+</code></pre><ul>
+<li>所以首先来说，这是一个接口</li>
+<li>Executor接口很简单，只有一个execute方法。ExecutorService除了这一个方法，还增加了一些方法，增加的方法包括：<code>awaitTerminate</code>，<code>invokeAll</code>，<code>invokeAny</code>，<code>shutdown</code>，<code>shutdownNow</code>，<code>submit</code>等。</li>
+<li><a href="https://www.cnblogs.com/Steven0805/p/6393443.html" target="_blank" rel="noopener">Java线程池ExecutorService</a></li>
+</ul>
+<h4 id="几种常用线程池的具体实现"><a href="#几种常用线程池的具体实现" class="headerlink" title="几种常用线程池的具体实现"></a>几种常用线程池的具体实现</h4><ul>
+<li>然后有意思的来了：<ul>
+<li>Java通过Executors class提供了好几种线程池，这就是我们常用的几种了。</li>
+<li><code>newFixedThreadPool</code>：就是说这个玩意，限定好了最大数目，核心数目，然后本质是一个<code>LinkedBlockingQueue</code>套了<code>runnable</code></li>
+</ul>
+</li>
+</ul>
+<pre><code>public static ExecutorService newFixedThreadPool(int nThreads) {
+   return new ThreadPoolExecutor(nThreads, nThreads,
+                                 0L, TimeUnit.MILLISECONDS,
+                                 new LinkedBlockingQueue&lt;Runnable&gt;());
+</code></pre><ul>
+<li><code>newCachedThreadPool</code>：</li>
+</ul>
+<pre><code>public static ExecutorService newCachedThreadPool() {
+ return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
+                               60L, TimeUnit.SECONDS,
+                               new SynchronousQueue&lt;Runnable&gt;());    }
+</code></pre><ul>
+<li>还有<code>newScheduledThreadPool</code>和<code>newSingleThreadExecutor</code></li>
+</ul>
+<h4 id="一些要点"><a href="#一些要点" class="headerlink" title="一些要点"></a>一些要点</h4><ul>
+<li><code>submit</code>与<code>execute</code>的区别： <ul>
+<li>submit接受runnable和callable  有返回值。</li>
+<li>execute接受runnable 无返回值</li>
+<li>submit方便Exception处理</li>
+</ul>
+</li>
+<li>Runnable与Callable区别<ul>
+<li>runnable接口实现的没有返回值的并发编程。</li>
+<li>callable实现的存在返回值的并发编程。使用Future获取返回值。</li>
+</ul>
+</li>
+</ul>
+<h3 id="ThreadPoolExecutor"><a href="#ThreadPoolExecutor" class="headerlink" title="ThreadPoolExecutor"></a>ThreadPoolExecutor</h3><pre><code>public abstract class AbstractExecutorService implements ExecutorService
+public class ThreadPoolExecutor extends AbstractExecutorService    
+</code></pre><ul>
+<li>从上面可以看出来，ThreadPoolExecutor也是一种Executor，继承自AbstractExecutorService，自然也实现了ExecutorService.</li>
+<li><a href="https://www.cnblogs.com/zedosu/p/6665306.html" target="_blank" rel="noopener">ThreadPoolExecutor使用详解</a></li>
+</ul>
+<h4 id="ThreadPoolExecutor-shutdown"><a href="#ThreadPoolExecutor-shutdown" class="headerlink" title="ThreadPoolExecutor shutdown"></a>ThreadPoolExecutor shutdown</h4><p>  ThreadPoolExecutor 有三个shutdown方法： <code>shutdown</code>、<code>shutdownNow</code>、<code>awaitTermination</code></p>
+<ul>
+<li><code>shutdown</code>： 停止接收外部submit的任务；内部正在跑的任务和队列里等待的任务，会执行完。其实graceful shutdown的感觉啊</li>
+<li><code>shutdownNow</code>： 停止接收外部提交的任务；忽略队列里等待的任务；尝试将正在跑的任务interrupt中断；返回未执行的任务列表。强制中断。线程会收到InterupptedException.<ul>
+<li>需要注意的是这个方法仅仅是尝试中断线程，它通过的是调用interrupt方法，这种方法的作用有限，如果线程中没有sleep 、wait、Condition、定时锁等应用, interrupt()方法是无法中断当前的线程的。</li>
+</ul>
+</li>
+<li><p><code>awaitTermination</code>：只是加了一个wait时间的限制</p>
+<ul>
+<li>很多博客的里面，这个函数会返回boolean的返回值。就是说<code>awaitTermination</code>一般和<code>shutdown</code>搭配使用，<code>awaitTermination</code>来监控线程有没有结束好。结束了返回<code>true</code>，没结束返回<code>false</code></li>
+<li>这个函数还会抛出InterupptedException，但是看代码没太明白什么状况下会抛这个<code>exception</code>。但是是这个函数本身被interrupt了。</li>
+<li>有一点不太明白，线程处于阻塞状态，处于阻塞状态时候，还会接收消息？只是不处理？</li>
+<li>在实际工作中解决bug碰到了这组函数。事实上就是要三个一起用的。<code>awaitTermination</code>只会返回一个状态，并不会做任何的事情。所以在这个函数返回false的时候应该要调用<code>shutdownNow</code>方法来进一步中断线程</li>
+</ul>
+</li>
+<li><p>参考链接</p>
+<ul>
+<li><a href="https://blog.csdn.net/u012168222/article/details/52790400" target="_blank" rel="noopener">shutdown 方法</a></li>
+<li><a href="https://blog.csdn.net/zaozi/article/details/38854561#commentBox" target="_blank" rel="noopener">ExecutorService的正确关闭方法</a>： 这篇文章比喻得很清楚，只是不知道正确与否</li>
+</ul>
+</li>
+<li><ul>
+<li><a href="https://blog.csdn.net/liwenxia626/article/details/80754886" target="_blank" rel="noopener">csdn的另一篇博客</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/03/04/KeyStore格式/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1760,233 +1981,6 @@ $ kubectl get deployments
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/01/21/Cassandra数据结构/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/01/21/Cassandra数据结构/" itemprop="url">Cassandra数据结构</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-21T15:35:56+08:00">
-                2019-01-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/cassandra/" itemprop="url" rel="index">
-                    <span itemprop="name">cassandra</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="Cassandra-数据结构"><a href="#Cassandra-数据结构" class="headerlink" title="Cassandra 数据结构"></a>Cassandra 数据结构</h2><p>  必须了解Cassandra的数据结构。本身并不是多么复杂，而且有足够多的文档，所以简单写一下。</p>
-<h3 id="KeySpace"><a href="#KeySpace" class="headerlink" title="KeySpace"></a>KeySpace</h3><ul>
-<li>好像没啥需要解释的。</li>
-<li>在论文里面看到说namespace的另一个作用的可以做数据重复。</li>
-</ul>
-<h3 id="Column"><a href="#Column" class="headerlink" title="Column"></a>Column</h3><ul>
-<li>Column是Cassandra中最小的数据单元，它是一个三元的数据类型，包含name,value,timestamp.</li>
-<li>name是必须的，value不是必须的，timestamp经常可以忽略不计，如下图<br><img src="https://img-blog.csdn.net/20140302154940656?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="引用自第一篇参考链接"><blockquote>
-<p>引用自csdn</p>
-</blockquote>
-</li>
-</ul>
-<h3 id="Super-Column"><a href="#Super-Column" class="headerlink" title="Super Column"></a>Super Column</h3><ul>
-<li>可以将SuperColumn想象成Column的数组，它包含一个name以及一系列Column.</li>
-<li>SuperColumn本身不包含timestamp属性。使用SuperColumn有一个限制，要读取其中一个子列的值，必须把所有子列都反序列化，且不能在子列中建索引<br><img src="https://img-blog.csdn.net/20140302154945843?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""><blockquote>
-<p>引用自csdn</p>
-</blockquote>
-</li>
-<li><p>参考链接里面有以下的例子，但是从这个例子里面，</p>
-<pre><code> {   // 这是一个SuperColumn
-     name: &quot;info&quot;,
-     // 包含一系列的Columns
-     value: {
-        street: {name: &quot;street&quot;, value: &quot;1234 x street&quot;, timestamp: 123456789},
-        city: {name: &quot;city&quot;, value: &quot;san francisco&quot;, timestamp: 123456789},
-        zip: {name: &quot;zip&quot;, value: &quot;94107&quot;, timestamp: 123456789},
-  }
-}
-</code></pre><ul>
-<li><strong><em>感觉例子和图片不太对得上啊。例子反而更像一个columnFamily了?</em></strong></li>
-</ul>
-</li>
-</ul>
-<h3 id="ColumnFamily"><a href="#ColumnFamily" class="headerlink" title="ColumnFamily"></a>ColumnFamily</h3><ul>
-<li>columnFamily相当于数据库中的表</li>
-<li>每一行有一个row的名字，然后每一行里面是一个个的column，也可以是super column</li>
-<li>ColumnFamily是一个包含了许多Row的结构，每一个Row都包含有client提供的Key以及和该Key关联的一系列Column。</li>
-<li>每一行里面的column的名字可以是不变的。也可以是可变的。静态和动态column</li>
-<li><p>需要注意的是，数据写入的时候已经经过排序了。就是说一行的所有column，会根据它的名字来进行排序。<br><img src="https://img-blog.csdn.net/20140302154950812?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""></p>
-<blockquote>
-<p>引用自csdn</p>
-</blockquote>
-</li>
-<li><p>第二个参考链接里面的例子：</p>
-<pre><code>UserProfile = { // 这是一个ColumnFamily
-     phatduckk: {   // 这是对应ColumnFamily的key
-         // 这是Key下对应的Column
-         username: &quot;gpcuster&quot;,
-         email: &quot;gpcuster@gmail.com&quot;,
-         phone: &quot;6666&quot;
-     }, // 第一个row结束
-     ieure: {   // 这是ColumnFamily的另一个key
-       //这是另一个Key对应的column
-       username: &quot;pengguo&quot;,
-       email: &quot;pengguo@live.com&quot;,
-       phone: &quot;888&quot;
-     }
-</code></pre></li>
-</ul>
-<h3 id="对应到表里面"><a href="#对应到表里面" class="headerlink" title="对应到表里面"></a>对应到表里面</h3><p>目前对于表结构的理解是这样的，可能后面有更正：</p>
-<ul>
-<li>如果用<code>desc tables</code>去查看一张表。那么可以看到primaryKey字样，类似<code>PRIMARY KEY ()</code>，还有<code>CLUSTERING ORDER</code> 字样</li>
-<li><strong><em>那么这个primary key就是对应数据模型里面的row的名字。也就是super column的名字。只不过这个名字是几个primaryKey联合起来组成的。？</em></strong></li>
-<li>primaryKey可以用来查询数据。每个primary Key可以单独使用来查询。</li>
-<li>然后cassandra的数据存储的时候是排序的，这个clustering order的属性，就是说基于这个属性来进行排序</li>
-</ul>
-<p><img src="http://images.cnblogs.com/cnblogs_com/gpcuster/WindowsLiveWriter/Cassandra_8E88/image_2.png" alt=""></p>
-<blockquote>
-<p>引用自第二篇参考链接文档</p>
-</blockquote>
-<h3 id="data-moduling"><a href="#data-moduling" class="headerlink" title="data moduling"></a>data moduling</h3><ul>
-<li>最近看了一些关于建模的文章。文章里面一些反复强调的事如下：<ul>
-<li>cassandra不同于其他数据库的是，它写的成本低，读的成本高。</li>
-<li>基于这一点，必须在一开始先考虑query的需求，然后数据可以duplicated。而在关系数据库建模时候，完全是不一样的。</li>
-<li>基于cassandra的写和存储的方式，需要读取的数据应该放在同一个partition里面。这个partition是cassandra里面的一个概念</li>
-<li>文章里面的这句话说明了partition的定义和重要性：<blockquote>
-<p>a set of rows that share a partition key is called a partition<br>Cassandra is a partitioned row store with tunable consistency.<br>You perform several optimizations in the physical data modeling stage, including the specifying of partition sizes and ordering.</p>
-</blockquote>
-</li>
-</ul>
-</li>
-</ul>
-<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
-<li><a href="https://blog.csdn.net/aesop_wubo/article/details/20289837" target="_blank" rel="noopener">数据模型</a></li>
-<li><a href="http://www.cnblogs.com/gpcuster/archive/2010/03/12/1684072.html" target="_blank" rel="noopener">大话Cassandra数据模型</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2037,7 +2031,7 @@ $ kubectl get deployments
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-count">29</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

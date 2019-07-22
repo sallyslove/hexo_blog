@@ -88,7 +88,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image012-large.jpg">
 <meta property="og:image" content="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image010-large.jpg">
-<meta property="og:updated_time" content="2019-07-18T03:22:50.753Z">
+<meta property="og:updated_time" content="2019-07-22T03:15:35.728Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Cassandra 写数据过程">
 <meta name="twitter:description" content="Cassandra 写流程大致流程到把数据写到磁盘中分为以下几个步骤：  先找到应该往哪几个节点写 写log到commit log 写数据到memtable 从memtable中flush数据 将数据存储在SSTables中的磁盘中   客户端写一条数据必须指定 Keyspace、ColumnFamily、Key、Column Name 和 Value，还可以指定 Timestamp，以及数据的安">
@@ -378,7 +378,7 @@ Memtable  ---&gt; Periodically flush to SSTable
 <li><strong><em>所以在真正开始写入数据之前，cassandra会做这些事情？在commitLog之前？</em></strong> 我想应该是之前</li>
 </ul>
 </li>
-<li><p><code>Replica Factor</code>和<code>consistency level</code>不是一个东西，然后有一个算法。我们自己的产品里面，<code>replica set</code>是3， <code>consistency level</code>的策略是<code>Querum</code>。这样需要consistent的节点是replica set/2 +1 ，所以就是2 </p>
+<li><p><code>Replica Factor</code>和<code>consistency level</code>不是一个东西，然后有一个算法。比如，<code>replica set</code>是3， <code>consistency level</code>的策略是<code>Querum</code>。这样需要consistent的节点是replica set/2 +1 ，所以就是2 </p>
 </li>
 </ul>
 <h3 id="Eventual-Consistency"><a href="#Eventual-Consistency" class="headerlink" title="Eventual Consistency"></a>Eventual Consistency</h3><p>这在Cassandra里面是非常关键的一个概念。写在这里。因为与写的机制相关最多。</p>
@@ -640,7 +640,7 @@ PRIMARY KEY ((name, age), address, salary)
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-count">29</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
