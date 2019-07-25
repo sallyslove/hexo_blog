@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="java.Util.Function.Supplier 这个接口只有一个方法，Get方法。void，返回一个T 把它当工厂方法看就是了。 顾名思义，提供者。 JAVA8 Supplier接口 感觉就是一次性生成。同一个接口，在初始化时候给出get函数，可以有不同实现 supplier作为function interface，有@FunctionalInterface annotation。所以可以">
+<meta name="description" content="一些特别的数据类型author: Lynn Shendate: 2019-06-17 13:14:34tags: categories: Javajava.Util.Function.Supplier 这个接口只有一个方法，Get方法。void，返回一个T 把它当工厂方法看就是了。 顾名思义，提供者。 JAVA8 Supplier接口 感觉就是一次性生成。同一个接口，在初始化时候给出get函数，可">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java数据类型 --- 一些特别的数据类型">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/06/17/Java数据类型-一些特别的数据类型/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="java.Util.Function.Supplier 这个接口只有一个方法，Get方法。void，返回一个T 把它当工厂方法看就是了。 顾名思义，提供者。 JAVA8 Supplier接口 感觉就是一次性生成。同一个接口，在初始化时候给出get函数，可以有不同实现 supplier作为function interface，有@FunctionalInterface annotation。所以可以">
+<meta property="og:description" content="一些特别的数据类型author: Lynn Shendate: 2019-06-17 13:14:34tags: categories: Javajava.Util.Function.Supplier 这个接口只有一个方法，Get方法。void，返回一个T 把它当工厂方法看就是了。 顾名思义，提供者。 JAVA8 Supplier接口 感觉就是一次性生成。同一个接口，在初始化时候给出get函数，可">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-06-17T05:30:06.613Z">
+<meta property="og:updated_time" content="2019-07-24T09:58:56.177Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java数据类型 --- 一些特别的数据类型">
-<meta name="twitter:description" content="java.Util.Function.Supplier 这个接口只有一个方法，Get方法。void，返回一个T 把它当工厂方法看就是了。 顾名思义，提供者。 JAVA8 Supplier接口 感觉就是一次性生成。同一个接口，在初始化时候给出get函数，可以有不同实现 supplier作为function interface，有@FunctionalInterface annotation。所以可以">
+<meta name="twitter:description" content="一些特别的数据类型author: Lynn Shendate: 2019-06-17 13:14:34tags: categories: Javajava.Util.Function.Supplier 这个接口只有一个方法，Get方法。void，返回一个T 把它当工厂方法看就是了。 顾名思义，提供者。 JAVA8 Supplier接口 感觉就是一次性生成。同一个接口，在初始化时候给出get函数，可">
 
 
 
@@ -341,13 +341,23 @@
       
 
       
-        <h3 id="java-Util-Function-Supplier"><a href="#java-Util-Function-Supplier" class="headerlink" title="java.Util.Function.Supplier"></a>java.Util.Function.Supplier</h3><ul>
+        <p>一些特别的数据类型<br>author: Lynn Shen<br>date: 2019-06-17 13:14:34<br>tags:</p>
+<h2 id="categories-Java"><a href="#categories-Java" class="headerlink" title="categories: Java"></a>categories: Java</h2><h3 id="java-Util-Function-Supplier"><a href="#java-Util-Function-Supplier" class="headerlink" title="java.Util.Function.Supplier"></a>java.Util.Function.Supplier</h3><ul>
 <li>这个接口只有一个方法，Get方法。void，返回一个T</li>
 <li>把它当工厂方法看就是了。</li>
 <li>顾名思义，提供者。</li>
 <li><a href="https://blog.csdn.net/qq_28410283/article/details/80625482" target="_blank" rel="noopener">JAVA8 Supplier接口</a></li>
 <li>感觉就是一次性生成。同一个接口，在初始化时候给出get函数，可以有不同实现</li>
 <li>supplier作为function interface，有@FunctionalInterface annotation。所以可以直接用lamda来作为实现。比如：<code>()-&gt;getString()</code>可以作为<code>Supplier&lt;String&gt;</code>的实现</li>
+</ul>
+<h3 id="java关键字native"><a href="#java关键字native" class="headerlink" title="java关键字native"></a>java关键字native</h3><p>我要看native的函数。找不到，OMG。其实之前看到过native的用法，知道这个玩意，但是还是写在这里吧。<br>感觉一片参考链接就能解释清楚啦。</p>
+<ul>
+<li>其实就是java吧，不像c和c++善于处理底层的东西。所以就会调用一些不是java写的函数。这些函数就用native关键字来修饰</li>
+<li>native是通过JNI（Java Native Interface）接口来调用这些函数的</li>
+<li>参考链接<ul>
+<li><a href="https://www.cnblogs.com/b3051/p/7484501.html" target="_blank" rel="noopener">java中native的用法</a></li>
+</ul>
+</li>
 </ul>
 
       
@@ -515,7 +525,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#java-Util-Function-Supplier"><span class="nav-number">1.</span> <span class="nav-text">java.Util.Function.Supplier</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#categories-Java"><span class="nav-number">1.</span> <span class="nav-text">categories: Java</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#java-Util-Function-Supplier"><span class="nav-number">1.1.</span> <span class="nav-text">java.Util.Function.Supplier</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#java关键字native"><span class="nav-number">1.2.</span> <span class="nav-text">java关键字native</span></a></li></ol></li></ol></div>
             
 
           </div>
