@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="一些特别的数据类型author: Lynn Shendate: 2019-06-17 13:14:34tags: categories: Javajava.Util.Function.Supplier 这个接口只有一个方法，Get方法。void，返回一个T 把它当工厂方法看就是了。 顾名思义，提供者。 JAVA8 Supplier接口 感觉就是一次性生成。同一个接口，在初始化时候给出get函数，可">
+<meta name="description" content="java.Util.Function.Supplier 这个接口只有一个方法，Get方法。void，返回一个T 把它当工厂方法看就是了。 顾名思义，提供者。 JAVA8 Supplier接口 感觉就是一次性生成。同一个接口，在初始化时候给出get函数，可以有不同实现 supplier作为function interface，有@FunctionalInterface annotation。所以可以">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java数据类型 --- 一些特别的数据类型">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/06/17/Java数据类型-一些特别的数据类型/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="一些特别的数据类型author: Lynn Shendate: 2019-06-17 13:14:34tags: categories: Javajava.Util.Function.Supplier 这个接口只有一个方法，Get方法。void，返回一个T 把它当工厂方法看就是了。 顾名思义，提供者。 JAVA8 Supplier接口 感觉就是一次性生成。同一个接口，在初始化时候给出get函数，可">
+<meta property="og:description" content="java.Util.Function.Supplier 这个接口只有一个方法，Get方法。void，返回一个T 把它当工厂方法看就是了。 顾名思义，提供者。 JAVA8 Supplier接口 感觉就是一次性生成。同一个接口，在初始化时候给出get函数，可以有不同实现 supplier作为function interface，有@FunctionalInterface annotation。所以可以">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-07-24T09:58:56.177Z">
+<meta property="og:updated_time" content="2019-08-06T03:23:09.518Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java数据类型 --- 一些特别的数据类型">
-<meta name="twitter:description" content="一些特别的数据类型author: Lynn Shendate: 2019-06-17 13:14:34tags: categories: Javajava.Util.Function.Supplier 这个接口只有一个方法，Get方法。void，返回一个T 把它当工厂方法看就是了。 顾名思义，提供者。 JAVA8 Supplier接口 感觉就是一次性生成。同一个接口，在初始化时候给出get函数，可">
+<meta name="twitter:description" content="java.Util.Function.Supplier 这个接口只有一个方法，Get方法。void，返回一个T 把它当工厂方法看就是了。 顾名思义，提供者。 JAVA8 Supplier接口 感觉就是一次性生成。同一个接口，在初始化时候给出get函数，可以有不同实现 supplier作为function interface，有@FunctionalInterface annotation。所以可以">
 
 
 
@@ -341,8 +341,7 @@
       
 
       
-        <p>一些特别的数据类型<br>author: Lynn Shen<br>date: 2019-06-17 13:14:34<br>tags:</p>
-<h2 id="categories-Java"><a href="#categories-Java" class="headerlink" title="categories: Java"></a>categories: Java</h2><h3 id="java-Util-Function-Supplier"><a href="#java-Util-Function-Supplier" class="headerlink" title="java.Util.Function.Supplier"></a>java.Util.Function.Supplier</h3><ul>
+        <h3 id="java-Util-Function-Supplier"><a href="#java-Util-Function-Supplier" class="headerlink" title="java.Util.Function.Supplier"></a>java.Util.Function.Supplier</h3><ul>
 <li>这个接口只有一个方法，Get方法。void，返回一个T</li>
 <li>把它当工厂方法看就是了。</li>
 <li>顾名思义，提供者。</li>
@@ -358,6 +357,41 @@
 <li><a href="https://www.cnblogs.com/b3051/p/7484501.html" target="_blank" rel="noopener">java中native的用法</a></li>
 </ul>
 </li>
+</ul>
+<h3 id="生成Random的方法"><a href="#生成Random的方法" class="headerlink" title="生成Random的方法"></a>生成Random的方法</h3><p>有好几个相关的类型，写在这里。是在工作中需要生成随机<code>port</code>碰到的</p>
+<ul>
+<li>参考链接<ul>
+<li><a href="https://www.jianshu.com/p/2f6acd169202#" target="_blank" rel="noopener">Java 随机数 Random VS SecureRandom</a></li>
+<li><a href="https://www.bbsmax.com/A/kjdwxba6zN/" target="_blank" rel="noopener">Java中的随机数生成器：Random，ThreadLocalRandom，SecureRandom</a></li>
+<li><a href="http://ju.outofmemory.cn/entry/286621" target="_blank" rel="noopener">Java中生成随机数Random、ThreadLocalRandom、SecureRandom</a></li>
+<li><a href="https://blog.csdn.net/weixin_33738555/article/details/93434637" target="_blank" rel="noopener">SecureRandom的正确使用</a></li>
+<li><a href="https://blog.csdn.net/weixin_35703883/article/details/81138425" target="_blank" rel="noopener">SecureRandom生成随机数</a></li>
+<li><a href="https://www.cnblogs.com/deng-cc/p/8064481.html" target="_blank" rel="noopener">SecureRandom</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="Math-random"><a href="#Math-random" class="headerlink" title="Math.random"></a>Math.random</h4><ul>
+<li>产生的随机数是0 - 1 之间的一个 double，即0 &lt;= random &lt; 1。</li>
+<li>第一次调用<code>Math.random()</code>方法时，自动创建了一个伪随机数生成器，实际上用的是 <code>new java.util.Random()</code>。</li>
+<li><code>Math.random()</code>方法是线程安全的。</li>
+</ul>
+<h4 id="java-util-Random"><a href="#java-util-Random" class="headerlink" title="java.util.Random"></a>java.util.Random</h4><ul>
+<li><code>Random</code>类中实现的随机算法是伪随机，也就是有规则的随机</li>
+<li>种子一样的情况下，两个<code>Random</code>类产生的是一模一样的数列</li>
+<li>所以在安全性要求比较高，或者使用比较频繁时，不适合使用<code>Random</code>，因为值是可预测的</li>
+<li>然后生成的随机数是左边闭环，右边开的。</li>
+</ul>
+<h4 id="java-security-SecureRandom"><a href="#java-security-SecureRandom" class="headerlink" title="java.security.SecureRandom"></a>java.security.SecureRandom</h4><ul>
+<li><code>SecureRandom</code> 其实和<code>Random</code>一样，种子一样的时候生成的数列是固定的</li>
+<li>也是继承至 java.util.Random。</li>
+<li>不一样的是，<code>SecureRandom</code>收集了一些随机事件，比如鼠标点击，键盘点击等等， 使用这些随机事件作为种子</li>
+<li>通过new来初始化，在不适用任何源的情况下，就是说无参数构造函数的话，默认来说会使用<code>NativePRNG</code>算法生成随机数</li>
+<li>不要使用人为指定的源，尽量使用系统的随机源。系统的随机源在java8中是可以配置的，配置在<code>$JAVA_HOME/jre/lib/security/java.security</code>中的<code>securerandom.source</code>属性。例如jdk1.8中该配置为:<code>securerandom.source=file:/dev/random</code></li>
+<li>实际上SHA1PRNG的性能将近要比NativePRNG的性能好一倍，synchronized的代码少了一半，所以没有特别重的安全需要，尽量使用SHA1PRNG算法生成随机数。</li>
+</ul>
+<h4 id="java-util-concurrent-ThreadLocalRandom"><a href="#java-util-concurrent-ThreadLocalRandom" class="headerlink" title="java.util.concurrent.ThreadLocalRandom"></a>java.util.concurrent.ThreadLocalRandom</h4><ul>
+<li>java7之后引进的</li>
+<li>继承自java.util.Random</li>
 </ul>
 
       
@@ -479,7 +513,7 @@
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">32</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -525,7 +559,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#categories-Java"><span class="nav-number">1.</span> <span class="nav-text">categories: Java</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#java-Util-Function-Supplier"><span class="nav-number">1.1.</span> <span class="nav-text">java.Util.Function.Supplier</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#java关键字native"><span class="nav-number">1.2.</span> <span class="nav-text">java关键字native</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#java-Util-Function-Supplier"><span class="nav-number">1.</span> <span class="nav-text">java.Util.Function.Supplier</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#java关键字native"><span class="nav-number">2.</span> <span class="nav-text">java关键字native</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成Random的方法"><span class="nav-number">3.</span> <span class="nav-text">生成Random的方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Math-random"><span class="nav-number">3.1.</span> <span class="nav-text">Math.random</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#java-util-Random"><span class="nav-number">3.2.</span> <span class="nav-text">java.util.Random</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#java-security-SecureRandom"><span class="nav-number">3.3.</span> <span class="nav-text">java.security.SecureRandom</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#java-util-concurrent-ThreadLocalRandom"><span class="nav-number">3.4.</span> <span class="nav-text">java.util.concurrent.ThreadLocalRandom</span></a></li></ol></li></ol></div>
             
 
           </div>

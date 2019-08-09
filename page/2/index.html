@@ -242,6 +242,531 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/05/15/Cassandra的repair机制/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/05/15/Cassandra的repair机制/" itemprop="url">Cassandra的repair机制</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-15T17:52:05+08:00">
+                2019-05-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/cassandra/" itemprop="url" rel="index">
+                    <span itemprop="name">cassandra</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Cassandra的repair机制"><a href="#Cassandra的repair机制" class="headerlink" title="Cassandra的repair机制"></a>Cassandra的repair机制</h2><p>这篇讨论一些robustness的东西。主要就是一个节点down了会怎么样。其实目前知道的就是hint，但是记录下来。<br>从一些文档里面看，这个属于写流程的一部分。确实是，读的话，如果node down了应该不会从上面读取了。会写到the coordinator node上面。version 1.0有所不同，但是这个版本太旧了。</p>
+<blockquote>
+<p>By design, hinted handoff inherently allows Cassandra to continue performing the same number of writes even when the cluster is operating at reduced capacity.</p>
+</blockquote>
+<h3 id="Hinted-Handoff简述"><a href="#Hinted-Handoff简述" class="headerlink" title="Hinted Handoff简述"></a>Hinted Handoff简述</h3><ul>
+<li><strong><code>hinted handoff</code> 和 一般说的<code>hint</code>应该是同一个东西。</strong> 前者是一个机制，后者就是这个机制产生的事件或者记录。</li>
+<li><code>hinted handoff</code>跟consistency level 相关，毕竟这个是写机制的一部分。</li>
+<li>cassandra的config文件里面需要配置几个参数：<ul>
+<li><code>hinted_handoff_enabled</code>：默认为true，打开这个机制</li>
+<li><code>max_hint_window_in_ms</code>： 为已经down掉的node记录hint log的时间长度</li>
+<li><code>gc_grace_seconds</code>: Configures the time-to-live (TTL) period for a hint so that the database won’t replay the hint after this duration. Setting this parameter to 0 disables hints。 这个参数没用过，后面可以试试看</li>
+<li><code>hinted_handoff_throttle_in_kb</code> 和    <code>max_hints_delivery_threads</code> 这两个没咋研究过，先放着吧</li>
+</ul>
+</li>
+<li>按照文档，当写入发生时候，并且a replica node for the key is down。就可能会触发hinted handoff的机制</li>
+</ul>
+<h4 id="Hint-详述"><a href="#Hint-详述" class="headerlink" title="Hint 详述"></a>Hint 详述</h4><ul>
+<li><blockquote>
+<p>The hint consists of a target ID for the downed node, a hint ID that is a time UUID for the data, a message ID that identifies the Cassandra version, and the data itself as a blob. </p>
+<ul>
+<li>hint里面有：down node的target ID， 标注这条数据的hint ID， 标注cassandra version的message ID以及数据本身</li>
+<li>这是cassandra 3.0之后的。之前的可能不一样</li>
+</ul>
+</blockquote>
+</li>
+<li><p>和想象地一样，当Gossipy发现downed node起来之后，coordinator node会将hint记录的数据写过去，并且删除掉hint</p>
+</li>
+<li><blockquote>
+<p>The coordinator also checks every ten minutes for hints corresponding to writes that timed out during an outage too brief for the failure detector to notice through gossip. </p>
+</blockquote>
+</li>
+<li>这句有点难以理解，看了下一句有点明白。如果有的节点宕机时间很短，而Gossdip并没有发现，那么coordinator 会返回一个exception，同时把write fail了，但是会记录一个hint。所以如果瞬间有很多短暂的fail，coordinator node会一下子压力过大，扔出overloadexception<blockquote>
+<p>If a replica node is overloaded or unavailable, and the failure detector has not yet marked the node as down, then expect most or all writes to that node to fail after the timeout triggered by write_request_timeout_in_ms, (10 seconds by default). The coordinator returns a TimeOutException exception, and the write will fail but a hint will be stored.</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="Hint-和-consistency-level"><a href="#Hint-和-consistency-level" class="headerlink" title="Hint 和 consistency level"></a>Hint 和 consistency level</h4><ul>
+<li><blockquote>
+<p>当一致性等级设定为ONE，QUORUM，或者ALL的时候，提示的写并不参与到一致性级别的计数中。如果没有足够的节点满足写的一致性级别需要，会抛出 UnavailableException而不是触发Hinted Handoff。（这是Casssandra和Dynamo复制模型不一样的地方之一）</p>
+</blockquote>
+</li>
+<li>接上文，如果将consistency level设置成为Any，那么hint就算了。所以即使只是写了hint，写操作也会成功，但是这时候读数据是读不出来的。</li>
+</ul>
+<h3 id="Repairing-Data"><a href="#Repairing-Data" class="headerlink" title="Repairing Data"></a>Repairing Data</h3><ul>
+<li>Read repair: The reconciliation or correction happens when a read finds an inconsistency.</li>
+<li>When data is read, a read repair can resolve any data inconsistencies. When data isn’t read, you need to use either the hinted handoff or anti-entropy mechanism to resolve any data inconsistences.</li>
+</ul>
+<h4 id="Read-Repair"><a href="#Read-Repair" class="headerlink" title="Read Repair"></a>Read Repair</h4><h4 id="anti-entropy"><a href="#anti-entropy" class="headerlink" title="anti-entropy"></a>anti-entropy</h4><h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><ul>
+<li><a href="https://wiki.apache.org/cassandra/HintedHandoff" target="_blank" rel="noopener">wiki上面的简介</a></li>
+<li><a href="https://docs.datastax.com/en/cassandra/3.0/cassandra/operations/opsRepairNodesHintedHandoff.html" target="_blank" rel="noopener">官方</a></li>
+<li><a href="http://www.cnblogs.com/sing1ee/archive/2012/07/09/2765056.html" target="_blank" rel="noopener">比较好的博客一篇</a>： 看起来很多就是官方文档的翻译</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/04/29/k8s和docker问题解决/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/04/29/k8s和docker问题解决/" itemprop="url">k8s和docker问题解决</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-29T15:44:03+08:00">
+                2019-04-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>工作中碰到的一些相关问题，有的也许很简单，记录在这里。省得后面再花功夫去看啦。</p>
+<h4 id="问题一"><a href="#问题一" class="headerlink" title="问题一"></a>问题一</h4><p>$ kubectl cluster-info<br>Kubernetes master is running at …</p>
+<p>To further debug and diagnose cluster problems, use ‘kubectl cluster-info dump’.<br>Unable to connect to the server: x509: certificate signed by unknown authority (possibly because of “crypto/rsa: verification error” while trying to verify candidate authority certificate “kubernetes”)</p>
+<ul>
+<li>参考链接：<a href="https://blog.csdn.net/baobaoxiannv/article/details/83818426" target="_blank" rel="noopener">csdn博客一篇</a></li>
+<li>其实就是kube的config文件: <code>~/.kube/config</code> 文件过时了。里面的certification需要更新。从kube server上面把config拿下来替换一些本地的就好了。</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/04/18/Cassandra里面的Batch操作/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/04/18/Cassandra里面的Batch操作/" itemprop="url">Cassandra里面的Batch操作</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-18T10:17:44+08:00">
+                2019-04-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/cassandra/" itemprop="url" rel="index">
+                    <span itemprop="name">cassandra</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Cassandra里面的Batch操作"><a href="#Cassandra里面的Batch操作" class="headerlink" title="Cassandra里面的Batch操作"></a>Cassandra里面的Batch操作</h2><p>最近工作比较忙活，一个月都没写blog喽。工作中碰到了一些与cassandra相关的同步异步，simpleStatement，batchStatement的东西。顺势多研究一下。<br>研究发现，这玩意还挺复杂的啊。</p>
+<h3 id="execute-与-executeAsync"><a href="#execute-与-executeAsync" class="headerlink" title="execute 与 executeAsync"></a>execute 与 executeAsync</h3><ul>
+<li>cassandra driver在执行语句时候提供了<code>execute</code>和<code>executeAsync</code> 两个接口</li>
+<li>对于batch来说，只能调用前者，这个好像不太对。</li>
+<li><p>但是进入代码会看到，<code>execute</code>最后调用的也是<code>executeAsync</code></p>
+<pre><code>public ResultSet execute(Statement statement) {
+       this.checkNotInEventLoop();
+       return this.executeAsync(statement).getUninterruptibly();
+}
+</code></pre></li>
+<li><p>这个<code>executeAsync</code>api是在<code>SessionManager</code>里面定义的</p>
+</li>
+<li>按照参考链接1里面所述的，从以上代码也可以看出来的<code>execute</code>在于是block的。就是不可打断的。必须得cassandra返回一些数据才能返回。所以它可以保证在invalid request的情况下报错，但是不能保证request就一定执行成功了。</li>
+<li><code>executeAsync</code>就是非blocking的，也不能保证这个request一定被执行或者在invalid的request的情况下报错</li>
+<li>参考链接1里面有这么一段话：看起来少量batch，并且是同样partition key的时候，会比较快。</li>
+<li>我们在产品中的改进在有些场景下面确实performance变好了<blockquote>
+<p>To further improve throughput, you might want to consider using BatchStatement and submitting requests in batches. This is a good option if you keep your batches small (50-250 is a good number) and if your inserts in a batch all share the same partition key. </p>
+</blockquote>
+</li>
+<li>参考链接：<ol>
+<li><a href="https://stackoverflow.com/questions/34949292/how-cassandra-handle-blocking-execute-statement-in-datastax-java-driver" target="_blank" rel="noopener">How Cassandra handle blocking execute statement in datastax java driver
+</a></li>
+<li><a href="http://zqhxuyuan.github.io/2015/11/10/2015-11-10-Cassandra-Client/" target="_blank" rel="noopener">Cassandra Client查询优化</a>: 这篇有点看不明白。但是瞅着还挺好的，先放在这里。</li>
+</ol>
+</li>
+</ul>
+<h3 id="BatchStatement"><a href="#BatchStatement" class="headerlink" title="BatchStatement"></a>BatchStatement</h3><p>严格说来，cassanda里面的batch称为LOGGED batch，而不应该是atomic batch。 Cassanda的策略始终是Eventually Consistent。而且由于cassandra里面add一个数据比delete一个数据要方便太多。所以cassandra会记一堆log啥的，而不是回滚。</p>
+<ul>
+<li>cassandra是基于co-ordinator来实现的。batch在co-ordinator开始处理之前就留会写到其他node去</li>
+<li>如果batch里面的某些失败了，那么是不会回滚的。而是会不断尝试。</li>
+<li>LOGGER的batch操作会比unlogged的多做很多事情</li>
+</ul>
+<h4 id="BatchStatement-Type"><a href="#BatchStatement-Type" class="headerlink" title="BatchStatement.Type"></a>BatchStatement.Type</h4><p>这个是BatchStatement class的一个子类</p>
+<ul>
+<li><code>COUNTER</code>: A counter batch. Note that such batch is the only type that can contain counter operations and it can only contain these. 这个解释也太简单了。意思是说可以知道多少个成功了？</li>
+<li><code>LOGGED</code>:  <ul>
+<li>Cassandra will first write the batch to its distributed batch log to ensure the atomicity of the batch (atomicity meaning that if any statement in the batch succeeds, all will eventually succeed).这个解释也不太懂啊，到底怎么保证的。 ORZ</li>
+<li>默认调用<code>new BatchStatement()</code>就会创一个LOGGED type的Batch-</li>
+</ul>
+</li>
+<li><code>UNLOGGED</code>： A batch that doesn’t use Cassandra’s distributed batch log. Such batch are not guaranteed to be atomic.</li>
+</ul>
+<h4 id="LOGGED-Batch的过程"><a href="#LOGGED-Batch的过程" class="headerlink" title="LOGGED Batch的过程"></a>LOGGED Batch的过程</h4><p><img src="http://3.bp.blogspot.com/-dv9zIC84QD4/VNoNE0YXn8I/AAAAAAAAAX0/b3wtV48fuB0/s1600/Screenshot%2B2015-02-10%2B13.51.56.png" alt=""></p>
+<blockquote>
+<p>图片来自参考链接2</p>
+<ul>
+<li>所以从图片里面看出来，cassandra收到一个batch的request的时候：<ul>
+<li>由co-ordinator来处理，也就是种子节点</li>
+<li>会先写batch log，通常写两个node？</li>
+<li>然后再从种子节点写到各个分节点</li>
+</ul>
+</li>
+<li>按照参考链接2里面的描述，performance hit，performance会下降的。因为多做了很多事情，而且是从种子节点分发出去的。</li>
+<li>结论就是：只有在为了保证一致性的情况下，才使用batch，而不是说改善performance</li>
+</ul>
+</blockquote>
+<h4 id="LOGGED-Batch-Fail"><a href="#LOGGED-Batch-Fail" class="headerlink" title="LOGGED Batch Fail"></a>LOGGED Batch Fail</h4><ul>
+<li>首先不会回滚</li>
+<li>WriteTimeoutException with write type of BATCH_LOG. 说明在写batch log时候挂了。需要手动再发一下。</li>
+<li>WriteTimeoutException with the write type of BATCH。 在真正写request的时候出错了。cassandra会不断重复，直至成功。</li>
+</ul>
+<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><ol>
+<li><a href="https://stackoverflow.com/questions/22664129/atomic-batches-in-cassandra" target="_blank" rel="noopener">Atomic Batches in Cassandra</a></li>
+<li><a href="http://christopher-batey.blogspot.com/2015/03/cassandra-anti-pattern-cassandra-logged.html" target="_blank" rel="noopener">Cassandra anti-pattern: Logged batches</a></li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/03/11/Java多线程数据类型/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1526,466 +2051,11 @@ $ kubectl get deployments
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/02/14/常用Docker命令记录/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/02/14/常用Docker命令记录/" itemprop="url">常用Docker命令记录</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-14T15:16:01+08:00">
-                2019-02-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/docker/" itemprop="url" rel="index">
-                    <span itemprop="name">docker</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="常用docker命令"><a href="#常用docker命令" class="headerlink" title="常用docker命令"></a>常用docker命令</h2><p>这篇记录一下常用的docker命令，我怕我会忘啊  -_-#<br>这篇博客写得好随意的感觉啊</p>
-<ul>
-<li><code>docker run</code> -d / -it / -v / -p /–name/-l<ul>
-<li>-d: background; -v: 磁盘映射 ；-p：端口映射; -l: label</li>
-</ul>
-</li>
-<li><code>docker build -t （build-directory） dockerfile</code> build docker image <ul>
-<li>-t 指定编译出来的image的名字。可以带上版本。比如：firstImage:v1</li>
-<li>-f 指定dockerfile的名字</li>
-</ul>
-</li>
-<li><code>docker inspect</code>看一个image的信息或者container的信息<ul>
-<li>docker inspect -f ““ katacoda-label-example</li>
-<li>These labels will remain even if the image has been untagged. When an image is untagged, it will have the name <none></none></li>
-</ul>
-</li>
-<li>Label就是中文含义一样的标签，key-value的形式，比如user=lynn，这样子。除了user，还会有version啊<ul>
-<li>LABEL vendor=Katacoda \ com.katacoda.version=0.0.5 \ com.katacoda.build-date=2016-07-01T10:47:29Z \ com.katacoda.course=Docker</li>
-<li>container, image, demon都可以有label，在查看时候都可以用上</li>
-</ul>
-</li>
-<li>参考链接：<a href="https://www.katacoda.com/courses/docker/2" target="_blank" rel="noopener">karacoda docker在线课程</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/02/14/Scala概念快速解释/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/02/14/Scala概念快速解释/" itemprop="url">Scala概念快速解释</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-14T10:18:49+08:00">
-                2019-02-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/Scala/" itemprop="url" rel="index">
-                    <span itemprop="name">Scala</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="Scala概念快速解释"><a href="#Scala概念快速解释" class="headerlink" title="Scala概念快速解释"></a>Scala概念快速解释</h2><p>Scala有很多特有的概念。如果要看懂代码就得大致明白含义，这篇博客就是快速解释一下，其中可能会有不够准确的地方，就是不求甚解，只求迅速读懂scala代码了.<br>隔了一段时间又开始看scala的代码，结果发现这篇博客写得太不声情并茂了。scala还是比较复杂的。这么简单写几句不太成，得给一点例子才行。</p>
-<h3 id="object"><a href="#object" class="headerlink" title="object"></a>object</h3><p>看了几篇博客，解释都不够清晰的感觉，还是stackoverflow上面解释得更清楚</p>
-<ul>
-<li><p>作为static函数的class文件，这是最常见到的用法：</p>
-<pre><code>object A {
-   def twice(i: Int): Int = 2*i
-}
-</code></pre></li>
-<li></li>
-<li>参考链接：<br>-<a href="https://stackoverflow.com/questions/1755345/difference-between-object-and-class-in-scala" target="_blank" rel="noopener">difference-between-object-and-class-in-scala</a></li>
-</ul>
-<h3 id="trait"><a href="#trait" class="headerlink" title="trait"></a>trait</h3><ul>
-<li><a href="http://www.runoob.com/scala/scala-traits.html" target="_blank" rel="noopener">Scala Trait(特征)</a></li>
-<li>类似java的Interface，其实更近似于抽象类</li>
-<li>但是可以使用<code>with</code>关键字多重继承，很好用的感觉哦</li>
-<li><code>scala</code>本身还是有<code>interface</code>关键字的，本身也可以使用<code>with</code>关键字来实现接口</li>
-</ul>
-<h3 id="case-class"><a href="#case-class" class="headerlink" title="case class"></a>case class</h3><ul>
-<li><a href="https://blog.csdn.net/bluishglc/article/details/50914001" target="_blank" rel="noopener">csdn上的一篇文章</a></li>
-<li>简单来说，case class会默认生成很多东西，比如伴生对象，比如工厂方法，比如toString， copy，构造方法参数同名的属性</li>
-<li>最开心的用法，应该就是不用<code>new</code>出一个对象来。而是可以直接<code>methodName(构造函数参数)</code>这样来获取一个对象。其实是同名的工厂方法</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/01/28/hello-world/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/01/28/hello-world/" itemprop="url">Hello World</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-28T16:21:54+08:00">
-                2019-01-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/hexo_blog/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/hexo_blog/">1</a><span class="page-number current">2</span><a class="page-number" href="/hexo_blog/page/3/">3</a><a class="extend next" rel="next" href="/hexo_blog/page/3/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/hexo_blog/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/hexo_blog/">1</a><span class="page-number current">2</span><a class="page-number" href="/hexo_blog/page/3/">3</a><a class="page-number" href="/hexo_blog/page/4/">4</a><a class="extend next" rel="next" href="/hexo_blog/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2031,7 +2101,7 @@ $ kubectl get deployments
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">32</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

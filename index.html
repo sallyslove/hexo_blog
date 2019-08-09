@@ -242,6 +242,478 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/08/02/Java-Socket中的port/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/08/02/Java-Socket中的port/" itemprop="url">TCP & UDP</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-02T15:42:25+08:00">
+                2019-08-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/protocal/" itemprop="url" rel="index">
+                    <span itemprop="name">protocal</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>工作中碰到DNS的local 端口的问题，就是client段的port，不是DNS server的端口。这个是默认开在53上面的。<br>然后就研究了一下，写在这里。</p>
+<h3 id="port-0"><a href="#port-0" class="headerlink" title="port 0"></a>port 0</h3><ul>
+<li>事实上，确实是可能有race condition存在的。并且很难避免。仔细看了一遍，好像并没有很好的提议。</li>
+<li>Spring里面的<code>SocketUtil</code>的源码可以参考</li>
+<li><code>ServerSocket</code>里面初始化时候其实是有两部的，第二部是bind，如果传0给构造函数，第二部时候才真正是分配的时候。</li>
+<li>参考链接：<ul>
+<li><a href="https://stackoverflow.com/questions/12889702/allowed-port-range-for-tcp" target="_blank" rel="noopener">Allowed Port Range for TCP</a></li>
+<li><a href="https://stackoverflow.com/questions/115500/how-do-you-specify-a-port-range-for-java-sockets" target="_blank" rel="noopener">how-do-you-specify-a-port-range-for-java-sockets</a></li>
+<li><a href="https://stackoverflow.com/questions/2675362/how-to-find-an-available-port" target="_blank" rel="noopener">how-to-find-an-available-port</a>: 这篇链接里面有大量讨论和实现。</li>
+<li><a href="https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/util/SocketUtils.html" target="_blank" rel="noopener">Class SocketUtils</a><br>+<a href="https://stackoverflow.com/questions/51099027/find-free-port-in-java" target="_blank" rel="noopener">find-free-port-in-java</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="TCP-amp-UDP"><a href="#TCP-amp-UDP" class="headerlink" title="TCP &amp; UDP"></a>TCP &amp; UDP</h3><ul>
+<li>这回犯一个低级错误。但是也是必然的，毕竟底层网络不够了解。</li>
+<li>这次犯的错误是这样的，需要发现一个free的port来建立UDP连接，于是就使用了<code>serverSocket</code> 来check 端口，参考以上链接。</li>
+<li>实际是，<code>TCP</code>和 <code>UDP</code> 需要使用不同的结构。ORZ。可见我的java基础和网络基础都很有点薄弱啊。对socket的理解也着实不灵啊。</li>
+<li><code>UDP</code> 应当使用<code>DatagramSocket</code>结构来建。</li>
+<li>参考链接<ul>
+<li><a href="https://stackoverflow.com/questions/12737293/how-do-i-resolve-the-java-net-bindexception-address-already-in-use-jvm-bind?rq=1" target="_blank" rel="noopener">how-do-i-resolve-the-java-net-bindexception-address-already-in-use-jvm-bind</a>: 里面有很多如何查找是哪个应用在占用端口的方法</li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/07/26/K8s端口映射命令/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/07/26/K8s端口映射命令/" itemprop="url">K8s常用命令集2</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-26T11:17:05+08:00">
+                2019-07-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>K8s的前两篇文档大而乱啊。所以的话，还是小而精更好吧。</p>
+<p>接着记录命令，最好相关命令放在一起。</p>
+<ul>
+<li><p>kubectl port-forward</p>
+<ul>
+<li>Forward one or more local ports to a pod. This command requires the node to have ‘socat’ installed. <strong><em>socat是什么?</em></strong></li>
+<li><p>参考链接： </p>
+<ul>
+<li><a href="https://imti.co/kubernetes-port-forwarding/" target="_blank" rel="noopener">Kubernetes Port Forwarding for Local Development</a></li>
+<li><a href="https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#port-forward" target="_blank" rel="noopener">官方文档</a></li>
+</ul>
+</li>
+<li><p>用例：</p>
+<ul>
+<li>以下命令的含义是：将本地端口8080和8081，映射到k8s服务<code>ok</code>的8080和80端口上面。<code>-n</code>代表的namespace</li>
+<li>默认地址是localhost</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<pre><code>kubectl port-forward service/ok 8080:8080 8081:80 -n the-project
+</code></pre>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/07/26/Java-Remote-Debug/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/07/26/Java-Remote-Debug/" itemprop="url">Java Remote Debug</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-26T10:51:48+08:00">
+                2019-07-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>作为Java程序员，不会remote debug，是不现实的。实际上，几年前也用过。但是悲催的是，再次要用的时候就搞不清了。<br>现在还是k8s平台，端口映射就更复杂一点。三两下一绕就更不清楚了。所以还是先把remote debug搞清楚。<br>再去绕端口号。</p>
+<h3 id="什么是remote-debug"><a href="#什么是remote-debug" class="headerlink" title="什么是remote debug"></a>什么是remote debug</h3><p>服务端程序运行在一台远程服务器上，我们可以在本地服务端的代码（前提是本地的代码必须和远程服务器运行的代码一致）中设置断点，每当有请求到远程服务器时时能够在本地知道远程服务端的此时的内部状态。</p>
+<h3 id="怎么做remote-debug"><a href="#怎么做remote-debug" class="headerlink" title="怎么做remote debug"></a>怎么做remote debug</h3><h4 id="使用特定JVM参数运行服务端代码"><a href="#使用特定JVM参数运行服务端代码" class="headerlink" title="使用特定JVM参数运行服务端代码"></a>使用特定JVM参数运行服务端代码</h4><ul>
+<li>不是说打包的时候，而是运行jar包的时候，java -jar带上需要的参数<ul>
+<li><code>address</code>是进行通信需要的端口。那么服务器端运行的程序会在这个端口上面开一个<code>socket</code></li>
+<li><code>socket</code>比较好理解的，通信方式</li>
+<li>所以之前进行debug mode的时候，肯定要改一下产品端module运行时候的JVM参数的</li>
+</ul>
+</li>
+</ul>
+<pre><code>-Xdebug -Xrunjdwp:transport=dt_socket,suspend=n,server=y,address=${debug_port}
+</code></pre><ul>
+<li>参考链接：<ul>
+<li><a href="https://www.cnblogs.com/wy2325/p/5600232.html" target="_blank" rel="noopener">IntelliJ远程调试教程</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="在IDE里面进行设置，本地连接远程服务器debug端口"><a href="#在IDE里面进行设置，本地连接远程服务器debug端口" class="headerlink" title="在IDE里面进行设置，本地连接远程服务器debug端口"></a>在IDE里面进行设置，本地连接远程服务器debug端口</h4><ul>
+<li><p>参考链接里面的设置方法，其实就配远程服务器的地址和debug 端口</p>
+</li>
+<li><p>还需要点击一下debug，让本地attach上去。</p>
+</li>
+</ul>
+<h4 id="调试代码"><a href="#调试代码" class="headerlink" title="调试代码"></a>调试代码</h4><ul>
+<li>这时候就可以进行remote debug了。打好断点，然后往服务器发送请求就可以了</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/07/19/ifconfig命令和网络基础/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -574,6 +1046,7 @@ Interrupt:5 Base address:0x8c00
 </ul>
 <h4 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h4><ul>
 <li><code>dnsjava</code>是DNS的一个Java实现。这是一个3pp。还有其他一些实现，比如<code>dns4j</code>，<code>dnsjnio</code>，<code>jdnss</code>,<code>eagledns</code>。</li>
+<li>要打开dnsjava的log，需要将设置<code>System.setProperty(&quot;dnsjava.options&quot;,&quot;verbose&quot;);</code> 这种操作也真是比较老了。</li>
 <li>maven dependency是以下这样。</li>
 </ul>
 <pre><code>&lt;dependency&gt;
@@ -581,15 +1054,24 @@ Interrupt:5 Base address:0x8c00
    &lt;artifactId&gt;dnsjava&lt;/artifactId&gt;
    &lt;version&gt;2.1.7&lt;/version&gt;
 </code></pre><ul>
-<li><code>dnsjava</code>流程图</li>
+<li><code>dnsjava</code>类图</li>
 </ul>
 <p><img src="https://raw.githubusercontent.com/sallyslove/hexo_blog/master/dnsjava_class_diagram.png" alt=""></p>
 <ul>
-<li><p><code>dnsjava</code> 流程图<br><img src="https://raw.githubusercontent.com/sallyslove/hexo_blog/master/markdown_images/dnsjava_sequence_diagram.png" alt=""></p>
+<li><p><code>dnsjava</code> 流程图<br><img src="https://raw.githubusercontent.com/sallyslove/hexo_blog/master/dnsjava_sequence_diagram.png" alt=""></p>
 </li>
 <li><p>参考链接：</p>
 <ul>
 <li><a href="https://blog.csdn.net/zhu_tianwei/article/details/45128537" target="_blank" rel="noopener">DNS BIND之dnsjava java客户端操作</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h4><ul>
+<li><code>lookup</code>遇到错误“network error”，这个是因为在以下原因。 其实我碰到的就是BindException，”address already in use”</li>
+<li>参考链接：<ul>
+<li><a href="https://coderanch.com/t/585844/java/org-xbill-DNS-Lookup-error" target="_blank" rel="noopener">org.xbill.DNS.Lookup() error.</a></li>
+<li><a href="https://github.com/dnsjava/dnsjava/issues/71" target="_blank" rel="noopener">我自己报的issue</a></li>
+<li><a href="https://www.programcreek.com/java-api-examples/index.php?api=org.xbill.DNS.ExtendedResolver" target="_blank" rel="noopener">Java Code Examples for org.xbill.DNS.ExtendedResolver</a></li>
 </ul>
 </li>
 </ul>
@@ -1161,8 +1643,7 @@ Interrupt:5 Base address:0x8c00
       
         
           
-            <p>一些特别的数据类型<br>author: Lynn Shen<br>date: 2019-06-17 13:14:34<br>tags:</p>
-<h2 id="categories-Java"><a href="#categories-Java" class="headerlink" title="categories: Java"></a>categories: Java</h2><h3 id="java-Util-Function-Supplier"><a href="#java-Util-Function-Supplier" class="headerlink" title="java.Util.Function.Supplier"></a>java.Util.Function.Supplier</h3><ul>
+            <h3 id="java-Util-Function-Supplier"><a href="#java-Util-Function-Supplier" class="headerlink" title="java.Util.Function.Supplier"></a>java.Util.Function.Supplier</h3><ul>
 <li>这个接口只有一个方法，Get方法。void，返回一个T</li>
 <li>把它当工厂方法看就是了。</li>
 <li>顾名思义，提供者。</li>
@@ -1178,6 +1659,41 @@ Interrupt:5 Base address:0x8c00
 <li><a href="https://www.cnblogs.com/b3051/p/7484501.html" target="_blank" rel="noopener">java中native的用法</a></li>
 </ul>
 </li>
+</ul>
+<h3 id="生成Random的方法"><a href="#生成Random的方法" class="headerlink" title="生成Random的方法"></a>生成Random的方法</h3><p>有好几个相关的类型，写在这里。是在工作中需要生成随机<code>port</code>碰到的</p>
+<ul>
+<li>参考链接<ul>
+<li><a href="https://www.jianshu.com/p/2f6acd169202#" target="_blank" rel="noopener">Java 随机数 Random VS SecureRandom</a></li>
+<li><a href="https://www.bbsmax.com/A/kjdwxba6zN/" target="_blank" rel="noopener">Java中的随机数生成器：Random，ThreadLocalRandom，SecureRandom</a></li>
+<li><a href="http://ju.outofmemory.cn/entry/286621" target="_blank" rel="noopener">Java中生成随机数Random、ThreadLocalRandom、SecureRandom</a></li>
+<li><a href="https://blog.csdn.net/weixin_33738555/article/details/93434637" target="_blank" rel="noopener">SecureRandom的正确使用</a></li>
+<li><a href="https://blog.csdn.net/weixin_35703883/article/details/81138425" target="_blank" rel="noopener">SecureRandom生成随机数</a></li>
+<li><a href="https://www.cnblogs.com/deng-cc/p/8064481.html" target="_blank" rel="noopener">SecureRandom</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="Math-random"><a href="#Math-random" class="headerlink" title="Math.random"></a>Math.random</h4><ul>
+<li>产生的随机数是0 - 1 之间的一个 double，即0 &lt;= random &lt; 1。</li>
+<li>第一次调用<code>Math.random()</code>方法时，自动创建了一个伪随机数生成器，实际上用的是 <code>new java.util.Random()</code>。</li>
+<li><code>Math.random()</code>方法是线程安全的。</li>
+</ul>
+<h4 id="java-util-Random"><a href="#java-util-Random" class="headerlink" title="java.util.Random"></a>java.util.Random</h4><ul>
+<li><code>Random</code>类中实现的随机算法是伪随机，也就是有规则的随机</li>
+<li>种子一样的情况下，两个<code>Random</code>类产生的是一模一样的数列</li>
+<li>所以在安全性要求比较高，或者使用比较频繁时，不适合使用<code>Random</code>，因为值是可预测的</li>
+<li>然后生成的随机数是左边闭环，右边开的。</li>
+</ul>
+<h4 id="java-security-SecureRandom"><a href="#java-security-SecureRandom" class="headerlink" title="java.security.SecureRandom"></a>java.security.SecureRandom</h4><ul>
+<li><code>SecureRandom</code> 其实和<code>Random</code>一样，种子一样的时候生成的数列是固定的</li>
+<li>也是继承至 java.util.Random。</li>
+<li>不一样的是，<code>SecureRandom</code>收集了一些随机事件，比如鼠标点击，键盘点击等等， 使用这些随机事件作为种子</li>
+<li>通过new来初始化，在不适用任何源的情况下，就是说无参数构造函数的话，默认来说会使用<code>NativePRNG</code>算法生成随机数</li>
+<li>不要使用人为指定的源，尽量使用系统的随机源。系统的随机源在java8中是可以配置的，配置在<code>$JAVA_HOME/jre/lib/security/java.security</code>中的<code>securerandom.source</code>属性。例如jdk1.8中该配置为:<code>securerandom.source=file:/dev/random</code></li>
+<li>实际上SHA1PRNG的性能将近要比NativePRNG的性能好一倍，synchronized的代码少了一半，所以没有特别重的安全需要，尽量使用SHA1PRNG算法生成随机数。</li>
+</ul>
+<h4 id="java-util-concurrent-ThreadLocalRandom"><a href="#java-util-concurrent-ThreadLocalRandom" class="headerlink" title="java.util.concurrent.ThreadLocalRandom"></a>java.util.concurrent.ThreadLocalRandom</h4><ul>
+<li>java7之后引进的</li>
+<li>继承自java.util.Random</li>
 </ul>
 
           
@@ -1339,536 +1855,11 @@ Interrupt:5 Base address:0x8c00
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/05/15/Cassandra的repair机制/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/05/15/Cassandra的repair机制/" itemprop="url">Cassandra的repair机制</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-15T17:52:05+08:00">
-                2019-05-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/cassandra/" itemprop="url" rel="index">
-                    <span itemprop="name">cassandra</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="Cassandra的repair机制"><a href="#Cassandra的repair机制" class="headerlink" title="Cassandra的repair机制"></a>Cassandra的repair机制</h2><p>这篇讨论一些robustness的东西。主要就是一个节点down了会怎么样。其实目前知道的就是hint，但是记录下来。<br>从一些文档里面看，这个属于写流程的一部分。确实是，读的话，如果node down了应该不会从上面读取了。会写到the coordinator node上面。version 1.0有所不同，但是这个版本太旧了。</p>
-<blockquote>
-<p>By design, hinted handoff inherently allows Cassandra to continue performing the same number of writes even when the cluster is operating at reduced capacity.</p>
-</blockquote>
-<h3 id="Hinted-Handoff简述"><a href="#Hinted-Handoff简述" class="headerlink" title="Hinted Handoff简述"></a>Hinted Handoff简述</h3><ul>
-<li><strong><code>hinted handoff</code> 和 一般说的<code>hint</code>应该是同一个东西。</strong> 前者是一个机制，后者就是这个机制产生的事件或者记录。</li>
-<li><code>hinted handoff</code>跟consistency level 相关，毕竟这个是写机制的一部分。</li>
-<li>cassandra的config文件里面需要配置几个参数：<ul>
-<li><code>hinted_handoff_enabled</code>：默认为true，打开这个机制</li>
-<li><code>max_hint_window_in_ms</code>： 为已经down掉的node记录hint log的时间长度</li>
-<li><code>gc_grace_seconds</code>: Configures the time-to-live (TTL) period for a hint so that the database won’t replay the hint after this duration. Setting this parameter to 0 disables hints。 这个参数没用过，后面可以试试看</li>
-<li><code>hinted_handoff_throttle_in_kb</code> 和    <code>max_hints_delivery_threads</code> 这两个没咋研究过，先放着吧</li>
-</ul>
-</li>
-<li>按照文档，当写入发生时候，并且a replica node for the key is down。就可能会触发hinted handoff的机制</li>
-</ul>
-<h4 id="Hint-详述"><a href="#Hint-详述" class="headerlink" title="Hint 详述"></a>Hint 详述</h4><ul>
-<li><blockquote>
-<p>The hint consists of a target ID for the downed node, a hint ID that is a time UUID for the data, a message ID that identifies the Cassandra version, and the data itself as a blob. </p>
-<ul>
-<li>hint里面有：down node的target ID， 标注这条数据的hint ID， 标注cassandra version的message ID以及数据本身</li>
-<li>这是cassandra 3.0之后的。之前的可能不一样</li>
-</ul>
-</blockquote>
-</li>
-<li><p>和想象地一样，当Gossipy发现downed node起来之后，coordinator node会将hint记录的数据写过去，并且删除掉hint</p>
-</li>
-<li><blockquote>
-<p>The coordinator also checks every ten minutes for hints corresponding to writes that timed out during an outage too brief for the failure detector to notice through gossip. </p>
-</blockquote>
-</li>
-<li>这句有点难以理解，看了下一句有点明白。如果有的节点宕机时间很短，而Gossdip并没有发现，那么coordinator 会返回一个exception，同时把write fail了，但是会记录一个hint。所以如果瞬间有很多短暂的fail，coordinator node会一下子压力过大，扔出overloadexception<blockquote>
-<p>If a replica node is overloaded or unavailable, and the failure detector has not yet marked the node as down, then expect most or all writes to that node to fail after the timeout triggered by write_request_timeout_in_ms, (10 seconds by default). The coordinator returns a TimeOutException exception, and the write will fail but a hint will be stored.</p>
-</blockquote>
-</li>
-</ul>
-<h4 id="Hint-和-consistency-level"><a href="#Hint-和-consistency-level" class="headerlink" title="Hint 和 consistency level"></a>Hint 和 consistency level</h4><ul>
-<li><blockquote>
-<p>当一致性等级设定为ONE，QUORUM，或者ALL的时候，提示的写并不参与到一致性级别的计数中。如果没有足够的节点满足写的一致性级别需要，会抛出 UnavailableException而不是触发Hinted Handoff。（这是Casssandra和Dynamo复制模型不一样的地方之一）</p>
-</blockquote>
-</li>
-<li>接上文，如果将consistency level设置成为Any，那么hint就算了。所以即使只是写了hint，写操作也会成功，但是这时候读数据是读不出来的。</li>
-</ul>
-<h3 id="Repairing-Data"><a href="#Repairing-Data" class="headerlink" title="Repairing Data"></a>Repairing Data</h3><ul>
-<li>Read repair: The reconciliation or correction happens when a read finds an inconsistency.</li>
-<li>When data is read, a read repair can resolve any data inconsistencies. When data isn’t read, you need to use either the hinted handoff or anti-entropy mechanism to resolve any data inconsistences.</li>
-</ul>
-<h4 id="Read-Repair"><a href="#Read-Repair" class="headerlink" title="Read Repair"></a>Read Repair</h4><h4 id="anti-entropy"><a href="#anti-entropy" class="headerlink" title="anti-entropy"></a>anti-entropy</h4><h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><ul>
-<li><a href="https://wiki.apache.org/cassandra/HintedHandoff" target="_blank" rel="noopener">wiki上面的简介</a></li>
-<li><a href="https://docs.datastax.com/en/cassandra/3.0/cassandra/operations/opsRepairNodesHintedHandoff.html" target="_blank" rel="noopener">官方</a></li>
-<li><a href="http://www.cnblogs.com/sing1ee/archive/2012/07/09/2765056.html" target="_blank" rel="noopener">比较好的博客一篇</a>： 看起来很多就是官方文档的翻译</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/04/29/k8s和docker问题解决/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/04/29/k8s和docker问题解决/" itemprop="url">k8s和docker问题解决</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-29T15:44:03+08:00">
-                2019-04-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>工作中碰到的一些相关问题，有的也许很简单，记录在这里。省得后面再花功夫去看啦。</p>
-<h4 id="问题一"><a href="#问题一" class="headerlink" title="问题一"></a>问题一</h4><p>$ kubectl cluster-info<br>Kubernetes master is running at …</p>
-<p>To further debug and diagnose cluster problems, use ‘kubectl cluster-info dump’.<br>Unable to connect to the server: x509: certificate signed by unknown authority (possibly because of “crypto/rsa: verification error” while trying to verify candidate authority certificate “kubernetes”)</p>
-<ul>
-<li>参考链接：<a href="https://blog.csdn.net/baobaoxiannv/article/details/83818426" target="_blank" rel="noopener">csdn博客一篇</a></li>
-<li>其实就是kube的config文件: <code>~/.kube/config</code> 文件过时了。里面的certification需要更新。从kube server上面把config拿下来替换一些本地的就好了。</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/04/18/Cassandra里面的Batch操作/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/04/18/Cassandra里面的Batch操作/" itemprop="url">Cassandra里面的Batch操作</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-18T10:17:44+08:00">
-                2019-04-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/cassandra/" itemprop="url" rel="index">
-                    <span itemprop="name">cassandra</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="Cassandra里面的Batch操作"><a href="#Cassandra里面的Batch操作" class="headerlink" title="Cassandra里面的Batch操作"></a>Cassandra里面的Batch操作</h2><p>最近工作比较忙活，一个月都没写blog喽。工作中碰到了一些与cassandra相关的同步异步，simpleStatement，batchStatement的东西。顺势多研究一下。<br>研究发现，这玩意还挺复杂的啊。</p>
-<h3 id="execute-与-executeAsync"><a href="#execute-与-executeAsync" class="headerlink" title="execute 与 executeAsync"></a>execute 与 executeAsync</h3><ul>
-<li>cassandra driver在执行语句时候提供了<code>execute</code>和<code>executeAsync</code> 两个接口</li>
-<li>对于batch来说，只能调用前者，这个好像不太对。</li>
-<li><p>但是进入代码会看到，<code>execute</code>最后调用的也是<code>executeAsync</code></p>
-<pre><code>public ResultSet execute(Statement statement) {
-       this.checkNotInEventLoop();
-       return this.executeAsync(statement).getUninterruptibly();
-}
-</code></pre></li>
-<li><p>这个<code>executeAsync</code>api是在<code>SessionManager</code>里面定义的</p>
-</li>
-<li>按照参考链接1里面所述的，从以上代码也可以看出来的<code>execute</code>在于是block的。就是不可打断的。必须得cassandra返回一些数据才能返回。所以它可以保证在invalid request的情况下报错，但是不能保证request就一定执行成功了。</li>
-<li><code>executeAsync</code>就是非blocking的，也不能保证这个request一定被执行或者在invalid的request的情况下报错</li>
-<li>参考链接1里面有这么一段话：看起来少量batch，并且是同样partition key的时候，会比较快。</li>
-<li>我们在产品中的改进在有些场景下面确实performance变好了<blockquote>
-<p>To further improve throughput, you might want to consider using BatchStatement and submitting requests in batches. This is a good option if you keep your batches small (50-250 is a good number) and if your inserts in a batch all share the same partition key. </p>
-</blockquote>
-</li>
-<li>参考链接：<ol>
-<li><a href="https://stackoverflow.com/questions/34949292/how-cassandra-handle-blocking-execute-statement-in-datastax-java-driver" target="_blank" rel="noopener">How Cassandra handle blocking execute statement in datastax java driver
-</a></li>
-<li><a href="http://zqhxuyuan.github.io/2015/11/10/2015-11-10-Cassandra-Client/" target="_blank" rel="noopener">Cassandra Client查询优化</a>: 这篇有点看不明白。但是瞅着还挺好的，先放在这里。</li>
-</ol>
-</li>
-</ul>
-<h3 id="BatchStatement"><a href="#BatchStatement" class="headerlink" title="BatchStatement"></a>BatchStatement</h3><p>严格说来，cassanda里面的batch称为LOGGED batch，而不应该是atomic batch。 Cassanda的策略始终是Eventually Consistent。而且由于cassandra里面add一个数据比delete一个数据要方便太多。所以cassandra会记一堆log啥的，而不是回滚。</p>
-<ul>
-<li>cassandra是基于co-ordinator来实现的。batch在co-ordinator开始处理之前就留会写到其他node去</li>
-<li>如果batch里面的某些失败了，那么是不会回滚的。而是会不断尝试。</li>
-<li>LOGGER的batch操作会比unlogged的多做很多事情</li>
-</ul>
-<h4 id="BatchStatement-Type"><a href="#BatchStatement-Type" class="headerlink" title="BatchStatement.Type"></a>BatchStatement.Type</h4><p>这个是BatchStatement class的一个子类</p>
-<ul>
-<li><code>COUNTER</code>: A counter batch. Note that such batch is the only type that can contain counter operations and it can only contain these. 这个解释也太简单了。意思是说可以知道多少个成功了？</li>
-<li><code>LOGGED</code>:  <ul>
-<li>Cassandra will first write the batch to its distributed batch log to ensure the atomicity of the batch (atomicity meaning that if any statement in the batch succeeds, all will eventually succeed).这个解释也不太懂啊，到底怎么保证的。 ORZ</li>
-<li>默认调用<code>new BatchStatement()</code>就会创一个LOGGED type的Batch-</li>
-</ul>
-</li>
-<li><code>UNLOGGED</code>： A batch that doesn’t use Cassandra’s distributed batch log. Such batch are not guaranteed to be atomic.</li>
-</ul>
-<h4 id="LOGGED-Batch的过程"><a href="#LOGGED-Batch的过程" class="headerlink" title="LOGGED Batch的过程"></a>LOGGED Batch的过程</h4><p><img src="http://3.bp.blogspot.com/-dv9zIC84QD4/VNoNE0YXn8I/AAAAAAAAAX0/b3wtV48fuB0/s1600/Screenshot%2B2015-02-10%2B13.51.56.png" alt=""></p>
-<blockquote>
-<p>图片来自参考链接2</p>
-<ul>
-<li>所以从图片里面看出来，cassandra收到一个batch的request的时候：<ul>
-<li>由co-ordinator来处理，也就是种子节点</li>
-<li>会先写batch log，通常写两个node？</li>
-<li>然后再从种子节点写到各个分节点</li>
-</ul>
-</li>
-<li>按照参考链接2里面的描述，performance hit，performance会下降的。因为多做了很多事情，而且是从种子节点分发出去的。</li>
-<li>结论就是：只有在为了保证一致性的情况下，才使用batch，而不是说改善performance</li>
-</ul>
-</blockquote>
-<h4 id="LOGGED-Batch-Fail"><a href="#LOGGED-Batch-Fail" class="headerlink" title="LOGGED Batch Fail"></a>LOGGED Batch Fail</h4><ul>
-<li>首先不会回滚</li>
-<li>WriteTimeoutException with write type of BATCH_LOG. 说明在写batch log时候挂了。需要手动再发一下。</li>
-<li>WriteTimeoutException with the write type of BATCH。 在真正写request的时候出错了。cassandra会不断重复，直至成功。</li>
-</ul>
-<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><ol>
-<li><a href="https://stackoverflow.com/questions/22664129/atomic-batches-in-cassandra" target="_blank" rel="noopener">Atomic Batches in Cassandra</a></li>
-<li><a href="http://christopher-batey.blogspot.com/2015/03/cassandra-anti-pattern-cassandra-logged.html" target="_blank" rel="noopener">Cassandra anti-pattern: Logged batches</a></li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/hexo_blog/page/2/">2</a><a class="page-number" href="/hexo_blog/page/3/">3</a><a class="extend next" rel="next" href="/hexo_blog/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/hexo_blog/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/hexo_blog/page/4/">4</a><a class="extend next" rel="next" href="/hexo_blog/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1914,7 +1905,7 @@ Interrupt:5 Base address:0x8c00
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">32</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
