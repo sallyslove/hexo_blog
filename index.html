@@ -242,6 +242,141 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/08/13/Micro-Service简介/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/08/13/Micro-Service简介/" itemprop="url">Micro Service简介</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-13T13:41:09+08:00">
+                2019-08-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在学习一些micro service相关，记录在这里。<br>现在都是说micro service，但是什么是micro service，可能不同的人有不同的定义，但是单纯地只是将软件部署到docker或者k8s上面去，可能并不完全符合micro service，所以学习一下。<br>将一些学习到的tips和理念记录下来，最后形成自己的理解</p>
+<h3 id="什么是micro-service"><a href="#什么是micro-service" class="headerlink" title="什么是micro service"></a>什么是micro service</h3><ul>
+<li>只占用需要的内存和处理器处理能力</li>
+<li>如果是处理数据的，假设我们有一个处理inventory data的micro service，那么这个micro service仅仅需要在意inventory data。而不需要考虑其他数据的影响。</li>
+<li>micro service不受语言限制，不同语言的micro service仍旧可以联合起来的完成一个solution的</li>
+<li></li>
+</ul>
+<h3 id="micro-service-combination"><a href="#micro-service-combination" class="headerlink" title="micro service combination"></a>micro service combination</h3><ul>
+<li>micro service本身是一个complete application，它独立完成某个功能，可以有interface或者没有，可以访问数据库，也可以不访问。</li>
+<li>很多micro service联合起来，成为一个solution。</li>
+<li>默认只需要知道对方的endpoint就可以进行通信。<strong><em>所以是http base？</em></strong></li>
+<li><strong>_ each micro service has to offer an API endpoint! 通常都是REST的endpoint，但是也可以是wisdom endpoint_</strong></li>
+</ul>
+<h3 id="micro-service优势"><a href="#micro-service优势" class="headerlink" title="micro service优势"></a>micro service优势</h3><ul>
+<li>增加了scalability。话说这个吧，其实很复杂。看我另外一篇博客。而且未必多加pod，能力就一定上升啊</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/08/02/Java-Socket中的port/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -337,26 +472,47 @@
           
             <p>工作中碰到DNS的local 端口的问题，就是client段的port，不是DNS server的端口。这个是默认开在53上面的。<br>然后就研究了一下，写在这里。</p>
 <h3 id="port-0"><a href="#port-0" class="headerlink" title="port 0"></a>port 0</h3><ul>
+<li>可用端口是<code>0 ~ 65535</code>。<code>0</code>在这里说啦，是分配一个随机的未被占用的端口。而<code>65535</code> 事实上是会报错的，也是用不了的。</li>
 <li>事实上，确实是可能有race condition存在的。并且很难避免。仔细看了一遍，好像并没有很好的提议。</li>
 <li>Spring里面的<code>SocketUtil</code>的源码可以参考</li>
 <li><code>ServerSocket</code>里面初始化时候其实是有两部的，第二部是bind，如果传0给构造函数，第二部时候才真正是分配的时候。</li>
 <li>参考链接：<ul>
+<li><a href="https://blog.csdn.net/qq_36592572/article/details/82323100" target="_blank" rel="noopener">关于端口最大值65535的问题</a></li>
 <li><a href="https://stackoverflow.com/questions/12889702/allowed-port-range-for-tcp" target="_blank" rel="noopener">Allowed Port Range for TCP</a></li>
 <li><a href="https://stackoverflow.com/questions/115500/how-do-you-specify-a-port-range-for-java-sockets" target="_blank" rel="noopener">how-do-you-specify-a-port-range-for-java-sockets</a></li>
 <li><a href="https://stackoverflow.com/questions/2675362/how-to-find-an-available-port" target="_blank" rel="noopener">how-to-find-an-available-port</a>: 这篇链接里面有大量讨论和实现。</li>
-<li><a href="https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/util/SocketUtils.html" target="_blank" rel="noopener">Class SocketUtils</a><br>+<a href="https://stackoverflow.com/questions/51099027/find-free-port-in-java" target="_blank" rel="noopener">find-free-port-in-java</a></li>
+<li><a href="https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/util/SocketUtils.html" target="_blank" rel="noopener">Class SocketUtils</a></li>
+<li><a href="https://stackoverflow.com/questions/51099027/find-free-port-in-java" target="_blank" rel="noopener">find-free-port-in-java</a></li>
 </ul>
 </li>
 </ul>
 <h3 id="TCP-amp-UDP"><a href="#TCP-amp-UDP" class="headerlink" title="TCP &amp; UDP"></a>TCP &amp; UDP</h3><ul>
-<li>这回犯一个低级错误。但是也是必然的，毕竟底层网络不够了解。</li>
-<li>这次犯的错误是这样的，需要发现一个free的port来建立UDP连接，于是就使用了<code>serverSocket</code> 来check 端口，参考以上链接。</li>
-<li>实际是，<code>TCP</code>和 <code>UDP</code> 需要使用不同的结构。ORZ。可见我的java基础和网络基础都很有点薄弱啊。对socket的理解也着实不灵啊。</li>
-<li><code>UDP</code> 应当使用<code>DatagramSocket</code>结构来建。</li>
-<li>参考链接<ul>
+<li><p>参考链接</p>
+<ul>
 <li><a href="https://stackoverflow.com/questions/12737293/how-do-i-resolve-the-java-net-bindexception-address-already-in-use-jvm-bind?rq=1" target="_blank" rel="noopener">how-do-i-resolve-the-java-net-bindexception-address-already-in-use-jvm-bind</a>: 里面有很多如何查找是哪个应用在占用端口的方法</li>
+<li><a href="https://stackoverflow.com/questions/27730330/java-what-is-the-difference-between-serversocket-and-datagramsocket" target="_blank" rel="noopener">java-what-is-the-difference-between-serversocket-and-datagramsocket</a></li>
+<li><a href="https://www.javaworld.com/article/2077322/core-java-sockets-programming-in-java-a-tutorial.html" target="_blank" rel="noopener">Sockets programming in Java</a></li>
 </ul>
 </li>
+<li><p>这回犯一个低级错误。但是也是必然的，毕竟底层网络不够了解。</p>
+</li>
+<li>这次犯的错误是这样的，需要发现一个free的port来建立UDP连接，于是就使用了<code>serverSocket</code> 来check 端口，参考以上链接。</li>
+<li>实际是，<code>TCP</code>和 <code>UDP</code> 需要使用不同的结构。ORZ。可见我的java基础和网络基础都很有点薄弱啊。对<code>socket</code>的理解也着实不灵啊。</li>
+<li><code>UDP</code> 应当使用<code>DatagramSocket</code>结构来建。</li>
+</ul>
+<h4 id="UDP"><a href="#UDP" class="headerlink" title="UDP"></a>UDP</h4><ul>
+<li><code>UDP</code>的全称：<code>user datagram protocol</code>。</li>
+<li>each time you send datagrams, you also need to send the local socket descriptor and the receiving socket’s address. As you can tell, additional data must be sent each time a communication is made.</li>
+</ul>
+<h4 id="TCP"><a href="#TCP" class="headerlink" title="TCP"></a>TCP</h4><ul>
+<li><code>TCP</code>的全称： <code>transfer control protocol</code></li>
+<li>Once two sockets have been connected, they can be used to transmit data in both (or either one of the) directions.</li>
+</ul>
+<h4 id="When-is-UDP-amp-when-is-TCP"><a href="#When-is-UDP-amp-when-is-TCP" class="headerlink" title="When is UDP &amp; when is TCP"></a>When is UDP &amp; when is TCP</h4><ul>
+<li><code>UDP</code>有数据大小限制，每次发的时候都要带上信息，不可靠，但是速度高。</li>
+<li><code>TCP</code>是面向连接的，所有有建立连接时间。<strong><em>UDP也要建连接呀</em></strong> TCP的数据更像流，而不是一个个数据包，没有大小限制，可靠，但是速度慢很多。</li>
+<li>TCP is useful for implementing network services – such as remote login (rlogin, telnet) and file transfer (FTP)</li>
+<li>UDP is often used in implementing client/server applications in distributed systems built over local area networks.</li>
 </ul>
 
           
@@ -1730,131 +1886,6 @@ Interrupt:5 Base address:0x8c00
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/05/31/Cassandra-Performance-Tuning/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/05/31/Cassandra-Performance-Tuning/" itemprop="url">Cassandra Performance Tuning</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-31T15:09:09+08:00">
-                2019-05-31
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="Cassandra-Performance-Tuning"><a href="#Cassandra-Performance-Tuning" class="headerlink" title="Cassandra Performance Tuning"></a>Cassandra Performance Tuning</h2><p>Cassandra的设计理念有点极端，写的效率很高，并且秉承最终一致的理念，并且并不会真的删除数据</p>
-<h3 id="Limitation"><a href="#Limitation" class="headerlink" title="Limitation"></a>Limitation</h3><h4 id="Write-Limitation"><a href="#Write-Limitation" class="headerlink" title="Write Limitation"></a>Write Limitation</h4><ul>
-<li>不支持传统数据库的事务操作</li>
-<li>写SSTTable的时候可能会写到多节点上门</li>
-<li>Delete数据只是插墓碑。真正的delete操作会在compaction的时候进行</li>
-</ul>
-<h4 id="Read-Limitation"><a href="#Read-Limitation" class="headerlink" title="Read Limitation"></a>Read Limitation</h4>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1905,7 +1936,7 @@ Interrupt:5 Base address:0x8c00
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">33</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
