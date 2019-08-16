@@ -6,7 +6,7 @@
 
 
 <html class="theme-next pisces use-motion" lang="zh-Hans">
-<head><meta name="generator" content="Hexo 3.8.0">
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -140,7 +140,7 @@
 
 </head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
   
   
@@ -150,7 +150,7 @@
   <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
   <div class="site-meta ">
     
@@ -240,20 +240,20 @@
   
   
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
   
   
   <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/01/17/Cassandra-写数据过程/">
 
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content>
       <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
     </span>
 
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="跬步">
     </span>
 
@@ -296,7 +296,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/hexo_blog/categories/cassandra/" itemprop="url" rel="index">
                     <span itemprop="name">cassandra</span>
                   </a>
@@ -361,7 +361,7 @@ Commitlog ---&gt; Periodically sync to  disk
 
 Memtable  ---&gt; Periodically flush to SSTable
 </code></pre><p>   <strong><em>如果看下面的流程图的话，那么上面这个顺序是不对的。是先写到memtable，然后再写commitLog？看官方文档，上面的是正确的。应该是流程图不够好。或者是一个相对并行的过程</em></strong></p>
-<p><img src="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image012-large.jpg" alt=""></p>
+<p><img src="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image012-large.jpg" alt></p>
 <blockquote>
 <p>引用自第二篇链接</p>
 </blockquote>
@@ -436,7 +436,7 @@ Memtable  ---&gt; Periodically flush to SSTable
 <li><code>nodetool flush</code> or the <code>nodetool drain</code> command 来触法手动的flush。前者是指定table。后一个命令是flush这个node。期间会停止任何connection的接听，所以需要在执行命令之后重启整个node</li>
 </ul>
 <h3 id="SSTable"><a href="#SSTable" class="headerlink" title="SSTable"></a>SSTable</h3><p>第二篇参考链接非常好，但是图片忒不清楚。</p>
-<p><img src="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image010-large.jpg" alt=""></p>
+<p><img src="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image010-large.jpg" alt></p>
 <blockquote>
 <p>引用自第二篇参考链接</p>
 <ul>
@@ -554,8 +554,8 @@ PRIMARY KEY ((name, age), address, salary)
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/hexo_blog/2019/01/18/Java-Vilolate/" rel="prev" title="Java Vilolate">
-                Java Vilolate <i class="fa fa-chevron-right"></i>
+              <a href="/hexo_blog/2019/01/18/Java-GC-机制-CMS-G1/" rel="prev" title="Java GC 机制 CMS & G1">
+                Java GC 机制 CMS & G1 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -627,7 +627,7 @@ PRIMARY KEY ((name, age), address, salary)
 
       <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <p class="site-author-name" itemprop="name">Lynn Shen</p>
               <p class="site-description motion-element" itemprop="description">35岁开始的博客，有点晚哦</p>
@@ -640,7 +640,7 @@ PRIMARY KEY ((name, age), address, salary)
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-count">30</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -651,7 +651,7 @@ PRIMARY KEY ((name, age), address, salary)
               
               <div class="site-state-item site-state-categories">
                 <a href="/hexo_blog/categories/index.html">
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
