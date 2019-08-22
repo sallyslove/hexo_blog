@@ -1335,7 +1335,7 @@ kube-system    Active    15d
         
           
             <h2 id="Helm"><a href="#Helm" class="headerlink" title="Helm"></a>Helm</h2><p><code>Helm</code>入门篇。感觉有点类似<code>maven</code>，总归有这样一个管理工具。其实是想看<code>Ingress</code>的，可是不看<code>Helm</code>，yaml看不懂呀。只好滚回来看Helm。</p>
-<h3 id="What-is-helm"><a href="#What-is-helm" class="headerlink" title="What is helm?"></a>What is helm?</h3><ul>
+<h3 id="Helm是什么"><a href="#Helm是什么" class="headerlink" title="Helm是什么"></a>Helm是什么</h3><ul>
 <li><code>Helm</code>是在Kubernetes中安装部署容器的一个工具。</li>
 <li><em>Helm is a tool for managing Kubernetes charts.</em> 所以Charts可能是K8s的一个概念。中文的博客不一定对。</li>
 <li><code>Helm</code>由<code>Helm</code>客户端、<code>Tiller</code>服务器端和<code>Chart</code>仓库所组成<ul>
@@ -1357,16 +1357,16 @@ kube-system    Active    15d
 <li>如果想传值进去，可以使用<code>-f</code> 命令，比如<code>helm install -f myvals.yaml ./mychart</code>。这样传的值，可以用<code>.Value</code>来访问</li>
 <li>单独传值是<code>--set foo=bar</code>，<code>--set</code>比文件的级别高，可以覆盖文件里面的值</li>
 <li><p><code>helm install stable/drupal --set image=my-registry/drupal:0.1.0 --set livenessProbe.exec.command=[cat,docroot/CHANGELOG.txt] --set livenessProbe.httpGet=null</code> 这条命令里面将<code>livenessProbe.httpGet</code>删除掉了。</p>
-<p> $ helm install ./mychart<br>   NAME:   guiding-ocelot<br>   LAST DEPLOYED: Mon Aug 19 17:23:00 2019<br>   NAMESPACE: gear-1<br>   STATUS: DEPLOYED</p>
-<p>   RESOURCES:<br>   ==&gt; v1/ConfigMap<br>   NAME               DATA  AGE<br>   mychart-configmap  1     0s</p>
-<p>   $ find myChart/</p>
-<pre><code>myChart/
-myChart/.helmignore
-myChart/Chart.yaml
-myChart/charts
-myChart/templates
-myChart/templates/configmap.yaml
-myChart/values.yaml
+<pre><code>$ helm install ./mychart
+ NAME:   guiding-ocelot
+ LAST DEPLOYED: Mon Aug 19 17:23:00 2019
+ NAMESPACE: gear-1
+ STATUS: DEPLOYED
+
+ RESOURCES:
+ ==&gt; v1/ConfigMap
+ NAME               DATA  AGE
+ mychart-configmap  1     0s
 </code></pre></li>
 </ul>
 </li>
@@ -1451,27 +1451,61 @@ drink: {{ .Values.favorite.drink | repeat 5 | quote }}
 <li><p><code>toyaml</code>: 转成yaml格式 <strong><em>其实不明白啥叫做Yaml格式</em></strong></p>
 </li>
 </ul>
-<h4 id="函数控制和操作运算符"><a href="#函数控制和操作运算符" class="headerlink" title="函数控制和操作运算符"></a>函数控制和操作运算符</h4><ul>
-<li><p><code>Helm Template</code>的函数是可以引入逻辑控制的，比如：</p>
-<ul>
+<h5 id="函数控制和操作运算符"><a href="#函数控制和操作运算符" class="headerlink" title="函数控制和操作运算符"></a>函数控制和操作运算符</h5><ul>
+<li><code>Helm Template</code>的函数是可以引入逻辑控制的 </li>
+<li>运算符有：<ul>
+<li><code>if/else</code> for creating conditional blocks： <code>if</code>判断有点不一样的是空的字符串或者空的集合也会被认为是<code>false</code>，还有数字0</li>
+<li><code>with</code> to specify a scope</li>
+<li><code>range</code> which provides a “for each”-style loop</li>
+</ul>
+</li>
+</ul>
+<h6 id="Function-if-else"><a href="#Function-if-else" class="headerlink" title="Function if/else"></a>Function if/else</h6><ul>
 <li><p>逻辑稍微有点难理解。就是<code>if</code>语句里面的内容是判断条件成立的时候包含的。然后关系运算符在前，这里是<code>or</code>运算符</p>
 <pre><code>{{/* include the body of this if statement when the variable .Values.anUnsetVariable is set or .values.aSetVariable is not set */}}
 {{ if or .Values.anUnsetVariable (not    .Values.aSetVariable) }}
  {{ ... }}
 {{ end }}
 </code></pre></li>
-<li><p>运算符有：</p>
-<ul>
-<li><code>if/else</code> for creating conditional blocks： <code>if</code>判断有点不一样的是空的字符串或者空的集合也会被认为是<code>false</code>，还有数字0</li>
-<li><code>with</code> to specify a scope</li>
-<li><code>range</code> which provides a “for each”-style loop</li>
+</ul>
+<h6 id="Function-Range"><a href="#Function-Range" class="headerlink" title="Function Range"></a>Function Range</h6><ul>
+<li><p><code>range</code>相当于是<code>foreach</code>,比如以下是一个<code>slice</code>，其实就是列表。</p>
+<pre><code>pizzaToppings:
+ - mushrooms
+ - cheese
+ - peppers
+ - onions
+</code></pre><p> 我们可以这样操作：</p>
+<pre><code>toppings: |-
+ {{- range .Values.pizzaToppings }}
+ - {{ . | title | quote }}
+ {{- end }}
+</code></pre><ul>
+<li>以上<code>range</code>函数遍历<code>pizzaToppings</code>里面的每个数值， <code>.</code>代表其中每个数值，传递给<code>title</code>和<code>quote</code>函数。</li>
+<li><code>|-</code>代表以下内容是一个长字符串。因为<code>Configmap</code>只支持键值对。</li>
 </ul>
 </li>
-<li><code>with</code>和<code>range</code>在代码里面暂时没用到，先跳过去了。</li>
+<li><p><code>range</code>也可以和<code>list</code>合并起来用。如下：</p>
+<pre><code>sizes: |-
+{{- range list "small" "medium" "large" }}
+ - {{ . }}
+{{- end }}
+</code></pre><ul>
+<li>引号里面的组成一个字符串，然后再遍历字符串</li>
 </ul>
 </li>
+<li><p><code>range</code>也可以和其他集合函数联合使用，比如<code>dict</code>和<code>map</code></p>
+</li>
 </ul>
-<h4 id="空格和空行"><a href="#空格和空行" class="headerlink" title="空格和空行"></a>空格和空行</h4><ul>
+<h6 id="Function-with"><a href="#Function-with" class="headerlink" title="Function with"></a>Function with</h6><ul>
+<li><code>.</code>指的是当前作用域，比如<code>.Values</code>，就是在当前作用域的<code>Value</code>里面</li>
+<li><p>使用<code>with</code>函数可以改变作用域，用法和<code>if</code>类似。如下：</p>
+<pre><code>{{ with PIPELINE }}
+# restricted scope
+{{ end }}
+</code></pre></li>
+</ul>
+<h5 id="空格和空行"><a href="#空格和空行" class="headerlink" title="空格和空行"></a>空格和空行</h5><ul>
 <li><p>这就是为啥每行都有个&#123;&#123;-的缘故，瞅着一堆<code>-</code>实在无语啊</p>
 <ul>
 <li><p>以下的语句会产生一个<code>Json</code>字段<code>mug：true</code>并且没有空行</p>
@@ -1491,13 +1525,90 @@ drink: {{ .Values.favorite.drink | repeat 5 | quote }}
 </li>
 </ul>
 </li>
-<li><p>也可以更为精确得控制空格，如下。这种用法在代码里也看到很多。如下。这种用法在代码里也看到很多。</p>
+<li><p>也可以更为精确得控制空格，如下。这种用法在代码里也看到很多。</p>
 <pre><code>{{indent 2 "mug:true"}}
 </code></pre></li>
 <li><p>还可以用<code>*</code>符号，<em>Just for the sake of making this point clear, let’s adjust the above, and substitute an <code>*</code> for each whitespace that will be deleted following this rule. an <code>*</code> at the end of the line indicates a newline character that would be removed</em> 没看的太明白。这个<code>*</code>是干嘛用的。</p>
 <pre><code>**{{- if eq .Values.favorite.drink "coffee"}}
   mug: true*
 **{{- end}}
+</code></pre></li>
+</ul>
+<h4 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h4><ul>
+<li>变量是用<code>:=</code>来定义的。</li>
+<li><p>如下。原本在使用了<code>with</code>之后作用域已经改变了，找不到<code>Release</code>了，但是使用了变量，就又可以访问了。</p>
+<pre><code>data:
+myvalue: &quot;Hello World&quot;
+{{- $relname := .Release.Name -}}
+{{- with .Values.favorite }}
+drink: {{ .drink | default "tea" | quote }}
+food: {{ .food | upper | quote }}
+release: {{ $relname }}
+{{- end }}
+</code></pre></li>
+<li><p>可以和<code>range</code>结合起来用。</p>
+<ul>
+<li><p>遍历一个列表。<code>index</code>变量是下标，从<code>0</code>开始</p>
+<pre><code>toppings: |-
+  {{- range $index, $topping := .Values.pizzaToppings }}
+    {{ $index }}: {{ $topping }}
+  {{- end }}
+</code></pre></li>
+<li><p>键值对。注意<code>Values.favorite</code>是键值对的集合。所以第一次是一对，第二次是第二对</p>
+<pre><code>{{- range $key, $val := .Values.favorite }}
+  {{ $key }}: {{ $val | quote }}
+{{- end}}
+</code></pre></li>
+</ul>
+</li>
+<li><p>变量是有作用域的。顶层声明的就是整个<code>template</code>可用，<code>range</code>里面声明的，就是<code>range</code>里面可用。比如上面这个例子，出了<code>end</code>就没用了。</p>
+</li>
+<li><strong>有一个特殊的变量 <code>$</code>，代表根作用域！</strong></li>
+</ul>
+<h4 id="已命名的Template"><a href="#已命名的Template" class="headerlink" title="已命名的Template"></a>已命名的Template</h4><p>  就是介绍一下如何引用啊，命名之类。需要注意的是名字是全局的，不管这个<code>template</code>是不是包在其他的<code>template</code>里面。<br>  __需要的一点是，名字中有下划线的<code>template</code>是不会被部署到<code>kubernate</code>上面的。但是可以被其他<code>template</code>引用</p>
+<h5 id="define"><a href="#define" class="headerlink" title="define"></a>define</h5><ul>
+<li><p>使用<code>define</code>可以在一个<code>template</code>内部创建一个新的<code>template</code>。语法如下：</p>
+<pre><code>{{- define "mychart.labels" }}
+  labels:
+    generator: helm
+    date: {{ now | htmlDate }}
+{{- end }}
+</code></pre></li>
+<li></li>
+</ul>
+<h5 id="template和include"><a href="#template和include" class="headerlink" title="template和include"></a>template和include</h5><ul>
+<li><p><code>template</code>感觉和<code>include</code>有点相似。是调用用<code>define</code>定义的<code>template</code>的。如下：</p>
+<pre><code>metadata:
+  name: {{ .Release.Name }}-configmap
+  {{- template "mychart.labels" }}
+</code></pre></li>
+<li><p>通常这类<code>template</code>会被放在<code>_helpers.tpl</code>文件里面。我的感觉是，这类<code>template</code>很像<code>util</code>函数，然后放在一个集中的文件里面。一般会在前面加一个注释，如下的格式：</p>
+<pre><code>`{{/* ... */}}`
+</code></pre></li>
+<li><p>但是还有一个问题，如上面例子的调用，并没有给任何的作用域，而<code>template</code>的默认作用域为空。如下的<code>template</code>里面的<code>.Chart</code>是无法生效的。所以调用时候应该用以下形式。这样传入一个作用域就可以了。 </p>
+<pre><code>{{/* Generate basic labels */}}
+  {{- define "mychart.labels" }}
+    labels:
+      generator: helm
+      date: {{ now | htmlDate }}
+      chart: {{ .Chart.Name }}
+      version: {{ .Chart.Version }}
+  {{- end }}
+</code></pre></li>
+</ul>
+<pre><code>{{- template "mychart.labels" .}}
+</code></pre><ul>
+<li><p>还有一个问题，<code>template</code>有点类似<code>inline</code>，就是简单的将内容展开，并不考虑缩进的问题。为此，引入了<code>include</code>， <code>include</code>可以用<code>pipeline</code>来指定缩进。推荐使用<code>include</code>来替代<code>template</code></p>
+<pre><code>{{- include "mychart.app" . | nindent 2 }}
+</code></pre></li>
+</ul>
+<h4 id="引如文件"><a href="#引如文件" class="headerlink" title="引如文件"></a>引如文件</h4><ul>
+<li><p><code>.File</code>可以将文件包含进来。需要注意的有，<code>template</code>目录下面的文件没法被包含。如下例子。<code>.File.Get</code>就是读取文件的内容的函数</p>
+<pre><code>{{- $files := .Files }}
+{{- range list "config1.toml" "config2.toml" "config3.toml" }}
+ {{ . }}: |-
+   {{ $files.Get . }}
+{{- end }}
 </code></pre></li>
 </ul>
 <h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
