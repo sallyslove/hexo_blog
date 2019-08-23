@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="作为Java程序员，不会remote debug，是不现实的。实际上，几年前也用过。但是悲催的是，再次要用的时候就搞不清了。现在还是k8s平台，端口映射就更复杂一点。三两下一绕就更不清楚了。所以还是先把remote debug搞清楚。再去绕端口号。 什么是remote debug服务端程序运行在一台远程服务器上，我们可以在本地服务端的代码（前提是本地的代码必须和远程服务器运行的代码一致）中设置断点">
+<meta name="description" content="作为Java程序员，不会remote debug，是不现实的。实际上，几年前也用过。但是悲催的是，再次要用的时候就搞不清了。 现在还是k8s平台，端口映射就更复杂一点。三两下一绕就更不清楚了。所以还是先把remote debug搞清楚。 再去绕端口号。 什么是remote debug 服务端程序运行在一台远程服务器上，我们可以在本地服务端的代码（前提是本地的代码必须和远程服务器运行的代码一致）中设">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java Remote Debug">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/07/26/Java-Remote-Debug/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="作为Java程序员，不会remote debug，是不现实的。实际上，几年前也用过。但是悲催的是，再次要用的时候就搞不清了。现在还是k8s平台，端口映射就更复杂一点。三两下一绕就更不清楚了。所以还是先把remote debug搞清楚。再去绕端口号。 什么是remote debug服务端程序运行在一台远程服务器上，我们可以在本地服务端的代码（前提是本地的代码必须和远程服务器运行的代码一致）中设置断点">
+<meta property="og:description" content="作为Java程序员，不会remote debug，是不现实的。实际上，几年前也用过。但是悲催的是，再次要用的时候就搞不清了。 现在还是k8s平台，端口映射就更复杂一点。三两下一绕就更不清楚了。所以还是先把remote debug搞清楚。 再去绕端口号。 什么是remote debug 服务端程序运行在一台远程服务器上，我们可以在本地服务端的代码（前提是本地的代码必须和远程服务器运行的代码一致）中设">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2019-08-09T09:14:21.645Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java Remote Debug">
-<meta name="twitter:description" content="作为Java程序员，不会remote debug，是不现实的。实际上，几年前也用过。但是悲催的是，再次要用的时候就搞不清了。现在还是k8s平台，端口映射就更复杂一点。三两下一绕就更不清楚了。所以还是先把remote debug搞清楚。再去绕端口号。 什么是remote debug服务端程序运行在一台远程服务器上，我们可以在本地服务端的代码（前提是本地的代码必须和远程服务器运行的代码一致）中设置断点">
+<meta name="twitter:description" content="作为Java程序员，不会remote debug，是不现实的。实际上，几年前也用过。但是悲催的是，再次要用的时候就搞不清了。 现在还是k8s平台，端口映射就更复杂一点。三两下一绕就更不清楚了。所以还是先把remote debug搞清楚。 再去绕端口号。 什么是remote debug 服务端程序运行在一台远程服务器上，我们可以在本地服务端的代码（前提是本地的代码必须和远程服务器运行的代码一致）中设">
 
 
 
@@ -331,10 +331,16 @@
       
 
       
-        <p>作为Java程序员，不会remote debug，是不现实的。实际上，几年前也用过。但是悲催的是，再次要用的时候就搞不清了。<br>现在还是k8s平台，端口映射就更复杂一点。三两下一绕就更不清楚了。所以还是先把remote debug搞清楚。<br>再去绕端口号。</p>
-<h3 id="什么是remote-debug"><a href="#什么是remote-debug" class="headerlink" title="什么是remote debug"></a>什么是remote debug</h3><p>服务端程序运行在一台远程服务器上，我们可以在本地服务端的代码（前提是本地的代码必须和远程服务器运行的代码一致）中设置断点，每当有请求到远程服务器时时能够在本地知道远程服务端的此时的内部状态。</p>
-<h3 id="怎么做remote-debug"><a href="#怎么做remote-debug" class="headerlink" title="怎么做remote debug"></a>怎么做remote debug</h3><h4 id="使用特定JVM参数运行服务端代码"><a href="#使用特定JVM参数运行服务端代码" class="headerlink" title="使用特定JVM参数运行服务端代码"></a>使用特定JVM参数运行服务端代码</h4><ul>
-<li>不是说打包的时候，而是运行jar包的时候，java -jar带上需要的参数<ul>
+        <p>作为Java程序员，不会remote debug，是不现实的。实际上，几年前也用过。但是悲催的是，再次要用的时候就搞不清了。<br>
+现在还是k8s平台，端口映射就更复杂一点。三两下一绕就更不清楚了。所以还是先把remote debug搞清楚。<br>
+再去绕端口号。</p>
+<h3 id="什么是remote-debug"><a class="header-anchor" href="#什么是remote-debug"></a>什么是remote debug</h3>
+<p>服务端程序运行在一台远程服务器上，我们可以在本地服务端的代码（前提是本地的代码必须和远程服务器运行的代码一致）中设置断点，每当有请求到远程服务器时时能够在本地知道远程服务端的此时的内部状态。</p>
+<h3 id="怎么做remote-debug"><a class="header-anchor" href="#怎么做remote-debug"></a>怎么做remote debug</h3>
+<h4 id="使用特定jvm参数运行服务端代码"><a class="header-anchor" href="#使用特定jvm参数运行服务端代码"></a>使用特定JVM参数运行服务端代码</h4>
+<ul>
+<li>不是说打包的时候，而是运行jar包的时候，java -jar带上需要的参数
+<ul>
 <li><code>address</code>是进行通信需要的端口。那么服务器端运行的程序会在这个端口上面开一个<code>socket</code></li>
 <li><code>socket</code>比较好理解的，通信方式</li>
 <li>所以之前进行debug mode的时候，肯定要改一下产品端module运行时候的JVM参数的</li>
@@ -342,19 +348,25 @@
 </li>
 </ul>
 <pre><code>-Xdebug -Xrunjdwp:transport=dt_socket,suspend=n,server=y,address=${debug_port}
-</code></pre><ul>
-<li>参考链接：<ul>
+</code></pre>
+<ul>
+<li>参考链接：
+<ul>
 <li><a href="https://www.cnblogs.com/wy2325/p/5600232.html" target="_blank" rel="noopener">IntelliJ远程调试教程</a></li>
 </ul>
 </li>
 </ul>
-<h4 id="在IDE里面进行设置，本地连接远程服务器debug端口"><a href="#在IDE里面进行设置，本地连接远程服务器debug端口" class="headerlink" title="在IDE里面进行设置，本地连接远程服务器debug端口"></a>在IDE里面进行设置，本地连接远程服务器debug端口</h4><ul>
-<li><p>参考链接里面的设置方法，其实就配远程服务器的地址和debug 端口</p>
+<h4 id="在ide里面进行设置-本地连接远程服务器debug端口"><a class="header-anchor" href="#在ide里面进行设置-本地连接远程服务器debug端口"></a>在IDE里面进行设置，本地连接远程服务器debug端口</h4>
+<ul>
+<li>
+<p>参考链接里面的设置方法，其实就配远程服务器的地址和debug 端口</p>
 </li>
-<li><p>还需要点击一下debug，让本地attach上去。</p>
+<li>
+<p>还需要点击一下debug，让本地attach上去。</p>
 </li>
 </ul>
-<h4 id="调试代码"><a href="#调试代码" class="headerlink" title="调试代码"></a>调试代码</h4><ul>
+<h4 id="调试代码"><a class="header-anchor" href="#调试代码"></a>调试代码</h4>
+<ul>
 <li>这时候就可以进行remote debug了。打好断点，然后往服务器发送请求就可以了</li>
 </ul>
 
@@ -488,7 +500,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/hexo_blog/categories/index.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -523,7 +535,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是remote-debug"><span class="nav-number">1.</span> <span class="nav-text">什么是remote debug</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#怎么做remote-debug"><span class="nav-number">2.</span> <span class="nav-text">怎么做remote debug</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用特定JVM参数运行服务端代码"><span class="nav-number">2.1.</span> <span class="nav-text">使用特定JVM参数运行服务端代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在IDE里面进行设置，本地连接远程服务器debug端口"><span class="nav-number">2.2.</span> <span class="nav-text">在IDE里面进行设置，本地连接远程服务器debug端口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#调试代码"><span class="nav-number">2.3.</span> <span class="nav-text">调试代码</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是remote-debug"><span class="nav-number">1.</span> <span class="nav-text">什么是remote debug</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#怎么做remote-debug"><span class="nav-number">2.</span> <span class="nav-text">怎么做remote debug</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用特定jvm参数运行服务端代码"><span class="nav-number">2.1.</span> <span class="nav-text">使用特定JVM参数运行服务端代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在ide里面进行设置-本地连接远程服务器debug端口"><span class="nav-number">2.2.</span> <span class="nav-text">在IDE里面进行设置，本地连接远程服务器debug端口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#调试代码"><span class="nav-number">2.3.</span> <span class="nav-text">调试代码</span></a></li></ol></li></ol></div>
             
 
           </div>

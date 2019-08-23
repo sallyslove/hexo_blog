@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="在学习一些micro service相关，记录在这里。现在都是说micro service，但是什么是micro service，可能不同的人有不同的定义，但是单纯地只是将软件部署到docker或者k8s上面去，可能并不完全符合micro service，所以学习一下。将一些学习到的tips和理念记录下来，最后形成自己的理解 什么是micro service 只占用需要的内存和处理器处理能力 如果">
+<meta name="description" content="在学习一些micro service相关，记录在这里。 现在都是说micro service，但是什么是micro service，可能不同的人有不同的定义，但是单纯地只是将软件部署到docker或者k8s上面去，可能并不完全符合micro service，所以学习一下。 将一些学习到的tips和理念记录下来，最后形成自己的理解 什么是micro service  只占用需要的内存和处理器处理能力">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Micro Service简介">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/08/13/Micro-Service简介/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="在学习一些micro service相关，记录在这里。现在都是说micro service，但是什么是micro service，可能不同的人有不同的定义，但是单纯地只是将软件部署到docker或者k8s上面去，可能并不完全符合micro service，所以学习一下。将一些学习到的tips和理念记录下来，最后形成自己的理解 什么是micro service 只占用需要的内存和处理器处理能力 如果">
+<meta property="og:description" content="在学习一些micro service相关，记录在这里。 现在都是说micro service，但是什么是micro service，可能不同的人有不同的定义，但是单纯地只是将软件部署到docker或者k8s上面去，可能并不完全符合micro service，所以学习一下。 将一些学习到的tips和理念记录下来，最后形成自己的理解 什么是micro service  只占用需要的内存和处理器处理能力">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2019-08-16T02:09:24.746Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Micro Service简介">
-<meta name="twitter:description" content="在学习一些micro service相关，记录在这里。现在都是说micro service，但是什么是micro service，可能不同的人有不同的定义，但是单纯地只是将软件部署到docker或者k8s上面去，可能并不完全符合micro service，所以学习一下。将一些学习到的tips和理念记录下来，最后形成自己的理解 什么是micro service 只占用需要的内存和处理器处理能力 如果">
+<meta name="twitter:description" content="在学习一些micro service相关，记录在这里。 现在都是说micro service，但是什么是micro service，可能不同的人有不同的定义，但是单纯地只是将软件部署到docker或者k8s上面去，可能并不完全符合micro service，所以学习一下。 将一些学习到的tips和理念记录下来，最后形成自己的理解 什么是micro service  只占用需要的内存和处理器处理能力">
 
 
 
@@ -331,20 +331,25 @@
       
 
       
-        <p>在学习一些micro service相关，记录在这里。<br>现在都是说micro service，但是什么是micro service，可能不同的人有不同的定义，但是单纯地只是将软件部署到docker或者k8s上面去，可能并不完全符合micro service，所以学习一下。<br>将一些学习到的tips和理念记录下来，最后形成自己的理解</p>
-<h3 id="什么是micro-service"><a href="#什么是micro-service" class="headerlink" title="什么是micro service"></a>什么是micro service</h3><ul>
+        <p>在学习一些micro service相关，记录在这里。<br>
+现在都是说micro service，但是什么是micro service，可能不同的人有不同的定义，但是单纯地只是将软件部署到docker或者k8s上面去，可能并不完全符合micro service，所以学习一下。<br>
+将一些学习到的tips和理念记录下来，最后形成自己的理解</p>
+<h3 id="什么是micro-service"><a class="header-anchor" href="#什么是micro-service"></a>什么是micro service</h3>
+<ul>
 <li>只占用需要的内存和处理器处理能力</li>
 <li>如果是处理数据的，假设我们有一个处理inventory data的micro service，那么这个micro service仅仅需要在意inventory data。而不需要考虑其他数据的影响。</li>
 <li>micro service不受语言限制，不同语言的micro service仍旧可以联合起来的完成一个solution的</li>
 <li></li>
 </ul>
-<h3 id="micro-service-combination"><a href="#micro-service-combination" class="headerlink" title="micro service combination"></a>micro service combination</h3><ul>
+<h3 id="micro-service-combination"><a class="header-anchor" href="#micro-service-combination"></a>micro service combination</h3>
+<ul>
 <li>micro service本身是一个complete application，它独立完成某个功能，可以有interface或者没有，可以访问数据库，也可以不访问。</li>
 <li>很多micro service联合起来，成为一个solution。</li>
 <li>默认只需要知道对方的endpoint就可以进行通信。<strong><em>所以是http base？</em></strong></li>
-<li><strong>_ each micro service has to offer an API endpoint! 通常都是REST的endpoint，但是也可以是wisdom endpoint_</strong></li>
+<li>___ each micro service has to offer an API endpoint! 通常都是REST的endpoint，但是也可以是wisdom endpoint___</li>
 </ul>
-<h3 id="micro-service优势"><a href="#micro-service优势" class="headerlink" title="micro service优势"></a>micro service优势</h3><ul>
+<h3 id="micro-service优势"><a class="header-anchor" href="#micro-service优势"></a>micro service优势</h3>
+<ul>
 <li>增加了scalability。话说这个吧，其实很复杂。看我另外一篇博客。而且未必多加pod，能力就一定上升啊</li>
 </ul>
 
@@ -478,7 +483,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/hexo_blog/categories/index.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>

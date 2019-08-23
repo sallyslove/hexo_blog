@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="这篇记录改成专门记录和多线程相关的数据类型 Executors这个Executors没有继承或者实现任何其他类。就是说，他嘎嘣自己一个。实际上是一个工具类啊，更确切地说，像一个工厂类。主要功能是返回各种ExecutorService。其实就是new出各种ThreadPoolExecutor。如下： public static ExecutorService newSingleThreadExecu">
+<meta name="description" content="这篇记录改成专门记录和多线程相关的数据类型 Executors 这个Executors没有继承或者实现任何其他类。就是说，他嘎嘣自己一个。实际上是一个工具类啊，更确切地说，像一个工厂类。主要功能是返回各种ExecutorService。 其实就是new出各种ThreadPoolExecutor。如下： public static ExecutorService newSingleThreadExe">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java多线程数据类型">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/03/11/Java多线程数据类型/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="这篇记录改成专门记录和多线程相关的数据类型 Executors这个Executors没有继承或者实现任何其他类。就是说，他嘎嘣自己一个。实际上是一个工具类啊，更确切地说，像一个工厂类。主要功能是返回各种ExecutorService。其实就是new出各种ThreadPoolExecutor。如下： public static ExecutorService newSingleThreadExecu">
+<meta property="og:description" content="这篇记录改成专门记录和多线程相关的数据类型 Executors 这个Executors没有继承或者实现任何其他类。就是说，他嘎嘣自己一个。实际上是一个工具类啊，更确切地说，像一个工厂类。主要功能是返回各种ExecutorService。 其实就是new出各种ThreadPoolExecutor。如下： public static ExecutorService newSingleThreadExe">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2019-07-18T03:12:59.159Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java多线程数据类型">
-<meta name="twitter:description" content="这篇记录改成专门记录和多线程相关的数据类型 Executors这个Executors没有继承或者实现任何其他类。就是说，他嘎嘣自己一个。实际上是一个工具类啊，更确切地说，像一个工厂类。主要功能是返回各种ExecutorService。其实就是new出各种ThreadPoolExecutor。如下： public static ExecutorService newSingleThreadExecu">
+<meta name="twitter:description" content="这篇记录改成专门记录和多线程相关的数据类型 Executors 这个Executors没有继承或者实现任何其他类。就是说，他嘎嘣自己一个。实际上是一个工具类啊，更确切地说，像一个工厂类。主要功能是返回各种ExecutorService。 其实就是new出各种ThreadPoolExecutor。如下： public static ExecutorService newSingleThreadExe">
 
 
 
@@ -332,67 +332,85 @@
 
       
         <p>这篇记录改成专门记录和多线程相关的数据类型</p>
-<h3 id="Executors"><a href="#Executors" class="headerlink" title="Executors"></a>Executors</h3><p>这个<code>Executors</code>没有继承或者实现任何其他类。就是说，他嘎嘣自己一个。实际上是一个工具类啊，更确切地说，像一个工厂类。主要功能是返回各种<code>ExecutorService</code>。<br>其实就是<code>new</code>出各种<code>ThreadPoolExecutor</code>。如下：</p>
+<h3 id="executors"><a class="header-anchor" href="#executors"></a>Executors</h3>
+<p>这个<code>Executors</code>没有继承或者实现任何其他类。就是说，他嘎嘣自己一个。实际上是一个工具类啊，更确切地说，像一个工厂类。主要功能是返回各种<code>ExecutorService</code>。<br>
+其实就是<code>new</code>出各种<code>ThreadPoolExecutor</code>。如下：</p>
 <pre><code>public static ExecutorService newSingleThreadExecutor() {
     return new FinalizableDelegatedExecutorService
         (new ThreadPoolExecutor(1, 1,
                                 0L, TimeUnit.MILLISECONDS,
                       new LinkedBlockingQueue&lt;Runnable&gt;()));
 }
-</code></pre><h3 id="ExecutorService"><a href="#ExecutorService" class="headerlink" title="ExecutorService"></a>ExecutorService</h3><h4 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h4><pre><code>public interface ExecutorService extends Executor
-</code></pre><ul>
+</code></pre>
+<h3 id="executorservice"><a class="header-anchor" href="#executorservice"></a>ExecutorService</h3>
+<h4 id="概览"><a class="header-anchor" href="#概览"></a>概览</h4>
+<pre><code>public interface ExecutorService extends Executor
+</code></pre>
+<ul>
 <li>所以首先来说，这是一个接口</li>
 <li>Executor接口很简单，只有一个execute方法。ExecutorService除了这一个方法，还增加了一些方法，增加的方法包括：<code>awaitTerminate</code>，<code>invokeAll</code>，<code>invokeAny</code>，<code>shutdown</code>，<code>shutdownNow</code>，<code>submit</code>等。</li>
 <li><a href="https://www.cnblogs.com/Steven0805/p/6393443.html" target="_blank" rel="noopener">Java线程池ExecutorService</a></li>
 </ul>
-<h4 id="几种常用线程池的具体实现"><a href="#几种常用线程池的具体实现" class="headerlink" title="几种常用线程池的具体实现"></a>几种常用线程池的具体实现</h4><ul>
-<li>然后有意思的来了：<ul>
+<h4 id="几种常用线程池的具体实现"><a class="header-anchor" href="#几种常用线程池的具体实现"></a>几种常用线程池的具体实现</h4>
+<ul>
+<li>然后有意思的来了：</li>
 <li>Java通过Executors class提供了好几种线程池，这就是我们常用的几种了。</li>
 <li><code>newFixedThreadPool</code>：就是说这个玩意，限定好了最大数目，核心数目，然后本质是一个<code>LinkedBlockingQueue</code>套了<code>runnable</code></li>
 </ul>
-</li>
-</ul>
-<pre><code>public static ExecutorService newFixedThreadPool(int nThreads) {
-   return new ThreadPoolExecutor(nThreads, nThreads,
-                                 0L, TimeUnit.MILLISECONDS,
-                                 new LinkedBlockingQueue&lt;Runnable&gt;());
-</code></pre><ul>
+<pre><code> public static ExecutorService newFixedThreadPool(int nThreads) {
+    return new ThreadPoolExecutor(nThreads, nThreads,
+                                  0L, TimeUnit.MILLISECONDS,
+                                  new LinkedBlockingQueue&lt;Runnable&gt;());
+</code></pre>
+<ul>
 <li><code>newCachedThreadPool</code>：</li>
 </ul>
-<pre><code>public static ExecutorService newCachedThreadPool() {
- return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
-                               60L, TimeUnit.SECONDS,
-                               new SynchronousQueue&lt;Runnable&gt;());    }
-</code></pre><ul>
+<pre><code>   public static ExecutorService newCachedThreadPool() {
+    return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
+                                  60L, TimeUnit.SECONDS,
+                                  new SynchronousQueue&lt;Runnable&gt;());    }
+</code></pre>
+<ul>
 <li>还有<code>newScheduledThreadPool</code>和<code>newSingleThreadExecutor</code></li>
 </ul>
-<h4 id="一些要点"><a href="#一些要点" class="headerlink" title="一些要点"></a>一些要点</h4><ul>
-<li><code>submit</code>与<code>execute</code>的区别： <ul>
+<h4 id="一些要点"><a class="header-anchor" href="#一些要点"></a>一些要点</h4>
+<ul>
+<li><code>submit</code>与<code>execute</code>的区别：
+<ul>
 <li>submit接受runnable和callable  有返回值。</li>
 <li>execute接受runnable 无返回值</li>
 <li>submit方便Exception处理</li>
 </ul>
 </li>
-<li>Runnable与Callable区别<ul>
+<li>Runnable与Callable区别
+<ul>
 <li>runnable接口实现的没有返回值的并发编程。</li>
 <li>callable实现的存在返回值的并发编程。使用Future获取返回值。</li>
 </ul>
 </li>
 </ul>
-<h3 id="ThreadPoolExecutor"><a href="#ThreadPoolExecutor" class="headerlink" title="ThreadPoolExecutor"></a>ThreadPoolExecutor</h3><pre><code>public abstract class AbstractExecutorService implements ExecutorService
+<h3 id="threadpoolexecutor"><a class="header-anchor" href="#threadpoolexecutor"></a>ThreadPoolExecutor</h3>
+<pre><code>public abstract class AbstractExecutorService implements ExecutorService
 public class ThreadPoolExecutor extends AbstractExecutorService    
-</code></pre><ul>
+</code></pre>
+<ul>
 <li>从上面可以看出来，ThreadPoolExecutor也是一种Executor，继承自AbstractExecutorService，自然也实现了ExecutorService.</li>
 <li><a href="https://www.cnblogs.com/zedosu/p/6665306.html" target="_blank" rel="noopener">ThreadPoolExecutor使用详解</a></li>
 </ul>
-<h4 id="ThreadPoolExecutor-shutdown"><a href="#ThreadPoolExecutor-shutdown" class="headerlink" title="ThreadPoolExecutor shutdown"></a>ThreadPoolExecutor shutdown</h4><p>  ThreadPoolExecutor 有三个shutdown方法： <code>shutdown</code>、<code>shutdownNow</code>、<code>awaitTermination</code></p>
+<h4 id="threadpoolexecutor-shutdown"><a class="header-anchor" href="#threadpoolexecutor-shutdown"></a>ThreadPoolExecutor shutdown</h4>
+<p>ThreadPoolExecutor 有三个shutdown方法： <code>shutdown</code>、<code>shutdownNow</code>、<code>awaitTermination</code></p>
 <ul>
-<li><code>shutdown</code>： 停止接收外部submit的任务；内部正在跑的任务和队列里等待的任务，会执行完。其实graceful shutdown的感觉啊</li>
-<li><code>shutdownNow</code>： 停止接收外部提交的任务；忽略队列里等待的任务；尝试将正在跑的任务interrupt中断；返回未执行的任务列表。强制中断。线程会收到InterupptedException.<ul>
+<li>
+<p><code>shutdown</code>： 停止接收外部submit的任务；内部正在跑的任务和队列里等待的任务，会执行完。其实graceful shutdown的感觉啊</p>
+</li>
+<li>
+<p><code>shutdownNow</code>： 停止接收外部提交的任务；忽略队列里等待的任务；尝试将正在跑的任务interrupt中断；返回未执行的任务列表。强制中断。线程会收到InterupptedException.</p>
+<ul>
 <li>需要注意的是这个方法仅仅是尝试中断线程，它通过的是调用interrupt方法，这种方法的作用有限，如果线程中没有sleep 、wait、Condition、定时锁等应用, interrupt()方法是无法中断当前的线程的。</li>
 </ul>
 </li>
-<li><p><code>awaitTermination</code>：只是加了一个wait时间的限制</p>
+<li>
+<p><code>awaitTermination</code>：只是加了一个wait时间的限制</p>
 <ul>
 <li>很多博客的里面，这个函数会返回boolean的返回值。就是说<code>awaitTermination</code>一般和<code>shutdown</code>搭配使用，<code>awaitTermination</code>来监控线程有没有结束好。结束了返回<code>true</code>，没结束返回<code>false</code></li>
 <li>这个函数还会抛出InterupptedException，但是看代码没太明白什么状况下会抛这个<code>exception</code>。但是是这个函数本身被interrupt了。</li>
@@ -400,13 +418,15 @@ public class ThreadPoolExecutor extends AbstractExecutorService
 <li>在实际工作中解决bug碰到了这组函数。事实上就是要三个一起用的。<code>awaitTermination</code>只会返回一个状态，并不会做任何的事情。所以在这个函数返回false的时候应该要调用<code>shutdownNow</code>方法来进一步中断线程</li>
 </ul>
 </li>
-<li><p>参考链接</p>
+<li>
+<p>参考链接</p>
 <ul>
 <li><a href="https://blog.csdn.net/u012168222/article/details/52790400" target="_blank" rel="noopener">shutdown 方法</a></li>
 <li><a href="https://blog.csdn.net/zaozi/article/details/38854561#commentBox" target="_blank" rel="noopener">ExecutorService的正确关闭方法</a>： 这篇文章比喻得很清楚，只是不知道正确与否</li>
 </ul>
 </li>
-<li><ul>
+<li>
+<ul>
 <li><a href="https://blog.csdn.net/liwenxia626/article/details/80754886" target="_blank" rel="noopener">csdn的另一篇博客</a></li>
 </ul>
 </li>
@@ -542,7 +562,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService
               
               <div class="site-state-item site-state-categories">
                 <a href="/hexo_blog/categories/index.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -577,7 +597,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Executors"><span class="nav-number">1.</span> <span class="nav-text">Executors</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ExecutorService"><span class="nav-number">2.</span> <span class="nav-text">ExecutorService</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#概览"><span class="nav-number">2.1.</span> <span class="nav-text">概览</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#几种常用线程池的具体实现"><span class="nav-number">2.2.</span> <span class="nav-text">几种常用线程池的具体实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#一些要点"><span class="nav-number">2.3.</span> <span class="nav-text">一些要点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ThreadPoolExecutor"><span class="nav-number">3.</span> <span class="nav-text">ThreadPoolExecutor</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ThreadPoolExecutor-shutdown"><span class="nav-number">3.1.</span> <span class="nav-text">ThreadPoolExecutor shutdown</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#executors"><span class="nav-number">1.</span> <span class="nav-text">Executors</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#executorservice"><span class="nav-number">2.</span> <span class="nav-text">ExecutorService</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#概览"><span class="nav-number">2.1.</span> <span class="nav-text">概览</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#几种常用线程池的具体实现"><span class="nav-number">2.2.</span> <span class="nav-text">几种常用线程池的具体实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#一些要点"><span class="nav-number">2.3.</span> <span class="nav-text">一些要点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#threadpoolexecutor"><span class="nav-number">3.</span> <span class="nav-text">ThreadPoolExecutor</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#threadpoolexecutor-shutdown"><span class="nav-number">3.1.</span> <span class="nav-text">ThreadPoolExecutor shutdown</span></a></li></ol></li></ol></div>
             
 
           </div>

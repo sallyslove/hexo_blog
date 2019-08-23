@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="Liveness &amp;amp; ReadinessReadiness Readiness Probes checks if an application is ready to start processing traffic. This probe solves the problem of the container having started, but the process still w">
+<meta name="description" content="Liveness &amp;amp; Readiness Readiness  Readiness Probes checks if an application is ready to start processing traffic. This probe solves the problem of the container having started, but the process still">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Liveness &amp; Readiness">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/02/26/Liveness-Readiness/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="Liveness &amp;amp; ReadinessReadiness Readiness Probes checks if an application is ready to start processing traffic. This probe solves the problem of the container having started, but the process still w">
+<meta property="og:description" content="Liveness &amp;amp; Readiness Readiness  Readiness Probes checks if an application is ready to start processing traffic. This probe solves the problem of the container having started, but the process still">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2019-08-16T02:09:17.737Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Liveness &amp; Readiness">
-<meta name="twitter:description" content="Liveness &amp;amp; ReadinessReadiness Readiness Probes checks if an application is ready to start processing traffic. This probe solves the problem of the container having started, but the process still w">
+<meta name="twitter:description" content="Liveness &amp;amp; Readiness Readiness  Readiness Probes checks if an application is ready to start processing traffic. This probe solves the problem of the container having started, but the process still">
 
 
 
@@ -331,26 +331,29 @@
       
 
       
-        <h2 id="Liveness-amp-Readiness"><a href="#Liveness-amp-Readiness" class="headerlink" title="Liveness &amp; Readiness"></a>Liveness &amp; Readiness</h2><h3 id="Readiness"><a href="#Readiness" class="headerlink" title="Readiness"></a>Readiness</h3><ul>
+        <h2 id="liveness-readiness"><a class="header-anchor" href="#liveness-readiness"></a>Liveness &amp; Readiness</h2>
+<h3 id="readiness"><a class="header-anchor" href="#readiness"></a>Readiness</h3>
+<ul>
 <li>Readiness Probes checks if an application is ready to start processing traffic.</li>
 <li>This probe solves the problem of the container having started, but the process still warming up and configuring itself meaning it’s not ready to receive traffic.</li>
-<li>The configuration is as following:<pre><code>readinessProbe:
-   httpGet:
-      path: /
-      port: 80
-   initialDelaySeconds: 1
-   timeoutSeconds: 1
-</code></pre></li>
+<li>The configuration is as following:<br>
+readinessProbe:<br>
+httpGet:<br>
+path: /<br>
+port: 80<br>
+initialDelaySeconds: 1<br>
+timeoutSeconds: 1</li>
 </ul>
-<h3 id="Liveness"><a href="#Liveness" class="headerlink" title="Liveness"></a>Liveness</h3><ul>
+<h3 id="liveness"><a class="header-anchor" href="#liveness"></a>Liveness</h3>
+<ul>
 <li>Liveness Probes ensure that the application is healthy and capable of processing requests.</li>
-<li>The configuration is as following:<pre><code>livenessProbe:
-httpGet:
-   path: /
-   port: 80
-   initialDelaySeconds: 1
-   timeoutSeconds: 1
-</code></pre></li>
+<li>The configuration is as following:<br>
+livenessProbe:<br>
+httpGet:<br>
+path: /<br>
+port: 80<br>
+initialDelaySeconds: 1<br>
+timeoutSeconds: 1</li>
 </ul>
 
       
@@ -483,7 +486,7 @@ httpGet:
               
               <div class="site-state-item site-state-categories">
                 <a href="/hexo_blog/categories/index.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -518,7 +521,7 @@ httpGet:
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Liveness-amp-Readiness"><span class="nav-number">1.</span> <span class="nav-text">Liveness &amp; Readiness</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Readiness"><span class="nav-number">1.1.</span> <span class="nav-text">Readiness</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Liveness"><span class="nav-number">1.2.</span> <span class="nav-text">Liveness</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#liveness-readiness"><span class="nav-number">1.</span> <span class="nav-text">Liveness &amp; Readiness</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#readiness"><span class="nav-number">1.1.</span> <span class="nav-text">Readiness</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#liveness"><span class="nav-number">1.2.</span> <span class="nav-text">Liveness</span></a></li></ol></li></ol></div>
             
 
           </div>

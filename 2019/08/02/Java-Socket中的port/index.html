@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="工作中碰到DNS的local 端口的问题，就是client段的port，不是DNS server的端口。这个是默认开在53上面的。然后就研究了一下，写在这里。 port 0 可用端口是0 ~ 65535。0在这里说啦，是分配一个随机的未被占用的端口。而65535 事实上是会报错的，也是用不了的。 事实上，确实是可能有race condition存在的。并且很难避免。仔细看了一遍，好像并没有很好的提">
+<meta name="description" content="工作中碰到DNS的local 端口的问题，就是client段的port，不是DNS server的端口。这个是默认开在53上面的。 然后就研究了一下，写在这里。 port 0  可用端口是0 ~ 65535。0在这里说啦，是分配一个随机的未被占用的端口。而65535 事实上是会报错的，也是用不了的。 事实上，确实是可能有race condition存在的。并且很难避免。仔细看了一遍，好像并没有很好">
 <meta property="og:type" content="article">
 <meta property="og:title" content="TCP &amp; UDP">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/08/02/Java-Socket中的port/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="工作中碰到DNS的local 端口的问题，就是client段的port，不是DNS server的端口。这个是默认开在53上面的。然后就研究了一下，写在这里。 port 0 可用端口是0 ~ 65535。0在这里说啦，是分配一个随机的未被占用的端口。而65535 事实上是会报错的，也是用不了的。 事实上，确实是可能有race condition存在的。并且很难避免。仔细看了一遍，好像并没有很好的提">
+<meta property="og:description" content="工作中碰到DNS的local 端口的问题，就是client段的port，不是DNS server的端口。这个是默认开在53上面的。 然后就研究了一下，写在这里。 port 0  可用端口是0 ~ 65535。0在这里说啦，是分配一个随机的未被占用的端口。而65535 事实上是会报错的，也是用不了的。 事实上，确实是可能有race condition存在的。并且很难避免。仔细看了一遍，好像并没有很好">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2019-08-15T05:58:56.667Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="TCP &amp; UDP">
-<meta name="twitter:description" content="工作中碰到DNS的local 端口的问题，就是client段的port，不是DNS server的端口。这个是默认开在53上面的。然后就研究了一下，写在这里。 port 0 可用端口是0 ~ 65535。0在这里说啦，是分配一个随机的未被占用的端口。而65535 事实上是会报错的，也是用不了的。 事实上，确实是可能有race condition存在的。并且很难避免。仔细看了一遍，好像并没有很好的提">
+<meta name="twitter:description" content="工作中碰到DNS的local 端口的问题，就是client段的port，不是DNS server的端口。这个是默认开在53上面的。 然后就研究了一下，写在这里。 port 0  可用端口是0 ~ 65535。0在这里说啦，是分配一个随机的未被占用的端口。而65535 事实上是会报错的，也是用不了的。 事实上，确实是可能有race condition存在的。并且很难避免。仔细看了一遍，好像并没有很好">
 
 
 
@@ -331,13 +331,16 @@
       
 
       
-        <p>工作中碰到DNS的local 端口的问题，就是client段的port，不是DNS server的端口。这个是默认开在53上面的。<br>然后就研究了一下，写在这里。</p>
-<h3 id="port-0"><a href="#port-0" class="headerlink" title="port 0"></a>port 0</h3><ul>
+        <p>工作中碰到DNS的local 端口的问题，就是client段的port，不是DNS server的端口。这个是默认开在53上面的。<br>
+然后就研究了一下，写在这里。</p>
+<h3 id="port-0"><a class="header-anchor" href="#port-0"></a>port 0</h3>
+<ul>
 <li>可用端口是<code>0 ~ 65535</code>。<code>0</code>在这里说啦，是分配一个随机的未被占用的端口。而<code>65535</code> 事实上是会报错的，也是用不了的。</li>
 <li>事实上，确实是可能有race condition存在的。并且很难避免。仔细看了一遍，好像并没有很好的提议。</li>
 <li>Spring里面的<code>SocketUtil</code>的源码可以参考</li>
 <li><code>ServerSocket</code>里面初始化时候其实是有两部的，第二部是bind，如果传0给构造函数，第二部时候才真正是分配的时候。</li>
-<li>参考链接：<ul>
+<li>参考链接：
+<ul>
 <li><a href="https://blog.csdn.net/qq_36592572/article/details/82323100" target="_blank" rel="noopener">关于端口最大值65535的问题</a></li>
 <li><a href="https://stackoverflow.com/questions/12889702/allowed-port-range-for-tcp" target="_blank" rel="noopener">Allowed Port Range for TCP</a></li>
 <li><a href="https://stackoverflow.com/questions/115500/how-do-you-specify-a-port-range-for-java-sockets" target="_blank" rel="noopener">how-do-you-specify-a-port-range-for-java-sockets</a></li>
@@ -347,29 +350,41 @@
 </ul>
 </li>
 </ul>
-<h3 id="TCP-amp-UDP"><a href="#TCP-amp-UDP" class="headerlink" title="TCP &amp; UDP"></a>TCP &amp; UDP</h3><ul>
-<li><p>参考链接</p>
+<h3 id="tcp-udp"><a class="header-anchor" href="#tcp-udp"></a>TCP &amp; UDP</h3>
+<ul>
+<li>
+<p>参考链接</p>
 <ul>
 <li><a href="https://stackoverflow.com/questions/12737293/how-do-i-resolve-the-java-net-bindexception-address-already-in-use-jvm-bind?rq=1" target="_blank" rel="noopener">how-do-i-resolve-the-java-net-bindexception-address-already-in-use-jvm-bind</a>: 里面有很多如何查找是哪个应用在占用端口的方法</li>
 <li><a href="https://stackoverflow.com/questions/27730330/java-what-is-the-difference-between-serversocket-and-datagramsocket" target="_blank" rel="noopener">java-what-is-the-difference-between-serversocket-and-datagramsocket</a></li>
 <li><a href="https://www.javaworld.com/article/2077322/core-java-sockets-programming-in-java-a-tutorial.html" target="_blank" rel="noopener">Sockets programming in Java</a></li>
 </ul>
 </li>
-<li><p>这回犯一个低级错误。但是也是必然的，毕竟底层网络不够了解。</p>
+<li>
+<p>这回犯一个低级错误。但是也是必然的，毕竟底层网络不够了解。</p>
 </li>
-<li>这次犯的错误是这样的，需要发现一个free的port来建立UDP连接，于是就使用了<code>serverSocket</code> 来check 端口，参考以上链接。</li>
-<li>实际是，<code>TCP</code>和 <code>UDP</code> 需要使用不同的结构。ORZ。可见我的java基础和网络基础都很有点薄弱啊。对<code>socket</code>的理解也着实不灵啊。</li>
-<li><code>UDP</code> 应当使用<code>DatagramSocket</code>结构来建。</li>
+<li>
+<p>这次犯的错误是这样的，需要发现一个free的port来建立UDP连接，于是就使用了<code>serverSocket</code> 来check 端口，参考以上链接。</p>
+</li>
+<li>
+<p>实际是，<code>TCP</code>和 <code>UDP</code> 需要使用不同的结构。ORZ。可见我的java基础和网络基础都很有点薄弱啊。对<code>socket</code>的理解也着实不灵啊。</p>
+</li>
+<li>
+<p><code>UDP</code> 应当使用<code>DatagramSocket</code>结构来建。</p>
+</li>
 </ul>
-<h4 id="UDP"><a href="#UDP" class="headerlink" title="UDP"></a>UDP</h4><ul>
+<h4 id="udp"><a class="header-anchor" href="#udp"></a>UDP</h4>
+<ul>
 <li><code>UDP</code>的全称：<code>user datagram protocol</code>。</li>
 <li>each time you send datagrams, you also need to send the local socket descriptor and the receiving socket’s address. As you can tell, additional data must be sent each time a communication is made.</li>
 </ul>
-<h4 id="TCP"><a href="#TCP" class="headerlink" title="TCP"></a>TCP</h4><ul>
+<h4 id="tcp"><a class="header-anchor" href="#tcp"></a>TCP</h4>
+<ul>
 <li><code>TCP</code>的全称： <code>transfer control protocol</code></li>
 <li>Once two sockets have been connected, they can be used to transmit data in both (or either one of the) directions.</li>
 </ul>
-<h4 id="When-is-UDP-amp-when-is-TCP"><a href="#When-is-UDP-amp-when-is-TCP" class="headerlink" title="When is UDP &amp; when is TCP"></a>When is UDP &amp; when is TCP</h4><ul>
+<h4 id="when-is-udp-when-is-tcp"><a class="header-anchor" href="#when-is-udp-when-is-tcp"></a>When is UDP &amp; when is TCP</h4>
+<ul>
 <li><code>UDP</code>有数据大小限制，每次发的时候都要带上信息，不可靠，但是速度高。</li>
 <li><code>TCP</code>是面向连接的，所有有建立连接时间。<strong><em>UDP也要建连接呀</em></strong> TCP的数据更像流，而不是一个个数据包，没有大小限制，可靠，但是速度慢很多。</li>
 <li>TCP is useful for implementing network services – such as remote login (rlogin, telnet) and file transfer (FTP)</li>
@@ -506,7 +521,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/hexo_blog/categories/index.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -541,7 +556,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#port-0"><span class="nav-number">1.</span> <span class="nav-text">port 0</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP-amp-UDP"><span class="nav-number">2.</span> <span class="nav-text">TCP &amp; UDP</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#UDP"><span class="nav-number">2.1.</span> <span class="nav-text">UDP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TCP"><span class="nav-number">2.2.</span> <span class="nav-text">TCP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#When-is-UDP-amp-when-is-TCP"><span class="nav-number">2.3.</span> <span class="nav-text">When is UDP &amp; when is TCP</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#port-0"><span class="nav-number">1.</span> <span class="nav-text">port 0</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tcp-udp"><span class="nav-number">2.</span> <span class="nav-text">TCP &amp; UDP</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#udp"><span class="nav-number">2.1.</span> <span class="nav-text">UDP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#tcp"><span class="nav-number">2.2.</span> <span class="nav-text">TCP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#when-is-udp-when-is-tcp"><span class="nav-number">2.3.</span> <span class="nav-text">When is UDP &amp; when is TCP</span></a></li></ol></li></ol></div>
             
 
           </div>

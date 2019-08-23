@@ -79,19 +79,19 @@
 
 
 
-<meta name="description" content="Cassandra 写流程大致流程到把数据写到磁盘中分为以下几个步骤：  先找到应该往哪几个节点写 写log到commit log 写数据到memtable 从memtable中flush数据 将数据存储在SSTables中的磁盘中   客户端写一条数据必须指定 Keyspace、ColumnFamily、Key、Column Name 和 Value，还可以指定 Timestamp，以及数据的安">
+<meta name="description" content="Cassandra 写流程 大致流程 到把数据写到磁盘中分为以下几个步骤：  先找到应该往哪几个节点写 写log到commit log 写数据到memtable 从memtable中flush数据 将数据存储在SSTables中的磁盘中   客户端写一条数据必须指定 Keyspace、ColumnFamily、Key、Column Name 和 Value，还可以指定 Timestamp，以及数据">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Cassandra 写数据过程">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/01/17/Cassandra-写数据过程/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="Cassandra 写流程大致流程到把数据写到磁盘中分为以下几个步骤：  先找到应该往哪几个节点写 写log到commit log 写数据到memtable 从memtable中flush数据 将数据存储在SSTables中的磁盘中   客户端写一条数据必须指定 Keyspace、ColumnFamily、Key、Column Name 和 Value，还可以指定 Timestamp，以及数据的安">
+<meta property="og:description" content="Cassandra 写流程 大致流程 到把数据写到磁盘中分为以下几个步骤：  先找到应该往哪几个节点写 写log到commit log 写数据到memtable 从memtable中flush数据 将数据存储在SSTables中的磁盘中   客户端写一条数据必须指定 Keyspace、ColumnFamily、Key、Column Name 和 Value，还可以指定 Timestamp，以及数据">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image012-large.jpg">
 <meta property="og:image" content="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image010-large.jpg">
 <meta property="og:updated_time" content="2019-07-22T03:15:35.728Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Cassandra 写数据过程">
-<meta name="twitter:description" content="Cassandra 写流程大致流程到把数据写到磁盘中分为以下几个步骤：  先找到应该往哪几个节点写 写log到commit log 写数据到memtable 从memtable中flush数据 将数据存储在SSTables中的磁盘中   客户端写一条数据必须指定 Keyspace、ColumnFamily、Key、Column Name 和 Value，还可以指定 Timestamp，以及数据的安">
+<meta name="twitter:description" content="Cassandra 写流程 大致流程 到把数据写到磁盘中分为以下几个步骤：  先找到应该往哪几个节点写 写log到commit log 写数据到memtable 从memtable中flush数据 将数据存储在SSTables中的磁盘中   客户端写一条数据必须指定 Keyspace、ColumnFamily、Key、Column Name 和 Value，还可以指定 Timestamp，以及数据">
 <meta name="twitter:image" content="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image012-large.jpg">
 
 
@@ -334,7 +334,9 @@
       
 
       
-        <h2 id="Cassandra-写流程"><a href="#Cassandra-写流程" class="headerlink" title="Cassandra 写流程"></a>Cassandra 写流程</h2><h3 id="大致流程"><a href="#大致流程" class="headerlink" title="大致流程"></a>大致流程</h3><p>到把数据写到磁盘中分为以下几个步骤：</p>
+        <h2 id="cassandra-写流程"><a class="header-anchor" href="#cassandra-写流程"></a>Cassandra 写流程</h2>
+<h3 id="大致流程"><a class="header-anchor" href="#大致流程"></a>大致流程</h3>
+<p>到把数据写到磁盘中分为以下几个步骤：</p>
 <ol>
 <li>先找到应该往哪几个节点写</li>
 <li>写log到commit log</li>
@@ -350,7 +352,8 @@
 Commitlog ---&gt; Periodically sync to  disk
 
 Memtable  ---&gt; Periodically flush to SSTable
-</code></pre><p>   <strong><em>如果看下面的流程图的话，那么上面这个顺序是不对的。是先写到memtable，然后再写commitLog？看官方文档，上面的是正确的。应该是流程图不够好。或者是一个相对并行的过程</em></strong></p>
+</code></pre>
+<p><strong><em>如果看下面的流程图的话，那么上面这个顺序是不对的。是先写到memtable，然后再写commitLog？看官方文档，上面的是正确的。应该是流程图不够好。或者是一个相对并行的过程</em></strong></p>
 <p><img src="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image012-large.jpg" alt></p>
 <blockquote>
 <p>引用自第二篇链接</p>
@@ -358,8 +361,10 @@ Memtable  ---&gt; Periodically flush to SSTable
 <ul>
 <li>这张图里面有的结构可能不太对了。没有找到RowMutation这个结构，只有Mutation</li>
 </ul>
-<h3 id="Replica-Factor"><a href="#Replica-Factor" class="headerlink" title="Replica Factor"></a>Replica Factor</h3><ul>
-<li><p>CassandraServer 接收到要写入的数据时：</p>
+<h3 id="replica-factor"><a class="header-anchor" href="#replica-factor"></a>Replica Factor</h3>
+<ul>
+<li>
+<p>CassandraServer 接收到要写入的数据时：</p>
 <ul>
 <li>创建一个 <code>RowMutation</code> 对象，再创建一个 <code>QueryPath</code> 对象，这个对象中保存了 <code>ColumnFamily</code>、<code>Column Name</code> 或者 <code>Super Column Name</code>。</li>
 <li>把用户提交的所有数据保存在 <code>RowMutation</code> 对象的 Map&lt;String, ColumnFamily&gt; 结构中。</li>
@@ -368,47 +373,79 @@ Memtable  ---&gt; Periodically flush to SSTable
 <li><strong><em>所以在真正开始写入数据之前，cassandra会做这些事情？在commitLog之前？</em></strong> 我想应该是之前</li>
 </ul>
 </li>
-<li><p><code>Replica Factor</code>和<code>consistency level</code>不是一个东西，然后有一个算法。比如，<code>replica set</code>是3， <code>consistency level</code>的策略是<code>Querum</code>。这样需要consistent的节点是replica set/2 +1 ，所以就是2 </p>
+<li>
+<p><code>Replica Factor</code>和<code>consistency level</code>不是一个东西，然后有一个算法。比如，<code>replica set</code>是3， <code>consistency level</code>的策略是<code>Querum</code>。这样需要consistent的节点是replica set/2 +1 ，所以就是2</p>
 </li>
 </ul>
-<h3 id="Eventual-Consistency"><a href="#Eventual-Consistency" class="headerlink" title="Eventual Consistency"></a>Eventual Consistency</h3><p>这在Cassandra里面是非常关键的一个概念。写在这里。因为与写的机制相关最多。</p>
+<h3 id="eventual-consistency"><a class="header-anchor" href="#eventual-consistency"></a>Eventual Consistency</h3>
+<p>这在Cassandra里面是非常关键的一个概念。写在这里。因为与写的机制相关最多。</p>
 <ul>
-<li><p>Cassandra must make tradeoffs among data consistency, availability, and partition tolerance. Cassandra必须在数据一致性、可用性和分区容忍之间平衡</p>
+<li>
+<p>Cassandra must make tradeoffs among data consistency, availability, and partition tolerance. Cassandra必须在数据一致性、可用性和分区容忍之间平衡</p>
 <ul>
-<li>Availability: all clients are able to access the data so they can read and write data. 可用性：所有客户都能够读取和写入数据</li>
-<li>Consistency的概念：<ul>
+<li>
+<p>Availability: all clients are able to access the data so they can read and write data. 可用性：所有客户都能够读取和写入数据</p>
+</li>
+<li>
+<p>Consistency的概念：</p>
+<ul>
 <li>a read always return the latest written data： 读取时候返回最后一次写入的数据</li>
 <li>All clients will read the same value for an element of data even when the database is simultaneously updating data： 当数据库同步完成的时候，所有客户端应该得到同样的数据</li>
 </ul>
 </li>
-<li><p>Partition tolerance：a database can be split into multiple machines and be able keep functioning even during network segmentation breaks： 一个数据库可以分布在不同的机器上面，并且能够在网络出现故障时候保持正常功能</p>
+<li>
+<p>Partition tolerance：a database can be split into multiple machines and be able keep functioning even during network segmentation breaks： 一个数据库可以分布在不同的机器上面，并且能够在网络出现故障时候保持正常功能</p>
 <p>这里应该和关系型的传统数据库不一样。Cassandra是分布式数据库，所有node的地位是一样的。<strong><em>说好的seed呢，怎么感觉有seed， seed应该是Gossip机制里面提出的。参考博客内文档<code>Cassandra system log分析</code>后面也许会换一份文档放</em></strong></p>
 <p>Oracle这种数据库一般是单机版的，没有cluster， 但是有主从备份，所有不一样的</p>
 </li>
 </ul>
 </li>
-<li><p>严格意义上面的Consistency对于分布式数据库来说很难做到。所以有Eventual consistency requires that all updates must be present on all the copies (replicas) of data in a distributed database, but allows for the fact that the process can take a bit of time.<br>就是说更新是都要进行的，但是可以有一段时间差</p>
+<li>
+<p>严格意义上面的Consistency对于分布式数据库来说很难做到。所以有Eventual consistency requires that all updates must be present on all the copies (replicas) of data in a distributed database, but allows for the fact that the process can take a bit of time.<br>
+就是说更新是都要进行的，但是可以有一段时间差</p>
 </li>
-<li>tuneable consistency： 可配置的consistency。写和读都可以配。</li>
+<li>
+<p>tuneable consistency： 可配置的consistency。写和读都可以配。</p>
+</li>
 </ul>
-<h3 id="commit-log"><a href="#commit-log" class="headerlink" title="commit log"></a>commit log</h3><p><a href="https://stackoverflow.com/questions/34592948/what-is-the-purpose-of-cassandras-commit-log" target="_blank" rel="noopener">stackoverflow问答</a><br>这篇文章里面解释得挺清楚的。这里基本就是翻译以下。这个commit log也就是装机时候配置的那个<code>commitlog_directory</code>的配置项。<br>commit log大小配置是per-node来配置的，所有的table share这个配置。而Memtable和SSTable是per-table配置的</p>
+<h3 id="commit-log"><a class="header-anchor" href="#commit-log"></a>commit log</h3>
+<p><a href="https://stackoverflow.com/questions/34592948/what-is-the-purpose-of-cassandras-commit-log" target="_blank" rel="noopener">stackoverflow问答</a><br>
+这篇文章里面解释得挺清楚的。这里基本就是翻译以下。这个commit log也就是装机时候配置的那个<code>commitlog_directory</code>的配置项。<br>
+commit log大小配置是per-node来配置的，所有的table share这个配置。而Memtable和SSTable是per-table配置的</p>
 <ul>
-<li>cassandra是先写到内存，再写到disk上面的，但是如果当机了。那么内存的数据就会丢。</li>
-<li>这个时候就需要commitLog，cassandra会从当机的时间点开始，将commitlog里面的数据再写到memTable里面。这个过程并不快，所以最好在restart之前手动进行一下memTable的flush。</li>
-<li>A commit log serves just one purpose: to hold committed data until it’s permanently written to disk in the SSTables</li>
-<li>commitLog需要写的数据少，并且只写到一个地方，所以比写SSTable要快</li>
-<li>在工作中碰到的一个问题就是commitLog损坏了，然后cassandra就起不来了。有一个配置项可以忽略commitLog报错。</li>
-<li><blockquote>
+<li>
+<p>cassandra是先写到内存，再写到disk上面的，但是如果当机了。那么内存的数据就会丢。</p>
+</li>
+<li>
+<p>这个时候就需要commitLog，cassandra会从当机的时间点开始，将commitlog里面的数据再写到memTable里面。这个过程并不快，所以最好在restart之前手动进行一下memTable的flush。</p>
+</li>
+<li>
+<p>A commit log serves just one purpose: to hold committed data until it’s permanently written to disk in the SSTables</p>
+</li>
+<li>
+<p>commitLog需要写的数据少，并且只写到一个地方，所以比写SSTable要快</p>
+</li>
+<li>
+<p>在工作中碰到的一个问题就是commitLog损坏了，然后cassandra就起不来了。有一个配置项可以忽略commitLog报错。</p>
+</li>
+<li>
+<blockquote>
 <p>Data in the commit log is purged after its corresponding data in the memtable is flushed to an SSTable on disk.</p>
 </blockquote>
 </li>
-<li><blockquote>
-<p>Commit log replay is the process of reading the commit log to recover lost writes in the event of interrupted operations. </p>
+<li>
+<blockquote>
+<p>Commit log replay is the process of reading the commit log to recover lost writes in the event of interrupted operations.</p>
 </blockquote>
 </li>
-<li>The database flushes memtables to disk when the space configured for the commit log reaches its limit. 这里配置的应该是磁盘空间大小，commit log只会写到磁盘上面。不会写到内存里面。</li>
-<li>By default, the database doesn’t compress the commit log, but you can make it compress.</li>
-<li><p>The database archives the commit log at the following times. You configure commit log archiving in the commitlog_archiving.properties file. <strong>__archive和compress不是一个概念的感觉。但是前者是指什么呢_</strong></p>
+<li>
+<p>The database flushes memtables to disk when the space configured for the commit log reaches its limit. 这里配置的应该是磁盘空间大小，commit log只会写到磁盘上面。不会写到内存里面。</p>
+</li>
+<li>
+<p>By default, the database doesn’t compress the commit log, but you can make it compress.</p>
+</li>
+<li>
+<p>The database archives the commit log at the following times. You configure commit log archiving in the commitlog_archiving.properties file. _<strong><em>archive和compress不是一个概念的感觉。但是前者是指什么呢</em></strong></p>
 <ul>
 <li>When the node starts up</li>
 <li>When it writes a commit log to disk</li>
@@ -416,8 +453,10 @@ Memtable  ---&gt; Periodically flush to SSTable
 </ul>
 </li>
 </ul>
-<h3 id="MemTable"><a href="#MemTable" class="headerlink" title="MemTable"></a>MemTable</h3><ul>
-<li><blockquote>
+<h3 id="memtable"><a class="header-anchor" href="#memtable"></a>MemTable</h3>
+<ul>
+<li>
+<blockquote>
 <p>Each memtable is dedicated to storing data for a specific table, and there may be multiple memtables per table.</p>
 </blockquote>
 </li>
@@ -425,86 +464,118 @@ Memtable  ---&gt; Periodically flush to SSTable
 <li>memTable有两种，一种是写的这种，另外一种是从SSTable读进来的，这种不会重新写回到磁盘里面</li>
 <li><code>nodetool flush</code> or the <code>nodetool drain</code> command 来触法手动的flush。前者是指定table。后一个命令是flush这个node。期间会停止任何connection的接听，所以需要在执行命令之后重启整个node</li>
 </ul>
-<h3 id="SSTable"><a href="#SSTable" class="headerlink" title="SSTable"></a>SSTable</h3><p>第二篇参考链接非常好，但是图片忒不清楚。</p>
+<h3 id="sstable"><a class="header-anchor" href="#sstable"></a>SSTable</h3>
+<p>第二篇参考链接非常好，但是图片忒不清楚。</p>
 <p><img src="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image010-large.jpg" alt></p>
 <blockquote>
 <p>引用自第二篇参考链接</p>
+</blockquote>
 <ul>
 <li>SSTable是<code>Sorted String Table</code></li>
-<li>SSTable分为data、index、filter三个文件写到磁盘上面，其实还有好几个其他文件:<br>以下是一个目录里面的文件</li>
+<li>SSTable分为data、index、filter三个文件写到磁盘上面，其实还有好几个其他文件:<br>
+以下是一个目录里面的文件</li>
 </ul>
-</blockquote>
-<pre><code>Filter.db
-Statistics.db
-CompressionInfo.db
-Digest.adler32
-TOC.txt(就是文件列表)
-Summary.db
-Data.db
-Index.db
-</code></pre><ul>
+<pre><code> Filter.db
+ Statistics.db
+ CompressionInfo.db
+ Digest.adler32
+ TOC.txt(就是文件列表)
+ Summary.db
+ Data.db
+ Index.db
+</code></pre>
+<ul>
 <li>Primary index: A list of partition keys and the start position of rows in the data file written on disk(记得读的时候蛮有用的)</li>
 <li>Partition summary： 这个summary文件跟上面的Index Summary应该就是一个文件。解释也是一样。A sample of the partition index stored in memory</li>
-<li>Bloom filter：<ul>
-<li><blockquote>
-<p>A structure stored in memory that checks if row data exists in the memtable before accessing SSTables on disk<br>按照这个解释，有点不明白，这么说应该是memory里面才有的。</p>
+<li>Bloom filter：
+<ul>
+<li>
+<blockquote>
+<p>A structure stored in memory that checks if row data exists in the memtable before accessing SSTables on disk<br>
+按照这个解释，有点不明白，这么说应该是memory里面才有的。<br>
+- 找到解释了：Filter 文件存的内容就是 BloomFilter 对象的序列化结果。<strong><em>但是这样的话，将其序列化后保存到disk上面有什么用呢？ Bloom filters for an SSTable enhance read performance。后面读的时候看看怎么来enhance的</em></strong></p>
 </blockquote>
 </li>
-<li>找到解释了：Filter 文件存的内容就是 BloomFilter 对象的序列化结果。<strong><em>但是这样的话，将其序列化后保存到disk上面有什么用呢？ Bloom filters for an SSTable enhance read performance。后面读的时候看看怎么来enhance的</em></strong></li>
 </ul>
 </li>
-<li>Statistics： Contains the statistical metadata about the SSTable’s data </li>
+<li>Statistics： Contains the statistical metadata about the SSTable’s data</li>
 </ul>
 <ul>
-<li>存贮的目录就是yaml文件里面配置的<code>data_file_directories</code>确定</li>
-<li>For example, /data/data/ks1/cf1-5be396077b811e3a3ab9dc4b9ac088d/la-1-big-Data.db represents a data file. ks1 represents the keyspace name to distinguish the keyspace for streaming or bulk loading data. A hexadecimal string, 5be396077b811e3a3ab9dc4b9ac088d in this example, is appended to table names to represent unique table IDs.<br>同样会有：la-1-big-Index.db</li>
-<li><p><strong><em>la是啥？</em></strong></p>
+<li>
+<p>存贮的目录就是yaml文件里面配置的<code>data_file_directories</code>确定</p>
 </li>
-<li><p>用<code>./tools/bin/sstable2json</code>可以打开这堆data文件来看。下面是打开一个data文件的输出。</p>
+<li>
+<p>For example, /data/data/ks1/cf1-5be396077b811e3a3ab9dc4b9ac088d/la-1-big-Data.db represents a data file. ks1 represents the keyspace name to distinguish the keyspace for streaming or bulk loading data. A hexadecimal string, 5be396077b811e3a3ab9dc4b9ac088d in this example, is appended to table names to represent unique table IDs.<br>
+同样会有：la-1-big-Index.db</p>
+</li>
+<li>
+<p><strong><em>la是啥？</em></strong></p>
+</li>
+<li>
+<p>用<code>./tools/bin/sstable2json</code>可以打开这堆data文件来看。下面是打开一个data文件的输出。</p>
 <ul>
 <li>从输出来看，存储的时候的key就是partition key。如果有多个，会用<code>：</code>隔开</li>
-<li>然后它是这样的：<ul>
+<li>然后它是这样的：
+<ul>
 <li>不是partition key的primary key会作为第一个column的名字，同样用:隔开。</li>
 <li>接下来不是key的column和不是partition key的primary key联合起来作为column的名字。</li>
-<li>比如：那么key就是”name:age”, 然后cells里面的第一行会是,最后是时间戳<br><code>[&quot;address:salary&quot;,&quot;&quot;,1558958953681000]</code></li>
-<li>第二行会是：<br><code>[&quot;address:salary:character&quot;,character_value,1558958953681000]</code></li>
+<li>比如：那么key就是&quot;name:age&quot;, 然后cells里面的第一行会是,最后是时间戳<br>
+<code>[&quot;address:salary&quot;,&quot;&quot;,1558958953681000]</code></li>
+<li>第二行会是：<br>
+<code>[&quot;address:salary:character&quot;,character_value,1558958953681000]</code></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
-<pre><code>name text PRIMARY KEY,
-age bigint,
-address int,
-salary int,
-character blob,
-PRIMARY KEY ((name, age), address, salary)
-</code></pre><h3 id="从memTables到SSTable"><a href="#从memTables到SSTable" class="headerlink" title="从memTables到SSTable"></a>从memTables到SSTable</h3><ul>
-<li>Cassandra flushes the memtables to disk when either the commit log space threshold or the memtable cleanup threshold is reached.<ul>
+<pre><code>    name text PRIMARY KEY,
+    age bigint,
+    address int,
+    salary int,
+    character blob,
+    PRIMARY KEY ((name, age), address, salary)
+</code></pre>
+<h3 id="从memtables到sstable"><a class="header-anchor" href="#从memtables到sstable"></a>从memTables到SSTable</h3>
+<ul>
+<li>
+<p>Cassandra flushes the memtables to disk when either the commit log space threshold or the memtable cleanup threshold is reached.</p>
+<ul>
 <li><code>memtable_cleanup_threshold</code> 后面一种应该和这个参数有关</li>
 <li>在<code>expert cassandra</code>的书里有三种情况下面会flush。不包括手动flush</li>
 </ul>
 </li>
-<li><blockquote>
-<p>To flush the data, Cassandra sorts memtables by token and then writes the data to disk sequentially.<br>Cassandra在将数据写到disk的时候，同时会将memtables按照token排序。<strong>_这个token是不是就是key算出来的那个token？但是table怎么按照token排序呢，应该说的是table里面的数据吧 _</strong></p>
+<li>
+<blockquote>
+<p>To flush the data, Cassandra sorts memtables by token and then writes the data to disk sequentially.<br>
+Cassandra在将数据写到disk的时候，同时会将memtables按照token排序。___这个token是不是就是key算出来的那个token？但是table怎么按照token排序呢，应该说的是table里面的数据吧 ___</p>
 </blockquote>
 </li>
-<li><blockquote>
-<p>A partition index is also created on the disk that maps the tokens to a location on disk.<br> partition index是在这里才算出来的。那么之前就都是token。<strong>_ Memtble里面的也都是token？_</strong></p>
+<li>
+<blockquote>
+<p>A partition index is also created on the disk that maps the tokens to a location on disk.<br>
+partition index是在这里才算出来的。那么之前就都是token。___ Memtble里面的也都是token？___</p>
 </blockquote>
 </li>
-<li>flush的时候不是一把头全写进去的。会先把memTable的数据放到一个queue里面。这个queue的大小可以在configuration里面定义。<blockquote>
-<p>The queue can be configured with the memtable_heap_space_in_mb or memtable_offheap_space_in_mb setting </p>
+<li>
+<p>flush的时候不是一把头全写进去的。会先把memTable的数据放到一个queue里面。这个queue的大小可以在configuration里面定义。</p>
+<blockquote>
+<p>The queue can be configured with the memtable_heap_space_in_mb or memtable_offheap_space_in_mb setting</p>
 </blockquote>
 </li>
-<li>You can manually flush a table using nodetool flush. </li>
-<li><blockquote>
+<li>
+<p>You can manually flush a table using nodetool flush.</p>
+</li>
+<li>
+<blockquote>
 <p>Consequently, a partition is typically stored across multiple SSTable files.</p>
 </blockquote>
 </li>
-<li>相同partition key的记录应该是存贮在一个node上面，但是也有可能是多个文件，要看数据量。</li>
+<li>
+<p>相同partition key的记录应该是存贮在一个node上面，但是也有可能是多个文件，要看数据量。</p>
+</li>
 </ul>
-<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
+<h3 id="参考文档"><a class="header-anchor" href="#参考文档"></a>参考文档</h3>
+<ul>
 <li><a href="https://blog.csdn.net/fs1360472174/article/details/55005335/" target="_blank" rel="noopener">官方文档–读写数据</a></li>
 <li><a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/index.html" target="_blank" rel="noopener">cassandra数据库详解</a></li>
 <li><a href="https://docs.datastax.com/en/cassandra/3.0/cassandra/dml/dmlHowDataWritten.html" target="_blank" rel="noopener">cassandra读写过程</a></li>
@@ -641,7 +712,7 @@ PRIMARY KEY ((name, age), address, salary)
               
               <div class="site-state-item site-state-categories">
                 <a href="/hexo_blog/categories/index.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -676,7 +747,7 @@ PRIMARY KEY ((name, age), address, salary)
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Cassandra-写流程"><span class="nav-number">1.</span> <span class="nav-text">Cassandra 写流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#大致流程"><span class="nav-number">1.1.</span> <span class="nav-text">大致流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Replica-Factor"><span class="nav-number">1.2.</span> <span class="nav-text">Replica Factor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Eventual-Consistency"><span class="nav-number">1.3.</span> <span class="nav-text">Eventual Consistency</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#commit-log"><span class="nav-number">1.4.</span> <span class="nav-text">commit log</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MemTable"><span class="nav-number">1.5.</span> <span class="nav-text">MemTable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSTable"><span class="nav-number">1.6.</span> <span class="nav-text">SSTable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从memTables到SSTable"><span class="nav-number">1.7.</span> <span class="nav-text">从memTables到SSTable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文档"><span class="nav-number">1.8.</span> <span class="nav-text">参考文档</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#cassandra-写流程"><span class="nav-number">1.</span> <span class="nav-text">Cassandra 写流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#大致流程"><span class="nav-number">1.1.</span> <span class="nav-text">大致流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#replica-factor"><span class="nav-number">1.2.</span> <span class="nav-text">Replica Factor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#eventual-consistency"><span class="nav-number">1.3.</span> <span class="nav-text">Eventual Consistency</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#commit-log"><span class="nav-number">1.4.</span> <span class="nav-text">commit log</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#memtable"><span class="nav-number">1.5.</span> <span class="nav-text">MemTable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sstable"><span class="nav-number">1.6.</span> <span class="nav-text">SSTable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从memtables到sstable"><span class="nav-number">1.7.</span> <span class="nav-text">从memTables到SSTable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文档"><span class="nav-number">1.8.</span> <span class="nav-text">参考文档</span></a></li></ol></li></ol></div>
             
 
           </div>

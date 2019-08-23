@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="概述工作中碰到的一些相关问题，有的也许很简单，记录在这里。省得后面再花功夫去看啦。 问题一$ kubectl cluster-infoKubernetes master is running at … To further debug and diagnose cluster problems, use ‘kubectl cluster-info dump’.Unable to connect t">
+<meta name="description" content="概述 工作中碰到的一些相关问题，有的也许很简单，记录在这里。省得后面再花功夫去看啦。 问题一 $ kubectl cluster-info Kubernetes master is running at … To further debug and diagnose cluster problems, use ‘kubectl cluster-info dump’. Unable to conne">
 <meta property="og:type" content="article">
 <meta property="og:title" content="k8s和docker问题解决">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/04/29/k8s和docker问题解决/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="概述工作中碰到的一些相关问题，有的也许很简单，记录在这里。省得后面再花功夫去看啦。 问题一$ kubectl cluster-infoKubernetes master is running at … To further debug and diagnose cluster problems, use ‘kubectl cluster-info dump’.Unable to connect t">
+<meta property="og:description" content="概述 工作中碰到的一些相关问题，有的也许很简单，记录在这里。省得后面再花功夫去看啦。 问题一 $ kubectl cluster-info Kubernetes master is running at … To further debug and diagnose cluster problems, use ‘kubectl cluster-info dump’. Unable to conne">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2019-08-16T02:09:29.019Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="k8s和docker问题解决">
-<meta name="twitter:description" content="概述工作中碰到的一些相关问题，有的也许很简单，记录在这里。省得后面再花功夫去看啦。 问题一$ kubectl cluster-infoKubernetes master is running at … To further debug and diagnose cluster problems, use ‘kubectl cluster-info dump’.Unable to connect t">
+<meta name="twitter:description" content="概述 工作中碰到的一些相关问题，有的也许很简单，记录在这里。省得后面再花功夫去看啦。 问题一 $ kubectl cluster-info Kubernetes master is running at … To further debug and diagnose cluster problems, use ‘kubectl cluster-info dump’. Unable to conne">
 
 
 
@@ -331,9 +331,13 @@
       
 
       
-        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>工作中碰到的一些相关问题，有的也许很简单，记录在这里。省得后面再花功夫去看啦。</p>
-<h4 id="问题一"><a href="#问题一" class="headerlink" title="问题一"></a>问题一</h4><p>$ kubectl cluster-info<br>Kubernetes master is running at …</p>
-<p>To further debug and diagnose cluster problems, use ‘kubectl cluster-info dump’.<br>Unable to connect to the server: x509: certificate signed by unknown authority (possibly because of “crypto/rsa: verification error” while trying to verify candidate authority certificate “kubernetes”)</p>
+        <h2 id="概述"><a class="header-anchor" href="#概述"></a>概述</h2>
+<p>工作中碰到的一些相关问题，有的也许很简单，记录在这里。省得后面再花功夫去看啦。</p>
+<h4 id="问题一"><a class="header-anchor" href="#问题一"></a>问题一</h4>
+<p>$ kubectl cluster-info<br>
+Kubernetes master is running at …</p>
+<p>To further debug and diagnose cluster problems, use ‘kubectl cluster-info dump’.<br>
+Unable to connect to the server: x509: certificate signed by unknown authority (possibly because of “crypto/rsa: verification error” while trying to verify candidate authority certificate “kubernetes”)</p>
 <ul>
 <li>参考链接：<a href="https://blog.csdn.net/baobaoxiannv/article/details/83818426" target="_blank" rel="noopener">csdn博客一篇</a></li>
 <li>其实就是kube的config文件: <code>~/.kube/config</code> 文件过时了。里面的certification需要更新。从kube server上面把config拿下来替换一些本地的就好了。</li>
@@ -469,7 +473,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/hexo_blog/categories/index.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>

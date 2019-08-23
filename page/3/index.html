@@ -335,24 +335,34 @@
       
         
           
-            <h2 id="Scala概念快速解释"><a href="#Scala概念快速解释" class="headerlink" title="Scala概念快速解释"></a>Scala概念快速解释</h2><p>Scala有很多特有的概念。如果要看懂代码就得大致明白含义，这篇博客就是快速解释一下，其中可能会有不够准确的地方，就是不求甚解，只求迅速读懂scala代码了.<br>隔了一段时间又开始看scala的代码，结果发现这篇博客写得太不声情并茂了。scala还是比较复杂的。这么简单写几句不太成，得给一点例子才行。</p>
-<h3 id="object"><a href="#object" class="headerlink" title="object"></a>object</h3><p>看了几篇博客，解释都不够清晰的感觉，还是stackoverflow上面解释得更清楚</p>
+            <h2 id="scala概念快速解释"><a class="header-anchor" href="#scala概念快速解释"></a>Scala概念快速解释</h2>
+<p>Scala有很多特有的概念。如果要看懂代码就得大致明白含义，这篇博客就是快速解释一下，其中可能会有不够准确的地方，就是不求甚解，只求迅速读懂scala代码了.<br>
+隔了一段时间又开始看scala的代码，结果发现这篇博客写得太不声情并茂了。scala还是比较复杂的。这么简单写几句不太成，得给一点例子才行。</p>
+<h3 id="object"><a class="header-anchor" href="#object"></a>object</h3>
+<p>看了几篇博客，解释都不够清晰的感觉，还是stackoverflow上面解释得更清楚</p>
 <ul>
-<li><p>作为static函数的class文件，这是最常见到的用法：</p>
-<pre><code>object A {
-   def twice(i: Int): Int = 2*i
-}
-</code></pre></li>
+<li>
+<p>作为static函数的class文件，这是最常见到的用法：</p>
+<pre><code> object A {
+    def twice(i: Int): Int = 2*i
+ }
+</code></pre>
+</li>
 <li></li>
-<li>参考链接：<br>-<a href="https://stackoverflow.com/questions/1755345/difference-between-object-and-class-in-scala" target="_blank" rel="noopener">difference-between-object-and-class-in-scala</a></li>
+<li>
+<p>参考链接：<br>
+-<a href="https://stackoverflow.com/questions/1755345/difference-between-object-and-class-in-scala" target="_blank" rel="noopener">difference-between-object-and-class-in-scala</a></p>
+</li>
 </ul>
-<h3 id="trait"><a href="#trait" class="headerlink" title="trait"></a>trait</h3><ul>
+<h3 id="trait"><a class="header-anchor" href="#trait"></a>trait</h3>
+<ul>
 <li><a href="http://www.runoob.com/scala/scala-traits.html" target="_blank" rel="noopener">Scala Trait(特征)</a></li>
 <li>类似java的Interface，其实更近似于抽象类</li>
 <li>但是可以使用<code>with</code>关键字多重继承，很好用的感觉哦</li>
 <li><code>scala</code>本身还是有<code>interface</code>关键字的，本身也可以使用<code>with</code>关键字来实现接口</li>
 </ul>
-<h3 id="case-class"><a href="#case-class" class="headerlink" title="case class"></a>case class</h3><ul>
+<h3 id="case-class"><a class="header-anchor" href="#case-class"></a>case class</h3>
+<ul>
 <li><a href="https://blog.csdn.net/bluishglc/article/details/50914001" target="_blank" rel="noopener">csdn上的一篇文章</a></li>
 <li>简单来说，case class会默认生成很多东西，比如伴生对象，比如工厂方法，比如toString， copy，构造方法参数同名的属性</li>
 <li>最开心的用法，应该就是不用<code>new</code>出一个对象来。而是可以直接<code>methodName(构造函数参数)</code>这样来获取一个对象。其实是同名的工厂方法</li>
@@ -477,13 +487,18 @@
         
           
             <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+<h2 id="quick-start"><a class="header-anchor" href="#quick-start"></a>Quick Start</h2>
+<h3 id="create-a-new-post"><a class="header-anchor" href="#create-a-new-post"></a>Create a new post</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
 <p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<h3 id="run-server"><a class="header-anchor" href="#run-server"></a>Run server</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
 <p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<h3 id="generate-static-files"><a class="header-anchor" href="#generate-static-files"></a>Generate static files</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
 <p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<h3 id="deploy-to-remote-sites"><a class="header-anchor" href="#deploy-to-remote-sites"></a>Deploy to remote sites</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
 <p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
 
           
@@ -626,66 +641,78 @@
       
         
           
-            <h2 id="Cassandra-数据结构"><a href="#Cassandra-数据结构" class="headerlink" title="Cassandra 数据结构"></a>Cassandra 数据结构</h2><p>  必须了解Cassandra的数据结构。本身并不是多么复杂，而且有足够多的文档，所以简单写一下。</p>
-<h3 id="KeySpace"><a href="#KeySpace" class="headerlink" title="KeySpace"></a>KeySpace</h3><ul>
+            <h2 id="cassandra-数据结构"><a class="header-anchor" href="#cassandra-数据结构"></a>Cassandra 数据结构</h2>
+<p>必须了解Cassandra的数据结构。本身并不是多么复杂，而且有足够多的文档，所以简单写一下。</p>
+<h3 id="keyspace"><a class="header-anchor" href="#keyspace"></a>KeySpace</h3>
+<ul>
 <li>好像没啥需要解释的。</li>
 <li>在论文里面看到说namespace的另一个作用的可以做数据重复。</li>
 </ul>
-<h3 id="Column"><a href="#Column" class="headerlink" title="Column"></a>Column</h3><ul>
+<h3 id="column"><a class="header-anchor" href="#column"></a>Column</h3>
+<ul>
 <li>Column是Cassandra中最小的数据单元，它是一个三元的数据类型，包含name,value,timestamp.</li>
-<li>name是必须的，value不是必须的，timestamp经常可以忽略不计，如下图<br><img src="https://img-blog.csdn.net/20140302154940656?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="引用自第一篇参考链接"><blockquote>
+<li>name是必须的，value不是必须的，timestamp经常可以忽略不计，如下图<br>
+<img src="https://img-blog.csdn.net/20140302154940656?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="引用自第一篇参考链接"></li>
+</ul>
+<blockquote>
 <p>引用自csdn</p>
 </blockquote>
-</li>
-</ul>
-<h3 id="Super-Column"><a href="#Super-Column" class="headerlink" title="Super Column"></a>Super Column</h3><ul>
+<h3 id="super-column"><a class="header-anchor" href="#super-column"></a>Super Column</h3>
+<ul>
 <li>可以将SuperColumn想象成Column的数组，它包含一个name以及一系列Column.</li>
-<li>SuperColumn本身不包含timestamp属性。使用SuperColumn有一个限制，要读取其中一个子列的值，必须把所有子列都反序列化，且不能在子列中建索引<br><img src="https://img-blog.csdn.net/20140302154945843?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt><blockquote>
+<li>SuperColumn本身不包含timestamp属性。使用SuperColumn有一个限制，要读取其中一个子列的值，必须把所有子列都反序列化，且不能在子列中建索引<br>
+<img src="https://img-blog.csdn.net/20140302154945843?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt></li>
+</ul>
+<blockquote>
 <p>引用自csdn</p>
 </blockquote>
+<ul>
+<li>
+<p>参考链接里面有以下的例子，但是从这个例子里面，<br>
+{   // 这是一个SuperColumn<br>
+name: “info”,<br>
+// 包含一系列的Columns<br>
+value: {<br>
+street: {name: “street”, value: “1234 x street”, timestamp: 123456789},<br>
+city: {name: “city”, value: “san francisco”, timestamp: 123456789},<br>
+zip: {name: “zip”, value: “94107”, timestamp: 123456789},<br>
+}<br>
+}</p>
 </li>
-<li><p>参考链接里面有以下的例子，但是从这个例子里面，</p>
-<pre><code> {   // 这是一个SuperColumn
-     name: &quot;info&quot;,
-     // 包含一系列的Columns
-     value: {
-        street: {name: &quot;street&quot;, value: &quot;1234 x street&quot;, timestamp: 123456789},
-        city: {name: &quot;city&quot;, value: &quot;san francisco&quot;, timestamp: 123456789},
-        zip: {name: &quot;zip&quot;, value: &quot;94107&quot;, timestamp: 123456789},
-  }
-}
-</code></pre><ul>
-<li><strong><em>感觉例子和图片不太对得上啊。例子反而更像一个columnFamily了?</em></strong></li>
-</ul>
+<li>
+<p><strong><em>感觉例子和图片不太对得上啊。例子反而更像一个columnFamily了?</em></strong></p>
 </li>
 </ul>
-<h3 id="ColumnFamily"><a href="#ColumnFamily" class="headerlink" title="ColumnFamily"></a>ColumnFamily</h3><ul>
+<h3 id="columnfamily"><a class="header-anchor" href="#columnfamily"></a>ColumnFamily</h3>
+<ul>
 <li>columnFamily相当于数据库中的表</li>
 <li>每一行有一个row的名字，然后每一行里面是一个个的column，也可以是super column</li>
 <li>ColumnFamily是一个包含了许多Row的结构，每一个Row都包含有client提供的Key以及和该Key关联的一系列Column。</li>
 <li>每一行里面的column的名字可以是不变的。也可以是可变的。静态和动态column</li>
-<li><p>需要注意的是，数据写入的时候已经经过排序了。就是说一行的所有column，会根据它的名字来进行排序。<br><img src="https://img-blog.csdn.net/20140302154950812?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt></p>
+<li>需要注意的是，数据写入的时候已经经过排序了。就是说一行的所有column，会根据它的名字来进行排序。<br>
+<img src="https://img-blog.csdn.net/20140302154950812?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt></li>
+</ul>
 <blockquote>
 <p>引用自csdn</p>
 </blockquote>
-</li>
-<li><p>第二个参考链接里面的例子：</p>
-<pre><code>UserProfile = { // 这是一个ColumnFamily
-     phatduckk: {   // 这是对应ColumnFamily的key
-         // 这是Key下对应的Column
-         username: &quot;gpcuster&quot;,
-         email: &quot;gpcuster@gmail.com&quot;,
-         phone: &quot;6666&quot;
-     }, // 第一个row结束
-     ieure: {   // 这是ColumnFamily的另一个key
-       //这是另一个Key对应的column
-       username: &quot;pengguo&quot;,
-       email: &quot;pengguo@live.com&quot;,
-       phone: &quot;888&quot;
-     }
-</code></pre></li>
+<ul>
+<li>第二个参考链接里面的例子：<br>
+UserProfile = { // 这是一个ColumnFamily<br>
+phatduckk: {   // 这是对应ColumnFamily的key<br>
+// 这是Key下对应的Column<br>
+username: “gpcuster”,<br>
+email: <a href="mailto:%22gpcuster@gmail.com" target="_blank" rel="noopener">&quot;gpcuster@gmail.com</a>&quot;,<br>
+phone: “6666”<br>
+}, // 第一个row结束<br>
+ieure: {   // 这是ColumnFamily的另一个key<br>
+//这是另一个Key对应的column<br>
+username: “pengguo”,<br>
+email: <a href="mailto:%22pengguo@live.com" target="_blank" rel="noopener">&quot;pengguo@live.com</a>&quot;,<br>
+phone: “888”<br>
+}</li>
 </ul>
-<h3 id="对应到表里面"><a href="#对应到表里面" class="headerlink" title="对应到表里面"></a>对应到表里面</h3><p>目前对于表结构的理解是这样的，可能后面有更正：</p>
+<h3 id="对应到表里面"><a class="header-anchor" href="#对应到表里面"></a>对应到表里面</h3>
+<p>目前对于表结构的理解是这样的，可能后面有更正：</p>
 <ul>
 <li>如果用<code>desc tables</code>去查看一张表。那么可以看到primaryKey字样，类似<code>PRIMARY KEY ()</code>，还有<code>CLUSTERING ORDER</code> 字样</li>
 <li><strong><em>那么这个primary key就是对应数据模型里面的row的名字。也就是super column的名字。只不过这个名字是几个primaryKey联合起来组成的。？</em></strong></li>
@@ -696,19 +723,24 @@
 <blockquote>
 <p>引用自第二篇参考链接文档</p>
 </blockquote>
-<h3 id="data-moduling"><a href="#data-moduling" class="headerlink" title="data moduling"></a>data moduling</h3><ul>
-<li>最近看了一些关于建模的文章。文章里面一些反复强调的事如下：<ul>
+<h3 id="data-moduling"><a class="header-anchor" href="#data-moduling"></a>data moduling</h3>
+<ul>
+<li>最近看了一些关于建模的文章。文章里面一些反复强调的事如下：
+<ul>
 <li>cassandra不同于其他数据库的是，它写的成本低，读的成本高。</li>
 <li>基于这一点，必须在一开始先考虑query的需求，然后数据可以duplicated。而在关系数据库建模时候，完全是不一样的。</li>
 <li>基于cassandra的写和存储的方式，需要读取的数据应该放在同一个partition里面。这个partition是cassandra里面的一个概念</li>
-<li>文章里面的这句话说明了partition的定义和重要性：<blockquote>
-<p>a set of rows that share a partition key is called a partition<br>Cassandra is a partitioned row store with tunable consistency.<br>You perform several optimizations in the physical data modeling stage, including the specifying of partition sizes and ordering.</p>
+<li>文章里面的这句话说明了partition的定义和重要性：</li>
+</ul>
+<blockquote>
+<p>a set of rows that share a partition key is called a partition<br>
+Cassandra is a partitioned row store with tunable consistency.<br>
+You perform several optimizations in the physical data modeling stage, including the specifying of partition sizes and ordering.</p>
 </blockquote>
 </li>
 </ul>
-</li>
-</ul>
-<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
+<h3 id="参考文档"><a class="header-anchor" href="#参考文档"></a>参考文档</h3>
+<ul>
 <li><a href="https://blog.csdn.net/aesop_wubo/article/details/20289837" target="_blank" rel="noopener">数据模型</a></li>
 <li><a href="http://www.cnblogs.com/gpcuster/archive/2010/03/12/1684072.html" target="_blank" rel="noopener">大话Cassandra数据模型</a></li>
 </ul>
@@ -853,8 +885,10 @@
       
         
           
-            <h2 id="Cassandra读数据过程"><a href="#Cassandra读数据过程" class="headerlink" title="Cassandra读数据过程"></a>Cassandra读数据过程</h2><p>数据库读数据过程必须知道。</p>
-<h3 id="大致的读流程"><a href="#大致的读流程" class="headerlink" title="大致的读流程"></a>大致的读流程</h3><p><img src="https://docs.datastax.com/en/archived/cassandra/3.0/cassandra/images/dml_caching-reads_12.png" alt="官方读流程图片"></p>
+            <h2 id="cassandra读数据过程"><a class="header-anchor" href="#cassandra读数据过程"></a>Cassandra读数据过程</h2>
+<p>数据库读数据过程必须知道。</p>
+<h3 id="大致的读流程"><a class="header-anchor" href="#大致的读流程"></a>大致的读流程</h3>
+<p><img src="https://docs.datastax.com/en/archived/cassandra/3.0/cassandra/images/dml_caching-reads_12.png" alt="官方读流程图片"></p>
 <blockquote>
 <p>官方读流程图片</p>
 </blockquote>
@@ -863,31 +897,44 @@
 <li>Check row cache, if enabled</li>
 <li>Checks Bloom filter</li>
 <li>Checks partition key cache, if enabled</li>
-<li>Goes directly to the compression offset map if a partition key is found in the partition key cache, or checks the partition summary if not<br>If the partition summary is checked, then the partition index is accessed</li>
+<li>Goes directly to the compression offset map if a partition key is found in the partition key cache, or checks the partition summary if not<br>
+If the partition summary is checked, then the partition index is accessed</li>
 <li>Locates the data on disk using the compression offset map</li>
-<li>Fetches the data from the SSTable on disk<br><strong><em><code>partition summary</code>是什么东西?记得之前看的时候说就是一个例子呀</em></strong></li>
+<li>Fetches the data from the SSTable on disk<br>
+<strong><em><code>partition summary</code>是什么东西?记得之前看的时候说就是一个例子呀</em></strong></li>
 </ul>
-<h3 id="Caches"><a href="#Caches" class="headerlink" title="Caches"></a>Caches</h3><p>这篇也作为<code>KeyCache</code>和<code>RowCache</code>学习的blog.<br><code>RowCache</code>缓存的是数据，而<code>KeyCache</code>缓存的是在<code>SSTable</code>文件中的位置。<br>Cassandra的是读数据慢，写数据快。</p>
+<h3 id="caches"><a class="header-anchor" href="#caches"></a>Caches</h3>
+<p>这篇也作为<code>KeyCache</code>和<code>RowCache</code>学习的blog.<br>
+<code>RowCache</code>缓存的是数据，而<code>KeyCache</code>缓存的是在<code>SSTable</code>文件中的位置。<br>
+Cassandra的是读数据慢，写数据快。</p>
 <p>以下几种<code>cache</code>都是针对<code>SSTable</code>来说的</p>
-<h4 id="keyCache"><a href="#keyCache" class="headerlink" title="keyCache"></a>keyCache</h4><ul>
+<h4 id="keycache"><a class="header-anchor" href="#keycache"></a>keyCache</h4>
+<ul>
 <li>key cache：stores a map of partition keys to row index entries。感觉和Index.db里面的内容有点相似。什么时候要把内存dump下来看看</li>
 </ul>
-<h4 id="rowCache"><a href="#rowCache" class="headerlink" title="rowCache"></a>rowCache</h4><ul>
+<h4 id="rowcache"><a class="header-anchor" href="#rowcache"></a>rowCache</h4>
+<ul>
 <li>row cache： caches frequently accessed rows to speed up access to those rows.</li>
 </ul>
-<h4 id="counter-cache"><a href="#counter-cache" class="headerlink" title="counter cache"></a>counter cache</h4><ul>
+<h4 id="counter-cache"><a class="header-anchor" href="#counter-cache"></a>counter cache</h4>
+<ul>
 <li>A counter cache improves performance for the counters that you’ll need to access frequently. 好像没怎么听说过counter的概念。这个cache也是第一次看到有。</li>
 </ul>
-<h4 id="bloom-filters"><a href="#bloom-filters" class="headerlink" title="bloom filters"></a>bloom filters</h4><ul>
+<h4 id="bloom-filters"><a class="header-anchor" href="#bloom-filters"></a>bloom filters</h4>
+<ul>
 <li><code>Bloom Filters</code> 就是在写ssTable时候同时写的filter.db文件。但是实际是读的时候用的一个机制</li>
 <li>读的时候会用这个机制来看一个数据key是不是在某个SSTable里面。当filter表示不在，肯定是不在；但是说在，可能不在。就是说可能假绿的</li>
 <li>可以配置<code>bloom_filter_fp_chance</code>来降低假绿，但是会占更多内存</li>
 </ul>
-<h4 id="Index-Files"><a href="#Index-Files" class="headerlink" title="Index Files"></a>Index Files</h4><h3 id="Gossip-Protocal"><a href="#Gossip-Protocal" class="headerlink" title="Gossip Protocal"></a>Gossip Protocal</h3><h3 id="Limit"><a href="#Limit" class="headerlink" title="Limit"></a>Limit</h3><ul>
+<h4 id="index-files"><a class="header-anchor" href="#index-files"></a>Index Files</h4>
+<h3 id="gossip-protocal"><a class="header-anchor" href="#gossip-protocal"></a>Gossip Protocal</h3>
+<h3 id="limit"><a class="header-anchor" href="#limit"></a>Limit</h3>
+<ul>
 <li>Cassandra根据primary key来读取数据，这个key就是存在keyCache里面的内容。然后会读取一片数据。</li>
 <li>读取时候可以指定limit值，这样会读取有限的内容，而不是一大片。</li>
 </ul>
-<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
+<h3 id="参考文档"><a class="header-anchor" href="#参考文档"></a>参考文档</h3>
+<ul>
 <li>非常详尽清晰的一篇文档：<a href="https://www.oschina.net/question/12_11855" target="_blank" rel="noopener">Cassandra数据结构和写入读取</a></li>
 <li><a href="https://docs.datastax.com/en/archived/cassandra/3.0/cassandra/dml/dmlAboutReads.html" target="_blank" rel="noopener">官方文档读流程</a></li>
 </ul>
@@ -1032,23 +1079,30 @@
       
         
           
-            <h2 id="Java-GC-机制-CMS-amp-G1"><a href="#Java-GC-机制-CMS-amp-G1" class="headerlink" title="Java GC 机制 CMS &amp; G1"></a>Java GC 机制 CMS &amp; G1</h2><p> 在看Cassandra的过程中看到了GC的机制，在Cassandra中是可配的。GC对于Cassandra的性能肯定是有影响的。<br> 所以首先学习这两个GC机制。因为毕竟是为了Cassandra来看，所以会直接看看两种机制。</p>
-<h3 id="Java-Heap分区"><a href="#Java-Heap分区" class="headerlink" title="Java Heap分区"></a>Java Heap分区</h3><ul>
+            <h2 id="java-gc-机制-cms-g1"><a class="header-anchor" href="#java-gc-机制-cms-g1"></a>Java GC 机制 CMS &amp; G1</h2>
+<p>在看Cassandra的过程中看到了GC的机制，在Cassandra中是可配的。GC对于Cassandra的性能肯定是有影响的。<br>
+所以首先学习这两个GC机制。因为毕竟是为了Cassandra来看，所以会直接看看两种机制。</p>
+<h3 id="java-heap分区"><a class="header-anchor" href="#java-heap分区"></a>Java Heap分区</h3>
+<ul>
 <li>Heap的Capacity等于-Xms和-Xmx的值, Xms是初始化的heap size，Xmx是最大的heap size，这两个经常是一样大的</li>
 <li>年轻代的GC：存活对象会被拷贝/移动到一个或多个“Survivor”区域，存活时间够长的直接移到“老年代”区域。这里会stop the world，但young GC的过程是多线程执行的</li>
 <li>Young中分成Eden和Survivor，其中Eden和Survivor是成比例的</li>
 </ul>
-<h3 id="CMS"><a href="#CMS" class="headerlink" title="CMS"></a>CMS</h3><ul>
+<h3 id="cms"><a class="header-anchor" href="#cms"></a>CMS</h3>
+<ul>
 <li><code>CMS</code>： Concurrent Low Pause Collector</li>
 <li>CMS是Java GC使用的算法，是老年代的回收。需要搭配一个年轻代回收的回收器</li>
 <li>CMS的参数CMSInitiatingOccupancyFraction， 在old generation的大小达到这个门阀值的时候，会引起一次full GC</li>
 <li>Cassandara默认使用的算法是CMS GC</li>
 </ul>
-<h3 id="G1"><a href="#G1" class="headerlink" title="G1"></a>G1</h3><h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
+<h3 id="g1"><a class="header-anchor" href="#g1"></a>G1</h3>
+<h3 id="参考文档"><a class="header-anchor" href="#参考文档"></a>参考文档</h3>
+<ul>
 <li><a href="https://www.cnblogs.com/hunrry/p/9210022.html" target="_blank" rel="noopener">常见GC算法速览</a></li>
 <li><a href="https://www.jianshu.com/p/bdd6f03923d1" target="_blank" rel="noopener">G1 vs CMS</a></li>
 <li><a href="https://www.tuicool.com/articles/Jj2yAbb" target="_blank" rel="noopener">CMS</a></li>
-<li>这篇文档对比得非常好，细节很多<br> <a href="https://www.tuicool.com/articles/QZfiAzz" target="_blank" rel="noopener">Cassandra中CMS vs G1</a></li>
+<li>这篇文档对比得非常好，细节很多<br>
+<a href="https://www.tuicool.com/articles/QZfiAzz" target="_blank" rel="noopener">Cassandra中CMS vs G1</a></li>
 <li><a href="https://plumbr.io/blog/garbage-collection/minor-gc-vs-major-gc-vs-full-gc" target="_blank" rel="noopener">minor GC &amp; major Gc &amp; full GC</a></li>
 </ul>
 
@@ -1192,7 +1246,9 @@
       
         
           
-            <h2 id="Cassandra-写流程"><a href="#Cassandra-写流程" class="headerlink" title="Cassandra 写流程"></a>Cassandra 写流程</h2><h3 id="大致流程"><a href="#大致流程" class="headerlink" title="大致流程"></a>大致流程</h3><p>到把数据写到磁盘中分为以下几个步骤：</p>
+            <h2 id="cassandra-写流程"><a class="header-anchor" href="#cassandra-写流程"></a>Cassandra 写流程</h2>
+<h3 id="大致流程"><a class="header-anchor" href="#大致流程"></a>大致流程</h3>
+<p>到把数据写到磁盘中分为以下几个步骤：</p>
 <ol>
 <li>先找到应该往哪几个节点写</li>
 <li>写log到commit log</li>
@@ -1208,7 +1264,8 @@
 Commitlog ---&gt; Periodically sync to  disk
 
 Memtable  ---&gt; Periodically flush to SSTable
-</code></pre><p>   <strong><em>如果看下面的流程图的话，那么上面这个顺序是不对的。是先写到memtable，然后再写commitLog？看官方文档，上面的是正确的。应该是流程图不够好。或者是一个相对并行的过程</em></strong></p>
+</code></pre>
+<p><strong><em>如果看下面的流程图的话，那么上面这个顺序是不对的。是先写到memtable，然后再写commitLog？看官方文档，上面的是正确的。应该是流程图不够好。或者是一个相对并行的过程</em></strong></p>
 <p><img src="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image012-large.jpg" alt></p>
 <blockquote>
 <p>引用自第二篇链接</p>
@@ -1216,8 +1273,10 @@ Memtable  ---&gt; Periodically flush to SSTable
 <ul>
 <li>这张图里面有的结构可能不太对了。没有找到RowMutation这个结构，只有Mutation</li>
 </ul>
-<h3 id="Replica-Factor"><a href="#Replica-Factor" class="headerlink" title="Replica Factor"></a>Replica Factor</h3><ul>
-<li><p>CassandraServer 接收到要写入的数据时：</p>
+<h3 id="replica-factor"><a class="header-anchor" href="#replica-factor"></a>Replica Factor</h3>
+<ul>
+<li>
+<p>CassandraServer 接收到要写入的数据时：</p>
 <ul>
 <li>创建一个 <code>RowMutation</code> 对象，再创建一个 <code>QueryPath</code> 对象，这个对象中保存了 <code>ColumnFamily</code>、<code>Column Name</code> 或者 <code>Super Column Name</code>。</li>
 <li>把用户提交的所有数据保存在 <code>RowMutation</code> 对象的 Map&lt;String, ColumnFamily&gt; 结构中。</li>
@@ -1226,47 +1285,79 @@ Memtable  ---&gt; Periodically flush to SSTable
 <li><strong><em>所以在真正开始写入数据之前，cassandra会做这些事情？在commitLog之前？</em></strong> 我想应该是之前</li>
 </ul>
 </li>
-<li><p><code>Replica Factor</code>和<code>consistency level</code>不是一个东西，然后有一个算法。比如，<code>replica set</code>是3， <code>consistency level</code>的策略是<code>Querum</code>。这样需要consistent的节点是replica set/2 +1 ，所以就是2 </p>
+<li>
+<p><code>Replica Factor</code>和<code>consistency level</code>不是一个东西，然后有一个算法。比如，<code>replica set</code>是3， <code>consistency level</code>的策略是<code>Querum</code>。这样需要consistent的节点是replica set/2 +1 ，所以就是2</p>
 </li>
 </ul>
-<h3 id="Eventual-Consistency"><a href="#Eventual-Consistency" class="headerlink" title="Eventual Consistency"></a>Eventual Consistency</h3><p>这在Cassandra里面是非常关键的一个概念。写在这里。因为与写的机制相关最多。</p>
+<h3 id="eventual-consistency"><a class="header-anchor" href="#eventual-consistency"></a>Eventual Consistency</h3>
+<p>这在Cassandra里面是非常关键的一个概念。写在这里。因为与写的机制相关最多。</p>
 <ul>
-<li><p>Cassandra must make tradeoffs among data consistency, availability, and partition tolerance. Cassandra必须在数据一致性、可用性和分区容忍之间平衡</p>
+<li>
+<p>Cassandra must make tradeoffs among data consistency, availability, and partition tolerance. Cassandra必须在数据一致性、可用性和分区容忍之间平衡</p>
 <ul>
-<li>Availability: all clients are able to access the data so they can read and write data. 可用性：所有客户都能够读取和写入数据</li>
-<li>Consistency的概念：<ul>
+<li>
+<p>Availability: all clients are able to access the data so they can read and write data. 可用性：所有客户都能够读取和写入数据</p>
+</li>
+<li>
+<p>Consistency的概念：</p>
+<ul>
 <li>a read always return the latest written data： 读取时候返回最后一次写入的数据</li>
 <li>All clients will read the same value for an element of data even when the database is simultaneously updating data： 当数据库同步完成的时候，所有客户端应该得到同样的数据</li>
 </ul>
 </li>
-<li><p>Partition tolerance：a database can be split into multiple machines and be able keep functioning even during network segmentation breaks： 一个数据库可以分布在不同的机器上面，并且能够在网络出现故障时候保持正常功能</p>
+<li>
+<p>Partition tolerance：a database can be split into multiple machines and be able keep functioning even during network segmentation breaks： 一个数据库可以分布在不同的机器上面，并且能够在网络出现故障时候保持正常功能</p>
 <p>这里应该和关系型的传统数据库不一样。Cassandra是分布式数据库，所有node的地位是一样的。<strong><em>说好的seed呢，怎么感觉有seed， seed应该是Gossip机制里面提出的。参考博客内文档<code>Cassandra system log分析</code>后面也许会换一份文档放</em></strong></p>
 <p>Oracle这种数据库一般是单机版的，没有cluster， 但是有主从备份，所有不一样的</p>
 </li>
 </ul>
 </li>
-<li><p>严格意义上面的Consistency对于分布式数据库来说很难做到。所以有Eventual consistency requires that all updates must be present on all the copies (replicas) of data in a distributed database, but allows for the fact that the process can take a bit of time.<br>就是说更新是都要进行的，但是可以有一段时间差</p>
+<li>
+<p>严格意义上面的Consistency对于分布式数据库来说很难做到。所以有Eventual consistency requires that all updates must be present on all the copies (replicas) of data in a distributed database, but allows for the fact that the process can take a bit of time.<br>
+就是说更新是都要进行的，但是可以有一段时间差</p>
 </li>
-<li>tuneable consistency： 可配置的consistency。写和读都可以配。</li>
+<li>
+<p>tuneable consistency： 可配置的consistency。写和读都可以配。</p>
+</li>
 </ul>
-<h3 id="commit-log"><a href="#commit-log" class="headerlink" title="commit log"></a>commit log</h3><p><a href="https://stackoverflow.com/questions/34592948/what-is-the-purpose-of-cassandras-commit-log" target="_blank" rel="noopener">stackoverflow问答</a><br>这篇文章里面解释得挺清楚的。这里基本就是翻译以下。这个commit log也就是装机时候配置的那个<code>commitlog_directory</code>的配置项。<br>commit log大小配置是per-node来配置的，所有的table share这个配置。而Memtable和SSTable是per-table配置的</p>
+<h3 id="commit-log"><a class="header-anchor" href="#commit-log"></a>commit log</h3>
+<p><a href="https://stackoverflow.com/questions/34592948/what-is-the-purpose-of-cassandras-commit-log" target="_blank" rel="noopener">stackoverflow问答</a><br>
+这篇文章里面解释得挺清楚的。这里基本就是翻译以下。这个commit log也就是装机时候配置的那个<code>commitlog_directory</code>的配置项。<br>
+commit log大小配置是per-node来配置的，所有的table share这个配置。而Memtable和SSTable是per-table配置的</p>
 <ul>
-<li>cassandra是先写到内存，再写到disk上面的，但是如果当机了。那么内存的数据就会丢。</li>
-<li>这个时候就需要commitLog，cassandra会从当机的时间点开始，将commitlog里面的数据再写到memTable里面。这个过程并不快，所以最好在restart之前手动进行一下memTable的flush。</li>
-<li>A commit log serves just one purpose: to hold committed data until it’s permanently written to disk in the SSTables</li>
-<li>commitLog需要写的数据少，并且只写到一个地方，所以比写SSTable要快</li>
-<li>在工作中碰到的一个问题就是commitLog损坏了，然后cassandra就起不来了。有一个配置项可以忽略commitLog报错。</li>
-<li><blockquote>
+<li>
+<p>cassandra是先写到内存，再写到disk上面的，但是如果当机了。那么内存的数据就会丢。</p>
+</li>
+<li>
+<p>这个时候就需要commitLog，cassandra会从当机的时间点开始，将commitlog里面的数据再写到memTable里面。这个过程并不快，所以最好在restart之前手动进行一下memTable的flush。</p>
+</li>
+<li>
+<p>A commit log serves just one purpose: to hold committed data until it’s permanently written to disk in the SSTables</p>
+</li>
+<li>
+<p>commitLog需要写的数据少，并且只写到一个地方，所以比写SSTable要快</p>
+</li>
+<li>
+<p>在工作中碰到的一个问题就是commitLog损坏了，然后cassandra就起不来了。有一个配置项可以忽略commitLog报错。</p>
+</li>
+<li>
+<blockquote>
 <p>Data in the commit log is purged after its corresponding data in the memtable is flushed to an SSTable on disk.</p>
 </blockquote>
 </li>
-<li><blockquote>
-<p>Commit log replay is the process of reading the commit log to recover lost writes in the event of interrupted operations. </p>
+<li>
+<blockquote>
+<p>Commit log replay is the process of reading the commit log to recover lost writes in the event of interrupted operations.</p>
 </blockquote>
 </li>
-<li>The database flushes memtables to disk when the space configured for the commit log reaches its limit. 这里配置的应该是磁盘空间大小，commit log只会写到磁盘上面。不会写到内存里面。</li>
-<li>By default, the database doesn’t compress the commit log, but you can make it compress.</li>
-<li><p>The database archives the commit log at the following times. You configure commit log archiving in the commitlog_archiving.properties file. <strong>__archive和compress不是一个概念的感觉。但是前者是指什么呢_</strong></p>
+<li>
+<p>The database flushes memtables to disk when the space configured for the commit log reaches its limit. 这里配置的应该是磁盘空间大小，commit log只会写到磁盘上面。不会写到内存里面。</p>
+</li>
+<li>
+<p>By default, the database doesn’t compress the commit log, but you can make it compress.</p>
+</li>
+<li>
+<p>The database archives the commit log at the following times. You configure commit log archiving in the commitlog_archiving.properties file. _<strong><em>archive和compress不是一个概念的感觉。但是前者是指什么呢</em></strong></p>
 <ul>
 <li>When the node starts up</li>
 <li>When it writes a commit log to disk</li>
@@ -1274,8 +1365,10 @@ Memtable  ---&gt; Periodically flush to SSTable
 </ul>
 </li>
 </ul>
-<h3 id="MemTable"><a href="#MemTable" class="headerlink" title="MemTable"></a>MemTable</h3><ul>
-<li><blockquote>
+<h3 id="memtable"><a class="header-anchor" href="#memtable"></a>MemTable</h3>
+<ul>
+<li>
+<blockquote>
 <p>Each memtable is dedicated to storing data for a specific table, and there may be multiple memtables per table.</p>
 </blockquote>
 </li>
@@ -1283,86 +1376,118 @@ Memtable  ---&gt; Periodically flush to SSTable
 <li>memTable有两种，一种是写的这种，另外一种是从SSTable读进来的，这种不会重新写回到磁盘里面</li>
 <li><code>nodetool flush</code> or the <code>nodetool drain</code> command 来触法手动的flush。前者是指定table。后一个命令是flush这个node。期间会停止任何connection的接听，所以需要在执行命令之后重启整个node</li>
 </ul>
-<h3 id="SSTable"><a href="#SSTable" class="headerlink" title="SSTable"></a>SSTable</h3><p>第二篇参考链接非常好，但是图片忒不清楚。</p>
+<h3 id="sstable"><a class="header-anchor" href="#sstable"></a>SSTable</h3>
+<p>第二篇参考链接非常好，但是图片忒不清楚。</p>
 <p><img src="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image010-large.jpg" alt></p>
 <blockquote>
 <p>引用自第二篇参考链接</p>
+</blockquote>
 <ul>
 <li>SSTable是<code>Sorted String Table</code></li>
-<li>SSTable分为data、index、filter三个文件写到磁盘上面，其实还有好几个其他文件:<br>以下是一个目录里面的文件</li>
+<li>SSTable分为data、index、filter三个文件写到磁盘上面，其实还有好几个其他文件:<br>
+以下是一个目录里面的文件</li>
 </ul>
-</blockquote>
-<pre><code>Filter.db
-Statistics.db
-CompressionInfo.db
-Digest.adler32
-TOC.txt(就是文件列表)
-Summary.db
-Data.db
-Index.db
-</code></pre><ul>
+<pre><code> Filter.db
+ Statistics.db
+ CompressionInfo.db
+ Digest.adler32
+ TOC.txt(就是文件列表)
+ Summary.db
+ Data.db
+ Index.db
+</code></pre>
+<ul>
 <li>Primary index: A list of partition keys and the start position of rows in the data file written on disk(记得读的时候蛮有用的)</li>
 <li>Partition summary： 这个summary文件跟上面的Index Summary应该就是一个文件。解释也是一样。A sample of the partition index stored in memory</li>
-<li>Bloom filter：<ul>
-<li><blockquote>
-<p>A structure stored in memory that checks if row data exists in the memtable before accessing SSTables on disk<br>按照这个解释，有点不明白，这么说应该是memory里面才有的。</p>
+<li>Bloom filter：
+<ul>
+<li>
+<blockquote>
+<p>A structure stored in memory that checks if row data exists in the memtable before accessing SSTables on disk<br>
+按照这个解释，有点不明白，这么说应该是memory里面才有的。<br>
+- 找到解释了：Filter 文件存的内容就是 BloomFilter 对象的序列化结果。<strong><em>但是这样的话，将其序列化后保存到disk上面有什么用呢？ Bloom filters for an SSTable enhance read performance。后面读的时候看看怎么来enhance的</em></strong></p>
 </blockquote>
 </li>
-<li>找到解释了：Filter 文件存的内容就是 BloomFilter 对象的序列化结果。<strong><em>但是这样的话，将其序列化后保存到disk上面有什么用呢？ Bloom filters for an SSTable enhance read performance。后面读的时候看看怎么来enhance的</em></strong></li>
 </ul>
 </li>
-<li>Statistics： Contains the statistical metadata about the SSTable’s data </li>
+<li>Statistics： Contains the statistical metadata about the SSTable’s data</li>
 </ul>
 <ul>
-<li>存贮的目录就是yaml文件里面配置的<code>data_file_directories</code>确定</li>
-<li>For example, /data/data/ks1/cf1-5be396077b811e3a3ab9dc4b9ac088d/la-1-big-Data.db represents a data file. ks1 represents the keyspace name to distinguish the keyspace for streaming or bulk loading data. A hexadecimal string, 5be396077b811e3a3ab9dc4b9ac088d in this example, is appended to table names to represent unique table IDs.<br>同样会有：la-1-big-Index.db</li>
-<li><p><strong><em>la是啥？</em></strong></p>
+<li>
+<p>存贮的目录就是yaml文件里面配置的<code>data_file_directories</code>确定</p>
 </li>
-<li><p>用<code>./tools/bin/sstable2json</code>可以打开这堆data文件来看。下面是打开一个data文件的输出。</p>
+<li>
+<p>For example, /data/data/ks1/cf1-5be396077b811e3a3ab9dc4b9ac088d/la-1-big-Data.db represents a data file. ks1 represents the keyspace name to distinguish the keyspace for streaming or bulk loading data. A hexadecimal string, 5be396077b811e3a3ab9dc4b9ac088d in this example, is appended to table names to represent unique table IDs.<br>
+同样会有：la-1-big-Index.db</p>
+</li>
+<li>
+<p><strong><em>la是啥？</em></strong></p>
+</li>
+<li>
+<p>用<code>./tools/bin/sstable2json</code>可以打开这堆data文件来看。下面是打开一个data文件的输出。</p>
 <ul>
 <li>从输出来看，存储的时候的key就是partition key。如果有多个，会用<code>：</code>隔开</li>
-<li>然后它是这样的：<ul>
+<li>然后它是这样的：
+<ul>
 <li>不是partition key的primary key会作为第一个column的名字，同样用:隔开。</li>
 <li>接下来不是key的column和不是partition key的primary key联合起来作为column的名字。</li>
-<li>比如：那么key就是”name:age”, 然后cells里面的第一行会是,最后是时间戳<br><code>[&quot;address:salary&quot;,&quot;&quot;,1558958953681000]</code></li>
-<li>第二行会是：<br><code>[&quot;address:salary:character&quot;,character_value,1558958953681000]</code></li>
+<li>比如：那么key就是&quot;name:age&quot;, 然后cells里面的第一行会是,最后是时间戳<br>
+<code>[&quot;address:salary&quot;,&quot;&quot;,1558958953681000]</code></li>
+<li>第二行会是：<br>
+<code>[&quot;address:salary:character&quot;,character_value,1558958953681000]</code></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
-<pre><code>name text PRIMARY KEY,
-age bigint,
-address int,
-salary int,
-character blob,
-PRIMARY KEY ((name, age), address, salary)
-</code></pre><h3 id="从memTables到SSTable"><a href="#从memTables到SSTable" class="headerlink" title="从memTables到SSTable"></a>从memTables到SSTable</h3><ul>
-<li>Cassandra flushes the memtables to disk when either the commit log space threshold or the memtable cleanup threshold is reached.<ul>
+<pre><code>    name text PRIMARY KEY,
+    age bigint,
+    address int,
+    salary int,
+    character blob,
+    PRIMARY KEY ((name, age), address, salary)
+</code></pre>
+<h3 id="从memtables到sstable"><a class="header-anchor" href="#从memtables到sstable"></a>从memTables到SSTable</h3>
+<ul>
+<li>
+<p>Cassandra flushes the memtables to disk when either the commit log space threshold or the memtable cleanup threshold is reached.</p>
+<ul>
 <li><code>memtable_cleanup_threshold</code> 后面一种应该和这个参数有关</li>
 <li>在<code>expert cassandra</code>的书里有三种情况下面会flush。不包括手动flush</li>
 </ul>
 </li>
-<li><blockquote>
-<p>To flush the data, Cassandra sorts memtables by token and then writes the data to disk sequentially.<br>Cassandra在将数据写到disk的时候，同时会将memtables按照token排序。<strong>_这个token是不是就是key算出来的那个token？但是table怎么按照token排序呢，应该说的是table里面的数据吧 _</strong></p>
+<li>
+<blockquote>
+<p>To flush the data, Cassandra sorts memtables by token and then writes the data to disk sequentially.<br>
+Cassandra在将数据写到disk的时候，同时会将memtables按照token排序。___这个token是不是就是key算出来的那个token？但是table怎么按照token排序呢，应该说的是table里面的数据吧 ___</p>
 </blockquote>
 </li>
-<li><blockquote>
-<p>A partition index is also created on the disk that maps the tokens to a location on disk.<br> partition index是在这里才算出来的。那么之前就都是token。<strong>_ Memtble里面的也都是token？_</strong></p>
+<li>
+<blockquote>
+<p>A partition index is also created on the disk that maps the tokens to a location on disk.<br>
+partition index是在这里才算出来的。那么之前就都是token。___ Memtble里面的也都是token？___</p>
 </blockquote>
 </li>
-<li>flush的时候不是一把头全写进去的。会先把memTable的数据放到一个queue里面。这个queue的大小可以在configuration里面定义。<blockquote>
-<p>The queue can be configured with the memtable_heap_space_in_mb or memtable_offheap_space_in_mb setting </p>
+<li>
+<p>flush的时候不是一把头全写进去的。会先把memTable的数据放到一个queue里面。这个queue的大小可以在configuration里面定义。</p>
+<blockquote>
+<p>The queue can be configured with the memtable_heap_space_in_mb or memtable_offheap_space_in_mb setting</p>
 </blockquote>
 </li>
-<li>You can manually flush a table using nodetool flush. </li>
-<li><blockquote>
+<li>
+<p>You can manually flush a table using nodetool flush.</p>
+</li>
+<li>
+<blockquote>
 <p>Consequently, a partition is typically stored across multiple SSTable files.</p>
 </blockquote>
 </li>
-<li>相同partition key的记录应该是存贮在一个node上面，但是也有可能是多个文件，要看数据量。</li>
+<li>
+<p>相同partition key的记录应该是存贮在一个node上面，但是也有可能是多个文件，要看数据量。</p>
+</li>
 </ul>
-<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
+<h3 id="参考文档"><a class="header-anchor" href="#参考文档"></a>参考文档</h3>
+<ul>
 <li><a href="https://blog.csdn.net/fs1360472174/article/details/55005335/" target="_blank" rel="noopener">官方文档–读写数据</a></li>
 <li><a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/index.html" target="_blank" rel="noopener">cassandra数据库详解</a></li>
 <li><a href="https://docs.datastax.com/en/cassandra/3.0/cassandra/dml/dmlHowDataWritten.html" target="_blank" rel="noopener">cassandra读写过程</a></li>
@@ -1509,81 +1634,107 @@ PRIMARY KEY ((name, age), address, salary)
       
         
           
-            <h2 id="Cassandra-system-log分析"><a href="#Cassandra-system-log分析" class="headerlink" title="Cassandra system log分析"></a>Cassandra system log分析</h2><p>  最近一周可能都会在看Cassandra的system log，看Cassandra在干嘛。其中会涉及到cassandra的一些机制，概念记录下来。<br>  文档名字暂时的，其中的概念可能后期会移走。</p>
-<h3 id="Nodetool"><a href="#Nodetool" class="headerlink" title="Nodetool"></a>Nodetool</h3><p>  Cassandra的状态可以用<code>NodeTool</code>来check，如果采用了ssl 认证，那么命令是 <code>NodeTool --ssl</code></p>
-<h3 id="Gossip-Tasks"><a href="#Gossip-Tasks" class="headerlink" title="Gossip Tasks"></a>Gossip Tasks</h3><h4 id="Pending-task-log"><a href="#Pending-task-log" class="headerlink" title="Pending task log"></a>Pending task log</h4><p>  名字太好记 ，有没有 :)<br>  Cassandra 的各个节点是无中心化对待的。能做到这一点的一个关键是使用了Gossip协议。这是一个很适用于不可信网络的协议</p>
+            <h2 id="cassandra-system-log分析"><a class="header-anchor" href="#cassandra-system-log分析"></a>Cassandra system log分析</h2>
+<p>最近一周可能都会在看Cassandra的system log，看Cassandra在干嘛。其中会涉及到cassandra的一些机制，概念记录下来。<br>
+文档名字暂时的，其中的概念可能后期会移走。</p>
+<h3 id="nodetool"><a class="header-anchor" href="#nodetool"></a>Nodetool</h3>
+<p>Cassandra的状态可以用<code>NodeTool</code>来check，如果采用了ssl 认证，那么命令是 <code>NodeTool --ssl</code></p>
+<h3 id="gossip-tasks"><a class="header-anchor" href="#gossip-tasks"></a>Gossip Tasks</h3>
+<h4 id="pending-task-log"><a class="header-anchor" href="#pending-task-log"></a>Pending task log</h4>
+<p>名字太好记 ，有没有 😃<br>
+Cassandra 的各个节点是无中心化对待的。能做到这一点的一个关键是使用了Gossip协议。这是一个很适用于不可信网络的协议</p>
 <ul>
 <li>参考链接， 后续需要更为仔细深入的学习： <a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-apache-cassandra3x3/index.html" target="_blank" rel="noopener">Apache Cassandra 3.X 系列</a></li>
 <li>Cassandra中Gossip协议被实现在类<code>Gossiper</code>中。</li>
 <li>Gossiper 类维护了一个节点列表，这个列表里包括存活的和死亡的节点。</li>
 <li><code>GossipTask</code> 是位于 <code>org.apche.cassandra.gms.Gossip</code> 类下的一个内部类。</li>
 <li>GossipTask会向其他节点发消息，默认时间是1s</li>
-<li>在log里面会有：<br>[GossipTasks:1] 2019-01-03 04:19:33,680 Gossiper.java:751 - Gossip stage has 378 pending tasks; skipping status check (no nodes will be marked down)</li>
+<li>在log里面会有：<br>
+[GossipTasks:1] 2019-01-03 04:19:33,680 Gossiper.java:751 - Gossip stage has 378 pending tasks; skipping status check (no nodes will be marked down)</li>
 </ul>
-<h4 id="Pause-Error-Not-making-Nodes-Down"><a href="#Pause-Error-Not-making-Nodes-Down" class="headerlink" title="Pause Error: Not making Nodes Down"></a>Pause Error: Not making Nodes Down</h4><ul>
+<h4 id="pause-error-not-making-nodes-down"><a class="header-anchor" href="#pause-error-not-making-nodes-down"></a>Pause Error: Not making Nodes Down</h4>
+<ul>
 <li>在log里面经常会出现:以下是说cassandra在做其他事情，导致Gossip停顿了， hang住了。但是并不标示node状态。</li>
 <li>通常是GC的时候，这一句的上一句log确实提示了一次55742ms的GC，但是GC通常也发生在有很多task的时候，所以应该看看其他在做什么task</li>
 </ul>
 <pre><code>WARN  [GossipTasks:1] 2019-01-02 00:00:04,546 FailureDetector.java:287 - Not marking nodes down due to local pause of 54491963082 &gt; 5000000000
-</code></pre><ul>
+</code></pre>
+<ul>
 <li><a href="http://www.cnblogs.com/jobforlife/p/7092467.html" target="_blank" rel="noopener">error解释</a></li>
 </ul>
-<h3 id="Service-Thread"><a href="#Service-Thread" class="headerlink" title="Service Thread"></a>Service Thread</h3><p>没有看到这个Service Thread的具体解释。从log里面看有很多功能</p>
-<h4 id="StatusLogger"><a href="#StatusLogger" class="headerlink" title="StatusLogger"></a>StatusLogger</h4><p>如此简单的一个函数也有好几种log啦。</p>
-<h5 id="ThreadPoolMetrics：-Stage"><a href="#ThreadPoolMetrics：-Stage" class="headerlink" title="ThreadPoolMetrics： Stage"></a>ThreadPoolMetrics： Stage</h5><p>打印出各种stage的状态，一个接一个的pool的状态。真心不少啊。</p>
+<h3 id="service-thread"><a class="header-anchor" href="#service-thread"></a>Service Thread</h3>
+<p>没有看到这个Service Thread的具体解释。从log里面看有很多功能</p>
+<h4 id="statuslogger"><a class="header-anchor" href="#statuslogger"></a>StatusLogger</h4>
+<p>如此简单的一个函数也有好几种log啦。</p>
+<h5 id="threadpoolmetrics：-stage"><a class="header-anchor" href="#threadpoolmetrics：-stage"></a>ThreadPoolMetrics： Stage</h5>
+<p>打印出各种stage的状态，一个接一个的pool的状态。真心不少啊。</p>
 <ul>
 <li>在log里面会有：</li>
 </ul>
 <pre><code>INFO  [Service Thread] 2019-01-02 00:00:04,547 StatusLogger.java:52 - Pool Name Active   Pending      Completed   Blocked  All Time Blocked
-</code></pre><ul>
+</code></pre>
+<ul>
 <li>鉴于stage比较多，另外写一篇blog来解释这堆。请看本站的stage。</li>
 </ul>
-<h5 id="Cache"><a href="#Cache" class="headerlink" title="Cache"></a>Cache</h5><p>输出KeyCache 和 RowCache的状态</p>
+<h5 id="cache"><a class="header-anchor" href="#cache"></a>Cache</h5>
+<p>输出KeyCache 和 RowCache的状态</p>
 <ul>
 <li>在log里面是：</li>
 </ul>
 <pre><code>INFO  [Service Thread] 2019-01-02 00:00:05,130 StatusLogger.java:88 - Cache Type  Size Capacity KeysToSave
 INFO  [Service Thread] 2019-01-02 00:00:05,130 StatusLogger.java:90 - KeyCache   1406343  104857600
-</code></pre><ul>
+</code></pre>
+<ul>
 <li>这篇 log已经很长了。KeyCache和RowCache另开一篇log。</li>
 </ul>
-<h5 id="per-CF-stats"><a href="#per-CF-stats" class="headerlink" title="per-CF stats"></a>per-CF stats</h5><p>per-CF stats是源码里面的注释，我也不知道是啥哦</p>
+<h5 id="per-cf-stats"><a class="header-anchor" href="#per-cf-stats"></a>per-CF stats</h5>
+<p>per-CF stats是源码里面的注释，我也不知道是啥哦</p>
 <ul>
 <li>在log里面是：</li>
 </ul>
-<pre><code>INFO  [Service Thread] 2019-01-03 02:54:45,722 StatusLogger.java:106 (table_name)    6284,288376
-</code></pre><ul>
-<li>Cassandra的API里面对于<code>StatusLogger</code>也没有解释。 ORZ，看来是个很直白的文件啊<br>-<code>org.apache.cassandra.utils.StatusLogger</code> 只有一个函数<code>log()</code></li>
+<pre><code>INFO  [Service Thread] 2019-01-03 02:54:45,722 StatusLogger.java:106 (table_name)    6284,288376
+</code></pre>
+<ul>
+<li>Cassandra的API里面对于<code>StatusLogger</code>也没有解释。 ORZ，看来是个很直白的文件啊<br>
+-<code>org.apache.cassandra.utils.StatusLogger</code> 只有一个函数<code>log()</code></li>
 </ul>
 <pre><code>logger.info(String.format(&quot;%-25s%20s&quot;, &quot;Table&quot;, &quot;Memtable ops,data&quot;));
 logger.info(String.format(&quot;%-25s%20s&quot;,
                    cfs.keyspace.getName() 
-                   + &quot;.&quot; + cfs.name,                                      cfs.metric.memtableColumnsCount.getValue() 
-                   + &quot;,&quot; + cfs.metric.memtableLiveDataSize.getValue()));
+				   + &quot;.&quot; + cfs.name,                                      cfs.metric.memtableColumnsCount.getValue() 
+				   + &quot;,&quot; + cfs.metric.memtableLiveDataSize.getValue()));
     }。
-</code></pre><ul>
+</code></pre>
+<ul>
 <li>所以，第一个数值是memTable的column的个数，第二个是data的size</li>
 <li>一个问题是： 这个column也太多了吧。。。。。。</li>
 <li>被大神吊打了。这个值是表访问次数。</li>
 </ul>
-<h4 id="GCInspector"><a href="#GCInspector" class="headerlink" title="GCInspector"></a>GCInspector</h4><p>  -在log里面是：</p>
+<h4 id="gcinspector"><a class="header-anchor" href="#gcinspector"></a>GCInspector</h4>
+<p>-在log里面是：</p>
 <pre><code>INFO  [Service Thread] 2019-01-02 00:00:04,546 GCInspector.java:284 - ConcurrentMarkSweep GC in 55742ms.  CMS Old Gen: 7331643368 -&gt; 7331643360; Par Eden Space: 1006632960 -&gt; 784484600; Par Survivor Space: 125829104 -&gt; 0
-</code></pre><ul>
+</code></pre>
+<ul>
 <li>这句log的意思是：做了一次CMS GC。然后数字对应，11位是G，9位是M，所以 eden区是784M</li>
 <li>参考本站GC的文章了解更多CMS算法的内容</li>
 </ul>
-<h3 id="PERIODIC-COMMIT-LOG-SYNCER"><a href="#PERIODIC-COMMIT-LOG-SYNCER" class="headerlink" title="PERIODIC-COMMIT-LOG-SYNCER"></a>PERIODIC-COMMIT-LOG-SYNCER</h3><ul>
+<h3 id="periodic-commit-log-syncer"><a class="header-anchor" href="#periodic-commit-log-syncer"></a>PERIODIC-COMMIT-LOG-SYNCER</h3>
+<ul>
 <li>在log里面是：</li>
 </ul>
 <pre><code>WARN  [PERIODIC-COMMIT-LOG-SYNCER] 2019-01-03 04:04:17,232 AbstractCommitLogService.java:117 - Out of 5 commit log syncs over the past 573s with average duration of 9734.40ms...
-</code></pre><ul>
+</code></pre>
+<ul>
 <li>这个应该是将commit log写到disk上面的task。没有再查资料。参考本站cassandra写过程那篇博客</li>
 </ul>
-<h3 id="RMI-TCP-Connection-idle"><a href="#RMI-TCP-Connection-idle" class="headerlink" title="RMI TCP Connection(idle)"></a>RMI TCP Connection(idle)</h3><h3 id="IndexSummaryManager"><a href="#IndexSummaryManager" class="headerlink" title="IndexSummaryManager"></a>IndexSummaryManager</h3><ul>
+<h3 id="rmi-tcp-connection-idle"><a class="header-anchor" href="#rmi-tcp-connection-idle"></a>RMI TCP Connection(idle)</h3>
+<h3 id="indexsummarymanager"><a class="header-anchor" href="#indexsummarymanager"></a>IndexSummaryManager</h3>
+<ul>
 <li>在log里面是：</li>
 </ul>
-<pre><code>INFO  [IndexSummaryManager:1] 2019-01-02 03:21:59,849 IndexSummaryRedistribution.java:74 - Redistributing index summaries
-</code></pre><ul>
+<pre><code> INFO  [IndexSummaryManager:1] 2019-01-02 03:21:59,849 IndexSummaryRedistribution.java:74 - Redistributing index summaries
+</code></pre>
+<ul>
 <li>Manages the fixed-size memory pool for index summaries, periodically resizing them in order to give more memory to hot sstables and less memory to cold sstables.</li>
 <li>还不是很理解，就是说index summary一开始也是存在内存中的吗？确实在参数配置里面有index_summary_capacity_in_mb和index_summary_resize_interval_in_minutes</li>
 </ul>
@@ -1728,28 +1879,38 @@ logger.info(String.format(&quot;%-25s%20s&quot;,
       
         
           
-            <h1 id="React入门"><a href="#React入门" class="headerlink" title="React入门"></a>React入门</h1><h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a href="http://www.ruanyifeng.com/blog/2015/03/react.html" target="_blank" rel="noopener">阮一峰的博客</a></p>
-<h2 id="React-是什么"><a href="#React-是什么" class="headerlink" title="React 是什么"></a>React 是什么</h2><p>React是Facebook发布的前端框架</p>
-<h2 id="React的优势"><a href="#React的优势" class="headerlink" title="React的优势"></a>React的优势</h2><p>现在还不知道哪里有优势。最大的应该就是JXS，然后可以组件化。</p>
-<h2 id="React的一些相关概念"><a href="#React的一些相关概念" class="headerlink" title="React的一些相关概念"></a>React的一些相关概念</h2><h3 id="DOM"><a href="#DOM" class="headerlink" title="DOM"></a>DOM</h3><ul>
-<li><code>DOM</code>: 文档对象模型(Document Object Model). 这是表示和处理一个HTML或XML文档的常用方法。<br> <a href="https://baike.baidu.com/item/DOM/50288#1_2" target="_blank" rel="noopener">DOM:百度百科解释</a></li>
+            <h1 id="react入门"><a class="header-anchor" href="#react入门"></a>React入门</h1>
+<h2 id="参考文档"><a class="header-anchor" href="#参考文档"></a>参考文档</h2>
+<p><a href="http://www.ruanyifeng.com/blog/2015/03/react.html" target="_blank" rel="noopener">阮一峰的博客</a></p>
+<h2 id="react-是什么"><a class="header-anchor" href="#react-是什么"></a>React 是什么</h2>
+<p>React是Facebook发布的前端框架</p>
+<h2 id="react的优势"><a class="header-anchor" href="#react的优势"></a>React的优势</h2>
+<p>现在还不知道哪里有优势。最大的应该就是JXS，然后可以组件化。</p>
+<h2 id="react的一些相关概念"><a class="header-anchor" href="#react的一些相关概念"></a>React的一些相关概念</h2>
+<h3 id="dom"><a class="header-anchor" href="#dom"></a>DOM</h3>
+<ul>
+<li><code>DOM</code>: 文档对象模型(Document Object Model). 这是表示和处理一个HTML或XML文档的常用方法。<br>
+<a href="https://baike.baidu.com/item/DOM/50288#1_2" target="_blank" rel="noopener">DOM:百度百科解释</a></li>
 <li>目前的理解是：DOM其实就是一套描述数据结构的方法。一开始大家不统一，后来有W3C给出了规范，可以分为DOM核心，HTML的DOM，XML的DOM这几个</li>
 <li>进一步的理解：DOM是前端原来就有的一个概念，然后React给这个概念赋予了一些新的内涵。所有有React DOM这个说法。React DOM其实就是组件。</li>
 </ul>
-<h3 id="JSX"><a href="#JSX" class="headerlink" title="JSX"></a>JSX</h3><p>JSX 语法是React独有的。目前的理解是：</p>
+<h3 id="jsx"><a class="header-anchor" href="#jsx"></a>JSX</h3>
+<p>JSX 语法是React独有的。目前的理解是：</p>
 <ul>
 <li>JSX语法在支持JS里面处理HTML。</li>
 <li>如果这样的脚本插在html里面，要用<code>text/babel</code>来标记。 babel命令可以将JSX语法编译成为JS语法。</li>
 <li>JSX 的基本语法规则：遇到 HTML 标签（以 <code>&lt;</code> 开头），就用 HTML 规则解析；遇到代码块（以 <code>{</code> 开头），就用 JavaScript 规则解析。</li>
 </ul>
 <p><a href="https://reactjs.org/docs/rendering-elements.html#jsx-syntax" target="_blank" rel="noopener">JSX语法</a></p>
-<h3 id="React组件"><a href="#React组件" class="headerlink" title="React组件"></a>React组件</h3><ul>
+<h3 id="react组件"><a class="header-anchor" href="#react组件"></a>React组件</h3>
+<ul>
 <li>使用<code>React.createClass(</code> 来创建一个组件，组件可以认为和HTML的标签一样使用。e.g：MyComponents是创建出来的一个组件。</li>
 </ul>
 <pre><code>&lt;MyComponent
     &quot;Hello world!&quot;;
 /MyComponent&gt;
-</code></pre><ul>
+</code></pre>
+<ul>
 <li>前面提到过React DOM，其实就是组件。组件在定义时候，只是内存里面的一个数据，但是因为可以作为HTML标签使用，然后render成为HTML里面的DOM，所有被称为virtual DOM</li>
 <li>组件类只能包含一个顶层元素。</li>
 <li>所有的组件类必须有自己的render方法，来</li>
@@ -1897,14 +2058,21 @@ logger.info(String.format(&quot;%-25s%20s&quot;,
       
         
           
-            <h3 id="HashMap-amp-HashTable"><a href="#HashMap-amp-HashTable" class="headerlink" title="HashMap &amp; HashTable"></a>HashMap &amp; HashTable</h3><h3 id="List-amp-Set-amp-Vector"><a href="#List-amp-Set-amp-Vector" class="headerlink" title="List &amp; Set &amp; Vector"></a>List &amp; Set &amp; Vector</h3><h3 id="HashSet-amp-TreeSet-amp-LinkedHashSet"><a href="#HashSet-amp-TreeSet-amp-LinkedHashSet" class="headerlink" title="HashSet &amp; TreeSet &amp; LinkedHashSet"></a>HashSet &amp; TreeSet &amp; LinkedHashSet</h3><h3 id="TreeSet-amp-TreeMap"><a href="#TreeSet-amp-TreeMap" class="headerlink" title="TreeSet &amp; TreeMap"></a>TreeSet &amp; TreeMap</h3><h3 id="Callable-amp-Runnable"><a href="#Callable-amp-Runnable" class="headerlink" title="Callable &amp; Runnable"></a>Callable &amp; Runnable</h3><p>这两个都是线程池可以调用的。</p>
+            <h3 id="hashmap-hashtable"><a class="header-anchor" href="#hashmap-hashtable"></a>HashMap &amp; HashTable</h3>
+<h3 id="list-set-vector"><a class="header-anchor" href="#list-set-vector"></a>List &amp; Set &amp; Vector</h3>
+<h3 id="hashset-treeset-linkedhashset"><a class="header-anchor" href="#hashset-treeset-linkedhashset"></a>HashSet &amp; TreeSet &amp; LinkedHashSet</h3>
+<h3 id="treeset-treemap"><a class="header-anchor" href="#treeset-treemap"></a>TreeSet &amp; TreeMap</h3>
+<h3 id="callable-runnable"><a class="header-anchor" href="#callable-runnable"></a>Callable &amp; Runnable</h3>
+<p>这两个都是线程池可以调用的。</p>
 <ul>
-<li>共同点有二：<ul>
+<li>共同点有二：
+<ul>
 <li>是都是用来实现线程的接口</li>
 <li>都需要thread.start来启动。 <strong><em>线程只能用thread.start来启动吧。貌似没有其他方式</em></strong></li>
 </ul>
 </li>
-<li>不同点有二： <ul>
+<li>不同点有二：
+<ul>
 <li>callable可以返回执行结果。runnable不行。 callable的要获得执行结果的话，需要调用FutureTask.get()方法实现，此方法会阻塞主线程直到获取‘将来’结果；当不调用此方法时，主线程不会阻塞！</li>
 <li>callable的exception异常可以往上面跑，而runnable的只能自己处理。说明函数声明时候一个有抛exception啊。</li>
 </ul>
@@ -1917,7 +2085,8 @@ logger.info(String.format(&quot;%-25s%20s&quot;,
 public interface Runnable {
     public abstract void run();
 }
-</code></pre><ul>
+</code></pre>
+<ul>
 <li>参考链接： <a href="https://www.cnblogs.com/frinder6/p/5507082.html" target="_blank" rel="noopener">已经说得很清楚的一篇博客</a></li>
 </ul>
 
@@ -2061,12 +2230,15 @@ public interface Runnable {
       
         
           
-            <h3 id="下载安装包"><a href="#下载安装包" class="headerlink" title="下载安装包"></a>下载安装包</h3><ul>
+            <h3 id="下载安装包"><a class="header-anchor" href="#下载安装包"></a>下载安装包</h3>
+<ul>
 <li><a href="http://www.apache.org/dyn/closer.lua/cassandra" target="_blank" rel="noopener">http://www.apache.org/dyn/closer.lua/cassandra</a> 上面下载安装包。没有linux和windows两个安装包；</li>
 <li>安装步骤就是解压即可。比如解压到c盘下面的cassandra目录</li>
 </ul>
 <hr>
-<h3 id="配置更新"><a href="#配置更新" class="headerlink" title="配置更新"></a>配置更新</h3><h4 id="配置文件更新"><a href="#配置文件更新" class="headerlink" title="配置文件更新"></a>配置文件更新</h4><p>配置文件是conf目录下面的cassandra.yaml文件，包括以下参数。每个参数的含义在配置文件的注释里面都有。</p>
+<h3 id="配置更新"><a class="header-anchor" href="#配置更新"></a>配置更新</h3>
+<h4 id="配置文件更新"><a class="header-anchor" href="#配置文件更新"></a>配置文件更新</h4>
+<p>配置文件是conf目录下面的cassandra.yaml文件，包括以下参数。每个参数的含义在配置文件的注释里面都有。</p>
 <ul>
 <li>data_file_directories： cassandra数据存储目录</li>
 <li>commitlog_directory</li>
@@ -2075,24 +2247,48 @@ public interface Runnable {
 <p>将这几个参数的目录替换成为实际的安装目录：</p>
 <pre><code>&quot;commitlog_directory: 
  - C:\cassandra\apache-cassandra-2.2.14\commitlog&quot;
-</code></pre><h4 id="日志配置"><a href="#日志配置" class="headerlink" title="日志配置"></a>日志配置</h4><p>日志文件是logback.xml文件，讲其中的cassandra.logdir替换成实际的安装目录</p>
+</code></pre>
+<h4 id="日志配置"><a class="header-anchor" href="#日志配置"></a>日志配置</h4>
+<p>日志文件是logback.xml文件，讲其中的cassandra.logdir替换成实际的安装目录</p>
 <hr>
-<h3 id="配置cassandra-home环境变量"><a href="#配置cassandra-home环境变量" class="headerlink" title="配置cassandra home环境变量"></a>配置cassandra home环境变量</h3><p>在系统的环境变量里面加入CASSANDRA_HOME变量，并且加入到path里面</p>
+<h3 id="配置cassandra-home环境变量"><a class="header-anchor" href="#配置cassandra-home环境变量"></a>配置cassandra home环境变量</h3>
+<p>在系统的环境变量里面加入CASSANDRA_HOME变量，并且加入到path里面</p>
 <hr>
-<h3 id="启动cassandra"><a href="#启动cassandra" class="headerlink" title="启动cassandra"></a>启动cassandra</h3><p>直接在新打开的cmd窗口中敲入cassandra即可启动</p>
+<h3 id="启动cassandra"><a class="header-anchor" href="#启动cassandra"></a>启动cassandra</h3>
+<p>直接在新打开的cmd窗口中敲入cassandra即可启动</p>
 <hr>
-<h3 id="问题解决"><a href="#问题解决" class="headerlink" title="问题解决"></a>问题解决</h3><ul>
-<li><p>WARNING! Powershell script execution unavailable.<br> Please use ‘powershell Set-ExecutionPolicy Unrestricted’<br> on this user-account to run cassandra with fully featured<br> functionality on this platform.<br>在bin目录下面的cassandra.bat文件和cassandra.in.bat文件里面加入：<br>set JAVA_HOME=C:\Program Files (x86)\Java\jdk1.8.0_162<br>set CASSANDRA_HOME=C:\cassandra\apache-cassandra-2.2.13<br>即可解决这个问题</p>
+<h3 id="问题解决"><a class="header-anchor" href="#问题解决"></a>问题解决</h3>
+<ul>
+<li>
+<p>WARNING! Powershell script execution unavailable.<br>
+Please use 'powershell Set-ExecutionPolicy Unrestricted’<br>
+on this user-account to run cassandra with fully featured<br>
+functionality on this platform.<br>
+在bin目录下面的cassandra.bat文件和cassandra.in.bat文件里面加入：<br>
+set JAVA_HOME=C:\Program Files (x86)\Java\jdk1.8.0_162<br>
+set CASSANDRA_HOME=C:\cassandra\apache-cassandra-2.2.13<br>
+即可解决这个问题</p>
 </li>
-<li><p>Could not reserve enough space for 2097152KB object heap<br>修改 cassandra.bat 中的JVM参数<br>set JAVA_OPTS=-ea^<br>-javaagent:”%CASSANDRA_HOME%\lib\jamm-0.2.8.jar”^<br>-Xms512m^<br>-Xmx512m^</p>
+<li>
+<p>Could not reserve enough space for 2097152KB object heap<br>
+修改 cassandra.bat 中的JVM参数<br>
+set JAVA_OPTS=-ea^<br>
+-javaagent:&quot;%CASSANDRA_HOME%\lib\jamm-0.2.8.jar&quot;^<br>
+-Xms512m^<br>
+-Xmx512m^</p>
 </li>
-<li><p>config.yaml not valid<br>saved_caches_directory几个参数前面不能空格</p>
+<li>
+<p>config.yaml not valid<br>
+saved_caches_directory几个参数前面不能空格</p>
 </li>
-<li><p>cqlsh在装好cassandra之后可以直接启动，需要注意的是，cqlsh在cassandra2.x时候只支持python2.7.其他版本可能报错，语法不兼容</p>
+<li>
+<p>cqlsh在装好cassandra之后可以直接启动，需要注意的是，cqlsh在cassandra2.x时候只支持python2.7.其他版本可能报错，语法不兼容</p>
 </li>
 </ul>
 <hr>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://blog.csdn.net/qq_28289405/article/details/80308539" target="_blank" rel="noopener">https://blog.csdn.net/qq_28289405/article/details/80308539</a><br><a href="https://blog.csdn.net/maosijunzi/article/details/42120889" target="_blank" rel="noopener">https://blog.csdn.net/maosijunzi/article/details/42120889</a></p>
+<h3 id="参考"><a class="header-anchor" href="#参考"></a>参考</h3>
+<p><a href="https://blog.csdn.net/qq_28289405/article/details/80308539" target="_blank" rel="noopener">https://blog.csdn.net/qq_28289405/article/details/80308539</a><br>
+<a href="https://blog.csdn.net/maosijunzi/article/details/42120889" target="_blank" rel="noopener">https://blog.csdn.net/maosijunzi/article/details/42120889</a></p>
 
           
         
@@ -2189,7 +2385,7 @@ public interface Runnable {
               
               <div class="site-state-item site-state-categories">
                 <a href="/hexo_blog/categories/index.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>

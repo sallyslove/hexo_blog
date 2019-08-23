@@ -335,14 +335,18 @@
       
         
           
-            <h2 id="Cassandra的repair机制"><a href="#Cassandra的repair机制" class="headerlink" title="Cassandra的repair机制"></a>Cassandra的repair机制</h2><p>这篇讨论一些robustness的东西。主要就是一个节点down了会怎么样。其实目前知道的就是hint，但是记录下来。<br>从一些文档里面看，这个属于写流程的一部分。确实是，读的话，如果node down了应该不会从上面读取了。会写到the coordinator node上面。version 1.0有所不同，但是这个版本太旧了。</p>
+            <h2 id="cassandra的repair机制"><a class="header-anchor" href="#cassandra的repair机制"></a>Cassandra的repair机制</h2>
+<p>这篇讨论一些robustness的东西。主要就是一个节点down了会怎么样。其实目前知道的就是hint，但是记录下来。<br>
+从一些文档里面看，这个属于写流程的一部分。确实是，读的话，如果node down了应该不会从上面读取了。会写到the coordinator node上面。version 1.0有所不同，但是这个版本太旧了。</p>
 <blockquote>
 <p>By design, hinted handoff inherently allows Cassandra to continue performing the same number of writes even when the cluster is operating at reduced capacity.</p>
 </blockquote>
-<h3 id="Hinted-Handoff简述"><a href="#Hinted-Handoff简述" class="headerlink" title="Hinted Handoff简述"></a>Hinted Handoff简述</h3><ul>
+<h3 id="hinted-handoff简述"><a class="header-anchor" href="#hinted-handoff简述"></a>Hinted Handoff简述</h3>
+<ul>
 <li><strong><code>hinted handoff</code> 和 一般说的<code>hint</code>应该是同一个东西。</strong> 前者是一个机制，后者就是这个机制产生的事件或者记录。</li>
 <li><code>hinted handoff</code>跟consistency level 相关，毕竟这个是写机制的一部分。</li>
-<li>cassandra的config文件里面需要配置几个参数：<ul>
+<li>cassandra的config文件里面需要配置几个参数：
+<ul>
 <li><code>hinted_handoff_enabled</code>：默认为true，打开这个机制</li>
 <li><code>max_hint_window_in_ms</code>： 为已经down掉的node记录hint log的时间长度</li>
 <li><code>gc_grace_seconds</code>: Configures the time-to-live (TTL) period for a hint so that the database won’t replay the hint after this duration. Setting this parameter to 0 disables hints。 这个参数没用过，后面可以试试看</li>
@@ -351,38 +355,50 @@
 </li>
 <li>按照文档，当写入发生时候，并且a replica node for the key is down。就可能会触发hinted handoff的机制</li>
 </ul>
-<h4 id="Hint-详述"><a href="#Hint-详述" class="headerlink" title="Hint 详述"></a>Hint 详述</h4><ul>
-<li><blockquote>
-<p>The hint consists of a target ID for the downed node, a hint ID that is a time UUID for the data, a message ID that identifies the Cassandra version, and the data itself as a blob. </p>
+<h4 id="hint-详述"><a class="header-anchor" href="#hint-详述"></a>Hint 详述</h4>
+<ul>
+<li>
+<blockquote>
+<p>The hint consists of a target ID for the downed node, a hint ID that is a time UUID for the data, a message ID that identifies the Cassandra version, and the data itself as a blob.</p>
+</blockquote>
 <ul>
 <li>hint里面有：down node的target ID， 标注这条数据的hint ID， 标注cassandra version的message ID以及数据本身</li>
 <li>这是cassandra 3.0之后的。之前的可能不一样</li>
 </ul>
+</li>
+<li>
+<p>和想象地一样，当Gossipy发现downed node起来之后，coordinator node会将hint记录的数据写过去，并且删除掉hint</p>
+</li>
+<li>
+<blockquote>
+<p>The coordinator also checks every ten minutes for hints corresponding to writes that timed out during an outage too brief for the failure detector to notice through gossip.</p>
 </blockquote>
 </li>
-<li><p>和想象地一样，当Gossipy发现downed node起来之后，coordinator node会将hint记录的数据写过去，并且删除掉hint</p>
-</li>
-<li><blockquote>
-<p>The coordinator also checks every ten minutes for hints corresponding to writes that timed out during an outage too brief for the failure detector to notice through gossip. </p>
-</blockquote>
-</li>
-<li>这句有点难以理解，看了下一句有点明白。如果有的节点宕机时间很短，而Gossdip并没有发现，那么coordinator 会返回一个exception，同时把write fail了，但是会记录一个hint。所以如果瞬间有很多短暂的fail，coordinator node会一下子压力过大，扔出overloadexception<blockquote>
-<p>If a replica node is overloaded or unavailable, and the failure detector has not yet marked the node as down, then expect most or all writes to that node to fail after the timeout triggered by write_request_timeout_in_ms, (10 seconds by default). The coordinator returns a TimeOutException exception, and the write will fail but a hint will be stored.</p>
-</blockquote>
+<li>
+<p>这句有点难以理解，看了下一句有点明白。如果有的节点宕机时间很短，而Gossdip并没有发现，那么coordinator 会返回一个exception，同时把write fail了，但是会记录一个hint。所以如果瞬间有很多短暂的fail，coordinator node会一下子压力过大，扔出overloadexception</p>
 </li>
 </ul>
-<h4 id="Hint-和-consistency-level"><a href="#Hint-和-consistency-level" class="headerlink" title="Hint 和 consistency level"></a>Hint 和 consistency level</h4><ul>
-<li><blockquote>
+<blockquote>
+<p>If a replica node is overloaded or unavailable, and the failure detector has not yet marked the node as down, then expect most or all writes to that node to fail after the timeout triggered by write_request_timeout_in_ms, (10 seconds by default). The coordinator returns a TimeOutException exception, and the write will fail but a hint will be stored.</p>
+</blockquote>
+<h4 id="hint-和-consistency-level"><a class="header-anchor" href="#hint-和-consistency-level"></a>Hint 和 consistency level</h4>
+<ul>
+<li>
+<blockquote>
 <p>当一致性等级设定为ONE，QUORUM，或者ALL的时候，提示的写并不参与到一致性级别的计数中。如果没有足够的节点满足写的一致性级别需要，会抛出 UnavailableException而不是触发Hinted Handoff。（这是Casssandra和Dynamo复制模型不一样的地方之一）</p>
 </blockquote>
 </li>
 <li>接上文，如果将consistency level设置成为Any，那么hint就算了。所以即使只是写了hint，写操作也会成功，但是这时候读数据是读不出来的。</li>
 </ul>
-<h3 id="Repairing-Data"><a href="#Repairing-Data" class="headerlink" title="Repairing Data"></a>Repairing Data</h3><ul>
+<h3 id="repairing-data"><a class="header-anchor" href="#repairing-data"></a>Repairing Data</h3>
+<ul>
 <li>Read repair: The reconciliation or correction happens when a read finds an inconsistency.</li>
 <li>When data is read, a read repair can resolve any data inconsistencies. When data isn’t read, you need to use either the hinted handoff or anti-entropy mechanism to resolve any data inconsistences.</li>
 </ul>
-<h4 id="Read-Repair"><a href="#Read-Repair" class="headerlink" title="Read Repair"></a>Read Repair</h4><h4 id="anti-entropy"><a href="#anti-entropy" class="headerlink" title="anti-entropy"></a>anti-entropy</h4><h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><ul>
+<h4 id="read-repair"><a class="header-anchor" href="#read-repair"></a>Read Repair</h4>
+<h4 id="anti-entropy"><a class="header-anchor" href="#anti-entropy"></a>anti-entropy</h4>
+<h3 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h3>
+<ul>
 <li><a href="https://wiki.apache.org/cassandra/HintedHandoff" target="_blank" rel="noopener">wiki上面的简介</a></li>
 <li><a href="https://docs.datastax.com/en/cassandra/3.0/cassandra/operations/opsRepairNodesHintedHandoff.html" target="_blank" rel="noopener">官方</a></li>
 <li><a href="http://www.cnblogs.com/sing1ee/archive/2012/07/09/2765056.html" target="_blank" rel="noopener">比较好的博客一篇</a>： 看起来很多就是官方文档的翻译</li>
@@ -528,9 +544,13 @@
       
         
           
-            <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>工作中碰到的一些相关问题，有的也许很简单，记录在这里。省得后面再花功夫去看啦。</p>
-<h4 id="问题一"><a href="#问题一" class="headerlink" title="问题一"></a>问题一</h4><p>$ kubectl cluster-info<br>Kubernetes master is running at …</p>
-<p>To further debug and diagnose cluster problems, use ‘kubectl cluster-info dump’.<br>Unable to connect to the server: x509: certificate signed by unknown authority (possibly because of “crypto/rsa: verification error” while trying to verify candidate authority certificate “kubernetes”)</p>
+            <h2 id="概述"><a class="header-anchor" href="#概述"></a>概述</h2>
+<p>工作中碰到的一些相关问题，有的也许很简单，记录在这里。省得后面再花功夫去看啦。</p>
+<h4 id="问题一"><a class="header-anchor" href="#问题一"></a>问题一</h4>
+<p>$ kubectl cluster-info<br>
+Kubernetes master is running at …</p>
+<p>To further debug and diagnose cluster problems, use ‘kubectl cluster-info dump’.<br>
+Unable to connect to the server: x509: certificate signed by unknown authority (possibly because of “crypto/rsa: verification error” while trying to verify candidate authority certificate “kubernetes”)</p>
 <ul>
 <li>参考链接：<a href="https://blog.csdn.net/baobaoxiannv/article/details/83818426" target="_blank" rel="noopener">csdn博客一篇</a></li>
 <li>其实就是kube的config文件: <code>~/.kube/config</code> 文件过时了。里面的certification需要更新。从kube server上面把config拿下来替换一些本地的就好了。</li>
@@ -676,53 +696,82 @@
       
         
           
-            <h2 id="Cassandra里面的Batch操作"><a href="#Cassandra里面的Batch操作" class="headerlink" title="Cassandra里面的Batch操作"></a>Cassandra里面的Batch操作</h2><p>最近工作比较忙活，一个月都没写blog喽。工作中碰到了一些与cassandra相关的同步异步，simpleStatement，batchStatement的东西。顺势多研究一下。<br>研究发现，这玩意还挺复杂的啊。</p>
-<h3 id="execute-与-executeAsync"><a href="#execute-与-executeAsync" class="headerlink" title="execute 与 executeAsync"></a>execute 与 executeAsync</h3><ul>
-<li>cassandra driver在执行语句时候提供了<code>execute</code>和<code>executeAsync</code> 两个接口</li>
-<li>对于batch来说，只能调用前者，这个好像不太对。</li>
-<li><p>但是进入代码会看到，<code>execute</code>最后调用的也是<code>executeAsync</code></p>
-<pre><code>public ResultSet execute(Statement statement) {
-       this.checkNotInEventLoop();
-       return this.executeAsync(statement).getUninterruptibly();
-}
-</code></pre></li>
-<li><p>这个<code>executeAsync</code>api是在<code>SessionManager</code>里面定义的</p>
+            <h2 id="cassandra里面的batch操作"><a class="header-anchor" href="#cassandra里面的batch操作"></a>Cassandra里面的Batch操作</h2>
+<p>最近工作比较忙活，一个月都没写blog喽。工作中碰到了一些与cassandra相关的同步异步，simpleStatement，batchStatement的东西。顺势多研究一下。<br>
+研究发现，这玩意还挺复杂的啊。</p>
+<h3 id="execute-与-executeasync"><a class="header-anchor" href="#execute-与-executeasync"></a>execute 与 executeAsync</h3>
+<ul>
+<li>
+<p>cassandra driver在执行语句时候提供了<code>execute</code>和<code>executeAsync</code> 两个接口</p>
 </li>
-<li>按照参考链接1里面所述的，从以上代码也可以看出来的<code>execute</code>在于是block的。就是不可打断的。必须得cassandra返回一些数据才能返回。所以它可以保证在invalid request的情况下报错，但是不能保证request就一定执行成功了。</li>
-<li><code>executeAsync</code>就是非blocking的，也不能保证这个request一定被执行或者在invalid的request的情况下报错</li>
-<li>参考链接1里面有这么一段话：看起来少量batch，并且是同样partition key的时候，会比较快。</li>
-<li>我们在产品中的改进在有些场景下面确实performance变好了<blockquote>
-<p>To further improve throughput, you might want to consider using BatchStatement and submitting requests in batches. This is a good option if you keep your batches small (50-250 is a good number) and if your inserts in a batch all share the same partition key. </p>
+<li>
+<p>对于batch来说，只能调用前者，这个好像不太对。</p>
+</li>
+<li>
+<p>但是进入代码会看到，<code>execute</code>最后调用的也是<code>executeAsync</code></p>
+<pre><code>  public ResultSet execute(Statement statement) {
+         this.checkNotInEventLoop();
+         return this.executeAsync(statement).getUninterruptibly();
+  }
+</code></pre>
+</li>
+<li>
+<p>这个<code>executeAsync</code>api是在<code>SessionManager</code>里面定义的</p>
+</li>
+<li>
+<p>按照参考链接1里面所述的，从以上代码也可以看出来的<code>execute</code>在于是block的。就是不可打断的。必须得cassandra返回一些数据才能返回。所以它可以保证在invalid request的情况下报错，但是不能保证request就一定执行成功了。</p>
+</li>
+<li>
+<p><code>executeAsync</code>就是非blocking的，也不能保证这个request一定被执行或者在invalid的request的情况下报错</p>
+</li>
+<li>
+<p>参考链接1里面有这么一段话：看起来少量batch，并且是同样partition key的时候，会比较快。</p>
+</li>
+<li>
+<p>我们在产品中的改进在有些场景下面确实performance变好了</p>
+</li>
+</ul>
+<blockquote>
+<p>To further improve throughput, you might want to consider using BatchStatement and submitting requests in batches. This is a good option if you keep your batches small (50-250 is a good number) and if your inserts in a batch all share the same partition key.</p>
 </blockquote>
-</li>
-<li>参考链接：<ol>
-<li><a href="https://stackoverflow.com/questions/34949292/how-cassandra-handle-blocking-execute-statement-in-datastax-java-driver" target="_blank" rel="noopener">How Cassandra handle blocking execute statement in datastax java driver
+<ul>
+<li>参考链接：
+<ol>
+<li><a href="https://stackoverflow.com/questions/34949292/how-cassandra-handle-blocking-execute-statement-in-datastax-java-driver" target="_blank" rel="noopener">How Cassandra handle blocking execute statement in datastax java driver<br>
 </a></li>
-<li><a href="http://zqhxuyuan.github.io/2015/11/10/2015-11-10-Cassandra-Client/" target="_blank" rel="noopener">Cassandra Client查询优化</a>: 这篇有点看不明白。但是瞅着还挺好的，先放在这里。</li>
 </ol>
 </li>
 </ul>
-<h3 id="BatchStatement"><a href="#BatchStatement" class="headerlink" title="BatchStatement"></a>BatchStatement</h3><p>严格说来，cassanda里面的batch称为LOGGED batch，而不应该是atomic batch。 Cassanda的策略始终是Eventually Consistent。而且由于cassandra里面add一个数据比delete一个数据要方便太多。所以cassandra会记一堆log啥的，而不是回滚。</p>
+<ol start="2">
+<li><a href="http://zqhxuyuan.github.io/2015/11/10/2015-11-10-Cassandra-Client/" target="_blank" rel="noopener">Cassandra Client查询优化</a>: 这篇有点看不明白。但是瞅着还挺好的，先放在这里。</li>
+</ol>
+<h3 id="batchstatement"><a class="header-anchor" href="#batchstatement"></a>BatchStatement</h3>
+<p>严格说来，cassanda里面的batch称为LOGGED batch，而不应该是atomic batch。 Cassanda的策略始终是Eventually Consistent。而且由于cassandra里面add一个数据比delete一个数据要方便太多。所以cassandra会记一堆log啥的，而不是回滚。</p>
 <ul>
 <li>cassandra是基于co-ordinator来实现的。batch在co-ordinator开始处理之前就留会写到其他node去</li>
 <li>如果batch里面的某些失败了，那么是不会回滚的。而是会不断尝试。</li>
 <li>LOGGER的batch操作会比unlogged的多做很多事情</li>
 </ul>
-<h4 id="BatchStatement-Type"><a href="#BatchStatement-Type" class="headerlink" title="BatchStatement.Type"></a>BatchStatement.Type</h4><p>这个是BatchStatement class的一个子类</p>
+<h4 id="batchstatement-type"><a class="header-anchor" href="#batchstatement-type"></a>BatchStatement.Type</h4>
+<p>这个是BatchStatement class的一个子类</p>
 <ul>
 <li><code>COUNTER</code>: A counter batch. Note that such batch is the only type that can contain counter operations and it can only contain these. 这个解释也太简单了。意思是说可以知道多少个成功了？</li>
-<li><code>LOGGED</code>:  <ul>
+<li><code>LOGGED</code>:
+<ul>
 <li>Cassandra will first write the batch to its distributed batch log to ensure the atomicity of the batch (atomicity meaning that if any statement in the batch succeeds, all will eventually succeed).这个解释也不太懂啊，到底怎么保证的。 ORZ</li>
 <li>默认调用<code>new BatchStatement()</code>就会创一个LOGGED type的Batch-</li>
 </ul>
 </li>
 <li><code>UNLOGGED</code>： A batch that doesn’t use Cassandra’s distributed batch log. Such batch are not guaranteed to be atomic.</li>
 </ul>
-<h4 id="LOGGED-Batch的过程"><a href="#LOGGED-Batch的过程" class="headerlink" title="LOGGED Batch的过程"></a>LOGGED Batch的过程</h4><p><img src="http://3.bp.blogspot.com/-dv9zIC84QD4/VNoNE0YXn8I/AAAAAAAAAX0/b3wtV48fuB0/s1600/Screenshot%2B2015-02-10%2B13.51.56.png" alt></p>
+<h4 id="logged-batch的过程"><a class="header-anchor" href="#logged-batch的过程"></a>LOGGED Batch的过程</h4>
+<p><img src="http://3.bp.blogspot.com/-dv9zIC84QD4/VNoNE0YXn8I/AAAAAAAAAX0/b3wtV48fuB0/s1600/Screenshot%2B2015-02-10%2B13.51.56.png" alt></p>
 <blockquote>
 <p>图片来自参考链接2</p>
+</blockquote>
 <ul>
-<li>所以从图片里面看出来，cassandra收到一个batch的request的时候：<ul>
+<li>所以从图片里面看出来，cassandra收到一个batch的request的时候：
+<ul>
 <li>由co-ordinator来处理，也就是种子节点</li>
 <li>会先写batch log，通常写两个node？</li>
 <li>然后再从种子节点写到各个分节点</li>
@@ -731,13 +780,14 @@
 <li>按照参考链接2里面的描述，performance hit，performance会下降的。因为多做了很多事情，而且是从种子节点分发出去的。</li>
 <li>结论就是：只有在为了保证一致性的情况下，才使用batch，而不是说改善performance</li>
 </ul>
-</blockquote>
-<h4 id="LOGGED-Batch-Fail"><a href="#LOGGED-Batch-Fail" class="headerlink" title="LOGGED Batch Fail"></a>LOGGED Batch Fail</h4><ul>
+<h4 id="logged-batch-fail"><a class="header-anchor" href="#logged-batch-fail"></a>LOGGED Batch Fail</h4>
+<ul>
 <li>首先不会回滚</li>
 <li>WriteTimeoutException with write type of BATCH_LOG. 说明在写batch log时候挂了。需要手动再发一下。</li>
 <li>WriteTimeoutException with the write type of BATCH。 在真正写request的时候出错了。cassandra会不断重复，直至成功。</li>
 </ul>
-<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><ol>
+<h3 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h3>
+<ol>
 <li><a href="https://stackoverflow.com/questions/22664129/atomic-batches-in-cassandra" target="_blank" rel="noopener">Atomic Batches in Cassandra</a></li>
 <li><a href="http://christopher-batey.blogspot.com/2015/03/cassandra-anti-pattern-cassandra-logged.html" target="_blank" rel="noopener">Cassandra anti-pattern: Logged batches</a></li>
 </ol>
@@ -883,67 +933,85 @@
         
           
             <p>这篇记录改成专门记录和多线程相关的数据类型</p>
-<h3 id="Executors"><a href="#Executors" class="headerlink" title="Executors"></a>Executors</h3><p>这个<code>Executors</code>没有继承或者实现任何其他类。就是说，他嘎嘣自己一个。实际上是一个工具类啊，更确切地说，像一个工厂类。主要功能是返回各种<code>ExecutorService</code>。<br>其实就是<code>new</code>出各种<code>ThreadPoolExecutor</code>。如下：</p>
+<h3 id="executors"><a class="header-anchor" href="#executors"></a>Executors</h3>
+<p>这个<code>Executors</code>没有继承或者实现任何其他类。就是说，他嘎嘣自己一个。实际上是一个工具类啊，更确切地说，像一个工厂类。主要功能是返回各种<code>ExecutorService</code>。<br>
+其实就是<code>new</code>出各种<code>ThreadPoolExecutor</code>。如下：</p>
 <pre><code>public static ExecutorService newSingleThreadExecutor() {
     return new FinalizableDelegatedExecutorService
         (new ThreadPoolExecutor(1, 1,
                                 0L, TimeUnit.MILLISECONDS,
                       new LinkedBlockingQueue&lt;Runnable&gt;()));
 }
-</code></pre><h3 id="ExecutorService"><a href="#ExecutorService" class="headerlink" title="ExecutorService"></a>ExecutorService</h3><h4 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h4><pre><code>public interface ExecutorService extends Executor
-</code></pre><ul>
+</code></pre>
+<h3 id="executorservice"><a class="header-anchor" href="#executorservice"></a>ExecutorService</h3>
+<h4 id="概览"><a class="header-anchor" href="#概览"></a>概览</h4>
+<pre><code>public interface ExecutorService extends Executor
+</code></pre>
+<ul>
 <li>所以首先来说，这是一个接口</li>
 <li>Executor接口很简单，只有一个execute方法。ExecutorService除了这一个方法，还增加了一些方法，增加的方法包括：<code>awaitTerminate</code>，<code>invokeAll</code>，<code>invokeAny</code>，<code>shutdown</code>，<code>shutdownNow</code>，<code>submit</code>等。</li>
 <li><a href="https://www.cnblogs.com/Steven0805/p/6393443.html" target="_blank" rel="noopener">Java线程池ExecutorService</a></li>
 </ul>
-<h4 id="几种常用线程池的具体实现"><a href="#几种常用线程池的具体实现" class="headerlink" title="几种常用线程池的具体实现"></a>几种常用线程池的具体实现</h4><ul>
-<li>然后有意思的来了：<ul>
+<h4 id="几种常用线程池的具体实现"><a class="header-anchor" href="#几种常用线程池的具体实现"></a>几种常用线程池的具体实现</h4>
+<ul>
+<li>然后有意思的来了：</li>
 <li>Java通过Executors class提供了好几种线程池，这就是我们常用的几种了。</li>
 <li><code>newFixedThreadPool</code>：就是说这个玩意，限定好了最大数目，核心数目，然后本质是一个<code>LinkedBlockingQueue</code>套了<code>runnable</code></li>
 </ul>
-</li>
-</ul>
-<pre><code>public static ExecutorService newFixedThreadPool(int nThreads) {
-   return new ThreadPoolExecutor(nThreads, nThreads,
-                                 0L, TimeUnit.MILLISECONDS,
-                                 new LinkedBlockingQueue&lt;Runnable&gt;());
-</code></pre><ul>
+<pre><code> public static ExecutorService newFixedThreadPool(int nThreads) {
+    return new ThreadPoolExecutor(nThreads, nThreads,
+                                  0L, TimeUnit.MILLISECONDS,
+                                  new LinkedBlockingQueue&lt;Runnable&gt;());
+</code></pre>
+<ul>
 <li><code>newCachedThreadPool</code>：</li>
 </ul>
-<pre><code>public static ExecutorService newCachedThreadPool() {
- return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
-                               60L, TimeUnit.SECONDS,
-                               new SynchronousQueue&lt;Runnable&gt;());    }
-</code></pre><ul>
+<pre><code>   public static ExecutorService newCachedThreadPool() {
+    return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
+                                  60L, TimeUnit.SECONDS,
+                                  new SynchronousQueue&lt;Runnable&gt;());    }
+</code></pre>
+<ul>
 <li>还有<code>newScheduledThreadPool</code>和<code>newSingleThreadExecutor</code></li>
 </ul>
-<h4 id="一些要点"><a href="#一些要点" class="headerlink" title="一些要点"></a>一些要点</h4><ul>
-<li><code>submit</code>与<code>execute</code>的区别： <ul>
+<h4 id="一些要点"><a class="header-anchor" href="#一些要点"></a>一些要点</h4>
+<ul>
+<li><code>submit</code>与<code>execute</code>的区别：
+<ul>
 <li>submit接受runnable和callable  有返回值。</li>
 <li>execute接受runnable 无返回值</li>
 <li>submit方便Exception处理</li>
 </ul>
 </li>
-<li>Runnable与Callable区别<ul>
+<li>Runnable与Callable区别
+<ul>
 <li>runnable接口实现的没有返回值的并发编程。</li>
 <li>callable实现的存在返回值的并发编程。使用Future获取返回值。</li>
 </ul>
 </li>
 </ul>
-<h3 id="ThreadPoolExecutor"><a href="#ThreadPoolExecutor" class="headerlink" title="ThreadPoolExecutor"></a>ThreadPoolExecutor</h3><pre><code>public abstract class AbstractExecutorService implements ExecutorService
+<h3 id="threadpoolexecutor"><a class="header-anchor" href="#threadpoolexecutor"></a>ThreadPoolExecutor</h3>
+<pre><code>public abstract class AbstractExecutorService implements ExecutorService
 public class ThreadPoolExecutor extends AbstractExecutorService    
-</code></pre><ul>
+</code></pre>
+<ul>
 <li>从上面可以看出来，ThreadPoolExecutor也是一种Executor，继承自AbstractExecutorService，自然也实现了ExecutorService.</li>
 <li><a href="https://www.cnblogs.com/zedosu/p/6665306.html" target="_blank" rel="noopener">ThreadPoolExecutor使用详解</a></li>
 </ul>
-<h4 id="ThreadPoolExecutor-shutdown"><a href="#ThreadPoolExecutor-shutdown" class="headerlink" title="ThreadPoolExecutor shutdown"></a>ThreadPoolExecutor shutdown</h4><p>  ThreadPoolExecutor 有三个shutdown方法： <code>shutdown</code>、<code>shutdownNow</code>、<code>awaitTermination</code></p>
+<h4 id="threadpoolexecutor-shutdown"><a class="header-anchor" href="#threadpoolexecutor-shutdown"></a>ThreadPoolExecutor shutdown</h4>
+<p>ThreadPoolExecutor 有三个shutdown方法： <code>shutdown</code>、<code>shutdownNow</code>、<code>awaitTermination</code></p>
 <ul>
-<li><code>shutdown</code>： 停止接收外部submit的任务；内部正在跑的任务和队列里等待的任务，会执行完。其实graceful shutdown的感觉啊</li>
-<li><code>shutdownNow</code>： 停止接收外部提交的任务；忽略队列里等待的任务；尝试将正在跑的任务interrupt中断；返回未执行的任务列表。强制中断。线程会收到InterupptedException.<ul>
+<li>
+<p><code>shutdown</code>： 停止接收外部submit的任务；内部正在跑的任务和队列里等待的任务，会执行完。其实graceful shutdown的感觉啊</p>
+</li>
+<li>
+<p><code>shutdownNow</code>： 停止接收外部提交的任务；忽略队列里等待的任务；尝试将正在跑的任务interrupt中断；返回未执行的任务列表。强制中断。线程会收到InterupptedException.</p>
+<ul>
 <li>需要注意的是这个方法仅仅是尝试中断线程，它通过的是调用interrupt方法，这种方法的作用有限，如果线程中没有sleep 、wait、Condition、定时锁等应用, interrupt()方法是无法中断当前的线程的。</li>
 </ul>
 </li>
-<li><p><code>awaitTermination</code>：只是加了一个wait时间的限制</p>
+<li>
+<p><code>awaitTermination</code>：只是加了一个wait时间的限制</p>
 <ul>
 <li>很多博客的里面，这个函数会返回boolean的返回值。就是说<code>awaitTermination</code>一般和<code>shutdown</code>搭配使用，<code>awaitTermination</code>来监控线程有没有结束好。结束了返回<code>true</code>，没结束返回<code>false</code></li>
 <li>这个函数还会抛出InterupptedException，但是看代码没太明白什么状况下会抛这个<code>exception</code>。但是是这个函数本身被interrupt了。</li>
@@ -951,13 +1019,15 @@ public class ThreadPoolExecutor extends AbstractExecutorService
 <li>在实际工作中解决bug碰到了这组函数。事实上就是要三个一起用的。<code>awaitTermination</code>只会返回一个状态，并不会做任何的事情。所以在这个函数返回false的时候应该要调用<code>shutdownNow</code>方法来进一步中断线程</li>
 </ul>
 </li>
-<li><p>参考链接</p>
+<li>
+<p>参考链接</p>
 <ul>
 <li><a href="https://blog.csdn.net/u012168222/article/details/52790400" target="_blank" rel="noopener">shutdown 方法</a></li>
 <li><a href="https://blog.csdn.net/zaozi/article/details/38854561#commentBox" target="_blank" rel="noopener">ExecutorService的正确关闭方法</a>： 这篇文章比喻得很清楚，只是不知道正确与否</li>
 </ul>
 </li>
-<li><ul>
+<li>
+<ul>
 <li><a href="https://blog.csdn.net/liwenxia626/article/details/80754886" target="_blank" rel="noopener">csdn的另一篇博客</a></li>
 </ul>
 </li>
@@ -1103,22 +1173,32 @@ public class ThreadPoolExecutor extends AbstractExecutorService
       
         
           
-            <h2 id="K8s概念"><a href="#K8s概念" class="headerlink" title="K8s概念"></a>K8s概念</h2><p>这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。</p>
-<h3 id="deployment"><a href="#deployment" class="headerlink" title="deployment"></a>deployment</h3><ul>
+            <h2 id="k8s概念"><a class="header-anchor" href="#k8s概念"></a>K8s概念</h2>
+<p>这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。</p>
+<h3 id="deployment"><a class="header-anchor" href="#deployment"></a>deployment</h3>
+<ul>
 <li>这几者的关系比较复杂。还需要进一步去看。目前先记录一下：deployment是实际的deploy，然后pod是根据replica里面的设定来起的。所以，如果将deployment删除掉，那么相应的pod和replica set都会没有</li>
 </ul>
-<h3 id="Pod"><a href="#Pod" class="headerlink" title="Pod"></a>Pod</h3><p>pod实在是K8s里面很重要的一个概念，也是很宽泛的一个概念。很多都可以是一个pod。</p>
+<h3 id="pod"><a class="header-anchor" href="#pod"></a>Pod</h3>
+<p>pod实在是K8s里面很重要的一个概念，也是很宽泛的一个概念。很多都可以是一个pod。</p>
 <ul>
-<li>All containers described as Pods.包括replication cotronller， service， deployment。<br><strong>不知道是不是所有的service类型都会被当做是pod，这一点有待确认</strong></li>
-<li>A pod is a collection of containers that makes up a particular application, for example Redis.<br><strong>这句没有很明白啊，不是说pod是一个container嘛，又变成一堆container了</strong></li>
+<li>All containers described as Pods.包括replication cotronller， service， deployment。<br>
+<strong>不知道是不是所有的service类型都会被当做是pod，这一点有待确认</strong></li>
+<li>A pod is a collection of containers that makes up a particular application, for example Redis.<br>
+<strong>这句没有很明白啊，不是说pod是一个container嘛，又变成一堆container了</strong></li>
 </ul>
-<h3 id="Services"><a href="#Services" class="headerlink" title="Services"></a>Services</h3><p>service是K8s里面另一个非常重要的概念，而且实在是有点复杂。类型比较多。K8s中文文档里面的名词解释还是比较清楚的，并且给出了为什么需要service，service和pod有什么区别</p>
+<h3 id="services"><a class="header-anchor" href="#services"></a>Services</h3>
+<p>service是K8s里面另一个非常重要的概念，而且实在是有点复杂。类型比较多。K8s中文文档里面的名词解释还是比较清楚的，并且给出了为什么需要service，service和pod有什么区别</p>
 <ul>
 <li>Kubernete Service 是一个定义了一组Pod的策略的抽象，我们也有时候叫做宏观服务。这些被服务标记的Pod都是（一般）通过label Selector决定的（下面我们会讲到我们为什么需要一个没有label selector的服务）</li>
 <li>A Kubernetes service is a named load balancer that proxies traffic to one or more containers.</li>
-<li>The proxy works even if the containers are on different nodes. Services proxy communicate within the cluster and rarely expose ports to an outside interface.When you launch a service it looks like you cannot connect using curl or netcat unless you start it as part of Kubernetes. The recommended approach is to have a LoadBalancer service to handle external communications.<br><strong>好吧，这段话基本没看懂，暂时就不管它了。service不仅仅是load balancer吧，难道每一种service都是load balancer的一种体现吗？</strong></li>
-<li>Kubernetes Services are an abstract that defines a policy and approach on how to access a set of Pods. The set of Pods accessed via a Service is based on a Label Selector.<br><strong>之前是有课程说service起起来时候需要配套一个Selector的。也可以和deployment一起用？ 反正不是独立存在的。</strong><br><strong>这个理解也不一定对啊，不独立，哪里能在get pods里面看到</strong></li>
-<li>Service有很多种，包括targetPort，经常用到的，还有：Cluster IP， NodePort ，External IPs， Load Balancer之类<ul>
+<li>The proxy works even if the containers are on different nodes. Services proxy communicate within the cluster and rarely expose ports to an outside interface.When you launch a service it looks like you cannot connect using curl or netcat unless you start it as part of Kubernetes. The recommended approach is to have a LoadBalancer service to handle external communications.<br>
+<strong>好吧，这段话基本没看懂，暂时就不管它了。service不仅仅是load balancer吧，难道每一种service都是load balancer的一种体现吗？</strong></li>
+<li>Kubernetes Services are an abstract that defines a policy and approach on how to access a set of Pods. The set of Pods accessed via a Service is based on a Label Selector.<br>
+<strong>之前是有课程说service起起来时候需要配套一个Selector的。也可以和deployment一起用？ 反正不是独立存在的。</strong><br>
+<strong>这个理解也不一定对啊，不独立，哪里能在get pods里面看到</strong></li>
+<li>Service有很多种，包括targetPort，经常用到的，还有：Cluster IP， NodePort ，External IPs， Load Balancer之类
+<ul>
 <li>Cluster IP的解释： Cluster IP is the default approach when creating a Kubernetes Service. The service is allocated an internal IP that other components can use to access the pods.</li>
 <li>Target Port的解释：Target ports allows us to separate the port the service is available on from the port the application is listening on. TargetPort is the Port which the application is configured to listen on. Port is how the application will be accessed from the outside.没看明白，target port是application的。还真是，Port才是外部访问的。那跟之前的expose命令里面的不一样嘛。回头得研究一下。试试看。</li>
 <li>NodePort的解释：the NodePort exposes the service on each Node’s IP via the defined static port. No matter which Node within the cluster is accessed, the service will be reachable based on the port number defined.应该是<code>get Nodes</code>的命令出来的Node吧。实体机？可能还有点不同。<code>get Nodes</code>命令给出的是hostname。上面可能有多个IP？</li>
@@ -1127,68 +1207,96 @@ public class ThreadPoolExecutor extends AbstractExecutorService
 <li>结合上面的，我觉得都需要啊。</li>
 </ul>
 </li>
-<li>参考链接<ul>
+<li>参考链接
+<ul>
 <li><a href="https://www.kubernetes.org.cn/kubernetes-services" target="_blank" rel="noopener">名词解释 Services</a></li>
 </ul>
 </li>
 </ul>
-<h3 id="configmap"><a href="#configmap" class="headerlink" title="configmap"></a>configmap</h3><ul>
+<h3 id="configmap"><a class="header-anchor" href="#configmap"></a>configmap</h3>
+<ul>
 <li><em>In Kubernetes, a ConfigMap is simply a container for storing configuration data. Other things, like pods, can access the data in a ConfigMap.</em></li>
 </ul>
-<h3 id="secrets"><a href="#secrets" class="headerlink" title="secrets"></a>secrets</h3><h3 id="PersistentVolumnClumns"><a href="#PersistentVolumnClumns" class="headerlink" title="PersistentVolumnClumns"></a>PersistentVolumnClumns</h3><ul>
+<h3 id="secrets"><a class="header-anchor" href="#secrets"></a>secrets</h3>
+<h3 id="persistentvolumnclumns"><a class="header-anchor" href="#persistentvolumnclumns"></a>PersistentVolumnClumns</h3>
+<ul>
 <li>PVC在定义的时候有个storageclass。这个storageclass是定义在<code>kube-system</code>的namespace里面的</li>
 <li>在安装时候，share C盘遇到了问题，用“docker for desktop”的默认的storageclass：hostpath来创PVC，就起不来了。于是在大神的教导下另创了一个StorageClass，将其映射到docker machine的虚机里面。解决了这个问题。</li>
 <li>在尝试解决这个C盘没法share的问题时候参考了很多资料。工作电脑由于系统关系，没有办法创建administrator group的user，所以绕不过去。</li>
-<li>参考的链接有：<ul>
+<li>参考的链接有：
+<ul>
 <li><a href="https://dotblogs.com.tw/swater111/2017/01/26/101009" target="_blank" rel="noopener">share C盘总结</a>：这篇资料还是不错的，里面汇总了可能遇到的好几个问题。</li>
 <li><a href="https://blogs.msdn.microsoft.com/stevelasker/2016/06/14/configuring-docker-for-windows-volumes/" target="_blank" rel="noopener">share C盘家里咋整</a></li>
 <li><a href="https://tomssl.com/2018/01/11/sharing-your-c-drive-with-docker-for-windows-when-using-azure-active-directory-azuread-aad/" target="_blank" rel="noopener">local user方法</a></li>
 </ul>
 </li>
 </ul>
-<h3 id="namespace"><a href="#namespace" class="headerlink" title="namespace"></a>namespace</h3><ul>
-<li>当团队或项目中具有许多用户时，可以考虑使用Namespace来区分。</li>
-<li>默认情况下，相同Namespace中的对象将具有相同的访问控制策略。</li>
-<li><p>Kubernetes从两个初始的Namespace开始：</p>
+<h3 id="namespace"><a class="header-anchor" href="#namespace"></a>namespace</h3>
 <ul>
-<li>default</li>
-<li>kube-system 由Kubernetes系统创建的对象的Namespace</li>
-<li><p>自己电脑上面装好的docker for desktop里面有以下的namespace</p>
+<li>
+<p>当团队或项目中具有许多用户时，可以考虑使用Namespace来区分。</p>
+</li>
+<li>
+<p>默认情况下，相同Namespace中的对象将具有相同的访问控制策略。</p>
+</li>
+<li>
+<p>Kubernetes从两个初始的Namespace开始：</p>
+<ul>
+<li>
+<p>default</p>
+</li>
+<li>
+<p>kube-system 由Kubernetes系统创建的对象的Namespace</p>
+</li>
+<li>
+<p>自己电脑上面装好的docker for desktop里面有以下的namespace</p>
 <pre><code>$ kubectl get namespaces
 NAME           STATUS    AGE
 default        Active    15d
 docker         Active    15d
 kube-public    Active    15d
 kube-system    Active    15d
-</code></pre></li>
+</code></pre>
+</li>
 </ul>
 </li>
-<li><p>大多数<code>Kubernetes</code>资源（例如<code>pod</code>、<code>services</code>、<code>replication controllers</code>或其他）都在某些Namespace中，但Namespace资源本身并不在Namespace中。而低级别资源（如<code>Node</code>和<code>persistentVolumes</code>）不在任何Namespace中。</p>
+<li>
+<p>大多数<code>Kubernetes</code>资源（例如<code>pod</code>、<code>services</code>、<code>replication controllers</code>或其他）都在某些Namespace中，但Namespace资源本身并不在Namespace中。而低级别资源（如<code>Node</code>和<code>persistentVolumes</code>）不在任何Namespace中。</p>
 </li>
-<li><code>Events</code>是一个例外：它们可能有也可能没有Namespace，具体取决于<code>Events</code>的对象。</li>
-<li>参考链接：<a href="http://docs.kubernetes.org.cn/242.html" target="_blank" rel="noopener">Kubernetes Namespaces</a></li>
+<li>
+<p><code>Events</code>是一个例外：它们可能有也可能没有Namespace，具体取决于<code>Events</code>的对象。</p>
+</li>
+<li>
+<p>参考链接：<a href="http://docs.kubernetes.org.cn/242.html" target="_blank" rel="noopener">Kubernetes Namespaces</a></p>
+</li>
 </ul>
-<h3 id="replication-controller"><a href="#replication-controller" class="headerlink" title="replication controller"></a>replication controller</h3><ul>
-<li>The replication controller defines how many instances should be running, the Docker Image to use, and a name to identify the service.<br><strong>决定多少个instance可以理解，不同的instance可以使用不同的image吗</strong></li>
+<h3 id="replication-controller"><a class="header-anchor" href="#replication-controller"></a>replication controller</h3>
+<ul>
+<li>The replication controller defines how many instances should be running, the Docker Image to use, and a name to identify the service.<br>
+<strong>决定多少个instance可以理解，不同的instance可以使用不同的image吗</strong></li>
 </ul>
-<h3 id="Ingress"><a href="#Ingress" class="headerlink" title="Ingress"></a>Ingress</h3><ul>
+<h3 id="ingress"><a class="header-anchor" href="#ingress"></a>Ingress</h3>
+<ul>
 <li>Ingress：An Ingress enables inbound connections to the cluster, allowing external traffic to reach the correct Pod.前一句没看懂。</li>
 <li>Ingress enables externally-reachable urls, load balance traffic, terminate SSL, offer name based virtual hosting for a Kubernetes cluster.</li>
 <li>通常情况下，service和pod的IP仅可在集群内部访问。集群外部的请求需要通过负载均衡转发到service在Node上暴露的NodePort上，然后再由kube-proxy将其转发给相关的Pod。而Ingress就是为进入集群的请求提供路由规则的集合</li>
-<li>Ingress.yaml里面的信息不可能完全列这里，有以下一些元素和类型:<ul>
+<li>Ingress.yaml里面的信息不可能完全列这里，有以下一些元素和类型:
+<ul>
 <li>Kind: namespace 从这边看ingress的实质是namespace？</li>
 <li>Kind：secret  type：Opaque，里面的数据看起来是证书形式 The default server secret is a self-signed certificate for other Nginx example SSL connections and is required by the Nginx Default Example.</li>
-<li>Kind：ServiceAccount: The ServiceAccount defines the account with a set of permissions on how to access the cluster to access the defined Ingress Rules. </li>
+<li>Kind：ServiceAccount: The ServiceAccount defines the account with a set of permissions on how to access the cluster to access the defined Ingress Rules.</li>
 <li>Kind：ConfigMap</li>
 <li>现在看来，上面这一段有点误解。因为当时是学习k8s的在线training，我想这个Ingress.yaml只不过是部署一个元素。真正起作用的是ingress-rules.yaml文件。这个才是如何生成一个ingress。</li>
 </ul>
 </li>
-<li>还有个ingress-rules的yaml文件。里面的内容如下：<ul>
+<li>还有个ingress-rules的yaml文件。里面的内容如下：
+<ul>
 <li>Kind: Ingress 这个rule就是rule，哪个endPoint进哪个deployment</li>
 <li>每个Ingress都需要配置rules，目前Kubernetes仅支持http规则。所以最关键的就是rule</li>
 </ul>
 </li>
-<li>参考链接：<ul>
+<li>参考链接：
+<ul>
 <li><a href="https://www.kubernetes.org.cn/ingress" target="_blank" rel="noopener">官方文档 名词解释：Ingress</a></li>
 </ul>
 </li>
@@ -1334,14 +1442,18 @@ kube-system    Active    15d
       
         
           
-            <h2 id="Helm"><a href="#Helm" class="headerlink" title="Helm"></a>Helm</h2><p><code>Helm</code>入门篇。感觉有点类似<code>maven</code>，总归有这样一个管理工具。其实是想看<code>Ingress</code>的，可是不看<code>Helm</code>，yaml看不懂呀。只好滚回来看Helm。</p>
-<h3 id="Helm是什么"><a href="#Helm是什么" class="headerlink" title="Helm是什么"></a>Helm是什么</h3><ul>
+            <h2 id="helm"><a class="header-anchor" href="#helm"></a>Helm</h2>
+<p><code>Helm</code>入门篇。感觉有点类似<code>maven</code>，总归有这样一个管理工具。其实是想看<code>Ingress</code>的，可是不看<code>Helm</code>，yaml看不懂呀。只好滚回来看Helm。</p>
+<h3 id="helm是什么"><a class="header-anchor" href="#helm是什么"></a>Helm是什么</h3>
+<ul>
 <li><code>Helm</code>是在Kubernetes中安装部署容器的一个工具。</li>
 <li><em>Helm is a tool for managing Kubernetes charts.</em> 所以Charts可能是K8s的一个概念。中文的博客不一定对。</li>
-<li><code>Helm</code>由<code>Helm</code>客户端、<code>Tiller</code>服务器端和<code>Chart</code>仓库所组成<ul>
+<li><code>Helm</code>由<code>Helm</code>客户端、<code>Tiller</code>服务器端和<code>Chart</code>仓库所组成
+<ul>
 <li><code>Helm</code>客户端： 客户端交互</li>
 <li><code>Tiller</code>服务器端： 装在k8s的cluster里面，管理<code>chart</code></li>
-<li><code>Chart</code>仓库：创建<code>Kubernetes</code>应用实例的信息集合<ul>
+<li><code>Chart</code>仓库：创建<code>Kubernetes</code>应用实例的信息集合
+<ul>
 <li><code>Chart</code>由两个部分组成，第一个部分是A description of the package (Chart.yaml)</li>
 <li>One or more templates, which contain Kubernetes manifest files。这个templates的话，应该也是yaml文件吧。</li>
 </ul>
@@ -1349,14 +1461,25 @@ kube-system    Active    15d
 </ul>
 </li>
 </ul>
-<h3 id="常用的helm命令"><a href="#常用的helm命令" class="headerlink" title="常用的helm命令"></a>常用的helm命令</h3><ul>
-<li><code>helm status &lt;namespace&gt;</code> 查看<code>Helm</code>的状态</li>
-<li><p><code>helm install</code>: 实际将helm里面的内容安装到当前的k8s上面。比如我创了一个<code>configMap.yaml</code>的<code>templete</code>，那么就会安装上去。</p>
+<h3 id="常用的helm命令"><a class="header-anchor" href="#常用的helm命令"></a>常用的helm命令</h3>
 <ul>
-<li>如果只是想看看template的rending，那么使用命令<code>helm install ./mychart --debug --dry-run</code></li>
-<li>如果想传值进去，可以使用<code>-f</code> 命令，比如<code>helm install -f myvals.yaml ./mychart</code>。这样传的值，可以用<code>.Value</code>来访问</li>
-<li>单独传值是<code>--set foo=bar</code>，<code>--set</code>比文件的级别高，可以覆盖文件里面的值</li>
-<li><p><code>helm install stable/drupal --set image=my-registry/drupal:0.1.0 --set livenessProbe.exec.command=[cat,docroot/CHANGELOG.txt] --set livenessProbe.httpGet=null</code> 这条命令里面将<code>livenessProbe.httpGet</code>删除掉了。</p>
+<li>
+<p><code>helm status &lt;namespace&gt;</code> 查看<code>Helm</code>的状态</p>
+</li>
+<li>
+<p><code>helm install</code>: 实际将helm里面的内容安装到当前的k8s上面。比如我创了一个<code>configMap.yaml</code>的<code>templete</code>，那么就会安装上去。</p>
+<ul>
+<li>
+<p>如果只是想看看template的rending，那么使用命令<code>helm install ./mychart --debug --dry-run</code></p>
+</li>
+<li>
+<p>如果想传值进去，可以使用<code>-f</code> 命令，比如<code>helm install -f myvals.yaml ./mychart</code>。这样传的值，可以用<code>.Value</code>来访问</p>
+</li>
+<li>
+<p>单独传值是<code>--set foo=bar</code>，<code>--set</code>比文件的级别高，可以覆盖文件里面的值</p>
+</li>
+<li>
+<p><code>helm install stable/drupal --set image=my-registry/drupal:0.1.0 --set livenessProbe.exec.command=[cat,docroot/CHANGELOG.txt] --set livenessProbe.httpGet=null</code> 这条命令里面将<code>livenessProbe.httpGet</code>删除掉了。</p>
 <pre><code>$ helm install ./mychart
  NAME:   guiding-ocelot
  LAST DEPLOYED: Mon Aug 19 17:23:00 2019
@@ -1367,26 +1490,35 @@ kube-system    Active    15d
  ==&gt; v1/ConfigMap
  NAME               DATA  AGE
  mychart-configmap  1     0s
-</code></pre></li>
+</code></pre>
+</li>
 </ul>
 </li>
-<li><p><code>helm get manifest &lt;release name&gt;</code>: 比如上面的这个<code>guiding-ocelot</code></p>
-<pre><code>$ helm get manifest guiding-ocelot
+<li>
+<p><code>helm get manifest &lt;release name&gt;</code>: 比如上面的这个<code>guiding-ocelot</code></p>
+<pre><code> $ helm get manifest guiding-ocelot
 
----
- # Source: myChart/templates/configmap.yaml
- apiVersion: v1
- kind: ConfigMap
- metadata:
-   name: mychart-configmap
- data:
-   myvalue: &quot;Hello World&quot;
-</code></pre></li>
-<li><p><code>helm init</code>:安装tiller服务器端</p>
+ ---
+  # Source: myChart/templates/configmap.yaml
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: mychart-configmap
+  data:
+    myvalue: &quot;Hello World&quot;
+</code></pre>
 </li>
-<li><code>helm delete --purge &lt;release name&gt;</code></li>
-<li><code>helm repo add &lt;repo name&gt; &lt;repo address&gt;</code></li>
-<li><p><code>helm create &lt;chart name&gt;</code>: 生成一个目录</p>
+<li>
+<p><code>helm init</code>:安装tiller服务器端</p>
+</li>
+<li>
+<p><code>helm delete --purge &lt;release name&gt;</code></p>
+</li>
+<li>
+<p><code>helm repo add &lt;repo name&gt; &lt;repo address&gt;</code></p>
+</li>
+<li>
+<p><code>helm create &lt;chart name&gt;</code>: 生成一个目录</p>
 <pre><code>$ find myChart/
   myChart/
   myChart/.helmignore
@@ -1401,10 +1533,14 @@ kube-system    Active    15d
   myChart/templates/tests/test-connection.yaml
   myChart/templates/_helpers.tpl
   myChart/values.yaml
-</code></pre></li>
+</code></pre>
+</li>
 </ul>
-<h3 id="Helm-Chart"><a href="#Helm-Chart" class="headerlink" title="Helm Chart"></a>Helm Chart</h3><h3 id="Helm-Template"><a href="#Helm-Template" class="headerlink" title="Helm Template"></a>Helm Template</h3><ul>
-<li>参考以上，默认生成一套chart的时候会生成template目录。<ul>
+<h3 id="helm-chart"><a class="header-anchor" href="#helm-chart"></a>Helm Chart</h3>
+<h3 id="helm-template"><a class="header-anchor" href="#helm-template"></a>Helm Template</h3>
+<ul>
+<li>参考以上，默认生成一套chart的时候会生成template目录。
+<ul>
 <li><em>NOTES.txt: The “help text” for your chart. This will be displayed to your users when they run helm install.</em></li>
 <li><em>deployment.yaml: A basic manifest for creating a Kubernetes deployment</em></li>
 <li><em>service.yaml: A basic manifest for creating a service endpoint for your deployment</em></li>
@@ -1412,131 +1548,189 @@ kube-system    Active    15d
 </ul>
 </li>
 </ul>
-<h4 id="Template-Values"><a href="#Template-Values" class="headerlink" title="Template Values"></a>Template Values</h4><ul>
-<li><p>E.g. <code>name：</code>用<code>release name</code> 来做前缀。话说这个<code>release name</code>在哪里定义的，我没找到。</p>
+<h4 id="template-values"><a class="header-anchor" href="#template-values"></a>Template Values</h4>
 <ul>
-<li><em>So we could read <code>.Release.Name</code> as “start at the top namespace, find the <code>Release</code> object, then look inside of it for an object called <code>Name</code>”.</em></li>
-<li><p><code>.Release</code>表示<code>Release</code>是顶级的object</p>
+<li>
+<p>E.g. <code>name：</code>用<code>release name</code> 来做前缀。话说这个<code>release name</code>在哪里定义的，我没找到。</p>
+<ul>
+<li>
+<p><em>So we could read <code>.Release.Name</code> as “start at the top namespace, find the <code>Release</code> object, then look inside of it for an object called <code>Name</code>”.</em></p>
+</li>
+<li>
+<p><code>.Release</code>表示<code>Release</code>是顶级的object</p>
 <pre><code>apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-configmap
 data:
   myvalue: &quot;Hello World&quot;
-</code></pre></li>
+</code></pre>
+</li>
 </ul>
 </li>
-<li><p>顶级的自带的object包括： <code>Release</code>,<code>Value</code>,<code>Chart</code>,<code>Template</code>, <code>Capabilities</code>还有<code>File</code>。后两个还不是很理解</p>
+<li>
+<p>顶级的自带的object包括： <code>Release</code>,<code>Value</code>,<code>Chart</code>,<code>Template</code>, <code>Capabilities</code>还有<code>File</code>。后两个还不是很理解</p>
 <ul>
-<li><code>Release</code>里面包含很多变量，有<code>Release.Time</code>,<code>Release.Namespace</code>, <code>Release.Revision</code>,详情可以看官方文档</li>
-<li><code>Values</code>里面的其实是从<code>values.yaml</code>里面来的</li>
-<li><p><code>Chart</code> 里面的就是<code>chart.yaml</code>来的。比如</p>
+<li>
+<p><code>Release</code>里面包含很多变量，有<code>Release.Time</code>,<code>Release.Namespace</code>, <code>Release.Revision</code>,详情可以看官方文档</p>
+</li>
+<li>
+<p><code>Values</code>里面的其实是从<code>values.yaml</code>里面来的</p>
+</li>
+<li>
+<p><code>Chart</code> 里面的就是<code>chart.yaml</code>来的。比如</p>
 <pre><code>{{.Chart.Name}}-{{.Chart.Version}} 
-</code></pre></li>
+</code></pre>
+</li>
 </ul>
 </li>
 </ul>
-<h4 id="Template-Functions"><a href="#Template-Functions" class="headerlink" title="Template Functions"></a>Template Functions</h4><ul>
-<li><em>Helm has over 60 available functions.</em> 其中一些是调用<code>GO</code>语言里面<code>tamplate</code>定义的函数。在<a href="https://godoc.org/text/template" target="_blank" rel="noopener">Go Template Function</a>可以查询到</li>
-<li>其实<code>Helm Template</code>并不是Helm自身做出来的，其实是从Go这些来的。就是个拿来再集成一下。并不是Helm自己的。</li>
-<li><p><code>Helm functions</code>支持<code>pipeline</code>。这里的<code>pipeline</code>和<code>Unix</code>里面的同样含义。如下面的例子里面的：</p>
+<h4 id="template-functions"><a class="header-anchor" href="#template-functions"></a>Template Functions</h4>
+<ul>
+<li>
+<p><em>Helm has over 60 available functions.</em> 其中一些是调用<code>GO</code>语言里面<code>tamplate</code>定义的函数。在<a href="https://godoc.org/text/template" target="_blank" rel="noopener">Go Template Function</a>可以查询到</p>
+</li>
+<li>
+<p>其实<code>Helm Template</code>并不是Helm自身做出来的，其实是从Go这些来的。就是个拿来再集成一下。并不是Helm自己的。</p>
+</li>
+<li>
+<p><code>Helm functions</code>支持<code>pipeline</code>。这里的<code>pipeline</code>和<code>Unix</code>里面的同样含义。如下面的例子里面的：</p>
 <pre><code>food: {{ .Values.favorite.food | upper | quote }}
 drink: {{ .Values.favorite.drink | repeat 5 | quote }}
-</code></pre></li>
-</ul>
-<h5 id="常用函数"><a href="#常用函数" class="headerlink" title="常用函数"></a>常用函数</h5><ul>
-<li><p><code>default</code>：用来指定默认值</p>
-<pre><code>drink: {{ .Values.favorite.drink | default "tea" | quote }}
-</code></pre></li>
-<li><p><code>toyaml</code>: 转成yaml格式 <strong><em>其实不明白啥叫做Yaml格式</em></strong></p>
+</code></pre>
 </li>
 </ul>
-<h5 id="函数控制和操作运算符"><a href="#函数控制和操作运算符" class="headerlink" title="函数控制和操作运算符"></a>函数控制和操作运算符</h5><ul>
-<li><code>Helm Template</code>的函数是可以引入逻辑控制的 </li>
-<li>运算符有：<ul>
+<h5 id="常用函数"><a class="header-anchor" href="#常用函数"></a>常用函数</h5>
+<ul>
+<li>
+<p><code>default</code>：用来指定默认值</p>
+<pre><code>  drink: {{ .Values.favorite.drink | default "tea" | quote }}
+</code></pre>
+</li>
+<li>
+<p><code>toyaml</code>: 转成yaml格式 <strong><em>其实不明白啥叫做Yaml格式</em></strong></p>
+</li>
+</ul>
+<h5 id="函数控制和操作运算符"><a class="header-anchor" href="#函数控制和操作运算符"></a>函数控制和操作运算符</h5>
+<ul>
+<li><code>Helm Template</code>的函数是可以引入逻辑控制的</li>
+<li>运算符有：
+<ul>
 <li><code>if/else</code> for creating conditional blocks： <code>if</code>判断有点不一样的是空的字符串或者空的集合也会被认为是<code>false</code>，还有数字0</li>
 <li><code>with</code> to specify a scope</li>
 <li><code>range</code> which provides a “for each”-style loop</li>
 </ul>
 </li>
 </ul>
-<h6 id="Function-if-else"><a href="#Function-if-else" class="headerlink" title="Function if/else"></a>Function if/else</h6><ul>
-<li><p>逻辑稍微有点难理解。就是<code>if</code>语句里面的内容是判断条件成立的时候包含的。然后关系运算符在前，这里是<code>or</code>运算符</p>
-<pre><code>{{/* include the body of this if statement when the variable .Values.anUnsetVariable is set or .values.aSetVariable is not set */}}
-{{ if or .Values.anUnsetVariable (not    .Values.aSetVariable) }}
- {{ ... }}
-{{ end }}
-</code></pre></li>
+<h6 id="function-if-else"><a class="header-anchor" href="#function-if-else"></a>Function if/else</h6>
+<ul>
+<li>
+<p>逻辑稍微有点难理解。就是<code>if</code>语句里面的内容是判断条件成立的时候包含的。然后关系运算符在前，这里是<code>or</code>运算符</p>
+<pre><code>  {{/* include the body of this if statement when the variable .Values.anUnsetVariable is set or .values.aSetVariable is not set */}}
+  {{ if or .Values.anUnsetVariable (not    .Values.aSetVariable) }}
+   {{ ... }}
+  {{ end }}
+</code></pre>
+</li>
 </ul>
-<h6 id="Function-Range"><a href="#Function-Range" class="headerlink" title="Function Range"></a>Function Range</h6><ul>
-<li><p><code>range</code>相当于是<code>foreach</code>,比如以下是一个<code>slice</code>，其实就是列表。</p>
+<h6 id="function-range"><a class="header-anchor" href="#function-range"></a>Function Range</h6>
+<ul>
+<li>
+<p><code>range</code>相当于是<code>foreach</code>,比如以下是一个<code>slice</code>，其实就是列表。</p>
 <pre><code>pizzaToppings:
  - mushrooms
  - cheese
  - peppers
  - onions
-</code></pre><p> 我们可以这样操作：</p>
-<pre><code>toppings: |-
- {{- range .Values.pizzaToppings }}
- - {{ . | title | quote }}
- {{- end }}
-</code></pre><ul>
+</code></pre>
+<p>我们可以这样操作：</p>
+<pre><code> toppings: |-
+  {{- range .Values.pizzaToppings }}
+  - {{ . | title | quote }}
+  {{- end }}
+</code></pre>
+<ul>
 <li>以上<code>range</code>函数遍历<code>pizzaToppings</code>里面的每个数值， <code>.</code>代表其中每个数值，传递给<code>title</code>和<code>quote</code>函数。</li>
 <li><code>|-</code>代表以下内容是一个长字符串。因为<code>Configmap</code>只支持键值对。</li>
 </ul>
 </li>
-<li><p><code>range</code>也可以和<code>list</code>合并起来用。如下：</p>
-<pre><code>sizes: |-
-{{- range list "small" "medium" "large" }}
- - {{ . }}
-{{- end }}
-</code></pre><ul>
+<li>
+<p><code>range</code>也可以和<code>list</code>合并起来用。如下：</p>
+<pre><code> sizes: |-
+ {{- range list "small" "medium" "large" }}
+  - {{ . }}
+ {{- end }}
+</code></pre>
+<ul>
 <li>引号里面的组成一个字符串，然后再遍历字符串</li>
 </ul>
 </li>
-<li><p><code>range</code>也可以和其他集合函数联合使用，比如<code>dict</code>和<code>map</code></p>
+<li>
+<p><code>range</code>也可以和其他集合函数联合使用，比如<code>dict</code>和<code>map</code></p>
 </li>
 </ul>
-<h6 id="Function-with"><a href="#Function-with" class="headerlink" title="Function with"></a>Function with</h6><ul>
-<li><code>.</code>指的是当前作用域，比如<code>.Values</code>，就是在当前作用域的<code>Value</code>里面</li>
-<li><p>使用<code>with</code>函数可以改变作用域，用法和<code>if</code>类似。如下：</p>
+<h6 id="function-with"><a class="header-anchor" href="#function-with"></a>Function with</h6>
+<ul>
+<li>
+<p><code>.</code>指的是当前作用域，比如<code>.Values</code>，就是在当前作用域的<code>Value</code>里面</p>
+</li>
+<li>
+<p>使用<code>with</code>函数可以改变作用域，用法和<code>if</code>类似。如下：</p>
 <pre><code>{{ with PIPELINE }}
 # restricted scope
 {{ end }}
-</code></pre></li>
+</code></pre>
+</li>
 </ul>
-<h5 id="空格和空行"><a href="#空格和空行" class="headerlink" title="空格和空行"></a>空格和空行</h5><ul>
-<li><p>这就是为啥每行都有个&#123;&#123;-的缘故，瞅着一堆<code>-</code>实在无语啊</p>
+<h5 id="空格和空行"><a class="header-anchor" href="#空格和空行"></a>空格和空行</h5>
 <ul>
-<li><p>以下的语句会产生一个<code>Json</code>字段<code>mug：true</code>并且没有空行</p>
+<li>
+<p>这就是为啥每行都两个大括号加小横线的缘故，瞅着一堆小横线实在无语啊。这个两个大括号加小横线markdown还打不出来，OMG 😕</p>
+<ul>
+<li>
+<p>以下的语句会产生一个<code>Json</code>字段<code>mug：true</code>并且没有空行</p>
 <pre><code>{{ if and .Values.favorite.drink (eq .Values.favorite.drink "coffee") }}mug: true{{ end }}
-</code></pre></li>
-<li><p>但是如果是以下语句就会产生在这个字段之前生成一个空行。估计<code>helm</code>就是简单的将<code>if</code>语句的一行给用空格替代了</p>
+</code></pre>
+</li>
+<li>
+<p>但是如果是以下语句就会产生在这个字段之前生成一个空行。估计<code>helm</code>就是简单的将<code>if</code>语句的一行给用空格替代了</p>
 <pre><code>{{if eq .Values.favorite.drink "coffee"}}
  mug: true
 {{end}}
-</code></pre></li>
-<li><p>所以上面的语句其实较为清晰，却必须用以下样式替代，这样<code>Helm</code>就知道将这边的空格都删除掉</p>
+</code></pre>
+</li>
+<li>
+<p>所以上面的语句其实较为清晰，却必须用以下样式替代，这样<code>Helm</code>就知道将这边的空格都删除掉</p>
 <pre><code>{{- if eq .Values.favorite.drink "coffee"}}
  mug: true
 {{- end}}
-</code></pre></li>
-<li><p>For the details on whitespace control in templates,see the Official <a href="https://godoc.org/text/template" target="_blank" rel="noopener">Go template documentation</a></p>
+</code></pre>
+</li>
+<li>
+<p>For the details on whitespace control in templates,see the Official <a href="https://godoc.org/text/template" target="_blank" rel="noopener">Go template documentation</a></p>
 </li>
 </ul>
 </li>
-<li><p>也可以更为精确得控制空格，如下。这种用法在代码里也看到很多。</p>
+<li>
+<p>也可以更为精确得控制空格，如下。这种用法在代码里也看到很多。</p>
 <pre><code>{{indent 2 "mug:true"}}
-</code></pre></li>
-<li><p>还可以用<code>*</code>符号，<em>Just for the sake of making this point clear, let’s adjust the above, and substitute an <code>*</code> for each whitespace that will be deleted following this rule. an <code>*</code> at the end of the line indicates a newline character that would be removed</em> 没看的太明白。这个<code>*</code>是干嘛用的。</p>
+</code></pre>
+</li>
+<li>
+<p>还可以用<code>*</code>符号，<em>Just for the sake of making this point clear, let’s adjust the above, and substitute an <code>*</code> for each whitespace that will be deleted following this rule. an <code>*</code> at the end of the line indicates a newline character that would be removed</em> 没看的太明白。这个<code>*</code>是干嘛用的。</p>
 <pre><code>**{{- if eq .Values.favorite.drink "coffee"}}
   mug: true*
 **{{- end}}
-</code></pre></li>
+</code></pre>
+</li>
 </ul>
-<h4 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h4><ul>
-<li>变量是用<code>:=</code>来定义的。</li>
-<li><p>如下。原本在使用了<code>with</code>之后作用域已经改变了，找不到<code>Release</code>了，但是使用了变量，就又可以访问了。</p>
+<h4 id="变量"><a class="header-anchor" href="#变量"></a>变量</h4>
+<ul>
+<li>
+<p>变量是用<code>:=</code>来定义的。</p>
+</li>
+<li>
+<p>如下。原本在使用了<code>with</code>之后作用域已经改变了，找不到<code>Release</code>了，但是使用了变量，就又可以访问了。</p>
 <pre><code>data:
 myvalue: &quot;Hello World&quot;
 {{- $relname := .Release.Name -}}
@@ -1545,47 +1739,67 @@ drink: {{ .drink | default "tea" | quote }}
 food: {{ .food | upper | quote }}
 release: {{ $relname }}
 {{- end }}
-</code></pre></li>
-<li><p>可以和<code>range</code>结合起来用。</p>
+</code></pre>
+</li>
+<li>
+<p>可以和<code>range</code>结合起来用。</p>
 <ul>
-<li><p>遍历一个列表。<code>index</code>变量是下标，从<code>0</code>开始</p>
+<li>
+<p>遍历一个列表。<code>index</code>变量是下标，从<code>0</code>开始</p>
 <pre><code>toppings: |-
   {{- range $index, $topping := .Values.pizzaToppings }}
     {{ $index }}: {{ $topping }}
   {{- end }}
-</code></pre></li>
-<li><p>键值对。注意<code>Values.favorite</code>是键值对的集合。所以第一次是一对，第二次是第二对</p>
+</code></pre>
+</li>
+<li>
+<p>键值对。注意<code>Values.favorite</code>是键值对的集合。所以第一次是一对，第二次是第二对</p>
 <pre><code>{{- range $key, $val := .Values.favorite }}
   {{ $key }}: {{ $val | quote }}
 {{- end}}
-</code></pre></li>
+</code></pre>
+</li>
 </ul>
 </li>
-<li><p>变量是有作用域的。顶层声明的就是整个<code>template</code>可用，<code>range</code>里面声明的，就是<code>range</code>里面可用。比如上面这个例子，出了<code>end</code>就没用了。</p>
+<li>
+<p>变量是有作用域的。顶层声明的就是整个<code>template</code>可用，<code>range</code>里面声明的，就是<code>range</code>里面可用。比如上面这个例子，出了<code>end</code>就没用了。</p>
 </li>
-<li><strong>有一个特殊的变量 <code>$</code>，代表根作用域！</strong></li>
+<li>
+<p><strong>有一个特殊的变量 <code>$</code>，代表根作用域！</strong></p>
+</li>
 </ul>
-<h4 id="已命名的Template"><a href="#已命名的Template" class="headerlink" title="已命名的Template"></a>已命名的Template</h4><p>  就是介绍一下如何引用啊，命名之类。需要注意的是名字是全局的，不管这个<code>template</code>是不是包在其他的<code>template</code>里面。<br>  __需要的一点是，名字中有下划线的<code>template</code>是不会被部署到<code>kubernate</code>上面的。但是可以被其他<code>template</code>引用</p>
-<h5 id="define"><a href="#define" class="headerlink" title="define"></a>define</h5><ul>
-<li><p>使用<code>define</code>可以在一个<code>template</code>内部创建一个新的<code>template</code>。语法如下：</p>
+<h4 id="已命名的template"><a class="header-anchor" href="#已命名的template"></a>已命名的Template</h4>
+<p>就是介绍一下如何引用啊，命名之类。需要注意的是名字是全局的，不管这个<code>template</code>是不是包在其他的<code>template</code>里面。<br>
+__需要的一点是，名字中有下划线的<code>template</code>是不会被部署到<code>kubernate</code>上面的。但是可以被其他<code>template</code>引用</p>
+<h5 id="define"><a class="header-anchor" href="#define"></a>define</h5>
+<ul>
+<li>
+<p>使用<code>define</code>可以在一个<code>template</code>内部创建一个新的<code>template</code>。语法如下：</p>
 <pre><code>{{- define "mychart.labels" }}
   labels:
     generator: helm
     date: {{ now | htmlDate }}
 {{- end }}
-</code></pre></li>
+</code></pre>
+</li>
 <li></li>
 </ul>
-<h5 id="template和include"><a href="#template和include" class="headerlink" title="template和include"></a>template和include</h5><ul>
-<li><p><code>template</code>感觉和<code>include</code>有点相似。是调用用<code>define</code>定义的<code>template</code>的。如下：</p>
+<h5 id="template和include"><a class="header-anchor" href="#template和include"></a>template和include</h5>
+<ul>
+<li>
+<p><code>template</code>感觉和<code>include</code>有点相似。是调用用<code>define</code>定义的<code>template</code>的。如下：</p>
 <pre><code>metadata:
   name: {{ .Release.Name }}-configmap
   {{- template "mychart.labels" }}
-</code></pre></li>
-<li><p>通常这类<code>template</code>会被放在<code>_helpers.tpl</code>文件里面。我的感觉是，这类<code>template</code>很像<code>util</code>函数，然后放在一个集中的文件里面。一般会在前面加一个注释，如下的格式：</p>
+</code></pre>
+</li>
+<li>
+<p>通常这类<code>template</code>会被放在<code>_helpers.tpl</code>文件里面。我的感觉是，这类<code>template</code>很像<code>util</code>函数，然后放在一个集中的文件里面。一般会在前面加一个注释，如下的格式：</p>
 <pre><code>`{{/* ... */}}`
-</code></pre></li>
-<li><p>但是还有一个问题，如上面例子的调用，并没有给任何的作用域，而<code>template</code>的默认作用域为空。如下的<code>template</code>里面的<code>.Chart</code>是无法生效的。所以调用时候应该用以下形式。这样传入一个作用域就可以了。 </p>
+</code></pre>
+</li>
+<li>
+<p>但是还有一个问题，如上面例子的调用，并没有给任何的作用域，而<code>template</code>的默认作用域为空。如下的<code>template</code>里面的<code>.Chart</code>是无法生效的。所以调用时候应该用以下形式。这样传入一个作用域就可以了。</p>
 <pre><code>{{/* Generate basic labels */}}
   {{- define "mychart.labels" }}
     labels:
@@ -1594,24 +1808,31 @@ release: {{ $relname }}
       chart: {{ .Chart.Name }}
       version: {{ .Chart.Version }}
   {{- end }}
-</code></pre></li>
-</ul>
-<pre><code>{{- template "mychart.labels" .}}
-</code></pre><ul>
-<li><p>还有一个问题，<code>template</code>有点类似<code>inline</code>，就是简单的将内容展开，并不考虑缩进的问题。为此，引入了<code>include</code>， <code>include</code>可以用<code>pipeline</code>来指定缩进。推荐使用<code>include</code>来替代<code>template</code></p>
+  
+
+{{- template "mychart.labels" .}}
+</code></pre>
+</li>
+<li>
+<p>还有一个问题，<code>template</code>有点类似<code>inline</code>，就是简单的将内容展开，并不考虑缩进的问题。为此，引入了<code>include</code>， <code>include</code>可以用<code>pipeline</code>来指定缩进。推荐使用<code>include</code>来替代<code>template</code></p>
 <pre><code>{{- include "mychart.app" . | nindent 2 }}
-</code></pre></li>
+</code></pre>
+</li>
 </ul>
-<h4 id="引如文件"><a href="#引如文件" class="headerlink" title="引如文件"></a>引如文件</h4><ul>
-<li><p><code>.File</code>可以将文件包含进来。需要注意的有，<code>template</code>目录下面的文件没法被包含。如下例子。<code>.File.Get</code>就是读取文件的内容的函数</p>
-<pre><code>{{- $files := .Files }}
-{{- range list "config1.toml" "config2.toml" "config3.toml" }}
- {{ . }}: |-
-   {{ $files.Get . }}
-{{- end }}
-</code></pre></li>
+<h4 id="引用文件"><a class="header-anchor" href="#引用文件"></a>引用文件</h4>
+<ul>
+<li>
+<p><code>.File</code>可以将文件包含进来。需要注意的有，<code>template</code>目录下面的文件没法被包含。如下例子。<code>.File.Get</code>就是读取文件的内容的函数</p>
+<pre><code> {{- $files := .Files }}
+ {{- range list "config1.toml" "config2.toml" "config3.toml" }}
+  {{ . }}: |-
+    {{ $files.Get . }}
+ {{- end }}
+</code></pre>
+</li>
 </ul>
-<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
+<h3 id="参考文档"><a class="header-anchor" href="#参考文档"></a>参考文档</h3>
+<ul>
 <li><a href="https://www.cnblogs.com/Erik_Xu/p/8893725.html" target="_blank" rel="noopener">Helm介绍</a></li>
 <li><a href="https://github.com/helm/helm" target="_blank" rel="noopener">Helm GitHub页面</a></li>
 <li><a href="https://helm.sh/docs/using_helm/#quickstart-guide" target="_blank" rel="noopener">Helm使用文档</a></li>
@@ -1758,26 +1979,29 @@ release: {{ $relname }}
       
         
           
-            <h2 id="Liveness-amp-Readiness"><a href="#Liveness-amp-Readiness" class="headerlink" title="Liveness &amp; Readiness"></a>Liveness &amp; Readiness</h2><h3 id="Readiness"><a href="#Readiness" class="headerlink" title="Readiness"></a>Readiness</h3><ul>
+            <h2 id="liveness-readiness"><a class="header-anchor" href="#liveness-readiness"></a>Liveness &amp; Readiness</h2>
+<h3 id="readiness"><a class="header-anchor" href="#readiness"></a>Readiness</h3>
+<ul>
 <li>Readiness Probes checks if an application is ready to start processing traffic.</li>
 <li>This probe solves the problem of the container having started, but the process still warming up and configuring itself meaning it’s not ready to receive traffic.</li>
-<li>The configuration is as following:<pre><code>readinessProbe:
-   httpGet:
-      path: /
-      port: 80
-   initialDelaySeconds: 1
-   timeoutSeconds: 1
-</code></pre></li>
+<li>The configuration is as following:<br>
+readinessProbe:<br>
+httpGet:<br>
+path: /<br>
+port: 80<br>
+initialDelaySeconds: 1<br>
+timeoutSeconds: 1</li>
 </ul>
-<h3 id="Liveness"><a href="#Liveness" class="headerlink" title="Liveness"></a>Liveness</h3><ul>
+<h3 id="liveness"><a class="header-anchor" href="#liveness"></a>Liveness</h3>
+<ul>
 <li>Liveness Probes ensure that the application is healthy and capable of processing requests.</li>
-<li>The configuration is as following:<pre><code>livenessProbe:
-httpGet:
-   path: /
-   port: 80
-   initialDelaySeconds: 1
-   timeoutSeconds: 1
-</code></pre></li>
+<li>The configuration is as following:<br>
+livenessProbe:<br>
+httpGet:<br>
+path: /<br>
+port: 80<br>
+initialDelaySeconds: 1<br>
+timeoutSeconds: 1</li>
 </ul>
 
           
@@ -1920,62 +2144,75 @@ httpGet:
       
         
           
-            <h2 id="Jetty"><a href="#Jetty" class="headerlink" title="Jetty"></a>Jetty</h2><p>工作中需要了解Jetty启停的一些知识，可能不能看到全貌，这边记录下来。毕竟不是web的产品。了解得还不够深入啊。</p>
-<h3 id="what-is-graceful-shutdown"><a href="#what-is-graceful-shutdown" class="headerlink" title="what is graceful shutdown"></a>what is graceful shutdown</h3><ul>
+            <h2 id="jetty"><a class="header-anchor" href="#jetty"></a>Jetty</h2>
+<p>工作中需要了解Jetty启停的一些知识，可能不能看到全貌，这边记录下来。毕竟不是web的产品。了解得还不够深入啊。</p>
+<h3 id="what-is-graceful-shutdown"><a class="header-anchor" href="#what-is-graceful-shutdown"></a>what is graceful shutdown</h3>
+<ul>
 <li>Graceful shutdown of a server, context or connector is when existing request/connections are allowed to gracefully complete while no new requests and/or connections are accepted.</li>
-<li>It is configured on the Server instance with the setGracefulShutdown(long) method. Heres an example of setting this via the jetty.xml file, where we specify a “grace” period of 30000 milliseconds:<set name="gracefulShutdown">30000</set></li>
+<li>It is configured on the Server instance with the setGracefulShutdown(long) method. Heres an example of setting this via the jetty.xml file, where we specify a “grace” period of 30000 milliseconds:<br>
+<set name="gracefulShutdown">30000</set></li>
 <li>The parameter may be already not used any more</li>
 </ul>
-<h3 id="How-it-works"><a href="#How-it-works" class="headerlink" title="How it works"></a>How it works</h3><ul>
+<h3 id="how-it-works"><a class="header-anchor" href="#how-it-works"></a>How it works</h3>
+<ul>
 <li>As soon as the shutdown command is given, the container will close the connectors so that they do not accept any more inbound connections.</li>
 <li>所以在<code>ServerControllerImpl</code>里面，如果HTTP的配置参数是false，Connector确实是一上来就停掉了。但是怎么都到<code>JettyServer的</code>getContext（）`函数里面的</li>
 <li><code>ServerControllerImpl</code> 应该是HTTP server的controller</li>
 </ul>
-<pre><code>if (!ServerControllerImpl.this.configuration.isHttpEnabled()) {
-               connectorsx = ServerControllerImpl.this.jettyServer.getConnectors();
-               if (connectorsx != null) {
-                    ...
-                     this.stopConnector(backupConnector);
-                           ServerControllerImpl.this.jettyServer.removeConnector(backupConnector);
- ...
-</code></pre><ul>
+<pre><code> if (!ServerControllerImpl.this.configuration.isHttpEnabled()) {
+                connectorsx = ServerControllerImpl.this.jettyServer.getConnectors();
+                if (connectorsx != null) {
+                     ...
+                      this.stopConnector(backupConnector);
+                            ServerControllerImpl.this.jettyServer.removeConnector(backupConnector);
+  ...
+</code></pre>
+<ul>
 <li>This will inform most load balancers that the server is no longer part of the cluster.</li>
-<li>The contexts are closed so that they do not accept any more requests, but the requests currently inside the container will drain out and the Server instance will shutdown after the grace period expires.<br>not very sure here. It seems that connector and context are different. I think the connector is more related with port. But context is more related with servlet.</li>
+<li>The contexts are closed so that they do not accept any more requests, but the requests currently inside the container will drain out and the Server instance will shutdown after the grace period expires.<br>
+not very sure here. It seems that connector and context are different. I think the connector is more related with port. But context is more related with servlet.</li>
 </ul>
-<h3 id="Elements"><a href="#Elements" class="headerlink" title="Elements"></a>Elements</h3><p>我理解在整个jetty server shutdown的时候有几个东西： connector、context、server。以下是理解，不一定准确：</p>
+<h3 id="elements"><a class="header-anchor" href="#elements"></a>Elements</h3>
+<p>我理解在整个jetty server shutdown的时候有几个东西： connector、context、server。以下是理解，不一定准确：</p>
 <ul>
 <li>servlet 是在context里面的，context一旦stop掉，servlet也会跟着destroy。context是WebAppHttpContext，servlet是其中的一个web Element。</li>
 <li>有三个context，一个是HttpServiceContext， 一个是WebAppHttpContext，还有servlet的context。WebAppHttpContext是jetty stop context时候停掉的，每个web app对应一个。前者是jetty server停掉的时候停掉的。感觉server停掉的时候，webAppHttpContext不一定都结束了。但是jetty server停掉的时候，HttpServiceContext是停止了。servlet的context结构是servlet里面的一个internal class，跟每个uri绑定。</li>
 <li>connector是在jetty里面定义的,有几种connector，比如<code>org.eclipse.jetty.server.ssl.SslSelectChannelConnector</code>，<code>org.eclipse.jetty.server.nio.SelectChannelConnector</code>。</li>
 </ul>
 <p>在Connector的interface里面有个maxIdleTimeout的参数，标示这个connection在idle时候会等多久从ESTABLISH状态变成TIME_WAIT状态。但是并没有在代码里面找到调用的地方。</p>
-<p><strong>_ 这个是在停的时候调用的那个吗？果然写blog要再清楚一点才好_</strong></p>
+<p>___ 这个是在停的时候调用的那个吗？果然写blog要再清楚一点才好___</p>
 <ul>
 <li>Connector是在jetty的配置文件里面配置的</li>
 </ul>
-<h3 id="Jetty启动过程"><a href="#Jetty启动过程" class="headerlink" title="Jetty启动过程"></a>Jetty启动过程</h3><p>大部分web容器的启动过程都差不多，分为如下几步：</p>
+<h3 id="jetty启动过程"><a class="header-anchor" href="#jetty启动过程"></a>Jetty启动过程</h3>
+<p>大部分web容器的启动过程都差不多，分为如下几步：</p>
 <ul>
 <li>创建用于连接的connector，创建线程池</li>
 <li>扫描当前的web程序的部署目录，为他们创建上下文环境，并对他们进行path的路由设置，这个的名字是WebAppHttpContext</li>
 <li>初始化创建的web程序上下文，这里就包括创建servlet啥的。，初始化linstener啥的。并做好自己的path路由。.</li>
 <li>启动connector，开始监听，整个server开始运行</li>
 <li>没看出来HttpServiceContext是什么</li>
-<li>参考文档：<ul>
+<li>参考文档：
+<ul>
 <li><a href="https://blog.csdn.net/kobejayandy/article/details/20291953" target="_blank" rel="noopener">Jetty的Server创建与启动</a></li>
 </ul>
 </li>
 </ul>
-<h3 id="Filter、Servlet、Listener顺序"><a href="#Filter、Servlet、Listener顺序" class="headerlink" title="Filter、Servlet、Listener顺序"></a>Filter、Servlet、Listener顺序</h3><h4 id="启动顺序"><a href="#启动顺序" class="headerlink" title="启动顺序"></a>启动顺序</h4><ul>
+<h3 id="filter-servlet-listener顺序"><a class="header-anchor" href="#filter-servlet-listener顺序"></a>Filter、Servlet、Listener顺序</h3>
+<h4 id="启动顺序"><a class="header-anchor" href="#启动顺序"></a>启动顺序</h4>
+<ul>
 <li>filter的初始化是web server启动的时候初始化的</li>
 <li>servlet的初始化是收到对应的第一条request时候进行的</li>
 <li>执行时候是先执行filter，再执行servlet</li>
 <li>从启动日志来看，启动的顺序为listener-&gt;Filter-&gt;servlet.</li>
 </ul>
-<h4 id="停止顺序"><a href="#停止顺序" class="headerlink" title="停止顺序"></a>停止顺序</h4><ul>
+<h4 id="停止顺序"><a class="header-anchor" href="#停止顺序"></a>停止顺序</h4>
+<ul>
 <li>容器关闭或者context重新部署，这时候servlet先destroy掉</li>
 <li>servlet之后才是filter关闭</li>
 </ul>
-<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><ul>
+<h4 id="参考资料"><a class="header-anchor" href="#参考资料"></a>参考资料</h4>
+<ul>
 <li><a href="https://www.jianshu.com/p/612c3a6673b2" target="_blank" rel="noopener">Listener、Filter、Servlet执行顺序</a></li>
 </ul>
 
@@ -2119,71 +2356,82 @@ httpGet:
       
         
           
-            <h2 id="常用k8s命令"><a href="#常用k8s命令" class="headerlink" title="常用k8s命令"></a>常用k8s命令</h2><p>这篇记录一下常用的k8s命令，我怕我会忘啊  -_-#<br>没错，这是docker那篇的姐妹篇哦。棒棒哒:P</p>
+            <h2 id="常用k8s命令"><a class="header-anchor" href="#常用k8s命令"></a>常用k8s命令</h2>
+<p>这篇记录一下常用的k8s命令，我怕我会忘啊  -_-#<br>
+没错，这是docker那篇的姐妹篇哦。棒棒哒:P</p>
 <ul>
 <li><code>kubectl cluster-info</code></li>
 <li><code>kubectl get nodes</code></li>
-<li><code>kubectl run first-deployment --image=katacoda/docker-http-server --port=80</code><ul>
+<li><code>kubectl run first-deployment --image=katacoda/docker-http-server --port=80</code>
+<ul>
 <li>这样就有一个pod啦。在get pods command里面能看到一个pod</li>
 <li><code>-port</code>仍旧是内部的端口</li>
-<li>外部端口可以用<code>--hostport=8001</code>指定， 但是这样做的话， Under the covers, this exposes the Pod via Docker Port Mapping. As a result, you will not see the service listed using <code>kubectl get svc</code>。目前的理解是，因为是用的docker的方法，所以k8s不知道<ul>
+<li>外部端口可以用<code>--hostport=8001</code>指定， 但是这样做的话， Under the covers, this exposes the Pod via Docker Port Mapping. As a result, you will not see the service listed using <code>kubectl get svc</code>。目前的理解是，因为是用的docker的方法，所以k8s不知道
+<ul>
 <li>用docker ps命令能看到这个container，然后可以注意到有两个ps进程。其中一个是paused状态，然后我们的端口8001其实开在这个paused的ps上面。</li>
-<li>The ports are exposed on the Pod, not the http container itself. The Pause container is responsible for defining the network for the Pod. Other containers in the pod share the same network namespace. This improves network performance and allow multiple containers to communicate over the same network interface..感觉这段解释很关键啊。这个container的名字是： k8s_POD_”httpexposed”,最后一个字段是我们起的pod的名字</li>
+<li>The ports are exposed on the Pod, not the http container itself. The Pause container is responsible for defining the network for the Pod. Other containers in the pod share the same network namespace. This improves network performance and allow multiple containers to communicate over the same network interface…感觉这段解释很关键啊。这个container的名字是： k8s_POD_“httpexposed”,最后一个字段是我们起的pod的名字</li>
 </ul>
 </li>
 <li><code>--replicas</code>： 复制因子</li>
 </ul>
 </li>
-<li><code>kubectl get pods</code><ul>
+<li><code>kubectl get pods</code>
+<ul>
 <li>所以get pods的话，会把replication cotronller， service， deployment都给打印出来</li>
 </ul>
 </li>
-<li><code>kubectl get rc</code><ul>
+<li><code>kubectl get rc</code>
+<ul>
 <li>将replication controller打印出来。</li>
 </ul>
 </li>
-<li><code>kubectl get services</code>      </li>
-<li><code>kubectl get deployments</code><ul>
+<li><code>kubectl get services</code></li>
+<li><code>kubectl get deployments</code>
+<ul>
 <li>感受一下这两个的区别</li>
 </ul>
 </li>
 </ul>
-<pre><code>$ kubectl get pods
-   NAME                           READY     STATUS    RESTARTS   AGE
-   http-7b77c4cd66-74zqx          1/1       Running   0          4s
-   http-7b77c4cd66-fhlmx          1/1       Running   0          19m
-   http-7b77c4cd66-xrbpf          1/1       Running   0          4s
-   httpexposed-5c4cf8b7d8-qprzc   1/1       Running   0          11m
-$ kubectl get deployments
-   NAME          DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-   http          3         3         3            3           19m
-   httpexposed   1         1         1            1           11m
-</code></pre><ul>
+<pre><code>  $ kubectl get pods
+     NAME                           READY     STATUS    RESTARTS   AGE
+     http-7b77c4cd66-74zqx          1/1       Running   0          4s
+     http-7b77c4cd66-fhlmx          1/1       Running   0          19m
+     http-7b77c4cd66-xrbpf          1/1       Running   0          4s
+     httpexposed-5c4cf8b7d8-qprzc   1/1       Running   0          11m
+  $ kubectl get deployments
+     NAME          DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+     http          3         3         3            3           19m
+     httpexposed   1         1         1            1           11m
+</code></pre>
+<ul>
 <li><code>kubectl describe deployment http</code></li>
 <li><code>kubectl describe svc http</code> 能看到很多信息，包括整个cluster对外的ip，各个node的内部ip之类</li>
-<li><code>kubectl expose deployment first-deployment --port=80 --type=NodePort</code><ul>
-<li>这条命令有点复杂，解释说：Once the container is running it can be exposed via different networking options, depending on requirements. </li>
+<li><code>kubectl expose deployment first-deployment --port=80 --type=NodePort</code>
+<ul>
+<li>这条命令有点复杂，解释说：Once the container is running it can be exposed via different networking options, depending on requirements.</li>
 <li>将资源暴露为新的Kubernetes Service。</li>
 <li>expose后面的资源有很多种，包括：pod（po），service（svc），replication controller（rc），deployment（deploy），replica set（rs）</li>
 <li>A Kubernetes service deployment has, at least, two parts. A replication controller and a service. 稍微有点理解了。一个service部署的时候一般有两个yaml文件</li>
-<li>‘first-deployment’是deployment的名字</li>
+<li>'first-deployment’是deployment的名字</li>
 <li><code>-port</code> 是内部的端口</li>
-<li><code></code>–target-port`是外部访问的端口</li>
+<li>``–target-port`是外部访问的端口</li>
 <li>完整语法为：<code>expose (-f FILENAME | TYPE NAME) [--port=port] [--protocol=TCP|UDP] [--target-port=number-or-name] [--name=name] [--external-ip=external-ip-of-service] [--type=type]</code></li>
 </ul>
 </li>
 <li><code>kubectl scale --replicas=3 deployment http</code> scale的命令</li>
-<li><code>kubectl create -f deployment.yaml</code> 通过yaml文件创建一个deployment<ul>
+<li><code>kubectl create -f deployment.yaml</code> 通过yaml文件创建一个deployment
+<ul>
 <li><code>kubectl create -f service.yaml</code> 也可以通过yaml文件创建service</li>
 <li>ymal文件里面的内容还不是非常清楚。参考<a href="https://blog.csdn.net/luanpeng825485697/article/details/83753260" target="_blank" rel="noopener">k8s yaml文件详解</a></li>
 </ul>
 </li>
 <li><code>kubectl apply -f deployment.yaml</code>如果yaml文件有改动的话，可以用这条命令来update</li>
 </ul>
-<pre><code>$ kubectl apply -f deployment.yaml
-  Warning: kubectl apply should be used on resource created by either kubectl create --save-config or kubectl apply
- deployment.extensions/webapp1 configured
-</code></pre><ul>
+<pre><code> $ kubectl apply -f deployment.yaml
+   Warning: kubectl apply should be used on resource created by either kubectl create --save-config or kubectl apply
+  deployment.extensions/webapp1 configured
+</code></pre>
+<ul>
 <li><code>kubectl exec $pod -- /usr/bin/curl -s localhost/unhealthy</code></li>
 <li><code>kubectl get ing</code> 可以用来看Ingress</li>
 <li><code>kubectl create namespace</code>创建namespace</li>
@@ -2191,27 +2439,30 @@ $ kubectl get deployments
 <li><code>kubectl config get-contexts</code> 这个context不知道是啥</li>
 <li><code>kubectl get namespaces</code></li>
 <li><code>kubectl delete pvc --all --namespace default</code> 用这个命令来做delete。一堆都行。pvc换成pod，deployments，secret，configmap，service啥的</li>
-<li>安装k8s的dashboard：<ul>
-<li>使用“docker for desktop“的时候，这个dashboard貌似不是事先装好的。印象不深刻了。需要装一下：<ul>
+<li>安装k8s的dashboard：
+<ul>
+<li>使用“docker for desktop“的时候，这个dashboard貌似不是事先装好的。印象不深刻了。需要装一下：</li>
 <li><code>kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml</code></li>
 <li><code>kubectl proxy</code> 再将proxy给弄出来，就可以访问了。</li>
-<li>如下图：<br><img src="https://user-images.githubusercontent.com/5803001/34945022-c57b369a-fa3c-11e7-85e7-83f716d10705.png" alt></li>
-<li>参考链接登录：<ul>
+<li>如下图：<br>
+<img src="https://user-images.githubusercontent.com/5803001/34945022-c57b369a-fa3c-11e7-85e7-83f716d10705.png" alt></li>
+<li>参考链接登录：
+<ul>
 <li><a href="https://segmentfault.com/a/1190000012850396" target="_blank" rel="noopener">config登录方式</a></li>
 <li><a href="https://www.cnblogs.com/guigujun/p/8366530.html" target="_blank" rel="noopener">config登录方式2</a></li>
 <li><a href="https://www.cnblogs.com/jackyfei/p/10180465.html" target="_blank" rel="noopener">token方式登录</a></li>
 </ul>
 </li>
-<li>获取token的命令：<code>kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk &#39;{print $1}&#39;)</code></li>
+<li>获取token的命令：<code>kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}')</code></li>
 </ul>
 </li>
 </ul>
-</li>
-</ul>
-<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
+<h3 id="参考文档"><a class="header-anchor" href="#参考文档"></a>参考文档</h3>
+<ul>
 <li><a href="http://docs.kubernetes.org.cn/475.html" target="_blank" rel="noopener">k8s中文文档</a></li>
-<li><a href="https://www.katacoda.com/courses/kubernetes/kubectl-run-containers" target="_blank" rel="noopener">codekara的在线课程</a><h3 id="主要特性"><a href="#主要特性" class="headerlink" title="主要特性"></a>主要特性</h3></li>
+<li><a href="https://www.katacoda.com/courses/kubernetes/kubectl-run-containers" target="_blank" rel="noopener">codekara的在线课程</a></li>
 </ul>
+<h3 id="主要特性"><a class="header-anchor" href="#主要特性"></a>主要特性</h3>
 
           
         
@@ -2353,23 +2604,29 @@ $ kubectl get deployments
       
         
           
-            <h2 id="常用docker命令"><a href="#常用docker命令" class="headerlink" title="常用docker命令"></a>常用docker命令</h2><p>这篇记录一下常用的docker命令，我怕我会忘啊  -_-#<br>这篇博客写得好随意的感觉啊</p>
+            <h2 id="常用docker命令"><a class="header-anchor" href="#常用docker命令"></a>常用docker命令</h2>
+<p>这篇记录一下常用的docker命令，我怕我会忘啊  -_-#<br>
+这篇博客写得好随意的感觉啊</p>
 <ul>
-<li><code>docker run</code> -d / -it / -v / -p /–name/-l<ul>
+<li><code>docker run</code> -d / -it / -v / -p /–name/-l
+<ul>
 <li>-d: background; -v: 磁盘映射 ；-p：端口映射; -l: label</li>
 </ul>
 </li>
-<li><code>docker build -t （build-directory） dockerfile</code> build docker image <ul>
+<li><code>docker build -t （build-directory） dockerfile</code> build docker image
+<ul>
 <li>-t 指定编译出来的image的名字。可以带上版本。比如：firstImage:v1</li>
 <li>-f 指定dockerfile的名字</li>
 </ul>
 </li>
-<li><code>docker inspect</code>看一个image的信息或者container的信息<ul>
-<li>docker inspect -f ““ katacoda-label-example</li>
+<li><code>docker inspect</code>看一个image的信息或者container的信息
+<ul>
+<li>docker inspect -f “” katacoda-label-example</li>
 <li>These labels will remain even if the image has been untagged. When an image is untagged, it will have the name <none></none></li>
 </ul>
 </li>
-<li>Label就是中文含义一样的标签，key-value的形式，比如user=lynn，这样子。除了user，还会有version啊<ul>
+<li>Label就是中文含义一样的标签，key-value的形式，比如user=lynn，这样子。除了user，还会有version啊
+<ul>
 <li>LABEL vendor=Katacoda \ com.katacoda.version=0.0.5 \ com.katacoda.build-date=2016-07-01T10:47:29Z \ com.katacoda.course=Docker</li>
 <li>container, image, demon都可以有label，在查看时候都可以用上</li>
 </ul>
@@ -2472,7 +2729,7 @@ $ kubectl get deployments
               
               <div class="site-state-item site-state-categories">
                 <a href="/hexo_blog/categories/index.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>

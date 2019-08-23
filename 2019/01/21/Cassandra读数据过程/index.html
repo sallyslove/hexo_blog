@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="Cassandra读数据过程数据库读数据过程必须知道。 大致的读流程  官方读流程图片   Check the memtable Check row cache, if enabled Checks Bloom filter Checks partition key cache, if enabled Goes directly to the compression offset map if a">
+<meta name="description" content="Cassandra读数据过程 数据库读数据过程必须知道。 大致的读流程   官方读流程图片   Check the memtable Check row cache, if enabled Checks Bloom filter Checks partition key cache, if enabled Goes directly to the compression offset map if">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Cassandra读数据过程">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/01/21/Cassandra读数据过程/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="Cassandra读数据过程数据库读数据过程必须知道。 大致的读流程  官方读流程图片   Check the memtable Check row cache, if enabled Checks Bloom filter Checks partition key cache, if enabled Goes directly to the compression offset map if a">
+<meta property="og:description" content="Cassandra读数据过程 数据库读数据过程必须知道。 大致的读流程   官方读流程图片   Check the memtable Check row cache, if enabled Checks Bloom filter Checks partition key cache, if enabled Goes directly to the compression offset map if">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://docs.datastax.com/en/archived/cassandra/3.0/cassandra/images/dml_caching-reads_12.png">
 <meta property="og:updated_time" content="2019-07-18T03:17:57.765Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Cassandra读数据过程">
-<meta name="twitter:description" content="Cassandra读数据过程数据库读数据过程必须知道。 大致的读流程  官方读流程图片   Check the memtable Check row cache, if enabled Checks Bloom filter Checks partition key cache, if enabled Goes directly to the compression offset map if a">
+<meta name="twitter:description" content="Cassandra读数据过程 数据库读数据过程必须知道。 大致的读流程   官方读流程图片   Check the memtable Check row cache, if enabled Checks Bloom filter Checks partition key cache, if enabled Goes directly to the compression offset map if">
 <meta name="twitter:image" content="https://docs.datastax.com/en/archived/cassandra/3.0/cassandra/images/dml_caching-reads_12.png">
 
 
@@ -333,8 +333,10 @@
       
 
       
-        <h2 id="Cassandra读数据过程"><a href="#Cassandra读数据过程" class="headerlink" title="Cassandra读数据过程"></a>Cassandra读数据过程</h2><p>数据库读数据过程必须知道。</p>
-<h3 id="大致的读流程"><a href="#大致的读流程" class="headerlink" title="大致的读流程"></a>大致的读流程</h3><p><img src="https://docs.datastax.com/en/archived/cassandra/3.0/cassandra/images/dml_caching-reads_12.png" alt="官方读流程图片"></p>
+        <h2 id="cassandra读数据过程"><a class="header-anchor" href="#cassandra读数据过程"></a>Cassandra读数据过程</h2>
+<p>数据库读数据过程必须知道。</p>
+<h3 id="大致的读流程"><a class="header-anchor" href="#大致的读流程"></a>大致的读流程</h3>
+<p><img src="https://docs.datastax.com/en/archived/cassandra/3.0/cassandra/images/dml_caching-reads_12.png" alt="官方读流程图片"></p>
 <blockquote>
 <p>官方读流程图片</p>
 </blockquote>
@@ -343,31 +345,44 @@
 <li>Check row cache, if enabled</li>
 <li>Checks Bloom filter</li>
 <li>Checks partition key cache, if enabled</li>
-<li>Goes directly to the compression offset map if a partition key is found in the partition key cache, or checks the partition summary if not<br>If the partition summary is checked, then the partition index is accessed</li>
+<li>Goes directly to the compression offset map if a partition key is found in the partition key cache, or checks the partition summary if not<br>
+If the partition summary is checked, then the partition index is accessed</li>
 <li>Locates the data on disk using the compression offset map</li>
-<li>Fetches the data from the SSTable on disk<br><strong><em><code>partition summary</code>是什么东西?记得之前看的时候说就是一个例子呀</em></strong></li>
+<li>Fetches the data from the SSTable on disk<br>
+<strong><em><code>partition summary</code>是什么东西?记得之前看的时候说就是一个例子呀</em></strong></li>
 </ul>
-<h3 id="Caches"><a href="#Caches" class="headerlink" title="Caches"></a>Caches</h3><p>这篇也作为<code>KeyCache</code>和<code>RowCache</code>学习的blog.<br><code>RowCache</code>缓存的是数据，而<code>KeyCache</code>缓存的是在<code>SSTable</code>文件中的位置。<br>Cassandra的是读数据慢，写数据快。</p>
+<h3 id="caches"><a class="header-anchor" href="#caches"></a>Caches</h3>
+<p>这篇也作为<code>KeyCache</code>和<code>RowCache</code>学习的blog.<br>
+<code>RowCache</code>缓存的是数据，而<code>KeyCache</code>缓存的是在<code>SSTable</code>文件中的位置。<br>
+Cassandra的是读数据慢，写数据快。</p>
 <p>以下几种<code>cache</code>都是针对<code>SSTable</code>来说的</p>
-<h4 id="keyCache"><a href="#keyCache" class="headerlink" title="keyCache"></a>keyCache</h4><ul>
+<h4 id="keycache"><a class="header-anchor" href="#keycache"></a>keyCache</h4>
+<ul>
 <li>key cache：stores a map of partition keys to row index entries。感觉和Index.db里面的内容有点相似。什么时候要把内存dump下来看看</li>
 </ul>
-<h4 id="rowCache"><a href="#rowCache" class="headerlink" title="rowCache"></a>rowCache</h4><ul>
+<h4 id="rowcache"><a class="header-anchor" href="#rowcache"></a>rowCache</h4>
+<ul>
 <li>row cache： caches frequently accessed rows to speed up access to those rows.</li>
 </ul>
-<h4 id="counter-cache"><a href="#counter-cache" class="headerlink" title="counter cache"></a>counter cache</h4><ul>
+<h4 id="counter-cache"><a class="header-anchor" href="#counter-cache"></a>counter cache</h4>
+<ul>
 <li>A counter cache improves performance for the counters that you’ll need to access frequently. 好像没怎么听说过counter的概念。这个cache也是第一次看到有。</li>
 </ul>
-<h4 id="bloom-filters"><a href="#bloom-filters" class="headerlink" title="bloom filters"></a>bloom filters</h4><ul>
+<h4 id="bloom-filters"><a class="header-anchor" href="#bloom-filters"></a>bloom filters</h4>
+<ul>
 <li><code>Bloom Filters</code> 就是在写ssTable时候同时写的filter.db文件。但是实际是读的时候用的一个机制</li>
 <li>读的时候会用这个机制来看一个数据key是不是在某个SSTable里面。当filter表示不在，肯定是不在；但是说在，可能不在。就是说可能假绿的</li>
 <li>可以配置<code>bloom_filter_fp_chance</code>来降低假绿，但是会占更多内存</li>
 </ul>
-<h4 id="Index-Files"><a href="#Index-Files" class="headerlink" title="Index Files"></a>Index Files</h4><h3 id="Gossip-Protocal"><a href="#Gossip-Protocal" class="headerlink" title="Gossip Protocal"></a>Gossip Protocal</h3><h3 id="Limit"><a href="#Limit" class="headerlink" title="Limit"></a>Limit</h3><ul>
+<h4 id="index-files"><a class="header-anchor" href="#index-files"></a>Index Files</h4>
+<h3 id="gossip-protocal"><a class="header-anchor" href="#gossip-protocal"></a>Gossip Protocal</h3>
+<h3 id="limit"><a class="header-anchor" href="#limit"></a>Limit</h3>
+<ul>
 <li>Cassandra根据primary key来读取数据，这个key就是存在keyCache里面的内容。然后会读取一片数据。</li>
 <li>读取时候可以指定limit值，这样会读取有限的内容，而不是一大片。</li>
 </ul>
-<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
+<h3 id="参考文档"><a class="header-anchor" href="#参考文档"></a>参考文档</h3>
+<ul>
 <li>非常详尽清晰的一篇文档：<a href="https://www.oschina.net/question/12_11855" target="_blank" rel="noopener">Cassandra数据结构和写入读取</a></li>
 <li><a href="https://docs.datastax.com/en/archived/cassandra/3.0/cassandra/dml/dmlAboutReads.html" target="_blank" rel="noopener">官方文档读流程</a></li>
 </ul>
@@ -502,7 +517,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/hexo_blog/categories/index.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -537,7 +552,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Cassandra读数据过程"><span class="nav-number">1.</span> <span class="nav-text">Cassandra读数据过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#大致的读流程"><span class="nav-number">1.1.</span> <span class="nav-text">大致的读流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Caches"><span class="nav-number">1.2.</span> <span class="nav-text">Caches</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#keyCache"><span class="nav-number">1.2.1.</span> <span class="nav-text">keyCache</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rowCache"><span class="nav-number">1.2.2.</span> <span class="nav-text">rowCache</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#counter-cache"><span class="nav-number">1.2.3.</span> <span class="nav-text">counter cache</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bloom-filters"><span class="nav-number">1.2.4.</span> <span class="nav-text">bloom filters</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Index-Files"><span class="nav-number">1.2.5.</span> <span class="nav-text">Index Files</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Gossip-Protocal"><span class="nav-number">1.3.</span> <span class="nav-text">Gossip Protocal</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Limit"><span class="nav-number">1.4.</span> <span class="nav-text">Limit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文档"><span class="nav-number">1.5.</span> <span class="nav-text">参考文档</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#cassandra读数据过程"><span class="nav-number">1.</span> <span class="nav-text">Cassandra读数据过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#大致的读流程"><span class="nav-number">1.1.</span> <span class="nav-text">大致的读流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#caches"><span class="nav-number">1.2.</span> <span class="nav-text">Caches</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#keycache"><span class="nav-number">1.2.1.</span> <span class="nav-text">keyCache</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rowcache"><span class="nav-number">1.2.2.</span> <span class="nav-text">rowCache</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#counter-cache"><span class="nav-number">1.2.3.</span> <span class="nav-text">counter cache</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bloom-filters"><span class="nav-number">1.2.4.</span> <span class="nav-text">bloom filters</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#index-files"><span class="nav-number">1.2.5.</span> <span class="nav-text">Index Files</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gossip-protocal"><span class="nav-number">1.3.</span> <span class="nav-text">Gossip Protocal</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#limit"><span class="nav-number">1.4.</span> <span class="nav-text">Limit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文档"><span class="nav-number">1.5.</span> <span class="nav-text">参考文档</span></a></li></ol></li></ol></div>
             
 
           </div>

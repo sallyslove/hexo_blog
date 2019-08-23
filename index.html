@@ -284,6 +284,28 @@
           </span>
 
           
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/security/" itemprop="url" rel="index">
+                    <span itemprop="name">security</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -313,28 +335,36 @@
       
         
           
-            <p>这个Oauth吧，我感觉我几年前就听到了，可惜还是没弄明白。必须承认那些传来传去啊，容易搞混淆和忘。</p>
-<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><ul>
-<li><a href="https://coolshell.cn/articles/19395.html" target="_blank" rel="noopener">HTTP API 认证授权术</a>：来自酷壳，写得很清楚，一步一步。感觉看这篇就能了解前世今生了。挺好。<br>所以这篇博客就是以酷壳这篇为基础来学习的</li>
+            <p>这个Oauth吧，我感觉我几年前就听到了，可惜还是没弄明白。必须承认那些传来传去啊，容易搞混淆和忘。<br>
+嗯，写完了也还是有半懂不懂的感觉，不过好歹是个半懂了 😂</p>
+<h3 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h3>
+<ul>
+<li><a href="https://coolshell.cn/articles/19395.html" target="_blank" rel="noopener">HTTP API 认证授权术</a>：来自酷壳，写得很清楚，一步一步。感觉看这篇就能了解前世今生了。挺好。<br>
+所以这篇博客就是以酷壳这篇为基础来学习的</li>
 </ul>
-<h3 id="HTTP-Basic"><a href="#HTTP-Basic" class="headerlink" title="HTTP Basic"></a>HTTP Basic</h3><ul>
+<h3 id="http-basic"><a class="header-anchor" href="#http-basic"></a>HTTP Basic</h3>
+<ul>
 <li>上述参考链接里面说得很清楚。其实就是<code>user:password</code>用<code>Base64</code>编码协议进行编码，然后传输</li>
 <li>但是可以看到这里仅仅是加密协议，所以通常会和HTTPS配合起来，用<code>TLS/SSL</code>的安全加密方式来传输</li>
 <li>就是将编码后的字符放在HTTP协议的<code>Authenticate: Basic</code>里面。</li>
-<li>需要注意的点是：<ul>
+<li>需要注意的点是：
+<ul>
 <li>编码协议和加密协议不一样, <code>Base64</code>就是个编码，<code>RSA/AES</code>才是加密，<code>MD5</code>就只是取摘要的</li>
 <li><code>HTTP Basic</code>方式将密码和用户名放在公网上面传输，存在风险</li>
 </ul>
 </li>
 </ul>
-<h3 id="Digital-Access"><a href="#Digital-Access" class="headerlink" title="Digital Access"></a>Digital Access</h3><ul>
-<li>参考链接：<ul>
+<h3 id="digital-access"><a class="header-anchor" href="#digital-access"></a>Digital Access</h3>
+<ul>
+<li>参考链接：
+<ul>
 <li><a href="https://www.cnblogs.com/huey/p/5490759.html" target="_blank" rel="noopener">HTTP - 摘要认证</a></li>
 <li><a href="https://www.cnblogs.com/xzwblog/p/6834663.html" target="_blank" rel="noopener">HTTP认证与https简介</a></li>
 <li><a href="https://en.wikipedia.org/wiki/Digest_access_authentication" target="_blank" rel="noopener">维基百科HTTP摘要认证</a></li>
 </ul>
 </li>
-<li>摘要认证与基础认证是兼容的，但是进行了如下修改：<ul>
+<li>摘要认证与基础认证是兼容的，但是进行了如下修改：
+<ul>
 <li>永远不会以明文方式在网络上发送密码。</li>
 <li>可以防止恶意用户捕获并重放认证的握手过程。</li>
 <li>可以有选择地防止对报文内容的篡改。</li>
@@ -345,10 +375,12 @@
 <li>同时，摘要认证使用了<code>nonce values</code>来阻止<code>replay attacks</code><strong><em>不知道翻译成什么，重演攻击？</em></strong></li>
 <li>但是整个过程其实关键是用户的password，这个password如果不够复杂，其实是可以被暴力破解的，而且，整个过程是非常容易受到中间人攻击。 <strong><em>这点我还没理解</em></strong></li>
 </ul>
-<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/OAuth2.0/http_digital_access_nonce.png" alt><br><strong>nonce 说明图</strong></p>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/OAuth2.0/http_digital_access_nonce.png" alt><br>
+<strong>nonce 说明图</strong></p>
 <ul>
-<li>以下是自己画的简明的流程图，还是比较清楚的。<ul>
-<li>[]代码数值</li>
+<li>以下是自己画的简明的流程图，还是比较清楚的。
+<ul>
+<li>[]代表里面的数值</li>
 <li><code>nonce</code>是服务器端生成的随机数。 <code>cnonce</code>是客户端生成的</li>
 <li>如果多了<code>auth</code>，那么还要发送<code>HA2</code>，里面的<code>method</code>就是指<code>GET</code>操作， <code>entity body</code>指的是<code>HTTP request</code>的数据</li>
 <li><code>opaque</code>看起来也是一个随机数，不知道是啥。</li>
@@ -356,47 +388,64 @@
 </li>
 </ul>
 <p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/OAuth2.0/http_digital_access.png.png" alt></p>
-<h3 id="JWT-–-JSON-Web-Tokens"><a href="#JWT-–-JSON-Web-Tokens" class="headerlink" title="JWT – JSON Web Tokens"></a>JWT – JSON Web Tokens</h3><p>本来想跳过其中几个，直接学习2.0的，貌似不可行。学习时候还是一步步来，不然就看不明白了。<br>查博客的时候，又看到阮大神的博客了 :) 不知道有没有人能看到我的博客，(#^.^#)<br>话说看到评论里有人抨击阮大神说没质量的，嗯，我的还是留着自己看吧。</p>
-<h4 id="参考链接-1"><a href="#参考链接-1" class="headerlink" title="参考链接"></a>参考链接</h4><ul>
+<h3 id="jwt-json-web-tokens"><a class="header-anchor" href="#jwt-json-web-tokens"></a>JWT – JSON Web Tokens</h3>
+<p>本来想跳过其中几个，直接学习2.0的，貌似不可行。学习时候还是一步步来，不然就看不明白了。<br>
+查博客的时候，又看到阮大神的博客了。不知道有没有人能看到我的博客，😇<br>
+话说看到评论里有人抨击阮大神说没质量的，嗯，我的还是留着自己看吧。😂</p>
+<h4 id="参考链接-v2"><a class="header-anchor" href="#参考链接-v2"></a>参考链接</h4>
+<ul>
 <li><a href="https://www.jianshu.com/p/576dbf44b2ae" target="_blank" rel="noopener">什么是 JWT – JSON WEB TOKEN</a></li>
 <li><a href="http://www.ruanyifeng.com/blog/2018/07/json_web_token-tutorial.html" target="_blank" rel="noopener">JWT – JSON Web Tokens</a>: 阮大神的文章，还比较新，去年的。嘛，这技术不新。话说酷壳的是今年的。</li>
 <li><a href="https://jwt.io/introduction/" target="_blank" rel="noopener">官方文档</a>： 第一篇博客只是翻译，总的来说，JWT不是很复杂的，看了感觉蛮简单。比摘要还简单一点。</li>
 </ul>
-<h4 id="session-认证方式"><a href="#session-认证方式" class="headerlink" title="session 认证方式"></a>session 认证方式</h4><ul>
-<li>基于<code>session</code>的认证方式，其实很好理解的。跟我们产品里面的某种协议类似，第一次登陆时候，客户端通过用户名和密码访问，然后服务器端返回一个<code>sessionId</code>。</li>
-<li>后续访问的时候，就用这个<code>sessionId</code>来访问，服务器端再通过这个<code>sessionId</code>来查询到这个用户的所有信息。包括用户名啊，密码啊，访问权限啊，登录时长啊，我猜的，应该有这些信息。</li>
-<li>互联网时代，这个<code>sessionId</code>会被浏览器端写入到自己的<code>cookie</code>里面。<strong>现在还有吗，我咋没看到sessionId字样</strong></li>
-<li><p>这种方式的问题看起来有两个比较不好(瞅着这么简单，肯定不行啊，我今天脑内小剧场比较多啊)：</p>
+<h4 id="session-认证方式"><a class="header-anchor" href="#session-认证方式"></a>session 认证方式</h4>
 <ul>
-<li>一个安全问题，基于cookie来做的，想也知道不安全，cookie被读取之后就不成了。</li>
-<li>扩展性不好，这个就比较复杂，有各种扩展性，比如sessionId存在服务器端的内存里面，那么内存客户端数量涨了，服务器就撑不住了；再比如，同一个客户，各种用微信登录，这个session没法在不同服务器之间进行共享，除非再引入中转，但是中转一挂就完蛋。</li>
+<li>
+<p>基于<code>session</code>的认证方式，其实很好理解的。跟我们产品里面的某种协议类似，第一次登陆时候，客户端通过用户名和密码访问，然后服务器端返回一个<code>sessionId</code>。</p>
+</li>
+<li>
+<p>后续访问的时候，就用这个<code>sessionId</code>来访问，服务器端再通过这个<code>sessionId</code>来查询到这个用户的所有信息。包括用户名啊，密码啊，访问权限啊，登录时长啊，我猜的，应该有这些信息。</p>
+</li>
+<li>
+<p>互联网时代，这个<code>sessionId</code>会被浏览器端写入到自己的<code>cookie</code>里面。<strong>现在还有吗，我咋没看到<code>sessionId</code>字样</strong></p>
+</li>
+<li>
+<p>这种方式的问题看起来有两个比较不好(瞅着这么简单，肯定不行啊，我今天脑内小剧场比较多啊)：</p>
+<ul>
+<li>一个安全问题，基于<code>cookie</code>来做的，想也知道不安全，<code>cookie</code>被读取之后就不成了。</li>
+<li>扩展性不好，这个就比较复杂，有各种扩展性，比如<code>sessionId</code>存在服务器端的内存里面，那么内存客户端数量涨了，服务器就撑不住了；再比如，同一个客户，各种用微信登录，这个<code>session</code>没法在不同服务器之间进行共享，除非再引入中转，但是中转一挂就完蛋。</li>
 </ul>
 </li>
-<li><p>然后对于上述的问题，就想了一个办法来解决，就是服务器端不再存储客户信息，而是所有信息都放在客户端，服务器端只是加一个签名。客户端后面每次访问都带上自己所有信息。</p>
+<li>
+<p>然后对于上述的问题，就想了一个办法来解决，就是服务器端不再存储客户信息，而是所有信息都放在客户端，服务器端只是加一个签名。客户端后面每次访问都带上自己所有信息。</p>
 <ul>
 <li>话说，这不是比带<code>sessionId</code>要带的东西多嘛。每次都带，多麻烦呐。好处是服务器就不需要存储信息，无状态了。</li>
 <li>这个签名我理解就是嗯，这个客户我老人家认证过了这样的。问题是认证过了就不认证了？应该是不认证了。<strong><em>问题在于这个签名怎么做的，服务器端如何知道这个用户是认证过的，合法的呢？比如我微信登录了一个，我再登录另一个服务器，第二个服务器怎么信任我呢。我想这里理解有点问题，不同的服务器，应该是相同的应用和功能。所以软件上是一套。</em></strong></li>
 </ul>
 </li>
 </ul>
-<h4 id="JWT-Header"><a href="#JWT-Header" class="headerlink" title="JWT Header"></a>JWT Header</h4><ul>
+<h4 id="jwt-header"><a class="header-anchor" href="#jwt-header"></a>JWT Header</h4>
+<ul>
 <li>JWT其实就三个部分，header，payload和签名，在同一行。如下：</li>
 </ul>
 <pre><code>Header.Payload.Signature
-</code></pre><ul>
-<li>Header是JSON格式，里面有算法和令牌(token)类型，<strong><em>第一次知道token原来中文翻译成令牌，这是个多么熟悉的词组啊，N年前学网络时候没少听到。令牌令牌令牌的，原来是token，瞬间感觉很多东西更明白了，果然看大神的博客有无限好处</em></strong></li>
-<li>下面是阮大神博客里面的例子，默认是 HMAC SHA256（写成 HS256）。令牌类型就是JWT。这样服务器可以知道这次客户端发来的信息是接受过JWT认证的。</li>
-<li>话说认证方式其实也是一种协议啊。特殊的协议。只是之前的<code>HTTP Basic</code>和<code>Digital Access</code>时候不知道服务器端是否存储用户信息。前者我想应该是存储的，后者应该应该存储的，否则无法进行校验。</li>
+</code></pre>
+<ul>
+<li>Header是JSON格式，里面有算法和令牌(token)类型，<strong><em>第一次知道<code>token</code>原来中文翻译成令牌，这是个多么熟悉的词组啊，N年前学网络时候没少听到。令牌令牌令牌的，原来是token，瞬间感觉很多东西更明白了，果然看大神的博客有无限好处</em></strong></li>
+<li>下面是阮大神博客里面的例子，默认是<code>HMAC SHA256</code>（写成 HS256）。令牌类型就是<code>JWT</code>。这样服务器可以知道这次客户端发来的信息是接受过<code>JWT</code>认证的。</li>
+<li>话说认证方式其实也是一种协议啊。特殊的协议。只是之前的<code>HTTP Basic</code>和<code>Digital Access</code>时候不知道服务器端是否存储用户信息。前者我想应该是存储的，后者应该也是存储的，否则无法进行校验。</li>
 </ul>
 <pre><code>{
   &quot;alg&quot;: &quot;HS256&quot;,
   &quot;typ&quot;: &quot;JWT&quot;
 }
-</code></pre><ul>
-<li>_将上面的 JSON 对象使用Base64URL算法转成字符串。阮大神的实在清楚，我感觉我在加读书笔记。</li>
+</code></pre>
+<ul>
+<li><em>将上面的JSON对象使用Base64URL算法转成字符串</em> 阮大神的实在清楚，我感觉我在加读书笔记。</li>
 <li><strong><em>之前说过Base64只是编码算法，算不得加密算法，所以其实JWT的这部分并不十分安全</em></strong></li>
 </ul>
-<h4 id="JWT-payload"><a href="#JWT-payload" class="headerlink" title="JWT payload"></a>JWT payload</h4><ul>
+<h4 id="jwt-payload"><a class="header-anchor" href="#jwt-payload"></a>JWT payload</h4>
+<ul>
 <li>payload的话，官方定了几个字段。几篇博客里面貌似没有说到如何实现的。</li>
 </ul>
 <pre><code>iss (issuer)：签发人
@@ -406,53 +455,143 @@ aud (audience)：受众
 nbf (Not Before)：生效时间
 iat (Issued At)：签发时间
 jti (JWT ID)：编号
-</code></pre><ul>
-<li>也可以定义自己的字段。同样是Base64编码，所以不是加密的。</li>
+</code></pre>
+<ul>
+<li>也可以定义自己的字段。同样是<code>Base64</code>编码，所以不是加密的。</li>
 </ul>
-<h4 id="JWT-Signiture"><a href="#JWT-Signiture" class="headerlink" title="JWT Signiture"></a>JWT Signiture</h4><ul>
-<li><p>签名格式如下：</p>
+<h4 id="jwt-signiture"><a class="header-anchor" href="#jwt-signiture"></a>JWT Signiture</h4>
+<ul>
+<li>
+<p>签名格式如下：</p>
 <pre><code>HMACSHA256(
    base64UrlEncode(header) + &quot;.&quot; + base64UrlEncode(payload),secret)
-</code></pre></li>
-<li><p>感觉安全性完全就在这个服务器端的秘钥，secret啊。算法就是header里面指定的加密算法。</p>
+</code></pre>
+</li>
+<li>
+<p>感觉安全性完全就在这个服务器端的秘钥，<code>secret</code>啊。算法就是header里面指定的加密算法。</p>
 </li>
 </ul>
-<h4 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h4><p><img src="https://upload-images.jianshu.io/upload_images/1821058-2e28fe6c997a60c9.png?imageMogr2/auto-orient/" alt></p>
+<h4 id="流程图"><a class="header-anchor" href="#流程图"></a>流程图</h4>
+<p><img src="https://upload-images.jianshu.io/upload_images/1821058-2e28fe6c997a60c9.png?imageMogr2/auto-orient/" alt></p>
 <p><em>来自上面的参考链接1里面</em></p>
-<h4 id="扩展和小结"><a href="#扩展和小结" class="headerlink" title="扩展和小结"></a>扩展和小结</h4><h5 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h5><ul>
+<h4 id="扩展和小结"><a class="header-anchor" href="#扩展和小结"></a>扩展和小结</h4>
+<h5 id="扩展"><a class="header-anchor" href="#扩展"></a>扩展</h5>
+<ul>
 <li>在酷壳文章里面提到了验证服务器。通常实现中，我想服务器应该也会将信息发送到验证服务器来进行<code>secret</code>的加密和签名的解密</li>
 <li>同时还提到了使用<code>RSA</code>加密算法来替代<code>HMAC-SHA256</code>算法，可以看一下。</li>
 </ul>
-<h5 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h5><ul>
-<li>看起来JWT还是比较流行的技术，讨论很多，以下：<ul>
+<h5 id="小结"><a class="header-anchor" href="#小结"></a>小结</h5>
+<ul>
+<li>看起来JWT还是比较流行的技术，讨论很多，以下：
+<ul>
 <li><em>JWT 的最大缺点是，由于服务器不保存 session 状态，因此无法在使用过程中废止某个 token，或者更改 token 的权限。也就是说，一旦 JWT 签发了，在到期之前就会始终有效，除非服务器部署额外的逻辑。</em> 看评论解释，也就是说我手机登录了我的微信， ipad也登录了。那么这两个是彼此独立的，ipad登录没法把手机登录的踢出来。</li>
 <li>JWT不应该使用 HTTP 协议明码传输，要使用 HTTPS 协议传输</li>
 </ul>
 </li>
 </ul>
-<h3 id="OAuth2-0"><a href="#OAuth2-0" class="headerlink" title="OAuth2.0"></a>OAuth2.0</h3><h4 id="参考链接-2"><a href="#参考链接-2" class="headerlink" title="参考链接"></a>参考链接</h4><ul>
-<li><a href="http://www.ruanyifeng.com/blog/2019/04/oauth_design.html" target="_blank" rel="noopener">OAuth 2.0 的一个简单解释</a>: 阮大神的博客，简单清晰明了，确实大有裨益，这个小区快递员啥的，感觉我妈都能明白啊</li>
+<h3 id="oauth2-0"><a class="header-anchor" href="#oauth2-0"></a>OAuth2.0</h3>
+<h4 id="参考链接-v3"><a class="header-anchor" href="#参考链接-v3"></a>参考链接</h4>
+<ul>
+<li><a href="http://www.ruanyifeng.com/blog/2019/04/oauth_design.html" target="_blank" rel="noopener">OAuth 2.0 的一个简单解释</a>: 阮大神的博客，简单清晰明了，确实大有裨益，这个小区快递员啥的，感觉我妈都能明白</li>
 <li><a href="http://www.ruanyifeng.com/blog/2019/04/oauth-grant-types.html" target="_blank" rel="noopener">OAuth 2.0 的四种方式</a>阮大神的博客，系列作品</li>
 </ul>
-<h4 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h4><ul>
-<li><code>OAuth 2.0</code>依赖于<code>TLS/SSL</code>的链路加密技术<code>HTTPS</code>。</li>
-<li>完全放弃了签名的方式，认证服务器再也不返回什么<code>token</code>,<code>secret</code>的密钥了。</li>
-<li><code>Auth 2.0</code>是完全不同于1.0 的，也是不兼容的.</li>
-<li><code>Facebook</code>的<code>Graph API</code>只支持<code>OAuth 2.0</code>协议，<code>Google</code>和 <code>Microsoft Azure</code>也支持<code>Auth 2.0</code>，国内的微信和支付宝也支持使用<code>OAuth 2.0</code>。</li>
-<li><p><code>OAuth2.0</code>一共有4个flow。在酷壳上面阐述了其中主要的两个flow。</p>
+<h4 id="简介"><a class="header-anchor" href="#简介"></a>简介</h4>
+<ul>
+<li>
+<p><code>OAuth 2.0</code>依赖于<code>TLS/SSL</code>的链路加密技术<code>HTTPS</code>。</p>
+</li>
+<li>
+<p>完全放弃了签名的方式，认证服务器再也不返回什么<code>token</code>,<code>secret</code>的密钥了。</p>
+</li>
+<li>
+<p><code>Auth 2.0</code>是完全不同于1.0 的，也是不兼容的.</p>
+</li>
+<li>
+<p><code>Facebook</code>的<code>Graph API</code>只支持<code>OAuth 2.0</code>协议，<code>Google</code>和 <code>Microsoft Azure</code>也支持<code>Auth 2.0</code>，国内的微信和支付宝也支持使用<code>OAuth 2.0</code>。</p>
+</li>
+<li>
+<p><code>OAuth2.0</code>一共有4个flow。在酷壳上面阐述了其中主要的两个flow。</p>
 <pre><code>授权码（authorization-code）
 隐藏式（implicit）
 密码式（password）：
 客户端凭证（client credentials）
-</code></pre></li>
-<li><p><code>OAuth</code> 就是一种授权机制。数据的所有者告诉系统，同意授权第三方应用进入系统，获取这些数据。系统从而产生一个短期的进入令牌（token），用来代替密码，供第三方应用使用。</p>
+</code></pre>
+</li>
+<li>
+<p><code>OAuth</code> 就是一种授权机制。数据的所有者告诉系统，同意授权第三方应用进入系统，获取这些数据。系统从而产生一个短期的进入令牌，用来代替密码，供第三方应用使用。</p>
 <ul>
 <li>我们有<code>client</code>,<code>Authorization server</code>,<code>Resource owner</code>和<code>Resource server</code>。那么，对照起来，<code>client</code>是第三方应用，<code>Authorization server</code>是验证服务器， <code>Resource server</code>是资源服务器，也就是被访问的资源保存的地方。<code>Resource Owner</code>是终端用户。</li>
-<li>比如说，我访问微信，微信要求登录，会将我的请求转到验证服务器上面，我通过验证，那么微信这个应用会从资源服务器上面获取资源，我作为终端用户就可以使用微信了。</li>
+<li>比如说，我访问微信，微信要求登录，会将我的请求转到验证服务器上面，我通过验证，那么微信这个应用会从资源服务器上面获取资源，我作为终端用户就可以使用微信了。这里我就是<code>Resource Owner</code>, 微信是<code>client</code>。</li>
 </ul>
 </li>
 </ul>
-<h4 id="OAuth2-0-详解"><a href="#OAuth2-0-详解" class="headerlink" title="OAuth2.0 详解"></a>OAuth2.0 详解</h4><h5 id="authorization-code"><a href="#authorization-code" class="headerlink" title="authorization code"></a>authorization code</h5>
+<h4 id="oauth2-0-详解"><a class="header-anchor" href="#oauth2-0-详解"></a>OAuth2.0 详解</h4>
+<h5 id="authorization-code"><a class="header-anchor" href="#authorization-code"></a>Authorization Code</h5>
+<ul>
+<li>流程如下。感觉没啥好说的，整个流程挺清楚的。
+<ul>
+<li><em>不管哪种流程， 第三方应用申请令牌之前，都必须先到系统备案，说明自己的身份，然后会拿到两个身份识别码：客户端 ID（client ID）和客户端密钥（client secret）。应用自阮大神的博客</em></li>
+<li><code>code</code>就是代表<code>authorization code</code>。</li>
+<li><code>redirect_uri</code>意思是我跳转回第三方应用的地址</li>
+<li><code>scope</code>是相关的权限</li>
+<li><code>state</code> 是一个随机的字符串，主要用于防<code>CSRF</code>攻击。<code>CSRF - Cross-site request forgery</code>攻击，中文翻译是跨站请求伪造。</li>
+<li><code>authorization server</code>返回<code>authorization code</code>时候，其实是带在<code>url</code>里面的。</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/OAuth2.0/oauth2.0_authorization_code.png" alt="自己画的流程图"></p>
+<ul>
+<li>
+<p><code>authorization code</code>的格式如下。里面的<code>state</code>和第一步里面的一样。</p>
+<pre><code>  https://example-client.com/callback?
+  code=Yzk5ZDczMzRlNDEwYlrEqdFSBzjqfTG
+  &amp;state=xcoiv98CoolShell3kch
+</code></pre>
+</li>
+<li>
+<p><code>token</code>令牌的样式如下：</p>
+</li>
+</ul>
+<ul>
+<li>
+<p><code>access_token</code>就是访问请求令牌了</p>
+</li>
+<li>
+<p><code>refresh_token</code>用于刷新<code>access_token</code></p>
+</li>
+<li>
+<p><code>id_token</code>是<code>JWT</code>的<code>token</code>，其中一般会包含用户的<code>OpenID</code></p>
+<pre><code>{
+    &quot;access_token&quot;: &quot;iJKV1QiLCJhbGciOiJSUzI1NiI&quot;,
+    &quot;refresh_token&quot;: &quot;1KaPlrEqdFSBzjqfTGAMxZGU&quot;,
+    &quot;token_type&quot;: &quot;bearer&quot;,
+    &quot;expires&quot;: 3600,
+    &quot;id_token&quot;: &quot;eyJ0eXAiOiJKV1QiLCJhbGciO.eyJhdWQiOiIyZDRkM...&quot;
+}
+</code></pre>
+</li>
+</ul>
+<h5 id="client-credential-flow"><a class="header-anchor" href="#client-credential-flow"></a>Client Credential Flow</h5>
+<ul>
+<li>感觉这个不需要多写了。其实就是上面的流程中没有用户，就是没有<code>Resource Owner</code>。<code>client</code>直接拿自己的<code>clientId</code>和<code>client-secret</code>去做校验和授权了。</li>
+</ul>
+<h5 id="一些疑问"><a class="header-anchor" href="#一些疑问"></a>一些疑问</h5>
+<p>OAuth2.0我还是有些疑问啊：</p>
+<ul>
+<li>为啥要在<code>token</code>里面带上<code>id_token</code>呢， 这不是暴露了嘛</li>
+<li>如何使用<code>refresh_token</code>来刷新<code>access_token</code>呢。虽然很明显这个是一个可选项</li>
+</ul>
+<h4 id="实现"><a class="header-anchor" href="#实现"></a>实现</h4>
+<ul>
+<li>阮大神的博客里面还有一部分实现。我很惊讶的发现，哎哟喂，原来我在加博客的评论时候用了呀，<code>Oauth2.0</code> 😊 ,但是我当时URL乱填一气了。</li>
+<li><em>所谓第三方登录，实质就是 OAuth 授权</em></li>
+<li>参考链接：
+<ul>
+<li><a href="http://www.ruanyifeng.com/blog/2019/04/github-oauth.html" target="_blank" rel="noopener">GitHub OAuth 第三方登录示例教程</a></li>
+</ul>
+</li>
+</ul>
+
           
         
       
@@ -593,20 +732,25 @@ jti (JWT ID)：编号
       
         
           
-            <p>在学习一些micro service相关，记录在这里。<br>现在都是说micro service，但是什么是micro service，可能不同的人有不同的定义，但是单纯地只是将软件部署到docker或者k8s上面去，可能并不完全符合micro service，所以学习一下。<br>将一些学习到的tips和理念记录下来，最后形成自己的理解</p>
-<h3 id="什么是micro-service"><a href="#什么是micro-service" class="headerlink" title="什么是micro service"></a>什么是micro service</h3><ul>
+            <p>在学习一些micro service相关，记录在这里。<br>
+现在都是说micro service，但是什么是micro service，可能不同的人有不同的定义，但是单纯地只是将软件部署到docker或者k8s上面去，可能并不完全符合micro service，所以学习一下。<br>
+将一些学习到的tips和理念记录下来，最后形成自己的理解</p>
+<h3 id="什么是micro-service"><a class="header-anchor" href="#什么是micro-service"></a>什么是micro service</h3>
+<ul>
 <li>只占用需要的内存和处理器处理能力</li>
 <li>如果是处理数据的，假设我们有一个处理inventory data的micro service，那么这个micro service仅仅需要在意inventory data。而不需要考虑其他数据的影响。</li>
 <li>micro service不受语言限制，不同语言的micro service仍旧可以联合起来的完成一个solution的</li>
 <li></li>
 </ul>
-<h3 id="micro-service-combination"><a href="#micro-service-combination" class="headerlink" title="micro service combination"></a>micro service combination</h3><ul>
+<h3 id="micro-service-combination"><a class="header-anchor" href="#micro-service-combination"></a>micro service combination</h3>
+<ul>
 <li>micro service本身是一个complete application，它独立完成某个功能，可以有interface或者没有，可以访问数据库，也可以不访问。</li>
 <li>很多micro service联合起来，成为一个solution。</li>
 <li>默认只需要知道对方的endpoint就可以进行通信。<strong><em>所以是http base？</em></strong></li>
-<li><strong>_ each micro service has to offer an API endpoint! 通常都是REST的endpoint，但是也可以是wisdom endpoint_</strong></li>
+<li>___ each micro service has to offer an API endpoint! 通常都是REST的endpoint，但是也可以是wisdom endpoint___</li>
 </ul>
-<h3 id="micro-service优势"><a href="#micro-service优势" class="headerlink" title="micro service优势"></a>micro service优势</h3><ul>
+<h3 id="micro-service优势"><a class="header-anchor" href="#micro-service优势"></a>micro service优势</h3>
+<ul>
 <li>增加了scalability。话说这个吧，其实很复杂。看我另外一篇博客。而且未必多加pod，能力就一定上升啊</li>
 </ul>
 
@@ -750,13 +894,16 @@ jti (JWT ID)：编号
       
         
           
-            <p>工作中碰到DNS的local 端口的问题，就是client段的port，不是DNS server的端口。这个是默认开在53上面的。<br>然后就研究了一下，写在这里。</p>
-<h3 id="port-0"><a href="#port-0" class="headerlink" title="port 0"></a>port 0</h3><ul>
+            <p>工作中碰到DNS的local 端口的问题，就是client段的port，不是DNS server的端口。这个是默认开在53上面的。<br>
+然后就研究了一下，写在这里。</p>
+<h3 id="port-0"><a class="header-anchor" href="#port-0"></a>port 0</h3>
+<ul>
 <li>可用端口是<code>0 ~ 65535</code>。<code>0</code>在这里说啦，是分配一个随机的未被占用的端口。而<code>65535</code> 事实上是会报错的，也是用不了的。</li>
 <li>事实上，确实是可能有race condition存在的。并且很难避免。仔细看了一遍，好像并没有很好的提议。</li>
 <li>Spring里面的<code>SocketUtil</code>的源码可以参考</li>
 <li><code>ServerSocket</code>里面初始化时候其实是有两部的，第二部是bind，如果传0给构造函数，第二部时候才真正是分配的时候。</li>
-<li>参考链接：<ul>
+<li>参考链接：
+<ul>
 <li><a href="https://blog.csdn.net/qq_36592572/article/details/82323100" target="_blank" rel="noopener">关于端口最大值65535的问题</a></li>
 <li><a href="https://stackoverflow.com/questions/12889702/allowed-port-range-for-tcp" target="_blank" rel="noopener">Allowed Port Range for TCP</a></li>
 <li><a href="https://stackoverflow.com/questions/115500/how-do-you-specify-a-port-range-for-java-sockets" target="_blank" rel="noopener">how-do-you-specify-a-port-range-for-java-sockets</a></li>
@@ -766,29 +913,41 @@ jti (JWT ID)：编号
 </ul>
 </li>
 </ul>
-<h3 id="TCP-amp-UDP"><a href="#TCP-amp-UDP" class="headerlink" title="TCP &amp; UDP"></a>TCP &amp; UDP</h3><ul>
-<li><p>参考链接</p>
+<h3 id="tcp-udp"><a class="header-anchor" href="#tcp-udp"></a>TCP &amp; UDP</h3>
+<ul>
+<li>
+<p>参考链接</p>
 <ul>
 <li><a href="https://stackoverflow.com/questions/12737293/how-do-i-resolve-the-java-net-bindexception-address-already-in-use-jvm-bind?rq=1" target="_blank" rel="noopener">how-do-i-resolve-the-java-net-bindexception-address-already-in-use-jvm-bind</a>: 里面有很多如何查找是哪个应用在占用端口的方法</li>
 <li><a href="https://stackoverflow.com/questions/27730330/java-what-is-the-difference-between-serversocket-and-datagramsocket" target="_blank" rel="noopener">java-what-is-the-difference-between-serversocket-and-datagramsocket</a></li>
 <li><a href="https://www.javaworld.com/article/2077322/core-java-sockets-programming-in-java-a-tutorial.html" target="_blank" rel="noopener">Sockets programming in Java</a></li>
 </ul>
 </li>
-<li><p>这回犯一个低级错误。但是也是必然的，毕竟底层网络不够了解。</p>
+<li>
+<p>这回犯一个低级错误。但是也是必然的，毕竟底层网络不够了解。</p>
 </li>
-<li>这次犯的错误是这样的，需要发现一个free的port来建立UDP连接，于是就使用了<code>serverSocket</code> 来check 端口，参考以上链接。</li>
-<li>实际是，<code>TCP</code>和 <code>UDP</code> 需要使用不同的结构。ORZ。可见我的java基础和网络基础都很有点薄弱啊。对<code>socket</code>的理解也着实不灵啊。</li>
-<li><code>UDP</code> 应当使用<code>DatagramSocket</code>结构来建。</li>
+<li>
+<p>这次犯的错误是这样的，需要发现一个free的port来建立UDP连接，于是就使用了<code>serverSocket</code> 来check 端口，参考以上链接。</p>
+</li>
+<li>
+<p>实际是，<code>TCP</code>和 <code>UDP</code> 需要使用不同的结构。ORZ。可见我的java基础和网络基础都很有点薄弱啊。对<code>socket</code>的理解也着实不灵啊。</p>
+</li>
+<li>
+<p><code>UDP</code> 应当使用<code>DatagramSocket</code>结构来建。</p>
+</li>
 </ul>
-<h4 id="UDP"><a href="#UDP" class="headerlink" title="UDP"></a>UDP</h4><ul>
+<h4 id="udp"><a class="header-anchor" href="#udp"></a>UDP</h4>
+<ul>
 <li><code>UDP</code>的全称：<code>user datagram protocol</code>。</li>
 <li>each time you send datagrams, you also need to send the local socket descriptor and the receiving socket’s address. As you can tell, additional data must be sent each time a communication is made.</li>
 </ul>
-<h4 id="TCP"><a href="#TCP" class="headerlink" title="TCP"></a>TCP</h4><ul>
+<h4 id="tcp"><a class="header-anchor" href="#tcp"></a>TCP</h4>
+<ul>
 <li><code>TCP</code>的全称： <code>transfer control protocol</code></li>
 <li>Once two sockets have been connected, they can be used to transmit data in both (or either one of the) directions.</li>
 </ul>
-<h4 id="When-is-UDP-amp-when-is-TCP"><a href="#When-is-UDP-amp-when-is-TCP" class="headerlink" title="When is UDP &amp; when is TCP"></a>When is UDP &amp; when is TCP</h4><ul>
+<h4 id="when-is-udp-when-is-tcp"><a class="header-anchor" href="#when-is-udp-when-is-tcp"></a>When is UDP &amp; when is TCP</h4>
+<ul>
 <li><code>UDP</code>有数据大小限制，每次发的时候都要带上信息，不可靠，但是速度高。</li>
 <li><code>TCP</code>是面向连接的，所有有建立连接时间。<strong><em>UDP也要建连接呀</em></strong> TCP的数据更像流，而不是一个个数据包，没有大小限制，可靠，但是速度慢很多。</li>
 <li>TCP is useful for implementing network services – such as remote login (rlogin, telnet) and file transfer (FTP)</li>
@@ -938,16 +1097,20 @@ jti (JWT ID)：编号
             <p>K8s的前两篇文档大而乱啊。所以的话，还是小而精更好吧。</p>
 <p>接着记录命令，最好相关命令放在一起。</p>
 <ul>
-<li><p>kubectl port-forward</p>
+<li>kubectl port-forward
 <ul>
-<li>Forward one or more local ports to a pod. This command requires the node to have ‘socat’ installed. <strong><em>socat是什么?</em></strong></li>
-<li><p>参考链接： </p>
+<li>
+<p>Forward one or more local ports to a pod. This command requires the node to have ‘socat’ installed. <strong><em>socat是什么?</em></strong></p>
+</li>
+<li>
+<p>参考链接：</p>
 <ul>
 <li><a href="https://imti.co/kubernetes-port-forwarding/" target="_blank" rel="noopener">Kubernetes Port Forwarding for Local Development</a></li>
 <li><a href="https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#port-forward" target="_blank" rel="noopener">官方文档</a></li>
 </ul>
 </li>
-<li><p>用例：</p>
+<li>
+<p>用例：</p>
 <ul>
 <li>以下命令的含义是：将本地端口8080和8081，映射到k8s服务<code>ok</code>的8080和80端口上面。<code>-n</code>代表的namespace</li>
 <li>默认地址是localhost</li>
@@ -956,8 +1119,9 @@ jti (JWT ID)：编号
 </ul>
 </li>
 </ul>
-<pre><code>kubectl port-forward service/ok 8080:8080 8081:80 -n the-project
+<pre><code>  kubectl port-forward service/ok 8080:8080 8081:80 -n the-project
 </code></pre>
+
           
         
       
@@ -1098,10 +1262,16 @@ jti (JWT ID)：编号
       
         
           
-            <p>作为Java程序员，不会remote debug，是不现实的。实际上，几年前也用过。但是悲催的是，再次要用的时候就搞不清了。<br>现在还是k8s平台，端口映射就更复杂一点。三两下一绕就更不清楚了。所以还是先把remote debug搞清楚。<br>再去绕端口号。</p>
-<h3 id="什么是remote-debug"><a href="#什么是remote-debug" class="headerlink" title="什么是remote debug"></a>什么是remote debug</h3><p>服务端程序运行在一台远程服务器上，我们可以在本地服务端的代码（前提是本地的代码必须和远程服务器运行的代码一致）中设置断点，每当有请求到远程服务器时时能够在本地知道远程服务端的此时的内部状态。</p>
-<h3 id="怎么做remote-debug"><a href="#怎么做remote-debug" class="headerlink" title="怎么做remote debug"></a>怎么做remote debug</h3><h4 id="使用特定JVM参数运行服务端代码"><a href="#使用特定JVM参数运行服务端代码" class="headerlink" title="使用特定JVM参数运行服务端代码"></a>使用特定JVM参数运行服务端代码</h4><ul>
-<li>不是说打包的时候，而是运行jar包的时候，java -jar带上需要的参数<ul>
+            <p>作为Java程序员，不会remote debug，是不现实的。实际上，几年前也用过。但是悲催的是，再次要用的时候就搞不清了。<br>
+现在还是k8s平台，端口映射就更复杂一点。三两下一绕就更不清楚了。所以还是先把remote debug搞清楚。<br>
+再去绕端口号。</p>
+<h3 id="什么是remote-debug"><a class="header-anchor" href="#什么是remote-debug"></a>什么是remote debug</h3>
+<p>服务端程序运行在一台远程服务器上，我们可以在本地服务端的代码（前提是本地的代码必须和远程服务器运行的代码一致）中设置断点，每当有请求到远程服务器时时能够在本地知道远程服务端的此时的内部状态。</p>
+<h3 id="怎么做remote-debug"><a class="header-anchor" href="#怎么做remote-debug"></a>怎么做remote debug</h3>
+<h4 id="使用特定jvm参数运行服务端代码"><a class="header-anchor" href="#使用特定jvm参数运行服务端代码"></a>使用特定JVM参数运行服务端代码</h4>
+<ul>
+<li>不是说打包的时候，而是运行jar包的时候，java -jar带上需要的参数
+<ul>
 <li><code>address</code>是进行通信需要的端口。那么服务器端运行的程序会在这个端口上面开一个<code>socket</code></li>
 <li><code>socket</code>比较好理解的，通信方式</li>
 <li>所以之前进行debug mode的时候，肯定要改一下产品端module运行时候的JVM参数的</li>
@@ -1109,19 +1279,25 @@ jti (JWT ID)：编号
 </li>
 </ul>
 <pre><code>-Xdebug -Xrunjdwp:transport=dt_socket,suspend=n,server=y,address=${debug_port}
-</code></pre><ul>
-<li>参考链接：<ul>
+</code></pre>
+<ul>
+<li>参考链接：
+<ul>
 <li><a href="https://www.cnblogs.com/wy2325/p/5600232.html" target="_blank" rel="noopener">IntelliJ远程调试教程</a></li>
 </ul>
 </li>
 </ul>
-<h4 id="在IDE里面进行设置，本地连接远程服务器debug端口"><a href="#在IDE里面进行设置，本地连接远程服务器debug端口" class="headerlink" title="在IDE里面进行设置，本地连接远程服务器debug端口"></a>在IDE里面进行设置，本地连接远程服务器debug端口</h4><ul>
-<li><p>参考链接里面的设置方法，其实就配远程服务器的地址和debug 端口</p>
+<h4 id="在ide里面进行设置-本地连接远程服务器debug端口"><a class="header-anchor" href="#在ide里面进行设置-本地连接远程服务器debug端口"></a>在IDE里面进行设置，本地连接远程服务器debug端口</h4>
+<ul>
+<li>
+<p>参考链接里面的设置方法，其实就配远程服务器的地址和debug 端口</p>
 </li>
-<li><p>还需要点击一下debug，让本地attach上去。</p>
+<li>
+<p>还需要点击一下debug，让本地attach上去。</p>
 </li>
 </ul>
-<h4 id="调试代码"><a href="#调试代码" class="headerlink" title="调试代码"></a>调试代码</h4><ul>
+<h4 id="调试代码"><a class="header-anchor" href="#调试代码"></a>调试代码</h4>
+<ul>
 <li>这时候就可以进行remote debug了。打好断点，然后往服务器发送请求就可以了</li>
 </ul>
 
@@ -1265,52 +1441,71 @@ jti (JWT ID)：编号
       
         
           
-            <p>ifconfig和ipconfig一样，实在是最常用的命令。然而，只是大概的了解。每次看一下之后，后面又会忘。<br>网络的基本概念也是，每次都是看一点，不成系统的感觉。所以把基础网络概念放在这里。</p>
-<h3 id="ifconfig"><a href="#ifconfig" class="headerlink" title="ifconfig"></a>ifconfig</h3><p>这个命令是linux的</p>
-<h4 id="物理地址-MAC地址"><a href="#物理地址-MAC地址" class="headerlink" title="物理地址(MAC地址)"></a>物理地址(MAC地址)</h4><ul>
+            <p>ifconfig和ipconfig一样，实在是最常用的命令。然而，只是大概的了解。每次看一下之后，后面又会忘。<br>
+网络的基本概念也是，每次都是看一点，不成系统的感觉。所以把基础网络概念放在这里。</p>
+<h3 id="ifconfig"><a class="header-anchor" href="#ifconfig"></a>ifconfig</h3>
+<p>这个命令是linux的</p>
+<h4 id="物理地址-mac地址"><a class="header-anchor" href="#物理地址-mac地址"></a>物理地址(MAC地址)</h4>
+<ul>
 <li>什么是MAC地址？ MAC地址（Media Access Control Address，介质访问控制），直译为媒体访问控制地址，也称为局域网地址（LAN Address），以太网地址（Ethernet Address）或物理地址（Physical Address），它是一个用来确认网上设备位置的地址。形象地说，MAC地址就如同身份证上的身份证号码，具有全球唯一性。</li>
 <li>MAC地址采用十六进制数表示，共六个字节（48位）。其中，前三个字节是由IEEE的注册管理机构RA负责给不同厂家分配的代码(高位24位），也称为“编制上唯一的标识符”，后三个字节(低位24位)由各厂家自行指派给生产的适配器接口，称为扩展标识符（唯一性）。</li>
 <li>MAC地址用于在网络中唯一标示一个网卡，一台设备若有一或多个网卡，则每个网卡都需要并会有一个唯一的MAC地址。</li>
-<li>参考链接<ul>
+<li>参考链接
+<ul>
 <li><a href="https://zhidao.baidu.com/question/6331169.html" target="_blank" rel="noopener">百度知道的迅速概念</a></li>
 <li><a href="https://www.zhihu.com/question/21546408" target="_blank" rel="noopener">有了 IP 地址，为什么还要用 MAC 地址？</a></li>
 </ul>
 </li>
 </ul>
-<h4 id="子网掩码"><a href="#子网掩码" class="headerlink" title="子网掩码"></a>子网掩码</h4><ul>
+<h4 id="子网掩码"><a class="header-anchor" href="#子网掩码"></a>子网掩码</h4>
+<ul>
 <li>子网掩码(subnet mask)又叫网络掩码、地址掩码、子网络遮罩，它是一种用来指明一个IP地址的哪些位标识的是主机所在的子网，以及哪些位标识的是主机的位掩码。子网掩码不能单独存在，它必须结合IP地址一起使用。子网掩码只有一个作用，就是将某个IP地址划分成网络地址和主机地址两部分</li>
 <li>子网掩码是一个32位地址，用于屏蔽IP地址的一部分以区别网络标识和主机标识，并说明该IP地址是在局域网上，还是在远程网上。</li>
-<li><p>计算稍微有点绕，看知乎上面的比喻比较清楚，举例：</p>
+<li>计算稍微有点绕，看知乎上面的比喻比较清楚，举例：
 <ul>
-<li>比如我们申请到的网络号为 <code>210.73.a.b</code>，该网络地址为c类IP地址，网络标识为<code>210.73.a</code>，主机标识是<code>b</code>。</li>
-<li>假设需要16个子网。那么就是<code>1111</code></li>
-<li>然后c类地址的最后一位是主机标识。那么就是<code>11110000</code>.前四位代表子网，后四位代表主机名。最后掩码是<code>255.255.255.240</code>。也可以写成<code>210.73.a.0/28</code></li>
-<li>28代表28个1</li>
-<li>再看知乎的例子，<code>192.168.1.x</code>分成4个子网。那么就是<code>11111111,11111111,11111111,11000000</code>， 所以第一个子网就是<code>192.168.1.0/26</code></li>
-<li><p>看IP地址的话就是，这四个网段的开头就是：</p>
+<li>
+<p>比如我们申请到的网络号为 <code>210.73.a.b</code>，该网络地址为c类IP地址，网络标识为<code>210.73.a</code>，主机标识是<code>b</code>。</p>
+</li>
+<li>
+<p>假设需要16个子网。那么就是<code>1111</code></p>
+</li>
+<li>
+<p>然后c类地址的最后一位是主机标识。那么就是<code>11110000</code>.前四位代表子网，后四位代表主机名。最后掩码是<code>255.255.255.240</code>。也可以写成<code>210.73.a.0/28</code></p>
+</li>
+<li>
+<p>28代表28个1</p>
+</li>
+<li>
+<p>再看知乎的例子，<code>192.168.1.x</code>分成4个子网。那么就是<code>11111111,11111111,11111111,11000000</code>， 所以第一个子网就是<code>192.168.1.0/26</code></p>
+</li>
+<li>
+<p>看IP地址的话就是，这四个网段的开头就是：</p>
 <pre><code>192.168.1. 00 000000 --&gt; 00 111111 
 192.168.1. 01 000000 --&gt; 01 111111
 192.168.1. 10 000000 --&gt; 10 111111
 192.168.1. 11 000000 --&gt; 11 111111
-</code></pre></li>
+</code></pre>
+</li>
 </ul>
 </li>
-<li>参考链接<ul>
+<li>参考链接</li>
+</ul>
+<ul>
 <li><a href="https://baike.baidu.com/item/%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81" target="_blank" rel="noopener">百度百科的解释</a></li>
 <li><a href="https://www.zhihu.com/question/56895036" target="_blank" rel="noopener">知乎问答</a></li>
 </ul>
-</li>
-</ul>
-<h4 id="广播地址"><a href="#广播地址" class="headerlink" title="广播地址"></a>广播地址</h4><ul>
+<h4 id="广播地址"><a class="header-anchor" href="#广播地址"></a>广播地址</h4>
+<ul>
 <li>Broadcast Address(广播地址)是专门用于同时向网络中所有工作站进行发送的一个地址。在使用TCP/IP 协议的网络中，主机标识段host ID 为全1 的IP 地址为广播地址，广播的分组传送给host ID段所涉及的所有计算机。例如，对于10.1.1.0 （255.255.255.0 ）网段，其广播地址为10.1.1.255 （255 即为2 进制的11111111 ），当发出一个目的地址为10.1.1.255的分组（封包）时，它将被分发给该网段上的所有计算机。</li>
 </ul>
-<h4 id="ifconfig命令输出详解"><a href="#ifconfig命令输出详解" class="headerlink" title="ifconfig命令输出详解"></a>ifconfig命令输出详解</h4><ul>
-<li><code>eth0</code> –&gt; 网卡</li>
-<li><code>HWaddr</code> –&gt; MAC</li>
-<li><code>inet addr</code> –&gt; internal address, IP</li>
-<li><code>Bcast</code> –&gt; 广播地址</li>
-<li><code>Mask</code> –&gt; 子网掩码</li>
-<li><code>Link encap</code> –&gt; 网络类型为以太网，这里也可能出现其他类型。比如 <code>Local Loopback</code></li>
+<h4 id="ifconfig命令输出详解"><a class="header-anchor" href="#ifconfig命令输出详解"></a>ifconfig命令输出详解</h4>
+<ul>
+<li><code>eth0</code> --&gt; 网卡</li>
+<li><code>HWaddr</code> --&gt; MAC</li>
+<li><code>inet addr</code> --&gt; internal address, IP</li>
+<li><code>Bcast</code> --&gt; 广播地址</li>
+<li><code>Mask</code> --&gt; 子网掩码</li>
+<li><code>Link encap</code> --&gt; 网络类型为以太网，这里也可能出现其他类型。比如 <code>Local Loopback</code></li>
 </ul>
 <pre><code>[root@linuxchao ~]# ifconfig
 eth0 Link encap:Ethernet HWaddr 00:03:0D:27:86:41
@@ -1322,8 +1517,10 @@ TX packets:676 errors:0 dropped:0 overruns:0 carrier:0
 collisions:0 txqueuelen:1000
 RX bytes:491238 (479.7 KiB) TX bytes:86286 (84.2 KiB)
 Interrupt:5 Base address:0x8c00
-</code></pre><ul>
-<li>参加链接： 写得非常清楚的博客并不多。<ul>
+</code></pre>
+<ul>
+<li>参加链接： 写得非常清楚的博客并不多。
+<ul>
 <li><a href="http://c.biancheng.net/view/797.html" target="_blank" rel="noopener">Linux ifconfig命令：配置网络接口</a></li>
 </ul>
 </li>
@@ -1469,8 +1666,11 @@ Interrupt:5 Base address:0x8c00
       
         
           
-            <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>工作中要用到DNS协议，需要学习一下，省得碰到的时候每次都要再看一遍。 DNS也是TCP/IP里面的一个基础协议。所以也会涉及到一些TCP/IP协议的部分。<br>话说一个简单的DNS协议也有一堆可以写啊。不容易啊。</p>
-<h3 id="DNS在TCP-IP协议里的位置"><a href="#DNS在TCP-IP协议里的位置" class="headerlink" title="DNS在TCP/IP协议里的位置"></a>DNS在TCP/IP协议里的位置</h3><ul>
+            <h2 id="引言"><a class="header-anchor" href="#引言"></a>引言</h2>
+<p>工作中要用到DNS协议，需要学习一下，省得碰到的时候每次都要再看一遍。 DNS也是TCP/IP里面的一个基础协议。所以也会涉及到一些TCP/IP协议的部分。<br>
+话说一个简单的DNS协议也有一堆可以写啊。不容易啊。</p>
+<h3 id="dns在tcp-ip协议里的位置"><a class="header-anchor" href="#dns在tcp-ip协议里的位置"></a>DNS在TCP/IP协议里的位置</h3>
+<ul>
 <li>从参考链接名就能看出来， DNS是应用层的协议</li>
 <li>TCP/IP是四层。OSI是7层。</li>
 </ul>
@@ -1479,21 +1679,24 @@ Interrupt:5 Base address:0x8c00
 <p>图片来自参考链接1</p>
 </blockquote>
 <ul>
-<li>参考链接：<ul>
+<li>参考链接：
+<ul>
 <li><a href="https://cloud.tencent.com/developer/article/1023700" target="_blank" rel="noopener">TCP/IP（六）应用层（DNS和HTTP协议）</a></li>
 <li><a href="https://cloud.tencent.com/developer/article/1358564" target="_blank" rel="noopener">DNS协议入门</a></li>
 <li><a href="https://cloud.tencent.com/developer/information/dns%E7%9A%84%E5%8D%8F%E8%AE%AE" target="_blank" rel="noopener">DNS协议栈</a></li>
 </ul>
 </li>
 </ul>
-<h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><ul>
+<h3 id="概述"><a class="header-anchor" href="#概述"></a>概述</h3>
+<ul>
 <li><code>Domain Name System</code> 域名系统。也可以叫做域名解析协议。</li>
-<li>简单的解释就是DNS协议会把网址，比如将”sallyslove.github.io/hexo_blog”的域名转换成为计算机能够理解的32位的IP，发到网络层去。</li>
+<li>简单的解释就是DNS协议会把网址，比如将”<a href="http://sallyslove.github.io/hexo_blog%E2%80%9D%E7%9A%84%E5%9F%9F%E5%90%8D%E8%BD%AC%E6%8D%A2%E6%88%90%E4%B8%BA%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%83%BD%E5%A4%9F%E7%90%86%E8%A7%A3%E7%9A%8432%E4%BD%8D%E7%9A%84IP%EF%BC%8C%E5%8F%91%E5%88%B0%E7%BD%91%E7%BB%9C%E5%B1%82%E5%8E%BB%E3%80%82">sallyslove.github.io/hexo_blog”的域名转换成为计算机能够理解的32位的IP，发到网络层去。</a></li>
 <li>域名和IP的对应关系保存在一个叫hosts文件中。最初，通过互联网信息中心来管理这个文件，如果有一个新的计算机想接入网络，或者某个计算IP变更都需要到信息中心申请变更hosts文件。其他计算机也需要定期更新，才能上网。但是这样太麻烦了，就出现了DNS系统。</li>
 <li>其实我们现在的电脑上面也是有这个文件的，就是<code>/window/systems/drivers/etc</code>下面也有hosts文件。注释里面很清楚写着，这个文件“used by Microsoft TCP/IP for Windows.”</li>
 <li>目前的DNS系统中，如果有 hosts文件，仍旧会优先查询这个文件的</li>
 </ul>
-<h3 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h3><ul>
+<h3 id="流程"><a class="header-anchor" href="#流程"></a>流程</h3>
+<ul>
 <li>过程相当的简单明了啊。client端发消息给域名解析服务器，服务器在自己里面一顿找，有就直接返回</li>
 <li>没有就去根服务器找，根服务器找了之后会存到低一次没找到的域名解析服务器进行缓存。</li>
 <li>再去找的时候就从缓存里面直接拿。不需要再去根服务器跑一趟了</li>
@@ -1502,14 +1705,17 @@ Interrupt:5 Base address:0x8c00
 <blockquote>
 <p>图片来自参考链接1</p>
 </blockquote>
-<h3 id="详解"><a href="#详解" class="headerlink" title="详解"></a>详解</h3><ul>
-<li>参考链接：<ul>
+<h3 id="详解"><a class="header-anchor" href="#详解"></a>详解</h3>
+<ul>
+<li>参考链接：
+<ul>
 <li><a href="https://blog.csdn.net/baidu_37964071/article/details/80500825" target="_blank" rel="noopener">DNS（域名解析协议）详解</a></li>
 <li><a href="https://cloud.tencent.com/developer/article/1358564" target="_blank" rel="noopener">DNS 协议入门</a></li>
 </ul>
 </li>
 </ul>
-<h4 id="域名"><a href="#域名" class="headerlink" title="域名"></a>域名</h4><p>好吧，要了解DNS协议，首先要了解域名。各种域名都隶属于域名系统根域的下级。</p>
+<h4 id="域名"><a class="header-anchor" href="#域名"></a>域名</h4>
+<p>好吧，要了解DNS协议，首先要了解域名。各种域名都隶属于域名系统根域的下级。</p>
 <ul>
 <li>域名是分层次的。第一级域名，比如com，代表公司，这是company的缩写吧。再比如org,嗯，我看出来了，organization的开头。net网络提供商。大家有严格遵守吗?</li>
 <li>第二级域名其实是公司名，比如baidu，bing。微软为啥叫bing啊。</li>
@@ -1519,12 +1725,14 @@ Interrupt:5 Base address:0x8c00
 <blockquote>
 <p>图片来自上面的参考链接1</p>
 </blockquote>
-<h4 id="协议"><a href="#协议" class="headerlink" title="协议"></a>协议</h4><ul>
+<h4 id="协议"><a class="header-anchor" href="#协议"></a>协议</h4>
+<ul>
 <li>DNS占用53号端口，同时使用TCP和UDP协议。那么DNS在什么情况下使用这两种协议？DNS在区域传输的时候使用TCP协议，其他时候使用UDP协议。</li>
 <li>上面提到不同层级的域名会有不同层级的域名服务器来对应，每一层级也有主副服务器，辅助服务器与主服务器会进行同步，这个时候会用TCP协议，大批量数据传输，TCP是相对稳定的链接</li>
 <li>而客户端向域名服务器查询时候用的是UDP协议， 效率更高，不需要经过三次握手</li>
 </ul>
-<h4 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h4><ul>
+<h4 id="实现"><a class="header-anchor" href="#实现"></a>实现</h4>
+<ul>
 <li><code>dnsjava</code>是DNS的一个Java实现。这是一个3pp。还有其他一些实现，比如<code>dns4j</code>，<code>dnsjnio</code>，<code>jdnss</code>,<code>eagledns</code>。</li>
 <li>要打开dnsjava的log，需要将设置<code>System.setProperty(&quot;dnsjava.options&quot;,&quot;verbose&quot;);</code> 这种操作也真是比较老了。</li>
 <li>maven dependency是以下这样。</li>
@@ -1533,22 +1741,28 @@ Interrupt:5 Base address:0x8c00
    &lt;groupId&gt;dnsjava&lt;/groupId&gt;
    &lt;artifactId&gt;dnsjava&lt;/artifactId&gt;
    &lt;version&gt;2.1.7&lt;/version&gt;
-</code></pre><ul>
+</code></pre>
+<ul>
 <li><code>dnsjava</code>类图</li>
 </ul>
 <p><img src="https://raw.githubusercontent.com/sallyslove/hexo_blog/master/dnsjava_class_diagram.png" alt></p>
 <ul>
-<li><p><code>dnsjava</code> 流程图<br><img src="https://raw.githubusercontent.com/sallyslove/hexo_blog/master/dnsjava_sequence_diagram.png" alt></p>
+<li>
+<p><code>dnsjava</code> 流程图<br>
+<img src="https://raw.githubusercontent.com/sallyslove/hexo_blog/master/dnsjava_sequence_diagram.png" alt></p>
 </li>
-<li><p>参考链接：</p>
+<li>
+<p>参考链接：</p>
 <ul>
 <li><a href="https://blog.csdn.net/zhu_tianwei/article/details/45128537" target="_blank" rel="noopener">DNS BIND之dnsjava java客户端操作</a></li>
 </ul>
 </li>
 </ul>
-<h4 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h4><ul>
-<li><code>lookup</code>遇到错误“network error”，这个是因为在以下原因。 其实我碰到的就是BindException，”address already in use”</li>
-<li>参考链接：<ul>
+<h4 id="使用"><a class="header-anchor" href="#使用"></a>使用</h4>
+<ul>
+<li><code>lookup</code>遇到错误“network error”，这个是因为在以下原因。 其实我碰到的就是BindException，“address already in use”</li>
+<li>参考链接：
+<ul>
 <li><a href="https://coderanch.com/t/585844/java/org-xbill-DNS-Lookup-error" target="_blank" rel="noopener">org.xbill.DNS.Lookup() error.</a></li>
 <li><a href="https://github.com/dnsjava/dnsjava/issues/71" target="_blank" rel="noopener">我自己报的issue</a></li>
 <li><a href="https://www.programcreek.com/java-api-examples/index.php?api=org.xbill.DNS.ExtendedResolver" target="_blank" rel="noopener">Java Code Examples for org.xbill.DNS.ExtendedResolver</a></li>
@@ -1696,23 +1910,28 @@ Interrupt:5 Base address:0x8c00
       
         
           
-            <h3 id="Compacting-SSTable-Data"><a href="#Compacting-SSTable-Data" class="headerlink" title="Compacting SSTable Data"></a>Compacting SSTable Data</h3><h4 id="Why-Do-We-Need-Compaction"><a href="#Why-Do-We-Need-Compaction" class="headerlink" title="Why Do We Need Compaction"></a>Why Do We Need Compaction</h4><ul>
+            <h3 id="compacting-sstable-data"><a class="header-anchor" href="#compacting-sstable-data"></a>Compacting SSTable Data</h3>
+<h4 id="why-do-we-need-compaction"><a class="header-anchor" href="#why-do-we-need-compaction"></a>Why Do We Need Compaction</h4>
+<ul>
 <li>cassandra并不会删除数据。当需要update一个数据的时候，也不是在SSTable里面进行覆盖，而是会插入一个新的数据，带上新的version。</li>
 <li>这样做的话，cassandra写入数据会非常快，因为不需要查询，但是弊端就是会有越来越多的数据。</li>
 <li>这个时候就需要进行compaction。</li>
 </ul>
-<h4 id="What-Is-Compaction"><a href="#What-Is-Compaction" class="headerlink" title="What Is Compaction"></a>What Is Compaction</h4><ul>
+<h4 id="what-is-compaction"><a class="header-anchor" href="#what-is-compaction"></a>What Is Compaction</h4>
+<ul>
 <li>To keep the multiple versions of the SSTables from overwhelming it, the database merges SSTables on a regular basis to get rid of the older versions of the data。 cassandra会在一个基础之上对旧的版本的数据进行合并，这个就是compaction</li>
 <li>cassandra默认会进行很多次小的compaction</li>
 </ul>
-<h4 id="Campaction细节"><a href="#Campaction细节" class="headerlink" title="Campaction细节"></a>Campaction细节</h4><ul>
+<h4 id="campaction细节"><a class="header-anchor" href="#campaction细节"></a>Campaction细节</h4>
+<ul>
 <li>在compaction期间，cassandra会合并key和column，同时会将过期的墓碑删除，还会生成一个新的index？ <strong><em>这个index是什么东西啊</em></strong></li>
 <li>合并之后会生成一个新的SSTable。<strong><em>回头要试一下</em></strong></li>
 <li>compaction期间的资源耗用会上升，但是compaction结束之后应该会释放空间，因为它合并了SSTable</li>
 <li>旧的被合并的table会被加上deletion标签，并且在数据库重启或者在使用reference counting mechanism的时候。<strong><em>这个reference counting mechanism是什么啊</em></strong></li>
 <li>compaction的算法是可以配置的，默认的是<code>size-tiered compaction</code>。这个算法会合并大小相近的table，生成大table</li>
 </ul>
-<h4 id="Compaction对读数据的影响"><a href="#Compaction对读数据的影响" class="headerlink" title="Compaction对读数据的影响"></a>Compaction对读数据的影响</h4><ul>
+<h4 id="compaction对读数据的影响"><a class="header-anchor" href="#compaction对读数据的影响"></a>Compaction对读数据的影响</h4>
+<ul>
 <li>compaction是per-node的，所以某个数据在node1上面的旧版本可能删除了。但是在node2上面还有。</li>
 <li>这样读的时候会进行一个合并，并且返回最后一个写的version。这个原则是<code>last-write-win</code></li>
 </ul>
@@ -1858,12 +2077,15 @@ Interrupt:5 Base address:0x8c00
         
           
             <p>工作中接触到一些软件衡量标准的需求，必须对这些概念有所了解和理解。所以解释如下了。</p>
-<h3 id="Scalability"><a href="#Scalability" class="headerlink" title="Scalability"></a>Scalability</h3><ul>
-<li><blockquote>
+<h3 id="scalability"><a class="header-anchor" href="#scalability"></a>Scalability</h3>
+<ul>
+<li>
+<blockquote>
 <p>Scalability is the property of a system to handle a growing amount of work by adding resources to the system 维基百科里面的这个解释实在很到位啊。通过加资源来获得更大的能力</p>
 </blockquote>
 </li>
-<li>以下内容基本是维基百科的翻译：<ul>
+<li>以下内容基本是维基百科的翻译：
+<ul>
 <li>用户可扩展性： 能够同时支持多少用户</li>
 <li>功能可扩展性： 能不能扩展功能，而不会影响现有功能</li>
 <li>地理上的可扩展性： 就是直接的字面含义，类似部署时候的机器是不是必须local在一起。</li>
@@ -1875,14 +2097,17 @@ Interrupt:5 Base address:0x8c00
 <li>Scaling horizontally： 就是增减node</li>
 <li>Scaling vertically： 增减resource，增减cpu或者内存</li>
 <li>总的来说，还是挺复杂的。</li>
-<li>参考链接：<ul>
+<li>参考链接：
+<ul>
 <li><a href="https://en.wikipedia.org/wiki/Scalability" target="_blank" rel="noopener">维基百科</a></li>
 </ul>
 </li>
 </ul>
-<h3 id="Testability"><a href="#Testability" class="headerlink" title="Testability"></a>Testability</h3><p>testability跟我想象的稍有不同，就是说这个模块或者软件的可测试性。实在有点复杂啊</p>
+<h3 id="testability"><a class="header-anchor" href="#testability"></a>Testability</h3>
+<p>testability跟我想象的稍有不同，就是说这个模块或者软件的可测试性。实在有点复杂啊</p>
 <ul>
-<li>总的来说，感觉实在是太抽象了。 <strong><em>没看懂</em></strong><ul>
+<li>总的来说，感觉实在是太抽象了。 <strong><em>没看懂</em></strong>
+<ul>
 <li>Class I: there exists a finite complete test suite.</li>
 <li>Class II: any partial distinguishing rate (i.e. any incomplete capability to distinguish correct systems from incorrect systems) can be reached with a finite test suite.</li>
 <li>Class III: there exists a countable complete test suite.</li>
@@ -1890,18 +2115,23 @@ Interrupt:5 Base address:0x8c00
 <li>Class V: all cases.</li>
 </ul>
 </li>
-<li>参考链接：<br>+<a href="https://en.wikipedia.org/wiki/Software_testability" target="_blank" rel="noopener">维基百科</a></li>
+<li>参考链接：<br>
++<a href="https://en.wikipedia.org/wiki/Software_testability" target="_blank" rel="noopener">维基百科</a></li>
 </ul>
-<h3 id="Robustness-computer-science"><a href="#Robustness-computer-science" class="headerlink" title="Robustness (computer science)"></a>Robustness (computer science)</h3><ul>
+<h3 id="robustness-computer-science"><a class="header-anchor" href="#robustness-computer-science"></a>Robustness (computer science)</h3>
+<ul>
 <li>robustness is the ability of a computer system to cope with errors during execution and cope with erroneous input。跟想象的不一样啊，更多focus的是handle error的能力</li>
-<li>参考链接：<ul>
-<li><a href="https://en.wikipedia.org/wiki/Robustness_(computer_science" target="_blank" rel="noopener">维基百科</a></li>
+<li>参考链接：
+<ul>
+<li>[维基百科](<a href="https://en.wikipedia.org/wiki/Robustness_(computer_science)" target="_blank" rel="noopener">https://en.wikipedia.org/wiki/Robustness_(computer_science)</a></li>
 </ul>
 </li>
 </ul>
-<h3 id="Computer-Security"><a href="#Computer-Security" class="headerlink" title="Computer Security"></a>Computer Security</h3><ul>
+<h3 id="computer-security"><a class="header-anchor" href="#computer-security"></a>Computer Security</h3>
+<ul>
 <li>the protection of computer systems from theft or damage to their hardware, software or electronic data, as well as from disruption or misdirection of the services they provide.</li>
-<li>参考链接<ul>
+<li>参考链接
+<ul>
 <li><a href="https://en.wikipedia.org/wiki/Computer_security" target="_blank" rel="noopener">维基百科</a></li>
 </ul>
 </li>
@@ -2047,7 +2277,8 @@ Interrupt:5 Base address:0x8c00
       
         
           
-            <h3 id="java-Util-Function-Supplier"><a href="#java-Util-Function-Supplier" class="headerlink" title="java.Util.Function.Supplier"></a>java.Util.Function.Supplier</h3><ul>
+            <h3 id="java-util-function-supplier"><a class="header-anchor" href="#java-util-function-supplier"></a>java.Util.Function.Supplier</h3>
+<ul>
 <li>这个接口只有一个方法，Get方法。void，返回一个T</li>
 <li>把它当工厂方法看就是了。</li>
 <li>顾名思义，提供者。</li>
@@ -2055,18 +2286,23 @@ Interrupt:5 Base address:0x8c00
 <li>感觉就是一次性生成。同一个接口，在初始化时候给出get函数，可以有不同实现</li>
 <li>supplier作为function interface，有@FunctionalInterface annotation。所以可以直接用lamda来作为实现。比如：<code>()-&gt;getString()</code>可以作为<code>Supplier&lt;String&gt;</code>的实现</li>
 </ul>
-<h3 id="java关键字native"><a href="#java关键字native" class="headerlink" title="java关键字native"></a>java关键字native</h3><p>我要看native的函数。找不到，OMG。其实之前看到过native的用法，知道这个玩意，但是还是写在这里吧。<br>感觉一片参考链接就能解释清楚啦。</p>
+<h3 id="java关键字native"><a class="header-anchor" href="#java关键字native"></a>java关键字native</h3>
+<p>我要看native的函数。找不到，OMG。其实之前看到过native的用法，知道这个玩意，但是还是写在这里吧。<br>
+感觉一片参考链接就能解释清楚啦。</p>
 <ul>
 <li>其实就是java吧，不像c和c++善于处理底层的东西。所以就会调用一些不是java写的函数。这些函数就用native关键字来修饰</li>
 <li>native是通过JNI（Java Native Interface）接口来调用这些函数的</li>
-<li>参考链接<ul>
+<li>参考链接
+<ul>
 <li><a href="https://www.cnblogs.com/b3051/p/7484501.html" target="_blank" rel="noopener">java中native的用法</a></li>
 </ul>
 </li>
 </ul>
-<h3 id="生成Random的方法"><a href="#生成Random的方法" class="headerlink" title="生成Random的方法"></a>生成Random的方法</h3><p>有好几个相关的类型，写在这里。是在工作中需要生成随机<code>port</code>碰到的</p>
+<h3 id="生成random的方法"><a class="header-anchor" href="#生成random的方法"></a>生成Random的方法</h3>
+<p>有好几个相关的类型，写在这里。是在工作中需要生成随机<code>port</code>碰到的</p>
 <ul>
-<li>参考链接<ul>
+<li>参考链接
+<ul>
 <li><a href="https://www.jianshu.com/p/2f6acd169202#" target="_blank" rel="noopener">Java 随机数 Random VS SecureRandom</a></li>
 <li><a href="https://www.bbsmax.com/A/kjdwxba6zN/" target="_blank" rel="noopener">Java中的随机数生成器：Random，ThreadLocalRandom，SecureRandom</a></li>
 <li><a href="http://ju.outofmemory.cn/entry/286621" target="_blank" rel="noopener">Java中生成随机数Random、ThreadLocalRandom、SecureRandom</a></li>
@@ -2076,18 +2312,21 @@ Interrupt:5 Base address:0x8c00
 </ul>
 </li>
 </ul>
-<h4 id="Math-random"><a href="#Math-random" class="headerlink" title="Math.random"></a>Math.random</h4><ul>
+<h4 id="math-random"><a class="header-anchor" href="#math-random"></a>Math.random</h4>
+<ul>
 <li>产生的随机数是0 - 1 之间的一个 double，即0 &lt;= random &lt; 1。</li>
 <li>第一次调用<code>Math.random()</code>方法时，自动创建了一个伪随机数生成器，实际上用的是 <code>new java.util.Random()</code>。</li>
 <li><code>Math.random()</code>方法是线程安全的。</li>
 </ul>
-<h4 id="java-util-Random"><a href="#java-util-Random" class="headerlink" title="java.util.Random"></a>java.util.Random</h4><ul>
+<h4 id="java-util-random"><a class="header-anchor" href="#java-util-random"></a>java.util.Random</h4>
+<ul>
 <li><code>Random</code>类中实现的随机算法是伪随机，也就是有规则的随机</li>
 <li>种子一样的情况下，两个<code>Random</code>类产生的是一模一样的数列</li>
 <li>所以在安全性要求比较高，或者使用比较频繁时，不适合使用<code>Random</code>，因为值是可预测的</li>
 <li>然后生成的随机数是左边闭环，右边开的。</li>
 </ul>
-<h4 id="java-security-SecureRandom"><a href="#java-security-SecureRandom" class="headerlink" title="java.security.SecureRandom"></a>java.security.SecureRandom</h4><ul>
+<h4 id="java-security-securerandom"><a class="header-anchor" href="#java-security-securerandom"></a>java.security.SecureRandom</h4>
+<ul>
 <li><code>SecureRandom</code> 其实和<code>Random</code>一样，种子一样的时候生成的数列是固定的</li>
 <li>也是继承至 java.util.Random。</li>
 <li>不一样的是，<code>SecureRandom</code>收集了一些随机事件，比如鼠标点击，键盘点击等等， 使用这些随机事件作为种子</li>
@@ -2095,7 +2334,8 @@ Interrupt:5 Base address:0x8c00
 <li>不要使用人为指定的源，尽量使用系统的随机源。系统的随机源在java8中是可以配置的，配置在<code>$JAVA_HOME/jre/lib/security/java.security</code>中的<code>securerandom.source</code>属性。例如jdk1.8中该配置为:<code>securerandom.source=file:/dev/random</code></li>
 <li>实际上SHA1PRNG的性能将近要比NativePRNG的性能好一倍，synchronized的代码少了一半，所以没有特别重的安全需要，尽量使用SHA1PRNG算法生成随机数。</li>
 </ul>
-<h4 id="java-util-concurrent-ThreadLocalRandom"><a href="#java-util-concurrent-ThreadLocalRandom" class="headerlink" title="java.util.concurrent.ThreadLocalRandom"></a>java.util.concurrent.ThreadLocalRandom</h4><ul>
+<h4 id="java-util-concurrent-threadlocalrandom"><a class="header-anchor" href="#java-util-concurrent-threadlocalrandom"></a>java.util.concurrent.ThreadLocalRandom</h4>
+<ul>
 <li>java7之后引进的</li>
 <li>继承自java.util.Random</li>
 </ul>
@@ -2195,7 +2435,7 @@ Interrupt:5 Base address:0x8c00
               
               <div class="site-state-item site-state-categories">
                 <a href="/hexo_blog/categories/index.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>

@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="HelmHelm入门篇。感觉有点类似maven，总归有这样一个管理工具。其实是想看Ingress的，可是不看Helm，yaml看不懂呀。只好滚回来看Helm。 Helm是什么 Helm是在Kubernetes中安装部署容器的一个工具。 Helm is a tool for managing Kubernetes charts. 所以Charts可能是K8s的一个概念。中文的博客不一定对。 Helm">
+<meta name="description" content="Helm Helm入门篇。感觉有点类似maven，总归有这样一个管理工具。其实是想看Ingress的，可是不看Helm，yaml看不懂呀。只好滚回来看Helm。 Helm是什么  Helm是在Kubernetes中安装部署容器的一个工具。 Helm is a tool for managing Kubernetes charts. 所以Charts可能是K8s的一个概念。中文的博客不一定对。 He">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Helm入门">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/02/26/Helm入门/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="HelmHelm入门篇。感觉有点类似maven，总归有这样一个管理工具。其实是想看Ingress的，可是不看Helm，yaml看不懂呀。只好滚回来看Helm。 Helm是什么 Helm是在Kubernetes中安装部署容器的一个工具。 Helm is a tool for managing Kubernetes charts. 所以Charts可能是K8s的一个概念。中文的博客不一定对。 Helm">
+<meta property="og:description" content="Helm Helm入门篇。感觉有点类似maven，总归有这样一个管理工具。其实是想看Ingress的，可是不看Helm，yaml看不懂呀。只好滚回来看Helm。 Helm是什么  Helm是在Kubernetes中安装部署容器的一个工具。 Helm is a tool for managing Kubernetes charts. 所以Charts可能是K8s的一个概念。中文的博客不一定对。 He">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-21T09:14:32.164Z">
+<meta property="og:updated_time" content="2019-08-23T05:23:48.117Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Helm入门">
-<meta name="twitter:description" content="HelmHelm入门篇。感觉有点类似maven，总归有这样一个管理工具。其实是想看Ingress的，可是不看Helm，yaml看不懂呀。只好滚回来看Helm。 Helm是什么 Helm是在Kubernetes中安装部署容器的一个工具。 Helm is a tool for managing Kubernetes charts. 所以Charts可能是K8s的一个概念。中文的博客不一定对。 Helm">
+<meta name="twitter:description" content="Helm Helm入门篇。感觉有点类似maven，总归有这样一个管理工具。其实是想看Ingress的，可是不看Helm，yaml看不懂呀。只好滚回来看Helm。 Helm是什么  Helm是在Kubernetes中安装部署容器的一个工具。 Helm is a tool for managing Kubernetes charts. 所以Charts可能是K8s的一个概念。中文的博客不一定对。 He">
 
 
 
@@ -331,14 +331,18 @@
       
 
       
-        <h2 id="Helm"><a href="#Helm" class="headerlink" title="Helm"></a>Helm</h2><p><code>Helm</code>入门篇。感觉有点类似<code>maven</code>，总归有这样一个管理工具。其实是想看<code>Ingress</code>的，可是不看<code>Helm</code>，yaml看不懂呀。只好滚回来看Helm。</p>
-<h3 id="Helm是什么"><a href="#Helm是什么" class="headerlink" title="Helm是什么"></a>Helm是什么</h3><ul>
+        <h2 id="helm"><a class="header-anchor" href="#helm"></a>Helm</h2>
+<p><code>Helm</code>入门篇。感觉有点类似<code>maven</code>，总归有这样一个管理工具。其实是想看<code>Ingress</code>的，可是不看<code>Helm</code>，yaml看不懂呀。只好滚回来看Helm。</p>
+<h3 id="helm是什么"><a class="header-anchor" href="#helm是什么"></a>Helm是什么</h3>
+<ul>
 <li><code>Helm</code>是在Kubernetes中安装部署容器的一个工具。</li>
 <li><em>Helm is a tool for managing Kubernetes charts.</em> 所以Charts可能是K8s的一个概念。中文的博客不一定对。</li>
-<li><code>Helm</code>由<code>Helm</code>客户端、<code>Tiller</code>服务器端和<code>Chart</code>仓库所组成<ul>
+<li><code>Helm</code>由<code>Helm</code>客户端、<code>Tiller</code>服务器端和<code>Chart</code>仓库所组成
+<ul>
 <li><code>Helm</code>客户端： 客户端交互</li>
 <li><code>Tiller</code>服务器端： 装在k8s的cluster里面，管理<code>chart</code></li>
-<li><code>Chart</code>仓库：创建<code>Kubernetes</code>应用实例的信息集合<ul>
+<li><code>Chart</code>仓库：创建<code>Kubernetes</code>应用实例的信息集合
+<ul>
 <li><code>Chart</code>由两个部分组成，第一个部分是A description of the package (Chart.yaml)</li>
 <li>One or more templates, which contain Kubernetes manifest files。这个templates的话，应该也是yaml文件吧。</li>
 </ul>
@@ -346,14 +350,25 @@
 </ul>
 </li>
 </ul>
-<h3 id="常用的helm命令"><a href="#常用的helm命令" class="headerlink" title="常用的helm命令"></a>常用的helm命令</h3><ul>
-<li><code>helm status &lt;namespace&gt;</code> 查看<code>Helm</code>的状态</li>
-<li><p><code>helm install</code>: 实际将helm里面的内容安装到当前的k8s上面。比如我创了一个<code>configMap.yaml</code>的<code>templete</code>，那么就会安装上去。</p>
+<h3 id="常用的helm命令"><a class="header-anchor" href="#常用的helm命令"></a>常用的helm命令</h3>
 <ul>
-<li>如果只是想看看template的rending，那么使用命令<code>helm install ./mychart --debug --dry-run</code></li>
-<li>如果想传值进去，可以使用<code>-f</code> 命令，比如<code>helm install -f myvals.yaml ./mychart</code>。这样传的值，可以用<code>.Value</code>来访问</li>
-<li>单独传值是<code>--set foo=bar</code>，<code>--set</code>比文件的级别高，可以覆盖文件里面的值</li>
-<li><p><code>helm install stable/drupal --set image=my-registry/drupal:0.1.0 --set livenessProbe.exec.command=[cat,docroot/CHANGELOG.txt] --set livenessProbe.httpGet=null</code> 这条命令里面将<code>livenessProbe.httpGet</code>删除掉了。</p>
+<li>
+<p><code>helm status &lt;namespace&gt;</code> 查看<code>Helm</code>的状态</p>
+</li>
+<li>
+<p><code>helm install</code>: 实际将helm里面的内容安装到当前的k8s上面。比如我创了一个<code>configMap.yaml</code>的<code>templete</code>，那么就会安装上去。</p>
+<ul>
+<li>
+<p>如果只是想看看template的rending，那么使用命令<code>helm install ./mychart --debug --dry-run</code></p>
+</li>
+<li>
+<p>如果想传值进去，可以使用<code>-f</code> 命令，比如<code>helm install -f myvals.yaml ./mychart</code>。这样传的值，可以用<code>.Value</code>来访问</p>
+</li>
+<li>
+<p>单独传值是<code>--set foo=bar</code>，<code>--set</code>比文件的级别高，可以覆盖文件里面的值</p>
+</li>
+<li>
+<p><code>helm install stable/drupal --set image=my-registry/drupal:0.1.0 --set livenessProbe.exec.command=[cat,docroot/CHANGELOG.txt] --set livenessProbe.httpGet=null</code> 这条命令里面将<code>livenessProbe.httpGet</code>删除掉了。</p>
 <pre><code>$ helm install ./mychart
  NAME:   guiding-ocelot
  LAST DEPLOYED: Mon Aug 19 17:23:00 2019
@@ -364,26 +379,35 @@
  ==&gt; v1/ConfigMap
  NAME               DATA  AGE
  mychart-configmap  1     0s
-</code></pre></li>
+</code></pre>
+</li>
 </ul>
 </li>
-<li><p><code>helm get manifest &lt;release name&gt;</code>: 比如上面的这个<code>guiding-ocelot</code></p>
-<pre><code>$ helm get manifest guiding-ocelot
+<li>
+<p><code>helm get manifest &lt;release name&gt;</code>: 比如上面的这个<code>guiding-ocelot</code></p>
+<pre><code> $ helm get manifest guiding-ocelot
 
----
- # Source: myChart/templates/configmap.yaml
- apiVersion: v1
- kind: ConfigMap
- metadata:
-   name: mychart-configmap
- data:
-   myvalue: &quot;Hello World&quot;
-</code></pre></li>
-<li><p><code>helm init</code>:安装tiller服务器端</p>
+ ---
+  # Source: myChart/templates/configmap.yaml
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: mychart-configmap
+  data:
+    myvalue: &quot;Hello World&quot;
+</code></pre>
 </li>
-<li><code>helm delete --purge &lt;release name&gt;</code></li>
-<li><code>helm repo add &lt;repo name&gt; &lt;repo address&gt;</code></li>
-<li><p><code>helm create &lt;chart name&gt;</code>: 生成一个目录</p>
+<li>
+<p><code>helm init</code>:安装tiller服务器端</p>
+</li>
+<li>
+<p><code>helm delete --purge &lt;release name&gt;</code></p>
+</li>
+<li>
+<p><code>helm repo add &lt;repo name&gt; &lt;repo address&gt;</code></p>
+</li>
+<li>
+<p><code>helm create &lt;chart name&gt;</code>: 生成一个目录</p>
 <pre><code>$ find myChart/
   myChart/
   myChart/.helmignore
@@ -398,10 +422,14 @@
   myChart/templates/tests/test-connection.yaml
   myChart/templates/_helpers.tpl
   myChart/values.yaml
-</code></pre></li>
+</code></pre>
+</li>
 </ul>
-<h3 id="Helm-Chart"><a href="#Helm-Chart" class="headerlink" title="Helm Chart"></a>Helm Chart</h3><h3 id="Helm-Template"><a href="#Helm-Template" class="headerlink" title="Helm Template"></a>Helm Template</h3><ul>
-<li>参考以上，默认生成一套chart的时候会生成template目录。<ul>
+<h3 id="helm-chart"><a class="header-anchor" href="#helm-chart"></a>Helm Chart</h3>
+<h3 id="helm-template"><a class="header-anchor" href="#helm-template"></a>Helm Template</h3>
+<ul>
+<li>参考以上，默认生成一套chart的时候会生成template目录。
+<ul>
 <li><em>NOTES.txt: The “help text” for your chart. This will be displayed to your users when they run helm install.</em></li>
 <li><em>deployment.yaml: A basic manifest for creating a Kubernetes deployment</em></li>
 <li><em>service.yaml: A basic manifest for creating a service endpoint for your deployment</em></li>
@@ -409,131 +437,189 @@
 </ul>
 </li>
 </ul>
-<h4 id="Template-Values"><a href="#Template-Values" class="headerlink" title="Template Values"></a>Template Values</h4><ul>
-<li><p>E.g. <code>name：</code>用<code>release name</code> 来做前缀。话说这个<code>release name</code>在哪里定义的，我没找到。</p>
+<h4 id="template-values"><a class="header-anchor" href="#template-values"></a>Template Values</h4>
 <ul>
-<li><em>So we could read <code>.Release.Name</code> as “start at the top namespace, find the <code>Release</code> object, then look inside of it for an object called <code>Name</code>”.</em></li>
-<li><p><code>.Release</code>表示<code>Release</code>是顶级的object</p>
+<li>
+<p>E.g. <code>name：</code>用<code>release name</code> 来做前缀。话说这个<code>release name</code>在哪里定义的，我没找到。</p>
+<ul>
+<li>
+<p><em>So we could read <code>.Release.Name</code> as “start at the top namespace, find the <code>Release</code> object, then look inside of it for an object called <code>Name</code>”.</em></p>
+</li>
+<li>
+<p><code>.Release</code>表示<code>Release</code>是顶级的object</p>
 <pre><code>apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-configmap
 data:
   myvalue: &quot;Hello World&quot;
-</code></pre></li>
+</code></pre>
+</li>
 </ul>
 </li>
-<li><p>顶级的自带的object包括： <code>Release</code>,<code>Value</code>,<code>Chart</code>,<code>Template</code>, <code>Capabilities</code>还有<code>File</code>。后两个还不是很理解</p>
+<li>
+<p>顶级的自带的object包括： <code>Release</code>,<code>Value</code>,<code>Chart</code>,<code>Template</code>, <code>Capabilities</code>还有<code>File</code>。后两个还不是很理解</p>
 <ul>
-<li><code>Release</code>里面包含很多变量，有<code>Release.Time</code>,<code>Release.Namespace</code>, <code>Release.Revision</code>,详情可以看官方文档</li>
-<li><code>Values</code>里面的其实是从<code>values.yaml</code>里面来的</li>
-<li><p><code>Chart</code> 里面的就是<code>chart.yaml</code>来的。比如</p>
+<li>
+<p><code>Release</code>里面包含很多变量，有<code>Release.Time</code>,<code>Release.Namespace</code>, <code>Release.Revision</code>,详情可以看官方文档</p>
+</li>
+<li>
+<p><code>Values</code>里面的其实是从<code>values.yaml</code>里面来的</p>
+</li>
+<li>
+<p><code>Chart</code> 里面的就是<code>chart.yaml</code>来的。比如</p>
 <pre><code>{{.Chart.Name}}-{{.Chart.Version}} 
-</code></pre></li>
+</code></pre>
+</li>
 </ul>
 </li>
 </ul>
-<h4 id="Template-Functions"><a href="#Template-Functions" class="headerlink" title="Template Functions"></a>Template Functions</h4><ul>
-<li><em>Helm has over 60 available functions.</em> 其中一些是调用<code>GO</code>语言里面<code>tamplate</code>定义的函数。在<a href="https://godoc.org/text/template" target="_blank" rel="noopener">Go Template Function</a>可以查询到</li>
-<li>其实<code>Helm Template</code>并不是Helm自身做出来的，其实是从Go这些来的。就是个拿来再集成一下。并不是Helm自己的。</li>
-<li><p><code>Helm functions</code>支持<code>pipeline</code>。这里的<code>pipeline</code>和<code>Unix</code>里面的同样含义。如下面的例子里面的：</p>
+<h4 id="template-functions"><a class="header-anchor" href="#template-functions"></a>Template Functions</h4>
+<ul>
+<li>
+<p><em>Helm has over 60 available functions.</em> 其中一些是调用<code>GO</code>语言里面<code>tamplate</code>定义的函数。在<a href="https://godoc.org/text/template" target="_blank" rel="noopener">Go Template Function</a>可以查询到</p>
+</li>
+<li>
+<p>其实<code>Helm Template</code>并不是Helm自身做出来的，其实是从Go这些来的。就是个拿来再集成一下。并不是Helm自己的。</p>
+</li>
+<li>
+<p><code>Helm functions</code>支持<code>pipeline</code>。这里的<code>pipeline</code>和<code>Unix</code>里面的同样含义。如下面的例子里面的：</p>
 <pre><code>food: {{ .Values.favorite.food | upper | quote }}
 drink: {{ .Values.favorite.drink | repeat 5 | quote }}
-</code></pre></li>
-</ul>
-<h5 id="常用函数"><a href="#常用函数" class="headerlink" title="常用函数"></a>常用函数</h5><ul>
-<li><p><code>default</code>：用来指定默认值</p>
-<pre><code>drink: {{ .Values.favorite.drink | default "tea" | quote }}
-</code></pre></li>
-<li><p><code>toyaml</code>: 转成yaml格式 <strong><em>其实不明白啥叫做Yaml格式</em></strong></p>
+</code></pre>
 </li>
 </ul>
-<h5 id="函数控制和操作运算符"><a href="#函数控制和操作运算符" class="headerlink" title="函数控制和操作运算符"></a>函数控制和操作运算符</h5><ul>
-<li><code>Helm Template</code>的函数是可以引入逻辑控制的 </li>
-<li>运算符有：<ul>
+<h5 id="常用函数"><a class="header-anchor" href="#常用函数"></a>常用函数</h5>
+<ul>
+<li>
+<p><code>default</code>：用来指定默认值</p>
+<pre><code>  drink: {{ .Values.favorite.drink | default "tea" | quote }}
+</code></pre>
+</li>
+<li>
+<p><code>toyaml</code>: 转成yaml格式 <strong><em>其实不明白啥叫做Yaml格式</em></strong></p>
+</li>
+</ul>
+<h5 id="函数控制和操作运算符"><a class="header-anchor" href="#函数控制和操作运算符"></a>函数控制和操作运算符</h5>
+<ul>
+<li><code>Helm Template</code>的函数是可以引入逻辑控制的</li>
+<li>运算符有：
+<ul>
 <li><code>if/else</code> for creating conditional blocks： <code>if</code>判断有点不一样的是空的字符串或者空的集合也会被认为是<code>false</code>，还有数字0</li>
 <li><code>with</code> to specify a scope</li>
 <li><code>range</code> which provides a “for each”-style loop</li>
 </ul>
 </li>
 </ul>
-<h6 id="Function-if-else"><a href="#Function-if-else" class="headerlink" title="Function if/else"></a>Function if/else</h6><ul>
-<li><p>逻辑稍微有点难理解。就是<code>if</code>语句里面的内容是判断条件成立的时候包含的。然后关系运算符在前，这里是<code>or</code>运算符</p>
-<pre><code>{{/* include the body of this if statement when the variable .Values.anUnsetVariable is set or .values.aSetVariable is not set */}}
-{{ if or .Values.anUnsetVariable (not    .Values.aSetVariable) }}
- {{ ... }}
-{{ end }}
-</code></pre></li>
+<h6 id="function-if-else"><a class="header-anchor" href="#function-if-else"></a>Function if/else</h6>
+<ul>
+<li>
+<p>逻辑稍微有点难理解。就是<code>if</code>语句里面的内容是判断条件成立的时候包含的。然后关系运算符在前，这里是<code>or</code>运算符</p>
+<pre><code>  {{/* include the body of this if statement when the variable .Values.anUnsetVariable is set or .values.aSetVariable is not set */}}
+  {{ if or .Values.anUnsetVariable (not    .Values.aSetVariable) }}
+   {{ ... }}
+  {{ end }}
+</code></pre>
+</li>
 </ul>
-<h6 id="Function-Range"><a href="#Function-Range" class="headerlink" title="Function Range"></a>Function Range</h6><ul>
-<li><p><code>range</code>相当于是<code>foreach</code>,比如以下是一个<code>slice</code>，其实就是列表。</p>
+<h6 id="function-range"><a class="header-anchor" href="#function-range"></a>Function Range</h6>
+<ul>
+<li>
+<p><code>range</code>相当于是<code>foreach</code>,比如以下是一个<code>slice</code>，其实就是列表。</p>
 <pre><code>pizzaToppings:
  - mushrooms
  - cheese
  - peppers
  - onions
-</code></pre><p> 我们可以这样操作：</p>
-<pre><code>toppings: |-
- {{- range .Values.pizzaToppings }}
- - {{ . | title | quote }}
- {{- end }}
-</code></pre><ul>
+</code></pre>
+<p>我们可以这样操作：</p>
+<pre><code> toppings: |-
+  {{- range .Values.pizzaToppings }}
+  - {{ . | title | quote }}
+  {{- end }}
+</code></pre>
+<ul>
 <li>以上<code>range</code>函数遍历<code>pizzaToppings</code>里面的每个数值， <code>.</code>代表其中每个数值，传递给<code>title</code>和<code>quote</code>函数。</li>
 <li><code>|-</code>代表以下内容是一个长字符串。因为<code>Configmap</code>只支持键值对。</li>
 </ul>
 </li>
-<li><p><code>range</code>也可以和<code>list</code>合并起来用。如下：</p>
-<pre><code>sizes: |-
-{{- range list "small" "medium" "large" }}
- - {{ . }}
-{{- end }}
-</code></pre><ul>
+<li>
+<p><code>range</code>也可以和<code>list</code>合并起来用。如下：</p>
+<pre><code> sizes: |-
+ {{- range list "small" "medium" "large" }}
+  - {{ . }}
+ {{- end }}
+</code></pre>
+<ul>
 <li>引号里面的组成一个字符串，然后再遍历字符串</li>
 </ul>
 </li>
-<li><p><code>range</code>也可以和其他集合函数联合使用，比如<code>dict</code>和<code>map</code></p>
+<li>
+<p><code>range</code>也可以和其他集合函数联合使用，比如<code>dict</code>和<code>map</code></p>
 </li>
 </ul>
-<h6 id="Function-with"><a href="#Function-with" class="headerlink" title="Function with"></a>Function with</h6><ul>
-<li><code>.</code>指的是当前作用域，比如<code>.Values</code>，就是在当前作用域的<code>Value</code>里面</li>
-<li><p>使用<code>with</code>函数可以改变作用域，用法和<code>if</code>类似。如下：</p>
+<h6 id="function-with"><a class="header-anchor" href="#function-with"></a>Function with</h6>
+<ul>
+<li>
+<p><code>.</code>指的是当前作用域，比如<code>.Values</code>，就是在当前作用域的<code>Value</code>里面</p>
+</li>
+<li>
+<p>使用<code>with</code>函数可以改变作用域，用法和<code>if</code>类似。如下：</p>
 <pre><code>{{ with PIPELINE }}
 # restricted scope
 {{ end }}
-</code></pre></li>
+</code></pre>
+</li>
 </ul>
-<h5 id="空格和空行"><a href="#空格和空行" class="headerlink" title="空格和空行"></a>空格和空行</h5><ul>
-<li><p>这就是为啥每行都有个&#123;&#123;-的缘故，瞅着一堆<code>-</code>实在无语啊</p>
+<h5 id="空格和空行"><a class="header-anchor" href="#空格和空行"></a>空格和空行</h5>
 <ul>
-<li><p>以下的语句会产生一个<code>Json</code>字段<code>mug：true</code>并且没有空行</p>
+<li>
+<p>这就是为啥每行都两个大括号加小横线的缘故，瞅着一堆小横线实在无语啊。这个两个大括号加小横线markdown还打不出来，OMG 😕</p>
+<ul>
+<li>
+<p>以下的语句会产生一个<code>Json</code>字段<code>mug：true</code>并且没有空行</p>
 <pre><code>{{ if and .Values.favorite.drink (eq .Values.favorite.drink "coffee") }}mug: true{{ end }}
-</code></pre></li>
-<li><p>但是如果是以下语句就会产生在这个字段之前生成一个空行。估计<code>helm</code>就是简单的将<code>if</code>语句的一行给用空格替代了</p>
+</code></pre>
+</li>
+<li>
+<p>但是如果是以下语句就会产生在这个字段之前生成一个空行。估计<code>helm</code>就是简单的将<code>if</code>语句的一行给用空格替代了</p>
 <pre><code>{{if eq .Values.favorite.drink "coffee"}}
  mug: true
 {{end}}
-</code></pre></li>
-<li><p>所以上面的语句其实较为清晰，却必须用以下样式替代，这样<code>Helm</code>就知道将这边的空格都删除掉</p>
+</code></pre>
+</li>
+<li>
+<p>所以上面的语句其实较为清晰，却必须用以下样式替代，这样<code>Helm</code>就知道将这边的空格都删除掉</p>
 <pre><code>{{- if eq .Values.favorite.drink "coffee"}}
  mug: true
 {{- end}}
-</code></pre></li>
-<li><p>For the details on whitespace control in templates,see the Official <a href="https://godoc.org/text/template" target="_blank" rel="noopener">Go template documentation</a></p>
+</code></pre>
+</li>
+<li>
+<p>For the details on whitespace control in templates,see the Official <a href="https://godoc.org/text/template" target="_blank" rel="noopener">Go template documentation</a></p>
 </li>
 </ul>
 </li>
-<li><p>也可以更为精确得控制空格，如下。这种用法在代码里也看到很多。</p>
+<li>
+<p>也可以更为精确得控制空格，如下。这种用法在代码里也看到很多。</p>
 <pre><code>{{indent 2 "mug:true"}}
-</code></pre></li>
-<li><p>还可以用<code>*</code>符号，<em>Just for the sake of making this point clear, let’s adjust the above, and substitute an <code>*</code> for each whitespace that will be deleted following this rule. an <code>*</code> at the end of the line indicates a newline character that would be removed</em> 没看的太明白。这个<code>*</code>是干嘛用的。</p>
+</code></pre>
+</li>
+<li>
+<p>还可以用<code>*</code>符号，<em>Just for the sake of making this point clear, let’s adjust the above, and substitute an <code>*</code> for each whitespace that will be deleted following this rule. an <code>*</code> at the end of the line indicates a newline character that would be removed</em> 没看的太明白。这个<code>*</code>是干嘛用的。</p>
 <pre><code>**{{- if eq .Values.favorite.drink "coffee"}}
   mug: true*
 **{{- end}}
-</code></pre></li>
+</code></pre>
+</li>
 </ul>
-<h4 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h4><ul>
-<li>变量是用<code>:=</code>来定义的。</li>
-<li><p>如下。原本在使用了<code>with</code>之后作用域已经改变了，找不到<code>Release</code>了，但是使用了变量，就又可以访问了。</p>
+<h4 id="变量"><a class="header-anchor" href="#变量"></a>变量</h4>
+<ul>
+<li>
+<p>变量是用<code>:=</code>来定义的。</p>
+</li>
+<li>
+<p>如下。原本在使用了<code>with</code>之后作用域已经改变了，找不到<code>Release</code>了，但是使用了变量，就又可以访问了。</p>
 <pre><code>data:
 myvalue: &quot;Hello World&quot;
 {{- $relname := .Release.Name -}}
@@ -542,47 +628,67 @@ drink: {{ .drink | default "tea" | quote }}
 food: {{ .food | upper | quote }}
 release: {{ $relname }}
 {{- end }}
-</code></pre></li>
-<li><p>可以和<code>range</code>结合起来用。</p>
+</code></pre>
+</li>
+<li>
+<p>可以和<code>range</code>结合起来用。</p>
 <ul>
-<li><p>遍历一个列表。<code>index</code>变量是下标，从<code>0</code>开始</p>
+<li>
+<p>遍历一个列表。<code>index</code>变量是下标，从<code>0</code>开始</p>
 <pre><code>toppings: |-
   {{- range $index, $topping := .Values.pizzaToppings }}
     {{ $index }}: {{ $topping }}
   {{- end }}
-</code></pre></li>
-<li><p>键值对。注意<code>Values.favorite</code>是键值对的集合。所以第一次是一对，第二次是第二对</p>
+</code></pre>
+</li>
+<li>
+<p>键值对。注意<code>Values.favorite</code>是键值对的集合。所以第一次是一对，第二次是第二对</p>
 <pre><code>{{- range $key, $val := .Values.favorite }}
   {{ $key }}: {{ $val | quote }}
 {{- end}}
-</code></pre></li>
+</code></pre>
+</li>
 </ul>
 </li>
-<li><p>变量是有作用域的。顶层声明的就是整个<code>template</code>可用，<code>range</code>里面声明的，就是<code>range</code>里面可用。比如上面这个例子，出了<code>end</code>就没用了。</p>
+<li>
+<p>变量是有作用域的。顶层声明的就是整个<code>template</code>可用，<code>range</code>里面声明的，就是<code>range</code>里面可用。比如上面这个例子，出了<code>end</code>就没用了。</p>
 </li>
-<li><strong>有一个特殊的变量 <code>$</code>，代表根作用域！</strong></li>
+<li>
+<p><strong>有一个特殊的变量 <code>$</code>，代表根作用域！</strong></p>
+</li>
 </ul>
-<h4 id="已命名的Template"><a href="#已命名的Template" class="headerlink" title="已命名的Template"></a>已命名的Template</h4><p>  就是介绍一下如何引用啊，命名之类。需要注意的是名字是全局的，不管这个<code>template</code>是不是包在其他的<code>template</code>里面。<br>  __需要的一点是，名字中有下划线的<code>template</code>是不会被部署到<code>kubernate</code>上面的。但是可以被其他<code>template</code>引用</p>
-<h5 id="define"><a href="#define" class="headerlink" title="define"></a>define</h5><ul>
-<li><p>使用<code>define</code>可以在一个<code>template</code>内部创建一个新的<code>template</code>。语法如下：</p>
+<h4 id="已命名的template"><a class="header-anchor" href="#已命名的template"></a>已命名的Template</h4>
+<p>就是介绍一下如何引用啊，命名之类。需要注意的是名字是全局的，不管这个<code>template</code>是不是包在其他的<code>template</code>里面。<br>
+__需要的一点是，名字中有下划线的<code>template</code>是不会被部署到<code>kubernate</code>上面的。但是可以被其他<code>template</code>引用</p>
+<h5 id="define"><a class="header-anchor" href="#define"></a>define</h5>
+<ul>
+<li>
+<p>使用<code>define</code>可以在一个<code>template</code>内部创建一个新的<code>template</code>。语法如下：</p>
 <pre><code>{{- define "mychart.labels" }}
   labels:
     generator: helm
     date: {{ now | htmlDate }}
 {{- end }}
-</code></pre></li>
+</code></pre>
+</li>
 <li></li>
 </ul>
-<h5 id="template和include"><a href="#template和include" class="headerlink" title="template和include"></a>template和include</h5><ul>
-<li><p><code>template</code>感觉和<code>include</code>有点相似。是调用用<code>define</code>定义的<code>template</code>的。如下：</p>
+<h5 id="template和include"><a class="header-anchor" href="#template和include"></a>template和include</h5>
+<ul>
+<li>
+<p><code>template</code>感觉和<code>include</code>有点相似。是调用用<code>define</code>定义的<code>template</code>的。如下：</p>
 <pre><code>metadata:
   name: {{ .Release.Name }}-configmap
   {{- template "mychart.labels" }}
-</code></pre></li>
-<li><p>通常这类<code>template</code>会被放在<code>_helpers.tpl</code>文件里面。我的感觉是，这类<code>template</code>很像<code>util</code>函数，然后放在一个集中的文件里面。一般会在前面加一个注释，如下的格式：</p>
+</code></pre>
+</li>
+<li>
+<p>通常这类<code>template</code>会被放在<code>_helpers.tpl</code>文件里面。我的感觉是，这类<code>template</code>很像<code>util</code>函数，然后放在一个集中的文件里面。一般会在前面加一个注释，如下的格式：</p>
 <pre><code>`{{/* ... */}}`
-</code></pre></li>
-<li><p>但是还有一个问题，如上面例子的调用，并没有给任何的作用域，而<code>template</code>的默认作用域为空。如下的<code>template</code>里面的<code>.Chart</code>是无法生效的。所以调用时候应该用以下形式。这样传入一个作用域就可以了。 </p>
+</code></pre>
+</li>
+<li>
+<p>但是还有一个问题，如上面例子的调用，并没有给任何的作用域，而<code>template</code>的默认作用域为空。如下的<code>template</code>里面的<code>.Chart</code>是无法生效的。所以调用时候应该用以下形式。这样传入一个作用域就可以了。</p>
 <pre><code>{{/* Generate basic labels */}}
   {{- define "mychart.labels" }}
     labels:
@@ -591,24 +697,31 @@ release: {{ $relname }}
       chart: {{ .Chart.Name }}
       version: {{ .Chart.Version }}
   {{- end }}
-</code></pre></li>
-</ul>
-<pre><code>{{- template "mychart.labels" .}}
-</code></pre><ul>
-<li><p>还有一个问题，<code>template</code>有点类似<code>inline</code>，就是简单的将内容展开，并不考虑缩进的问题。为此，引入了<code>include</code>， <code>include</code>可以用<code>pipeline</code>来指定缩进。推荐使用<code>include</code>来替代<code>template</code></p>
+  
+
+{{- template "mychart.labels" .}}
+</code></pre>
+</li>
+<li>
+<p>还有一个问题，<code>template</code>有点类似<code>inline</code>，就是简单的将内容展开，并不考虑缩进的问题。为此，引入了<code>include</code>， <code>include</code>可以用<code>pipeline</code>来指定缩进。推荐使用<code>include</code>来替代<code>template</code></p>
 <pre><code>{{- include "mychart.app" . | nindent 2 }}
-</code></pre></li>
+</code></pre>
+</li>
 </ul>
-<h4 id="引如文件"><a href="#引如文件" class="headerlink" title="引如文件"></a>引如文件</h4><ul>
-<li><p><code>.File</code>可以将文件包含进来。需要注意的有，<code>template</code>目录下面的文件没法被包含。如下例子。<code>.File.Get</code>就是读取文件的内容的函数</p>
-<pre><code>{{- $files := .Files }}
-{{- range list "config1.toml" "config2.toml" "config3.toml" }}
- {{ . }}: |-
-   {{ $files.Get . }}
-{{- end }}
-</code></pre></li>
+<h4 id="引用文件"><a class="header-anchor" href="#引用文件"></a>引用文件</h4>
+<ul>
+<li>
+<p><code>.File</code>可以将文件包含进来。需要注意的有，<code>template</code>目录下面的文件没法被包含。如下例子。<code>.File.Get</code>就是读取文件的内容的函数</p>
+<pre><code> {{- $files := .Files }}
+ {{- range list "config1.toml" "config2.toml" "config3.toml" }}
+  {{ . }}: |-
+    {{ $files.Get . }}
+ {{- end }}
+</code></pre>
+</li>
 </ul>
-<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
+<h3 id="参考文档"><a class="header-anchor" href="#参考文档"></a>参考文档</h3>
+<ul>
 <li><a href="https://www.cnblogs.com/Erik_Xu/p/8893725.html" target="_blank" rel="noopener">Helm介绍</a></li>
 <li><a href="https://github.com/helm/helm" target="_blank" rel="noopener">Helm GitHub页面</a></li>
 <li><a href="https://helm.sh/docs/using_helm/#quickstart-guide" target="_blank" rel="noopener">Helm使用文档</a></li>
@@ -745,7 +858,7 @@ release: {{ $relname }}
               
               <div class="site-state-item site-state-categories">
                 <a href="/hexo_blog/categories/index.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -780,7 +893,7 @@ release: {{ $relname }}
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Helm"><span class="nav-number">1.</span> <span class="nav-text">Helm</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Helm是什么"><span class="nav-number">1.1.</span> <span class="nav-text">Helm是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常用的helm命令"><span class="nav-number">1.2.</span> <span class="nav-text">常用的helm命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Helm-Chart"><span class="nav-number">1.3.</span> <span class="nav-text">Helm Chart</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Helm-Template"><span class="nav-number">1.4.</span> <span class="nav-text">Helm Template</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Template-Values"><span class="nav-number">1.4.1.</span> <span class="nav-text">Template Values</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Template-Functions"><span class="nav-number">1.4.2.</span> <span class="nav-text">Template Functions</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#常用函数"><span class="nav-number">1.4.2.1.</span> <span class="nav-text">常用函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#函数控制和操作运算符"><span class="nav-number">1.4.2.2.</span> <span class="nav-text">函数控制和操作运算符</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#Function-if-else"><span class="nav-number">1.4.2.2.1.</span> <span class="nav-text">Function if/else</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Function-Range"><span class="nav-number">1.4.2.2.2.</span> <span class="nav-text">Function Range</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Function-with"><span class="nav-number">1.4.2.2.3.</span> <span class="nav-text">Function with</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#空格和空行"><span class="nav-number">1.4.2.3.</span> <span class="nav-text">空格和空行</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#变量"><span class="nav-number">1.4.3.</span> <span class="nav-text">变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#已命名的Template"><span class="nav-number">1.4.4.</span> <span class="nav-text">已命名的Template</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#define"><span class="nav-number">1.4.4.1.</span> <span class="nav-text">define</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#template和include"><span class="nav-number">1.4.4.2.</span> <span class="nav-text">template和include</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#引如文件"><span class="nav-number">1.4.5.</span> <span class="nav-text">引如文件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文档"><span class="nav-number">1.5.</span> <span class="nav-text">参考文档</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#helm"><span class="nav-number">1.</span> <span class="nav-text">Helm</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#helm是什么"><span class="nav-number">1.1.</span> <span class="nav-text">Helm是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常用的helm命令"><span class="nav-number">1.2.</span> <span class="nav-text">常用的helm命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#helm-chart"><span class="nav-number">1.3.</span> <span class="nav-text">Helm Chart</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#helm-template"><span class="nav-number">1.4.</span> <span class="nav-text">Helm Template</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#template-values"><span class="nav-number">1.4.1.</span> <span class="nav-text">Template Values</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#template-functions"><span class="nav-number">1.4.2.</span> <span class="nav-text">Template Functions</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#常用函数"><span class="nav-number">1.4.2.1.</span> <span class="nav-text">常用函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#函数控制和操作运算符"><span class="nav-number">1.4.2.2.</span> <span class="nav-text">函数控制和操作运算符</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#function-if-else"><span class="nav-number">1.4.2.2.1.</span> <span class="nav-text">Function if/else</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#function-range"><span class="nav-number">1.4.2.2.2.</span> <span class="nav-text">Function Range</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#function-with"><span class="nav-number">1.4.2.2.3.</span> <span class="nav-text">Function with</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#空格和空行"><span class="nav-number">1.4.2.3.</span> <span class="nav-text">空格和空行</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#变量"><span class="nav-number">1.4.3.</span> <span class="nav-text">变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#已命名的template"><span class="nav-number">1.4.4.</span> <span class="nav-text">已命名的Template</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#define"><span class="nav-number">1.4.4.1.</span> <span class="nav-text">define</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#template和include"><span class="nav-number">1.4.4.2.</span> <span class="nav-text">template和include</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#引用文件"><span class="nav-number">1.4.5.</span> <span class="nav-text">引用文件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文档"><span class="nav-number">1.5.</span> <span class="nav-text">参考文档</span></a></li></ol></li></ol></div>
             
 
           </div>
