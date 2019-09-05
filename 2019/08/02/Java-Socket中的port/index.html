@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="跬步">
 <meta property="og:description" content="工作中碰到DNS的local 端口的问题，就是client段的port，不是DNS server的端口。这个是默认开在53上面的。 然后就研究了一下，写在这里。 port 0  可用端口是0 ~ 65535。0在这里说啦，是分配一个随机的未被占用的端口。而65535 事实上是会报错的，也是用不了的。 事实上，确实是可能有race condition存在的。并且很难避免。仔细看了一遍，好像并没有很好">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-15T05:58:56.667Z">
+<meta property="og:updated_time" content="2019-08-30T07:41:44.383Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="TCP &amp; UDP">
 <meta name="twitter:description" content="工作中碰到DNS的local 端口的问题，就是client段的port，不是DNS server的端口。这个是默认开在53上面的。 然后就研究了一下，写在这里。 port 0  可用端口是0 ~ 65535。0在这里说啦，是分配一个随机的未被占用的端口。而65535 事实上是会报错的，也是用不了的。 事实上，确实是可能有race condition存在的。并且很难避免。仔细看了一遍，好像并没有很好">
@@ -389,6 +389,7 @@
 <li><code>TCP</code>是面向连接的，所有有建立连接时间。<strong><em>UDP也要建连接呀</em></strong> TCP的数据更像流，而不是一个个数据包，没有大小限制，可靠，但是速度慢很多。</li>
 <li>TCP is useful for implementing network services – such as remote login (rlogin, telnet) and file transfer (FTP)</li>
 <li>UDP is often used in implementing client/server applications in distributed systems built over local area networks.</li>
+<li>一出杯具： 杯具的是，作为一个bug 处理，在学习了一堆，并且记录了一堆之后，自我感觉良好的本人还是犯错了。因为，我们的产品里面不仅仅使用了<code>UDP</code>，还使用了<code>TCP</code>。嘿，我给漏掉了。所以，就算协议学会了，明白了，也得清楚，实现不一定按规矩来的。毕竟都是人来做的。</li>
 </ul>
 
       
@@ -424,8 +425,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/hexo_blog/2019/08/13/Micro-Service简介/" rel="prev" title="Micro Service简介">
-                Micro Service简介 <i class="fa fa-chevron-right"></i>
+              <a href="/hexo_blog/2019/08/13/Micro-Service/" rel="prev" title="Micro Service">
+                Micro Service <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -510,7 +511,7 @@
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-count">31</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -521,7 +522,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/hexo_blog/categories/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>

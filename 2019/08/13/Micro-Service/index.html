@@ -81,14 +81,14 @@
 
 <meta name="description" content="在学习一些micro service相关，记录在这里。 现在都是说micro service，但是什么是micro service，可能不同的人有不同的定义，但是单纯地只是将软件部署到docker或者k8s上面去，可能并不完全符合micro service，所以学习一下。 将一些学习到的tips和理念记录下来，最后形成自己的理解 什么是micro service  只占用需要的内存和处理器处理能力">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Micro Service简介">
-<meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/08/13/Micro-Service简介/index.html">
+<meta property="og:title" content="Micro Service">
+<meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/08/13/Micro-Service/index.html">
 <meta property="og:site_name" content="跬步">
 <meta property="og:description" content="在学习一些micro service相关，记录在这里。 现在都是说micro service，但是什么是micro service，可能不同的人有不同的定义，但是单纯地只是将软件部署到docker或者k8s上面去，可能并不完全符合micro service，所以学习一下。 将一些学习到的tips和理念记录下来，最后形成自己的理解 什么是micro service  只占用需要的内存和处理器处理能力">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-16T02:09:24.746Z">
+<meta property="og:updated_time" content="2019-08-26T06:34:04.708Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Micro Service简介">
+<meta name="twitter:title" content="Micro Service">
 <meta name="twitter:description" content="在学习一些micro service相关，记录在这里。 现在都是说micro service，但是什么是micro service，可能不同的人有不同的定义，但是单纯地只是将软件部署到docker或者k8s上面去，可能并不完全符合micro service，所以学习一下。 将一些学习到的tips和理念记录下来，最后形成自己的理解 什么是micro service  只占用需要的内存和处理器处理能力">
 
 
@@ -119,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="https://sallyslove.github.io/hexo_blog/2019/08/13/Micro-Service简介/">
+  <link rel="canonical" href="https://sallyslove.github.io/hexo_blog/2019/08/13/Micro-Service/">
 
 
 
 
 
-  <title>Micro Service简介 | 跬步</title>
+  <title>Micro Service | 跬步</title>
   
 
 
@@ -242,7 +242,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/08/13/Micro-Service简介/">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/08/13/Micro-Service/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Lynn Shen">
@@ -259,7 +259,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Micro Service简介</h1>
+          <h1 class="post-title" itemprop="name headline">Micro Service</h1>
         
 
         <div class="post-meta">
@@ -331,15 +331,14 @@
       
 
       
-        <p>在学习一些micro service相关，记录在这里。<br>
-现在都是说micro service，但是什么是micro service，可能不同的人有不同的定义，但是单纯地只是将软件部署到docker或者k8s上面去，可能并不完全符合micro service，所以学习一下。<br>
+        <p>在学习一些<code>micro service</code>相关，记录在这里。<br>
+现在都是说<code>micro service</code>，但是什么是<code>micro service</code>，可能不同的人有不同的定义，但是单纯地只是将软件部署到<code>docker</code>或者<code>k8s</code>上面去，可能并不完全符合<code>micro service</code>，所以学习一下。<br>
 将一些学习到的tips和理念记录下来，最后形成自己的理解</p>
 <h3 id="什么是micro-service"><a class="header-anchor" href="#什么是micro-service"></a>什么是micro service</h3>
 <ul>
 <li>只占用需要的内存和处理器处理能力</li>
-<li>如果是处理数据的，假设我们有一个处理inventory data的micro service，那么这个micro service仅仅需要在意inventory data。而不需要考虑其他数据的影响。</li>
+<li>如果是处理数据的，假设我们有一个处理inventory data的<code>micro service</code>，那么这个micro service仅仅需要在意inventory data。而不需要考虑其他数据的影响。</li>
 <li>micro service不受语言限制，不同语言的micro service仍旧可以联合起来的完成一个solution的</li>
-<li></li>
 </ul>
 <h3 id="micro-service-combination"><a class="header-anchor" href="#micro-service-combination"></a>micro service combination</h3>
 <ul>
@@ -351,6 +350,35 @@
 <h3 id="micro-service优势"><a class="header-anchor" href="#micro-service优势"></a>micro service优势</h3>
 <ul>
 <li>增加了scalability。话说这个吧，其实很复杂。看我另外一篇博客。而且未必多加pod，能力就一定上升啊</li>
+<li>从下面杂谈里面的几篇文章里面看起来，大家都任务<code>micro service</code>之后，模块之间基本是完全解耦的，大家都开开心心的全栈式就关心自己的模块，从需求到后期客户维护，完全自主，不用管其他模块。<em>A benefit of microservices is that each team can be responsible for releasing their services independently and without coordination with other teams.</em>
+<ul>
+<li>但是，这怎么可能啊。就我们自己的产品来说，尤其是那些<code>lib</code>库一样的模块，一升级，所有的都得动。没明白。没有明白呀。</li>
+<li>除非所有的小模块都像个产品一样运营。比如提供安全管理功能的模块，剩下调用它的模块按照自己的需求进行升级。</li>
+<li><strong><em>嗯，确实也是有产品这么做的，但是这样就会有很多资源消耗吧。这点在大牛的分享中也提及过，O&amp;M的功能是公用的，但是会占用资源。</em></strong></li>
+<li><strong><em>但是如果大家都用同一份，谈什么微服务哦。那么<code>lib</code>库就不应该占用资源。或者占用资源的就不应该做成<code>lib</code>库？</em></strong></li>
+<li><code>google</code>怎么做的？应该也是有不同的产品吧。</li>
+</ul>
+</li>
+</ul>
+<h3 id="杂谈"><a class="header-anchor" href="#杂谈"></a>杂谈</h3>
+<ul>
+<li>
+<p>早上无心工作，摸鱼酱油，看了几篇文章，觉得还不错。 😅 话说<code>InfoQ</code>就是做翻译工作的嘛，咋云计算那边全是翻译啊。</p>
+</li>
+<li>
+<p><a href="https://medium.com/better-programming/how-microservices-architecture-impacted-the-culture-of-software-development-6bba363ecdf1" target="_blank" rel="noopener">How Microservices Architecture Impacted the Culture of Software Development</a>:</p>
+<ul>
+<li>这篇文章的观点很是不错，含义就是说写代码很有趣啊，想干嘛就干嘛，把自己脑子里面的想法实现出来。可是工作以后就郁闷了，全是些模糊的责任，规定好了的框架，规定好了的数据库，规定好了的语言。确实如此，一天天消磨了意志和能力</li>
+<li>现在有了<code>micro service</code>，瞅着大家都挺开心的，有了这个鼓动，似乎乐趣又回来了一点，可以分为很小的<code>repo</code>，可以自行选择各种不同的语言和技术，然后一起做成为一个产品。甚至可以有产品和售后的职责。</li>
+<li>嘛，文章最后还说，这个并不关<code>micro service</code>的关系，所谓的<code>monolithic</code>也应该可以做到。</li>
+</ul>
+</li>
+<li>
+<p><a href="https://medium.com/@steven.lemon182/why-our-team-cancelled-our-move-to-microservices-8fd87898d952" target="_blank" rel="noopener">Why our team cancelled our move to microservices</a></p>
+<ul>
+<li>原文很长，下面的评论也十分之多，实在不算一把头能看完的</li>
+</ul>
+</li>
 </ul>
 
       
@@ -472,7 +500,7 @@
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-count">31</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -483,7 +511,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/hexo_blog/categories/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -518,7 +546,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是micro-service"><span class="nav-number">1.</span> <span class="nav-text">什么是micro service</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#micro-service-combination"><span class="nav-number">2.</span> <span class="nav-text">micro service combination</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#micro-service优势"><span class="nav-number">3.</span> <span class="nav-text">micro service优势</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是micro-service"><span class="nav-number">1.</span> <span class="nav-text">什么是micro service</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#micro-service-combination"><span class="nav-number">2.</span> <span class="nav-text">micro service combination</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#micro-service优势"><span class="nav-number">3.</span> <span class="nav-text">micro service优势</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#杂谈"><span class="nav-number">4.</span> <span class="nav-text">杂谈</span></a></li></ol></div>
             
 
           </div>

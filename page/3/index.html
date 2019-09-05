@@ -242,6 +242,176 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/02/14/常用Docker命令记录/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/02/14/常用Docker命令记录/" itemprop="url">常用Docker命令记录</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-14T15:16:01+08:00">
+                2019-02-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/docker/" itemprop="url" rel="index">
+                    <span itemprop="name">docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="常用docker命令"><a class="header-anchor" href="#常用docker命令"></a>常用docker命令</h2>
+<p>这篇记录一下常用的docker命令，我怕我会忘啊  -_-#<br>
+这篇博客写得好随意的感觉啊</p>
+<ul>
+<li><code>docker run</code> -d / -it / -v / -p /–name/-l
+<ul>
+<li>-d: background; -v: 磁盘映射 ；-p：端口映射; -l: label</li>
+</ul>
+</li>
+<li><code>docker build -t （build-directory） dockerfile</code> build docker image
+<ul>
+<li>-t 指定编译出来的image的名字。可以带上版本。比如：firstImage:v1</li>
+<li>-f 指定dockerfile的名字</li>
+</ul>
+</li>
+<li><code>docker inspect</code>看一个image的信息或者container的信息
+<ul>
+<li>docker inspect -f “” katacoda-label-example</li>
+<li>These labels will remain even if the image has been untagged. When an image is untagged, it will have the name <none></none></li>
+</ul>
+</li>
+<li>Label就是中文含义一样的标签，key-value的形式，比如user=lynn，这样子。除了user，还会有version啊
+<ul>
+<li>LABEL vendor=Katacoda \ com.katacoda.version=0.0.5 \ com.katacoda.build-date=2016-07-01T10:47:29Z \ com.katacoda.course=Docker</li>
+<li>container, image, demon都可以有label，在查看时候都可以用上</li>
+</ul>
+</li>
+<li>参考链接：<a href="https://www.katacoda.com/courses/docker/2" target="_blank" rel="noopener">karacoda docker在线课程</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/02/14/Scala概念快速解释/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2124,211 +2294,11 @@ public interface Runnable {
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/01/09/在windows上面安装Cassandra/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/01/09/在windows上面安装Cassandra/" itemprop="url">Windows上面安装cassandra</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-09T16:31:00+08:00">
-                2019-01-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/cassandra/" itemprop="url" rel="index">
-                    <span itemprop="name">cassandra</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="下载安装包"><a class="header-anchor" href="#下载安装包"></a>下载安装包</h3>
-<ul>
-<li><a href="http://www.apache.org/dyn/closer.lua/cassandra" target="_blank" rel="noopener">http://www.apache.org/dyn/closer.lua/cassandra</a> 上面下载安装包。没有linux和windows两个安装包；</li>
-<li>安装步骤就是解压即可。比如解压到c盘下面的cassandra目录</li>
-</ul>
-<hr>
-<h3 id="配置更新"><a class="header-anchor" href="#配置更新"></a>配置更新</h3>
-<h4 id="配置文件更新"><a class="header-anchor" href="#配置文件更新"></a>配置文件更新</h4>
-<p>配置文件是conf目录下面的cassandra.yaml文件，包括以下参数。每个参数的含义在配置文件的注释里面都有。</p>
-<ul>
-<li>data_file_directories： cassandra数据存储目录</li>
-<li>commitlog_directory</li>
-<li>saved_caches_directory</li>
-</ul>
-<p>将这几个参数的目录替换成为实际的安装目录：</p>
-<pre><code>&quot;commitlog_directory: 
- - C:\cassandra\apache-cassandra-2.2.14\commitlog&quot;
-</code></pre>
-<h4 id="日志配置"><a class="header-anchor" href="#日志配置"></a>日志配置</h4>
-<p>日志文件是logback.xml文件，讲其中的cassandra.logdir替换成实际的安装目录</p>
-<hr>
-<h3 id="配置cassandra-home环境变量"><a class="header-anchor" href="#配置cassandra-home环境变量"></a>配置cassandra home环境变量</h3>
-<p>在系统的环境变量里面加入CASSANDRA_HOME变量，并且加入到path里面</p>
-<hr>
-<h3 id="启动cassandra"><a class="header-anchor" href="#启动cassandra"></a>启动cassandra</h3>
-<p>直接在新打开的cmd窗口中敲入cassandra即可启动</p>
-<hr>
-<h3 id="问题解决"><a class="header-anchor" href="#问题解决"></a>问题解决</h3>
-<ul>
-<li>
-<p>WARNING! Powershell script execution unavailable.<br>
-Please use 'powershell Set-ExecutionPolicy Unrestricted’<br>
-on this user-account to run cassandra with fully featured<br>
-functionality on this platform.<br>
-在bin目录下面的cassandra.bat文件和cassandra.in.bat文件里面加入：<br>
-set JAVA_HOME=C:\Program Files (x86)\Java\jdk1.8.0_162<br>
-set CASSANDRA_HOME=C:\cassandra\apache-cassandra-2.2.13<br>
-即可解决这个问题</p>
-</li>
-<li>
-<p>Could not reserve enough space for 2097152KB object heap<br>
-修改 cassandra.bat 中的JVM参数<br>
-set JAVA_OPTS=-ea^<br>
--javaagent:&quot;%CASSANDRA_HOME%\lib\jamm-0.2.8.jar&quot;^<br>
--Xms512m^<br>
--Xmx512m^</p>
-</li>
-<li>
-<p>config.yaml not valid<br>
-saved_caches_directory几个参数前面不能空格</p>
-</li>
-<li>
-<p>cqlsh在装好cassandra之后可以直接启动，需要注意的是，cqlsh在cassandra2.x时候只支持python2.7.其他版本可能报错，语法不兼容</p>
-</li>
-</ul>
-<hr>
-<h3 id="参考"><a class="header-anchor" href="#参考"></a>参考</h3>
-<p><a href="https://blog.csdn.net/qq_28289405/article/details/80308539" target="_blank" rel="noopener">https://blog.csdn.net/qq_28289405/article/details/80308539</a><br>
-<a href="https://blog.csdn.net/maosijunzi/article/details/42120889" target="_blank" rel="noopener">https://blog.csdn.net/maosijunzi/article/details/42120889</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/hexo_blog/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/hexo_blog/">1</a><a class="page-number" href="/hexo_blog/page/2/">2</a><span class="page-number current">3</span>
+    <a class="extend prev" rel="prev" href="/hexo_blog/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/hexo_blog/">1</a><a class="page-number" href="/hexo_blog/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/hexo_blog/page/4/">4</a><a class="extend next" rel="next" href="/hexo_blog/page/4/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2374,7 +2344,7 @@ saved_caches_directory几个参数前面不能空格</p>
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-count">31</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2385,7 +2355,7 @@ saved_caches_directory几个参数前面不能空格</p>
               
               <div class="site-state-item site-state-categories">
                 <a href="/hexo_blog/categories/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
