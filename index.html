@@ -734,7 +734,8 @@ jti (JWT ID)：编号
           
             <p>在学习一些<code>micro service</code>相关，记录在这里。<br>
 现在都是说<code>micro service</code>，但是什么是<code>micro service</code>，可能不同的人有不同的定义，但是单纯地只是将软件部署到<code>docker</code>或者<code>k8s</code>上面去，可能并不完全符合<code>micro service</code>，所以学习一下。<br>
-将一些学习到的tips和理念记录下来，最后形成自己的理解</p>
+将一些学习到的tips和理念记录下来，最后形成自己的理解。<br>
+学习了一阵，感觉还是不一样的，有一套架构体系的，记录在这里。</p>
 <h3 id="什么是micro-service"><a class="header-anchor" href="#什么是micro-service"></a>什么是micro service</h3>
 <ul>
 <li>只占用需要的内存和处理器处理能力</li>
@@ -751,13 +752,30 @@ jti (JWT ID)：编号
 <h3 id="micro-service优势"><a class="header-anchor" href="#micro-service优势"></a>micro service优势</h3>
 <ul>
 <li>增加了scalability。话说这个吧，其实很复杂。看我另外一篇博客。而且未必多加pod，能力就一定上升啊</li>
-<li>从下面杂谈里面的几篇文章里面看起来，大家都任务<code>micro service</code>之后，模块之间基本是完全解耦的，大家都开开心心的全栈式就关心自己的模块，从需求到后期客户维护，完全自主，不用管其他模块。<em>A benefit of microservices is that each team can be responsible for releasing their services independently and without coordination with other teams.</em>
+<li>从下面杂谈里面的几篇文章里面看起来，大家都认为<code>micro service</code>之后，模块之间基本是完全解耦的，大家都开开心心的全栈式就关心自己的模块，从需求到后期客户维护，完全自主，不用管其他模块。<em>A benefit of microservices is that each team can be responsible for releasing their services independently and without coordination with other teams.</em>
 <ul>
 <li>但是，这怎么可能啊。就我们自己的产品来说，尤其是那些<code>lib</code>库一样的模块，一升级，所有的都得动。没明白。没有明白呀。</li>
 <li>除非所有的小模块都像个产品一样运营。比如提供安全管理功能的模块，剩下调用它的模块按照自己的需求进行升级。</li>
 <li><strong><em>嗯，确实也是有产品这么做的，但是这样就会有很多资源消耗吧。这点在大牛的分享中也提及过，O&amp;M的功能是公用的，但是会占用资源。</em></strong></li>
 <li><strong><em>但是如果大家都用同一份，谈什么微服务哦。那么<code>lib</code>库就不应该占用资源。或者占用资源的就不应该做成<code>lib</code>库？</em></strong></li>
 <li><code>google</code>怎么做的？应该也是有不同的产品吧。</li>
+</ul>
+</li>
+</ul>
+<h3 id="微服务架构"><a class="header-anchor" href="#微服务架构"></a>微服务架构</h3>
+<p>关于微服务架构的文章真是多如牛毛。一搜一大把。还是从陈晧大神的极客看到了一篇上等的英文文章。果然，要跟着大牛走啊。<br>
+这里总结出一些常见的优势和原因，每篇文章都会提到的。</p>
+<ul>
+<li>改动：一个微小的改动需要很多工作去做，一个微小的改动会影响很多部分，增加一个需要资源的模块，需要增加整个系统的资源，而不是只增加需要增加的部分</li>
+<li>扩展：基本上就是指<code>load scalability</code>,在monolithich时代，扩展是扩展所有的模块，就是复制出新的一份系统来。而微服务时候，是扩展需要扩展的部分，这点很有优势
+<ul>
+<li>所以从以上两点来说，一个微服务在部署和扩展上面，从业务角度来说，就是service角度来说，应该是独立的。<strong><em>那么反过来成立吗？就是说一个pod或者service，可以独立部署，独立扩展，但是并不能提供独立的服务，那么是不是边界定义得不对呢</em></strong></li>
+<li><em>We define libraries as components that are linked into a program and called using in-memory function calls, while services are out-of-process components who communicate with a mechanism such as a web service request, or remote procedure call.</em></li>
+</ul>
+</li>
+<li>参考链接
+<ul>
+<li><a href="https://martinfowler.com/articles/microservices.html" target="_blank" rel="noopener">Microservices Architecture</a>: 看到有将 <em>intelligence in the endpoints</em> 翻译成端点智能的，哈哈，这是什么鬼。</li>
 </ul>
 </li>
 </ul>
@@ -1750,7 +1768,7 @@ Interrupt:5 Base address:0x8c00
 <li>第二级域名其实是公司名，比如baidu，bing。微软为啥叫bing啊。</li>
 <li>对应不同层级的域名，有相应的服务器。根域名服务器之类。每一级域名服务器都知道下级域名服务器的IP地址。这个按照上面的流程也能知道。应该下层也知道上一层的地址，不然没法求助啊。</li>
 </ul>
-<p><img src="https://img-blog.csdn.net/20180529182740527?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2JhaWR1XzM3OTY0MDcx/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt></p>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/protocal/DNS_domain_name.png" alt></p>
 <blockquote>
 <p>图片来自上面的参考链接1</p>
 </blockquote>
@@ -1774,11 +1792,11 @@ Interrupt:5 Base address:0x8c00
 <ul>
 <li><code>dnsjava</code>类图</li>
 </ul>
-<p><img src="https://raw.githubusercontent.com/sallyslove/hexo_blog/master/dnsjava_class_diagram.png" alt></p>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/protocal/dnsjava_class_diagram.png" alt></p>
 <ul>
 <li>
 <p><code>dnsjava</code> 流程图<br>
-<img src="https://raw.githubusercontent.com/sallyslove/hexo_blog/master/dnsjava_sequence_diagram.png" alt></p>
+<img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/protocal/dnsjava_sequence_diagram.png" alt></p>
 </li>
 <li>
 <p>参考链接：</p>
