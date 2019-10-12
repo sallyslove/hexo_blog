@@ -242,6 +242,259 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/10/11/K8s-Service/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/10/11/K8s-Service/" itemprop="url">K8s Service</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-11T16:40:09+08:00">
+                2019-10-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Service的概念有点多，内容，单独拎出来做一篇。</p>
+<h2 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h2>
+<ul>
+<li><a href="https://www.kubernetes.org.cn/kubernetes-services" target="_blank" rel="noopener">名词解释 Services</a></li>
+<li><a href="https://segmentfault.com/a/1190000019376912" target="_blank" rel="noopener">Kubernetes Service详解</a></li>
+</ul>
+<h2 id="为什么需要service"><a class="header-anchor" href="#为什么需要service"></a>为什么需要service</h2>
+<p>按照参考链接2里面的解释，倒是很容易理解。POD可以起很多个，是实体，还一会有一会没的。<br>
+而service是暴露服务的，这么说，应该只有一个service才对吧。瞅着确实如此啊。</p>
+<h2 id="services"><a class="header-anchor" href="#services"></a>Services</h2>
+<p>service是K8s里面另一个非常重要的概念，而且实在是有点复杂。类型比较多。K8s中文文档里面的名词解释还是比较清楚的，并且给出了为什么需要service，service和pod有什么区别</p>
+<ul>
+<li>
+<p>Kubernete Service 是一个定义了一组Pod的策略的抽象，我们也有时候叫做宏观服务。这些被服务标记的Pod都是（一般）通过label Selector决定的（下面我们会讲到我们为什么需要一个没有label selector的服务）</p>
+</li>
+<li>
+<p>A Kubernetes service is a named load balancer that proxies traffic to one or more containers.</p>
+</li>
+<li>
+<p>The proxy works even if the containers are on different nodes. Services proxy communicate within the cluster and rarely expose ports to an outside interface.When you launch a service it looks like you cannot connect using curl or netcat unless you start it as part of Kubernetes. The recommended approach is to have a LoadBalancer service to handle external communications.<br>
+<strong>好吧，这段话基本没看懂，暂时就不管它了。service不仅仅是load balancer吧，难道每一种service都是load balancer的一种体现吗？</strong></p>
+</li>
+<li>
+<p>Kubernetes Services are an abstract that defines a policy and approach on how to access a set of Pods. The set of Pods accessed via a Service is based on a Label Selector.<br>
+<strong>之前是有课程说service起起来时候需要配套一个Selector的。也可以和deployment一起用？ 反正不是独立存在的。</strong><br>
+<strong>这个理解也不一定对啊，不独立，哪里能在get pods里面看到</strong></p>
+</li>
+<li>
+<p>Service有很多种，包括targetPort，经常用到的，还有：<code>Cluster IP</code>， <code>NodePort</code> ，<code>External IPs</code>， <code>Load Balancer</code>之类</p>
+<ul>
+<li>Cluster IP的解释： Cluster IP is the default approach when creating a Kubernetes Service. The service is allocated an internal IP that other components can use to access the pods.</li>
+</ul>
+<p><strong>cluster IP是默认的service的类型。这种service会暴露一个internal IP，来供给系统中其他的service来访问这堆pod提供的服务，所以通常也会有port的隐射.</strong></p>
+<ul>
+<li>Target Port的解释：Target ports allows us to separate the port the service is available on from the port the application is listening on. TargetPort is the Port which the application is configured to listen on. Port is how the application will be accessed from the outside.</li>
+</ul>
+<p><strong>这回比较清楚了，service其实是将POD提供的服务转出来，port是开在service上面，这样其他的service访问这个service的时候就是用这个port，而port肯定是对应到POD的应用上面的。这个对应的就是target port。比如我们自己的北向端口的POD，提供的服务开在8080上面，yaml文件里面起的service的port也是8080，其实也可以改成其他的</strong></p>
+<ul>
+<li>NodePort的解释：the NodePort exposes the service on each Node’s IP via the defined static port. No matter which Node within the cluster is accessed, the service will be reachable based on the port number defined.应该是<code>get Nodes</code>的命令出来的Node吧。实体机？可能还有点不同。<code>get Nodes</code>命令给出的是hostname。上面可能有多个IP？</li>
+</ul>
+<ul>
+<li>External IPs的解释：给定master Node的一个IP。然后The service is now bound to the IP address and Port 80 of the master node</li>
+<li>Load Balancer的解释：cloud Provider都是有自己的load Balancer的。如果没有的话，可以dynamically allocate IP addresses to LoadBalancer type services.When a service requests a Load Balancer, the provider will allocate one from the 10.10.0.0/26 range defined in the configuration.这个是确定的范围吗</li>
+<li>结合上面的，我觉得都需要啊。</li>
+</ul>
+</li>
+</ul>
+<h2 id="暴露service的命令"><a class="header-anchor" href="#暴露service的命令"></a>暴露service的命令</h2>
+<ul>
+<li><code>kubectl expose deployment first-deployment --port=80 --type=NodePort</code>
+<ul>
+<li>
+<p>这条命令有点复杂，解释说：Once the container is running it can be exposed via different networking options, depending on requirements.</p>
+</li>
+<li>
+<p>将资源暴露为新的Kubernetes Service。</p>
+</li>
+<li>
+<p>expose后面的资源有很多种，包括：pod（po），service（svc），replication controller（rc），deployment（deploy），replica set（rs）</p>
+</li>
+<li>
+<p>A Kubernetes service deployment has, at least, two parts. A replication controller and a service. 稍微有点理解了。一个service部署的时候一般有两个yaml文件</p>
+</li>
+<li>
+<p>'first-deployment’是deployment的名字</p>
+</li>
+<li>
+<p><code>-port</code> 是内部的端口</p>
+</li>
+<li>
+<p><code>--target-port</code>是外部访问的端口</p>
+</li>
+<li>
+<p>完整语法为：</p>
+<pre><code>expose (-f FILENAME | TYPE NAME) [--port=port] [--protocol=TCP|UDP] [--target-port=number-or-name] [--name=name] [--external-ip=external-ip-of-service] [--type=type]`
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="yaml文件"><a class="header-anchor" href="#yaml文件"></a>yaml文件</h3>
+<ul>
+<li>参考链接二中的yaml文件的例子如下：</li>
+</ul>
+<pre><code>apiVersion: v1
+kind: Service
+metadata:
+  name: gowebsvc
+spec:
+  selector:
+    app: goweb
+  ports:
+  - name: default
+    protocol: TCP
+    port: 80
+    targetPort: 8000
+  type: ClusterIP
+</code></pre>
+<ul>
+<li><code>selector</code>指定了是哪个pod，因为pod可能有很多，所以这里用的是pod的tag <code>app: goweb</code>，就是说，这个service是暴露所有这个tag的pod的功能的</li>
+</ul>
+<h2 id="请求转发"><a class="header-anchor" href="#请求转发"></a>请求转发</h2>
+<p><code>cluster ip</code>类似VIP,从这个名字来说，应该是认为一组pod就是一个<code>cluster</code>，确实也可以如此认为。既然是类似<code>VIP</code>，那么就可以被认为是<code>load banlancer</code>，那么就有策略的问题了。</p>
+<p>需要实际操作，暂时没时间，跳过这一段的细节。目前先简单理解一下：当一条<code>request</code>发到某个<code>service</code>的<code>cluster ip + port</code>上面时，会经过两次数据链转发（这里的数据链，指的是<code>iptables</code>里面的数据转发规则），第一次数据链转发时候会进行load的分配。<br>
+第二次转发的时候，会对目的地做<code>DNAT</code>（😦 完全不知道这是啥），反正做了这个<code>DNAT</code>，然后就<code>DNAT</code>到了<code>endpoint</code>上面。</p>
+<p><em>发现KUBE-SEP-5ZXTVLEM4DKNW7T2这条规则对请求的目的地址作了DNAT到10.244.1.15:8000，这正是goweb组中goweb-55c487ccd7-5t2l2这个pod的ip地址</em></p>
+<p><em>在svc创建的时候，kube-proxy组件（每个k8s服务器都会有的组件）会自动创建同名的endpoint对象，动态地跟踪匹配selector的一组pod当前ip（pod的ip在pod的yaml文件里面可以知道，名字就是podIP）及端口，并生成相应的iptables KUBE-SVC-xxx规则</em></p>
+<h3 id="endpoint"><a class="header-anchor" href="#endpoint"></a>endpoint</h3>
+<p>翻了翻之前的blog，并没有找到相关信息。<br>
+<code>endpoint</code>可以认为是k8s的另一个对象，生成一个service的时候，会相对应生成一个``endpoint`.</p>
+<pre><code>$ kubectl get ep -n sheild-1 eric-act-activation-mml
+NAME                      ENDPOINTS                                 AGE
+eric-act-activation-mml   
+192.168.15.102:8111,192.168.15.102:8010   1h
+</code></pre>
+<h3 id="请求代理的三种方式"><a class="header-anchor" href="#请求代理的三种方式"></a>请求代理的三种方式</h3>
+<p>全文参考链接二里面有三种方式。由于网络基础较差，先记录在这里：</p>
+<ul>
+<li>Userspace 模式：这种模式完全依靠<code>kube-proxy</code>来，<em>Userspace模式的代理转发主要依靠kube-proxy实现，工作在用户态。所以，转发效率不高</em></li>
+<li>iptables 模式: 也就是上面稍加解释的方法，是目前的默认模式。</li>
+</ul>
+<p><em>与userspace模式最大的不同点在于，kube-proxy只动态地维护iptables，而转发完全靠iptables实现。由于iptables工作在内核态，不用在用户态与内核态切换，所以相比userspace模式更高效也更可靠。但是每个服务都会生成若干条iptables规则，大型集群iptables规则数会非常多，造成性能下降也不易排查问题。</em></p>
+<ul>
+<li>ipvs 模式: 在v1.9版本以后，服务新增了ipvs转发方式.</li>
+</ul>
+<p><em>ipvs同样工作在内核态，而且底层转发是依靠hash表实现，所以性能比iptables还要好的多，同步新规则也比iptables快。同时，负载均衡的方式除了简单rr还有多种选择，所以很适合在大型集群使用。而缺点就是带来了额外的配置维护操作。</em></p>
+<h3 id="参考链接-v2"><a class="header-anchor" href="#参考链接-v2"></a>参考链接</h3>
+<ul>
+<li>参考链接：
+<ul>
+<li><a href="https://blog.csdn.net/u011563903/article/details/86692694" target="_blank" rel="noopener">K8S kube-proxy iptables 原理分析</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/08/16/OAuth2-0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2218,209 +2471,6 @@ Interrupt:5 Base address:0x8c00
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/06/17/Java数据类型-一些特别的数据类型/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/06/17/Java数据类型-一些特别的数据类型/" itemprop="url">Java数据类型 --- 一些特别的数据类型</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-17T13:14:34+08:00">
-                2019-06-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="java-util-function-supplier"><a class="header-anchor" href="#java-util-function-supplier"></a>java.Util.Function.Supplier</h3>
-<ul>
-<li>这个接口只有一个方法，Get方法。void，返回一个T</li>
-<li>把它当工厂方法看就是了。</li>
-<li>顾名思义，提供者。</li>
-<li><a href="https://blog.csdn.net/qq_28410283/article/details/80625482" target="_blank" rel="noopener">JAVA8 Supplier接口</a></li>
-<li>感觉就是一次性生成。同一个接口，在初始化时候给出get函数，可以有不同实现</li>
-<li>supplier作为function interface，有@FunctionalInterface annotation。所以可以直接用lamda来作为实现。比如：<code>()-&gt;getString()</code>可以作为<code>Supplier&lt;String&gt;</code>的实现</li>
-</ul>
-<h3 id="java关键字native"><a class="header-anchor" href="#java关键字native"></a>java关键字native</h3>
-<p>我要看native的函数。找不到，OMG。其实之前看到过native的用法，知道这个玩意，但是还是写在这里吧。<br>
-感觉一片参考链接就能解释清楚啦。</p>
-<ul>
-<li>其实就是java吧，不像c和c++善于处理底层的东西。所以就会调用一些不是java写的函数。这些函数就用native关键字来修饰</li>
-<li>native是通过JNI（Java Native Interface）接口来调用这些函数的</li>
-<li>参考链接
-<ul>
-<li><a href="https://www.cnblogs.com/b3051/p/7484501.html" target="_blank" rel="noopener">java中native的用法</a></li>
-</ul>
-</li>
-</ul>
-<h3 id="生成random的方法"><a class="header-anchor" href="#生成random的方法"></a>生成Random的方法</h3>
-<p>有好几个相关的类型，写在这里。是在工作中需要生成随机<code>port</code>碰到的</p>
-<ul>
-<li>参考链接
-<ul>
-<li><a href="https://www.jianshu.com/p/2f6acd169202#" target="_blank" rel="noopener">Java 随机数 Random VS SecureRandom</a></li>
-<li><a href="https://www.bbsmax.com/A/kjdwxba6zN/" target="_blank" rel="noopener">Java中的随机数生成器：Random，ThreadLocalRandom，SecureRandom</a></li>
-<li><a href="http://ju.outofmemory.cn/entry/286621" target="_blank" rel="noopener">Java中生成随机数Random、ThreadLocalRandom、SecureRandom</a></li>
-<li><a href="https://blog.csdn.net/weixin_33738555/article/details/93434637" target="_blank" rel="noopener">SecureRandom的正确使用</a></li>
-<li><a href="https://blog.csdn.net/weixin_35703883/article/details/81138425" target="_blank" rel="noopener">SecureRandom生成随机数</a></li>
-<li><a href="https://www.cnblogs.com/deng-cc/p/8064481.html" target="_blank" rel="noopener">SecureRandom</a></li>
-</ul>
-</li>
-</ul>
-<h4 id="math-random"><a class="header-anchor" href="#math-random"></a>Math.random</h4>
-<ul>
-<li>产生的随机数是0 - 1 之间的一个 double，即0 &lt;= random &lt; 1。</li>
-<li>第一次调用<code>Math.random()</code>方法时，自动创建了一个伪随机数生成器，实际上用的是 <code>new java.util.Random()</code>。</li>
-<li><code>Math.random()</code>方法是线程安全的。</li>
-</ul>
-<h4 id="java-util-random"><a class="header-anchor" href="#java-util-random"></a>java.util.Random</h4>
-<ul>
-<li><code>Random</code>类中实现的随机算法是伪随机，也就是有规则的随机</li>
-<li>种子一样的情况下，两个<code>Random</code>类产生的是一模一样的数列</li>
-<li>所以在安全性要求比较高，或者使用比较频繁时，不适合使用<code>Random</code>，因为值是可预测的</li>
-<li>然后生成的随机数是左边闭环，右边开的。</li>
-</ul>
-<h4 id="java-security-securerandom"><a class="header-anchor" href="#java-security-securerandom"></a>java.security.SecureRandom</h4>
-<ul>
-<li><code>SecureRandom</code> 其实和<code>Random</code>一样，种子一样的时候生成的数列是固定的</li>
-<li>也是继承至 java.util.Random。</li>
-<li>不一样的是，<code>SecureRandom</code>收集了一些随机事件，比如鼠标点击，键盘点击等等， 使用这些随机事件作为种子</li>
-<li>通过new来初始化，在不适用任何源的情况下，就是说无参数构造函数的话，默认来说会使用<code>NativePRNG</code>算法生成随机数</li>
-<li>不要使用人为指定的源，尽量使用系统的随机源。系统的随机源在java8中是可以配置的，配置在<code>$JAVA_HOME/jre/lib/security/java.security</code>中的<code>securerandom.source</code>属性。例如jdk1.8中该配置为:<code>securerandom.source=file:/dev/random</code></li>
-<li>实际上SHA1PRNG的性能将近要比NativePRNG的性能好一倍，synchronized的代码少了一半，所以没有特别重的安全需要，尽量使用SHA1PRNG算法生成随机数。</li>
-</ul>
-<h4 id="java-util-concurrent-threadlocalrandom"><a class="header-anchor" href="#java-util-concurrent-threadlocalrandom"></a>java.util.concurrent.ThreadLocalRandom</h4>
-<ul>
-<li>java7之后引进的</li>
-<li>继承自java.util.Random</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2471,7 +2521,7 @@ Interrupt:5 Base address:0x8c00
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">31</span>
+                  <span class="site-state-item-count">32</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

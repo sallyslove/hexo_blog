@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="跬步">
 <meta property="og:description" content="K8s概念 这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。 deployment  这几者的关系比较复杂。还需要进一步去看。目前先记录一下：deployment是实际的deploy，然后pod是根据replica里面的设定来起的。所以，如果将deployment删除掉，那么相应的pod和replica set都会没有  Pod pod实在是K8s里面很重要的一个概">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-19T09:20:44.394Z">
+<meta property="og:updated_time" content="2019-10-11T08:35:05.534Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="K8s概念理解">
 <meta name="twitter:description" content="K8s概念 这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。 deployment  这几者的关系比较复杂。还需要进一步去看。目前先记录一下：deployment是实际的deploy，然后pod是根据replica里面的设定来起的。所以，如果将deployment删除掉，那么相应的pod和replica set都会没有  Pod pod实在是K8s里面很重要的一个概">
@@ -343,7 +343,8 @@
 <li>All containers described as Pods.包括replication cotronller， service， deployment。<br>
 <strong>不知道是不是所有的service类型都会被当做是pod，这一点有待确认</strong></li>
 <li>A pod is a collection of containers that makes up a particular application, for example Redis.<br>
-<strong>这句没有很明白啊，不是说pod是一个container嘛，又变成一堆container了</strong></li>
+<strong>这句没有很明白啊，不是说pod是一个container嘛，又变成一堆container了</strong><br>
+<strong>经过一段时间的学习，我想这里可能指的是initContainer之类的，所以一个pod里面可能是有很多container的</strong></li>
 </ul>
 <h3 id="services"><a class="header-anchor" href="#services"></a>Services</h3>
 <p>service是K8s里面另一个非常重要的概念，而且实在是有点复杂。类型比较多。K8s中文文档里面的名词解释还是比较清楚的，并且给出了为什么需要service，service和pod有什么区别</p>
@@ -579,7 +580,7 @@ kube-system    Active    15d
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">31</span>
+                  <span class="site-state-item-count">32</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
