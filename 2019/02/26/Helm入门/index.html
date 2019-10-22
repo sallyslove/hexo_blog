@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="Helm Helm入门篇。感觉有点类似maven，总归有这样一个管理工具。其实是想看Ingress的，可是不看Helm，yaml看不懂呀。只好滚回来看Helm。 Helm是什么  Helm是在Kubernetes中安装部署容器的一个工具。 Helm is a tool for managing Kubernetes charts. 所以Charts可能是K8s的一个概念。中文的博客不一定对。 He">
+<meta name="description" content="Helm Helm入门篇。感觉有点类似maven，总归有这样一个管理工具。其实是想看Ingress的，可是不看Helm，yaml看不懂呀。只好滚回来看Helm。 写了一阵之后再看看，会发现有些看不明白的地方。果然，我写博客的风格和上学年代记笔记的风格一样，喜欢简略而不够详尽啊。这是说好多年没有变化和进步嘛 😂 Helm是什么  Helm是在Kubernetes中安装部署容器的一个工具。 Helm">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Helm入门">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/02/26/Helm入门/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="Helm Helm入门篇。感觉有点类似maven，总归有这样一个管理工具。其实是想看Ingress的，可是不看Helm，yaml看不懂呀。只好滚回来看Helm。 Helm是什么  Helm是在Kubernetes中安装部署容器的一个工具。 Helm is a tool for managing Kubernetes charts. 所以Charts可能是K8s的一个概念。中文的博客不一定对。 He">
+<meta property="og:description" content="Helm Helm入门篇。感觉有点类似maven，总归有这样一个管理工具。其实是想看Ingress的，可是不看Helm，yaml看不懂呀。只好滚回来看Helm。 写了一阵之后再看看，会发现有些看不明白的地方。果然，我写博客的风格和上学年代记笔记的风格一样，喜欢简略而不够详尽啊。这是说好多年没有变化和进步嘛 😂 Helm是什么  Helm是在Kubernetes中安装部署容器的一个工具。 Helm">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-23T05:23:48.117Z">
+<meta property="og:updated_time" content="2019-10-15T06:30:27.649Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Helm入门">
-<meta name="twitter:description" content="Helm Helm入门篇。感觉有点类似maven，总归有这样一个管理工具。其实是想看Ingress的，可是不看Helm，yaml看不懂呀。只好滚回来看Helm。 Helm是什么  Helm是在Kubernetes中安装部署容器的一个工具。 Helm is a tool for managing Kubernetes charts. 所以Charts可能是K8s的一个概念。中文的博客不一定对。 He">
+<meta name="twitter:description" content="Helm Helm入门篇。感觉有点类似maven，总归有这样一个管理工具。其实是想看Ingress的，可是不看Helm，yaml看不懂呀。只好滚回来看Helm。 写了一阵之后再看看，会发现有些看不明白的地方。果然，我写博客的风格和上学年代记笔记的风格一样，喜欢简略而不够详尽啊。这是说好多年没有变化和进步嘛 😂 Helm是什么  Helm是在Kubernetes中安装部署容器的一个工具。 Helm">
 
 
 
@@ -333,10 +333,11 @@
       
         <h2 id="helm"><a class="header-anchor" href="#helm"></a>Helm</h2>
 <p><code>Helm</code>入门篇。感觉有点类似<code>maven</code>，总归有这样一个管理工具。其实是想看<code>Ingress</code>的，可是不看<code>Helm</code>，yaml看不懂呀。只好滚回来看Helm。</p>
+<p>写了一阵之后再看看，会发现有些看不明白的地方。果然，我写博客的风格和上学年代记笔记的风格一样，喜欢简略而不够详尽啊。这是说好多年没有变化和进步嘛 😂</p>
 <h3 id="helm是什么"><a class="header-anchor" href="#helm是什么"></a>Helm是什么</h3>
 <ul>
 <li><code>Helm</code>是在Kubernetes中安装部署容器的一个工具。</li>
-<li><em>Helm is a tool for managing Kubernetes charts.</em> 所以Charts可能是K8s的一个概念。中文的博客不一定对。</li>
+<li><em>Helm is a tool for managing Kubernetes charts.</em> 所以Charts可能是K8s的一个概念。中文的博客不一定对。也不一定，可能就是Helm引入的一个概念。</li>
 <li><code>Helm</code>由<code>Helm</code>客户端、<code>Tiller</code>服务器端和<code>Chart</code>仓库所组成
 <ul>
 <li><code>Helm</code>客户端： 客户端交互</li>
@@ -440,7 +441,7 @@
 <h4 id="template-values"><a class="header-anchor" href="#template-values"></a>Template Values</h4>
 <ul>
 <li>
-<p>E.g. <code>name：</code>用<code>release name</code> 来做前缀。话说这个<code>release name</code>在哪里定义的，我没找到。</p>
+<p>E.g. <code>name：</code>，下面这个例子里面用<code>release name</code> 来做前缀。话说这个<code>release name</code>在哪里定义的，我没找到。</p>
 <ul>
 <li>
 <p><em>So we could read <code>.Release.Name</code> as “start at the top namespace, find the <code>Release</code> object, then look inside of it for an object called <code>Name</code>”.</em></p>
@@ -483,7 +484,7 @@ data:
 <p>其实<code>Helm Template</code>并不是Helm自身做出来的，其实是从Go这些来的。就是个拿来再集成一下。并不是Helm自己的。</p>
 </li>
 <li>
-<p><code>Helm functions</code>支持<code>pipeline</code>。这里的<code>pipeline</code>和<code>Unix</code>里面的同样含义。如下面的例子里面的：</p>
+<p><code>Helm functions</code>支持管道<code>pipeline</code>。这里的<code>pipeline</code>和<code>Unix</code>里面的同样含义。如下面的例子里面的：</p>
 <pre><code>food: {{ .Values.favorite.food | upper | quote }}
 drink: {{ .Values.favorite.drink | repeat 5 | quote }}
 </code></pre>
@@ -684,7 +685,7 @@ __需要的一点是，名字中有下划线的<code>template</code>是不会被
 </li>
 <li>
 <p>通常这类<code>template</code>会被放在<code>_helpers.tpl</code>文件里面。我的感觉是，这类<code>template</code>很像<code>util</code>函数，然后放在一个集中的文件里面。一般会在前面加一个注释，如下的格式：</p>
-<pre><code>`{{/* ... */}}`
+<pre><code>{{/* ... */}}
 </code></pre>
 </li>
 <li>

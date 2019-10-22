@@ -1653,24 +1653,8 @@ public class ThreadPoolExecutor extends AbstractExecutorService
 </ul>
 <h3 id="services"><a class="header-anchor" href="#services"></a>Services</h3>
 <p>service是K8s里面另一个非常重要的概念，而且实在是有点复杂。类型比较多。K8s中文文档里面的名词解释还是比较清楚的，并且给出了为什么需要service，service和pod有什么区别</p>
+<p>挪到另一篇单独的博客里面了。</p>
 <ul>
-<li>Kubernete Service 是一个定义了一组Pod的策略的抽象，我们也有时候叫做宏观服务。这些被服务标记的Pod都是（一般）通过label Selector决定的（下面我们会讲到我们为什么需要一个没有label selector的服务）</li>
-<li>A Kubernetes service is a named load balancer that proxies traffic to one or more containers.</li>
-<li>The proxy works even if the containers are on different nodes. Services proxy communicate within the cluster and rarely expose ports to an outside interface.When you launch a service it looks like you cannot connect using curl or netcat unless you start it as part of Kubernetes. The recommended approach is to have a LoadBalancer service to handle external communications.<br>
-<strong>好吧，这段话基本没看懂，暂时就不管它了。service不仅仅是load balancer吧，难道每一种service都是load balancer的一种体现吗？</strong></li>
-<li>Kubernetes Services are an abstract that defines a policy and approach on how to access a set of Pods. The set of Pods accessed via a Service is based on a Label Selector.<br>
-<strong>之前是有课程说service起起来时候需要配套一个Selector的。也可以和deployment一起用？ 反正不是独立存在的。</strong><br>
-<strong>这个理解也不一定对啊，不独立，哪里能在get pods里面看到</strong></li>
-<li>Service有很多种，包括targetPort，经常用到的，还有：Cluster IP， NodePort ，External IPs， Load Balancer之类
-<ul>
-<li>Cluster IP的解释： Cluster IP is the default approach when creating a Kubernetes Service. The service is allocated an internal IP that other components can use to access the pods.</li>
-<li>Target Port的解释：Target ports allows us to separate the port the service is available on from the port the application is listening on. TargetPort is the Port which the application is configured to listen on. Port is how the application will be accessed from the outside.没看明白，target port是application的。还真是，Port才是外部访问的。那跟之前的expose命令里面的不一样嘛。回头得研究一下。试试看。</li>
-<li>NodePort的解释：the NodePort exposes the service on each Node’s IP via the defined static port. No matter which Node within the cluster is accessed, the service will be reachable based on the port number defined.应该是<code>get Nodes</code>的命令出来的Node吧。实体机？可能还有点不同。<code>get Nodes</code>命令给出的是hostname。上面可能有多个IP？</li>
-<li>External IPs的解释：给定master Node的一个IP。然后The service is now bound to the IP address and Port 80 of the master node</li>
-<li>Load Balancer的解释：cloud Provider都是有自己的load Balancer的。如果没有的话，可以dynamically allocate IP addresses to LoadBalancer type services.When a service requests a Load Balancer, the provider will allocate one from the 10.10.0.0/26 range defined in the configuration.这个是确定的范围吗</li>
-<li>结合上面的，我觉得都需要啊。</li>
-</ul>
-</li>
 <li>参考链接
 <ul>
 <li><a href="https://www.kubernetes.org.cn/kubernetes-services" target="_blank" rel="noopener">名词解释 Services</a></li>
@@ -1908,10 +1892,11 @@ kube-system    Active    15d
           
             <h2 id="helm"><a class="header-anchor" href="#helm"></a>Helm</h2>
 <p><code>Helm</code>入门篇。感觉有点类似<code>maven</code>，总归有这样一个管理工具。其实是想看<code>Ingress</code>的，可是不看<code>Helm</code>，yaml看不懂呀。只好滚回来看Helm。</p>
+<p>写了一阵之后再看看，会发现有些看不明白的地方。果然，我写博客的风格和上学年代记笔记的风格一样，喜欢简略而不够详尽啊。这是说好多年没有变化和进步嘛 😂</p>
 <h3 id="helm是什么"><a class="header-anchor" href="#helm是什么"></a>Helm是什么</h3>
 <ul>
 <li><code>Helm</code>是在Kubernetes中安装部署容器的一个工具。</li>
-<li><em>Helm is a tool for managing Kubernetes charts.</em> 所以Charts可能是K8s的一个概念。中文的博客不一定对。</li>
+<li><em>Helm is a tool for managing Kubernetes charts.</em> 所以Charts可能是K8s的一个概念。中文的博客不一定对。也不一定，可能就是Helm引入的一个概念。</li>
 <li><code>Helm</code>由<code>Helm</code>客户端、<code>Tiller</code>服务器端和<code>Chart</code>仓库所组成
 <ul>
 <li><code>Helm</code>客户端： 客户端交互</li>
@@ -2015,7 +2000,7 @@ kube-system    Active    15d
 <h4 id="template-values"><a class="header-anchor" href="#template-values"></a>Template Values</h4>
 <ul>
 <li>
-<p>E.g. <code>name：</code>用<code>release name</code> 来做前缀。话说这个<code>release name</code>在哪里定义的，我没找到。</p>
+<p>E.g. <code>name：</code>，下面这个例子里面用<code>release name</code> 来做前缀。话说这个<code>release name</code>在哪里定义的，我没找到。</p>
 <ul>
 <li>
 <p><em>So we could read <code>.Release.Name</code> as “start at the top namespace, find the <code>Release</code> object, then look inside of it for an object called <code>Name</code>”.</em></p>
@@ -2058,7 +2043,7 @@ data:
 <p>其实<code>Helm Template</code>并不是Helm自身做出来的，其实是从Go这些来的。就是个拿来再集成一下。并不是Helm自己的。</p>
 </li>
 <li>
-<p><code>Helm functions</code>支持<code>pipeline</code>。这里的<code>pipeline</code>和<code>Unix</code>里面的同样含义。如下面的例子里面的：</p>
+<p><code>Helm functions</code>支持管道<code>pipeline</code>。这里的<code>pipeline</code>和<code>Unix</code>里面的同样含义。如下面的例子里面的：</p>
 <pre><code>food: {{ .Values.favorite.food | upper | quote }}
 drink: {{ .Values.favorite.drink | repeat 5 | quote }}
 </code></pre>
@@ -2259,7 +2244,7 @@ __需要的一点是，名字中有下划线的<code>template</code>是不会被
 </li>
 <li>
 <p>通常这类<code>template</code>会被放在<code>_helpers.tpl</code>文件里面。我的感觉是，这类<code>template</code>很像<code>util</code>函数，然后放在一个集中的文件里面。一般会在前面加一个注释，如下的格式：</p>
-<pre><code>`{{/* ... */}}`
+<pre><code>{{/* ... */}}
 </code></pre>
 </li>
 <li>

@@ -284,6 +284,28 @@
           </span>
 
           
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/docker/" itemprop="url" rel="index">
+                    <span itemprop="name">docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -336,22 +358,23 @@
 <strong>好吧，这段话基本没看懂，暂时就不管它了。service不仅仅是load balancer吧，难道每一种service都是load balancer的一种体现吗？</strong></p>
 </li>
 <li>
-<p>Kubernetes Services are an abstract that defines a policy and approach on how to access a set of Pods. The set of Pods accessed via a Service is based on a Label Selector.<br>
-<strong>之前是有课程说service起起来时候需要配套一个Selector的。也可以和deployment一起用？ 反正不是独立存在的。</strong><br>
-<strong>这个理解也不一定对啊，不独立，哪里能在get pods里面看到</strong></p>
+<p>Kubernetes Services are an abstract that defines a policy and approach on how to access a set of Pods. The set of Pods accessed via a Service is based on a Label Selector.</p>
 </li>
 <li>
-<p>Service有很多种，包括targetPort，经常用到的，还有：<code>Cluster IP</code>， <code>NodePort</code> ，<code>External IPs</code>， <code>Load Balancer</code>之类</p>
+<p>Service有很多种，包括<code>targetPort</code>，经常用到的，还有：<code>Cluster IP</code>， <code>NodePort</code> ，<code>External IPs</code>， <code>Load Balancer</code>之类</p>
 <ul>
 <li>Cluster IP的解释： Cluster IP is the default approach when creating a Kubernetes Service. The service is allocated an internal IP that other components can use to access the pods.</li>
 </ul>
 <p><strong>cluster IP是默认的service的类型。这种service会暴露一个internal IP，来供给系统中其他的service来访问这堆pod提供的服务，所以通常也会有port的隐射.</strong></p>
 <ul>
-<li>Target Port的解释：Target ports allows us to separate the port the service is available on from the port the application is listening on. TargetPort is the Port which the application is configured to listen on. Port is how the application will be accessed from the outside.</li>
-</ul>
-<p><strong>这回比较清楚了，service其实是将POD提供的服务转出来，port是开在service上面，这样其他的service访问这个service的时候就是用这个port，而port肯定是对应到POD的应用上面的。这个对应的就是target port。比如我们自己的北向端口的POD，提供的服务开在8080上面，yaml文件里面起的service的port也是8080，其实也可以改成其他的</strong></p>
-<ul>
-<li>NodePort的解释：the NodePort exposes the service on each Node’s IP via the defined static port. No matter which Node within the cluster is accessed, the service will be reachable based on the port number defined.应该是<code>get Nodes</code>的命令出来的Node吧。实体机？可能还有点不同。<code>get Nodes</code>命令给出的是hostname。上面可能有多个IP？</li>
+<li>
+<p>Target Port的解释：Target ports allows us to separate the port the service is available on from the port the application is listening on. TargetPort is the Port which the application is configured to listen on. Port is how the application will be accessed from the outside.<br>
+<strong>这回比较清楚了，service其实是将POD提供的服务转出来，port是开在service上面，这样其他的service访问这个service的时候就是用这个port，而target port是对应到POD的应用上面的。比如我们自己产品的北向端口的POD，提供的服务开在8080上面，yaml文件里面起的service的port也是8080，其实也可以改成其他的</strong></p>
+</li>
+<li>
+<p>NodePort的解释：the NodePort exposes the service on each Node’s IP via the defined static port. No matter which Node within the cluster is accessed, the service will be reachable based on the port number defined.<br>
+<strong>就是<code>get Nodes</code>的命令出来的Node吧。<code>get Nodes</code>命令给出的是<code>hostname</code>，我们自己的环境里面，<code>hostname</code>一般定义格式是<code>node-10-210-154-52</code>,后面这个就是node的IP。这些node实际上是虚拟机。或者是实体机，现在应该都是虚拟的node。比如可以在openstack的node集群上面搭建k8s的服务</strong></p>
+</li>
 </ul>
 <ul>
 <li>External IPs的解释：给定master Node的一个IP。然后The service is now bound to the IP address and Port 80 of the master node</li>
@@ -365,9 +388,6 @@
 <li><code>kubectl expose deployment first-deployment --port=80 --type=NodePort</code>
 <ul>
 <li>
-<p>这条命令有点复杂，解释说：Once the container is running it can be exposed via different networking options, depending on requirements.</p>
-</li>
-<li>
 <p>将资源暴露为新的Kubernetes Service。</p>
 </li>
 <li>
@@ -377,22 +397,22 @@
 <p>A Kubernetes service deployment has, at least, two parts. A replication controller and a service. 稍微有点理解了。一个service部署的时候一般有两个yaml文件</p>
 </li>
 <li>
-<p>'first-deployment’是deployment的名字</p>
+<p><code>first-deployment</code>是deployment的名字</p>
 </li>
 <li>
-<p><code>-port</code> 是内部的端口</p>
+<p>port 是内部的端口</p>
 </li>
 <li>
-<p><code>--target-port</code>是外部访问的端口</p>
+<p>–target-port是外部访问的端口</p>
 </li>
 <li>
 <p>完整语法为：</p>
-<pre><code>expose (-f FILENAME | TYPE NAME) [--port=port] [--protocol=TCP|UDP] [--target-port=number-or-name] [--name=name] [--external-ip=external-ip-of-service] [--type=type]`
+</li>
+</ul>
+</li>
+</ul>
+<pre><code>expose (-f FILENAME | TYPE NAME) [--port=port] [--protocol=TCP|UDP] [--target-port=number-or-name] [--name=name] [--external-ip=external-ip-of-service] [--type=type]
 </code></pre>
-</li>
-</ul>
-</li>
-</ul>
 <h3 id="yaml文件"><a class="header-anchor" href="#yaml文件"></a>yaml文件</h3>
 <ul>
 <li>参考链接二中的yaml文件的例子如下：</li>
@@ -415,18 +435,29 @@ spec:
 <li><code>selector</code>指定了是哪个pod，因为pod可能有很多，所以这里用的是pod的tag <code>app: goweb</code>，就是说，这个service是暴露所有这个tag的pod的功能的</li>
 </ul>
 <h2 id="请求转发"><a class="header-anchor" href="#请求转发"></a>请求转发</h2>
-<p><code>cluster ip</code>类似VIP,从这个名字来说，应该是认为一组pod就是一个<code>cluster</code>，确实也可以如此认为。既然是类似<code>VIP</code>，那么就可以被认为是<code>load banlancer</code>，那么就有策略的问题了。</p>
+<p><code>cluster ip</code>类似VIP,从这个名字来说，应该是认为一组pod就是一个<code>cluster</code>，确实也可以如此认为。既然是类似<code>VIP</code>，那么就可以被认为是<code>load banlancer</code>，那么就有策略的问题了。<br>
+使用以下命令，可以查看<code>clusterIP 10.106.202.0</code>的转发策略</p>
+<pre><code>iptables-save | grep 10.106.202.0
+</code></pre>
 <p>需要实际操作，暂时没时间，跳过这一段的细节。目前先简单理解一下：当一条<code>request</code>发到某个<code>service</code>的<code>cluster ip + port</code>上面时，会经过两次数据链转发（这里的数据链，指的是<code>iptables</code>里面的数据转发规则），第一次数据链转发时候会进行load的分配。<br>
-第二次转发的时候，会对目的地做<code>DNAT</code>（😦 完全不知道这是啥），反正做了这个<code>DNAT</code>，然后就<code>DNAT</code>到了<code>endpoint</code>上面。</p>
-<p><em>发现KUBE-SEP-5ZXTVLEM4DKNW7T2这条规则对请求的目的地址作了DNAT到10.244.1.15:8000，这正是goweb组中goweb-55c487ccd7-5t2l2这个pod的ip地址</em></p>
-<p><em>在svc创建的时候，kube-proxy组件（每个k8s服务器都会有的组件）会自动创建同名的endpoint对象，动态地跟踪匹配selector的一组pod当前ip（pod的ip在pod的yaml文件里面可以知道，名字就是podIP）及端口，并生成相应的iptables KUBE-SVC-xxx规则</em></p>
+第一条转发链如下.<code>KUBE-SVC-SEG6BTF25PWEPDFT</code>转发链将request均分到4个pod上面。</p>
+<pre><code> -A KUBE-SVC-SEG6BTF25PWEPDFT -m statistic --mode random --probability 0.25000000000 -j KUBE-SEP-5ZXTVLEM4DKNW7T2
+ -A KUBE-SVC-SEG6BTF25PWEPDFT -m statistic --mode random --probability 0.33332999982 -j KUBE-SEP-EBFXI7VOCPDT2QU5
+ -A KUBE-SVC-SEG6BTF25PWEPDFT -m statistic --mode random --probability 0.50000000000 -j KUBE-SEP-C3PKSXKMO2M43SPF
+ -A KUBE-SVC-SEG6BTF25PWEPDFT -j KUBE-SEP-2GQCCNJGO65Z5MFS
+</code></pre>
+<p>第二次转发的时候，会对目的地做<code>DNAT</code>（😦 完全不知道这是啥），反正做了这个<code>DNAT</code>，然后就<code>DNAT</code>到了<code>endpoint</code>上面。</p>
+<p><em>比照上面的规则，可以看出<code>KUBE-SEP-5ZXTVLEM4DKNW7T2</code>这条规则对请求的目的地址作了<code>DNAT</code>到<code>10.244.1.15:8000</code>，这正是<code>goweb</code>POD组中<code>goweb-55c487ccd7-5t2l2</code>这个pod的ip地址</em></p>
+<pre><code>[root@master-1 ~]# iptables-save | grep  &quot;A KUBE-SEP-5ZXTVLEM4DKNW7T2&quot; 
+-A KUBE-SEP-5ZXTVLEM4DKNW7T2 -s 10.244.1.15/32 -j KUBE-MARK-MASQ
+-A KUBE-SEP-5ZXTVLEM4DKNW7T2 -p tcp -m tcp -j DNAT --to-destination 10.244.1.15:8000
+</code></pre>
 <h3 id="endpoint"><a class="header-anchor" href="#endpoint"></a>endpoint</h3>
-<p>翻了翻之前的blog，并没有找到相关信息。<br>
-<code>endpoint</code>可以认为是k8s的另一个对象，生成一个service的时候，会相对应生成一个``endpoint`.</p>
+<p>在service创建的时候，kube-proxy组件（每个k8s服务器都会有的组件）会自动创建同名的endpoint对象，动态地跟踪匹配selector的一组pod当前ip（pod的ip在pod的yaml文件里面可以知道，名字就是podIP）及端口，并生成相应的iptables KUBE-SVC-xxx规则<br>
+<code>endpoint</code>可以认为是k8s的另一个对象，生成一个service的时候，会相对应生成一个<code>endpoint</code>.</p>
 <pre><code>$ kubectl get ep -n sheild-1 eric-act-activation-mml
-NAME                      ENDPOINTS                                 AGE
-eric-act-activation-mml   
-192.168.15.102:8111,192.168.15.102:8010   1h
+NAME         ENDPOINTS                           AGE
+eric-act-activation-mml  192.168.15.102:8111,192.168.15.102:8010   1h
 </code></pre>
 <h3 id="请求代理的三种方式"><a class="header-anchor" href="#请求代理的三种方式"></a>请求代理的三种方式</h3>
 <p>全文参考链接二里面有三种方式。由于网络基础较差，先记录在这里：</p>
@@ -447,6 +478,31 @@ eric-act-activation-mml
 </ul>
 </li>
 </ul>
+<h2 id="服务发现"><a class="header-anchor" href="#服务发现"></a>服务发现</h2>
+<p>先区分一下上面的请求转发和这里的服务发现。<br>
+请求的话通常是端口号+地址就行啦。服务发现要能够发现这个service才行。就是如何让另一个service知道这个service的ip或者hostname，或者让k8s外的客户知道某个service的ip和端口</p>
+<h3 id="内部服务发现"><a class="header-anchor" href="#内部服务发现"></a>内部服务发现</h3>
+<p>内部服务发现有两种方式：环境变量和DNS</p>
+<h3 id="外部服务发现"><a class="header-anchor" href="#外部服务发现"></a>外部服务发现</h3>
+<p>外部服务发现，顾名思义，就是k8s服务器以外来发现某个service提供的服务</p>
+<ul>
+<li>参考链接：
+<ul>
+<li><a href="https://www.cnblogs.com/chris-cp/p/6724057.html" target="_blank" rel="noopener">k8s实战之Service</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="nodeport"><a class="header-anchor" href="#nodeport"></a>NodePort</h4>
+<p>nodePort 和 node是一对，首先要理解一下node的概念。这边的node相当于是VM。<br>
+就是这样的，我有一套硬件，然后我在上边搭k8s，k8s会先搭出一堆node来，然后再在这堆node上边建namespace，每个namespace里面再建pod啊之类的。<br>
+所以可以理解成VM，那么这个IP是可以访问到的。<br>
+这样NodePort就容易理解了。</p>
+<p><em>NodePort Service是类型为NodePort的Service， k8s除了会分配给NodePort Service一个内部的虚拟IP，另外会在每一个Node上暴露端口NodePort，外部网络可以通过[NodeIP]:[NodePort]访问到Service。</em></p>
+<p>需要注意的是，NodePort service会在每个node上面注册自己。所以如果一套namespace是搭在好几个node上面的，应该都能访问到</p>
+<p><em>该方式把服务暴露在每个Node主机IP的特定端口上,同一个服务在所有Node上端口是相同的，并自动生成相应的路由转发到ClusterIP</em></p>
+<p>所以NodePort的service也是有cluster IP的。</p>
+<h4 id="loadbalancer"><a class="header-anchor" href="#loadbalancer"></a>LoadBalancer</h4>
+<h4 id="ingress"><a class="header-anchor" href="#ingress"></a>Ingress</h4>
 
           
         
