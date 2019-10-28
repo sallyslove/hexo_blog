@@ -79,21 +79,21 @@
 
 
 
-<meta name="description" content="Cassandra 数据结构 必须了解Cassandra的数据结构。本身并不是多么复杂，而且有足够多的文档，所以简单写一下。 KeySpace  好像没啥需要解释的。 在论文里面看到说namespace的另一个作用的可以做数据重复。  Column  Column是Cassandra中最小的数据单元，它是一个三元的数据类型，包含name,value,timestamp. name是必须的，valu">
+<meta name="description" content="Cassandra 数据结构 必须了解Cassandra的数据结构。本身并不是多么复杂，而且有足够多的文档，所以简单写一下。 KeySpace  好像没啥需要解释的。 在论文里面看到说namespace的另一个作用是可以做数据重复。  Column  Column是Cassandra中最小的数据单元，它是一个三元的数据类型，包含name,value,timestamp. name是必须的，valu">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Cassandra数据结构">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/01/21/Cassandra数据结构/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="Cassandra 数据结构 必须了解Cassandra的数据结构。本身并不是多么复杂，而且有足够多的文档，所以简单写一下。 KeySpace  好像没啥需要解释的。 在论文里面看到说namespace的另一个作用的可以做数据重复。  Column  Column是Cassandra中最小的数据单元，它是一个三元的数据类型，包含name,value,timestamp. name是必须的，valu">
+<meta property="og:description" content="Cassandra 数据结构 必须了解Cassandra的数据结构。本身并不是多么复杂，而且有足够多的文档，所以简单写一下。 KeySpace  好像没啥需要解释的。 在论文里面看到说namespace的另一个作用是可以做数据重复。  Column  Column是Cassandra中最小的数据单元，它是一个三元的数据类型，包含name,value,timestamp. name是必须的，valu">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://img-blog.csdn.net/20140302154940656?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
 <meta property="og:image" content="https://img-blog.csdn.net/20140302154945843?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
-<meta property="og:image" content="https://img-blog.csdn.net/20140302154950812?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
-<meta property="og:image" content="http://images.cnblogs.com/cnblogs_com/gpcuster/WindowsLiveWriter/Cassandra_8E88/image_2.png">
-<meta property="og:updated_time" content="2019-05-31T05:22:22.760Z">
+<meta property="og:image" content="https://img-blog.csdn.net/20140302154940656?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:image" content="https://images.cnblogs.com/cnblogs_com/gpcuster/WindowsLiveWriter/Cassandra_8E88/image_thumb.png">
+<meta property="og:updated_time" content="2019-10-28T03:15:23.038Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Cassandra数据结构">
-<meta name="twitter:description" content="Cassandra 数据结构 必须了解Cassandra的数据结构。本身并不是多么复杂，而且有足够多的文档，所以简单写一下。 KeySpace  好像没啥需要解释的。 在论文里面看到说namespace的另一个作用的可以做数据重复。  Column  Column是Cassandra中最小的数据单元，它是一个三元的数据类型，包含name,value,timestamp. name是必须的，valu">
+<meta name="twitter:description" content="Cassandra 数据结构 必须了解Cassandra的数据结构。本身并不是多么复杂，而且有足够多的文档，所以简单写一下。 KeySpace  好像没啥需要解释的。 在论文里面看到说namespace的另一个作用是可以做数据重复。  Column  Column是Cassandra中最小的数据单元，它是一个三元的数据类型，包含name,value,timestamp. name是必须的，valu">
 <meta name="twitter:image" content="https://img-blog.csdn.net/20140302154940656?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
 
 
@@ -341,7 +341,7 @@
 <h3 id="keyspace"><a class="header-anchor" href="#keyspace"></a>KeySpace</h3>
 <ul>
 <li>好像没啥需要解释的。</li>
-<li>在论文里面看到说namespace的另一个作用的可以做数据重复。</li>
+<li>在论文里面看到说namespace的另一个作用是可以做数据重复。</li>
 </ul>
 <h3 id="column"><a class="header-anchor" href="#column"></a>Column</h3>
 <ul>
@@ -363,58 +363,61 @@
 </blockquote>
 <ul>
 <li>
-<p>参考链接里面有以下的例子，但是从这个例子里面，<br>
-{   // 这是一个SuperColumn<br>
-name: “info”,<br>
-// 包含一系列的Columns<br>
-value: {<br>
-street: {name: “street”, value: “1234 x street”, timestamp: 123456789},<br>
-city: {name: “city”, value: “san francisco”, timestamp: 123456789},<br>
-zip: {name: “zip”, value: “94107”, timestamp: 123456789},<br>
-}<br>
-}</p>
-</li>
-<li>
-<p><strong><em>感觉例子和图片不太对得上啊。例子反而更像一个columnFamily了?</em></strong></p>
+<p>参考链接里面有以下的例子</p>
+<pre><code> {   // 这是一个SuperColumn
+     name: &quot;info&quot;,
+     // 包含一系列的Columns
+     value: {
+        street: {name: &quot;street&quot;, value: &quot;1234 x street&quot;, timestamp: 123456789},
+        city: {name: &quot;city&quot;, value: &quot;san francisco&quot;, timestamp: 123456789},
+        zip: {name: &quot;zip&quot;, value: &quot;94107&quot;, timestamp: 123456789},
+  }
+}
+</code></pre>
 </li>
 </ul>
 <h3 id="columnfamily"><a class="header-anchor" href="#columnfamily"></a>ColumnFamily</h3>
 <ul>
-<li>columnFamily相当于数据库中的表</li>
-<li>每一行有一个row的名字，然后每一行里面是一个个的column，也可以是super column</li>
-<li>ColumnFamily是一个包含了许多Row的结构，每一个Row都包含有client提供的Key以及和该Key关联的一系列Column。</li>
-<li>每一行里面的column的名字可以是不变的。也可以是可变的。静态和动态column</li>
-<li>需要注意的是，数据写入的时候已经经过排序了。就是说一行的所有column，会根据它的名字来进行排序。<br>
-<img src="https://img-blog.csdn.net/20140302154950812?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt></li>
+<li><code>columnFamily</code>相当于数据库中的表</li>
+<li>每一行有一个<code>row</code>的名字，然后每一行里面是一个个的<code>column</code>，也可以是<code>super column</code></li>
+<li><code>ColumnFamily</code>是一个包含了许多<code>Row</code>的结构，每一个<code>Row</code>都包含有client提供的Key以及和该Key关联的一系列Column。</li>
+<li>每一行里面的<code>column</code>的名字可以是不变的。也可以是可变的。静态和动态column</li>
+<li>需要注意的是，数据写入的时候已经经过排序了。就是说一行的所有<code>column</code>，会根据它的名字来进行排序。<br>
+<img src="https://img-blog.csdn.net/20140302154940656?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt></li>
 </ul>
 <blockquote>
 <p>引用自csdn</p>
 </blockquote>
 <ul>
-<li>第二个参考链接里面的例子：<br>
-UserProfile = { // 这是一个ColumnFamily<br>
-phatduckk: {   // 这是对应ColumnFamily的key<br>
-// 这是Key下对应的Column<br>
-username: “gpcuster”,<br>
-email: <a href="mailto:%22gpcuster@gmail.com" target="_blank" rel="noopener">&quot;gpcuster@gmail.com</a>&quot;,<br>
-phone: “6666”<br>
-}, // 第一个row结束<br>
-ieure: {   // 这是ColumnFamily的另一个key<br>
-//这是另一个Key对应的column<br>
-username: “pengguo”,<br>
-email: <a href="mailto:%22pengguo@live.com" target="_blank" rel="noopener">&quot;pengguo@live.com</a>&quot;,<br>
-phone: “888”<br>
-}</li>
+<li>第二个参考链接里面的例子：</li>
 </ul>
+<pre><code>   UserProfile = { // 这是一个ColumnFamily
+        phatduckk: {   // 这是对应ColumnFamily的key
+            // 这是Key下对应的Column
+            username: &quot;gpcuster&quot;,
+            email: &quot;gpcuster@gmail.com&quot;,
+            phone: &quot;6666&quot;
+        }, // 第一个row结束
+        ieure: {   // 这是ColumnFamily的另一个key
+          //这是另一个Key对应的column
+          username: &quot;pengguo&quot;,
+          email: &quot;pengguo@live.com&quot;,
+          phone: &quot;888&quot;
+        }
+</code></pre>
 <h3 id="对应到表里面"><a class="header-anchor" href="#对应到表里面"></a>对应到表里面</h3>
 <p>目前对于表结构的理解是这样的，可能后面有更正：</p>
 <ul>
 <li>如果用<code>desc tables</code>去查看一张表。那么可以看到primaryKey字样，类似<code>PRIMARY KEY ()</code>，还有<code>CLUSTERING ORDER</code> 字样</li>
 <li><strong><em>那么这个primary key就是对应数据模型里面的row的名字。也就是super column的名字。只不过这个名字是几个primaryKey联合起来组成的。？</em></strong></li>
-<li>primaryKey可以用来查询数据。每个primary Key可以单独使用来查询。</li>
-<li>然后cassandra的数据存储的时候是排序的，这个clustering order的属性，就是说基于这个属性来进行排序</li>
+<li><code>primaryKey</code>可以用来查询数据。<code>primary key</code>分为两个部分<code>partition key</code>和<code>clustering key</code>， 前者组合起来决定一个数据的存储在哪个<code>node</code>上面, 后者会用来排序。而 <code>CLUSTERING ORDER</code>决定排序时候使用的参数的顺序</li>
+<li>查询是时候必须给出所有的<code>partition key</code>，之前有过<code>ALLOW FILTERING</code>的字段来容忍缺失<code>partition key</code>，现在没有这个功能了。</li>
 </ul>
-<p><img src="http://images.cnblogs.com/cnblogs_com/gpcuster/WindowsLiveWriter/Cassandra_8E88/image_2.png" alt></p>
+<p>如下：</p>
+<pre><code>PRIMARY KEY ((race_year, race_name), rank)
+</code></pre>
+<p>这里的<code>race_year</code>和<code>race_name</code>就是组合的<code>partition key</code>,而<code>rank</code>就是<code>a clustering column</code>，用来排序的</p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/gpcuster/WindowsLiveWriter/Cassandra_8E88/image_thumb.png" alt></p>
 <blockquote>
 <p>引用自第二篇参考链接文档</p>
 </blockquote>
@@ -559,7 +562,7 @@ You perform several optimizations in the physical data modeling stage, including
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">33</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

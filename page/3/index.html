@@ -242,6 +242,218 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/02/22/Jetty-Graceful-shutdown/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/02/22/Jetty-Graceful-shutdown/" itemprop="url">Jetty Graceful shutdown</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-22T15:21:42+08:00">
+                2019-02-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/Other/" itemprop="url" rel="index">
+                    <span itemprop="name">Other</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="jetty"><a class="header-anchor" href="#jetty"></a>Jetty</h2>
+<p>工作中需要了解Jetty启停的一些知识，可能不能看到全貌，这边记录下来。毕竟不是web的产品。了解得还不够深入啊。</p>
+<h3 id="what-is-graceful-shutdown"><a class="header-anchor" href="#what-is-graceful-shutdown"></a>what is graceful shutdown</h3>
+<ul>
+<li>Graceful shutdown of a server, context or connector is when existing request/connections are allowed to gracefully complete while no new requests and/or connections are accepted.</li>
+<li>It is configured on the Server instance with the setGracefulShutdown(long) method. Heres an example of setting this via the jetty.xml file, where we specify a “grace” period of 30000 milliseconds:<br>
+<set name="gracefulShutdown">30000</set></li>
+<li>The parameter may be already not used any more</li>
+</ul>
+<h3 id="how-it-works"><a class="header-anchor" href="#how-it-works"></a>How it works</h3>
+<ul>
+<li>As soon as the shutdown command is given, the container will close the connectors so that they do not accept any more inbound connections.</li>
+<li>所以在<code>ServerControllerImpl</code>里面，如果HTTP的配置参数是false，Connector确实是一上来就停掉了。但是怎么都到<code>JettyServer的</code>getContext（）`函数里面的</li>
+<li><code>ServerControllerImpl</code> 应该是HTTP server的controller</li>
+</ul>
+<pre><code> if (!ServerControllerImpl.this.configuration.isHttpEnabled()) {
+                connectorsx = ServerControllerImpl.this.jettyServer.getConnectors();
+                if (connectorsx != null) {
+                     ...
+                      this.stopConnector(backupConnector);
+                            ServerControllerImpl.this.jettyServer.removeConnector(backupConnector);
+  ...
+</code></pre>
+<ul>
+<li>This will inform most load balancers that the server is no longer part of the cluster.</li>
+<li>The contexts are closed so that they do not accept any more requests, but the requests currently inside the container will drain out and the Server instance will shutdown after the grace period expires.<br>
+not very sure here. It seems that connector and context are different. I think the connector is more related with port. But context is more related with servlet.</li>
+</ul>
+<h3 id="elements"><a class="header-anchor" href="#elements"></a>Elements</h3>
+<p>我理解在整个jetty server shutdown的时候有几个东西： connector、context、server。以下是理解，不一定准确：</p>
+<ul>
+<li>servlet 是在context里面的，context一旦stop掉，servlet也会跟着destroy。context是WebAppHttpContext，servlet是其中的一个web Element。</li>
+<li>有三个context，一个是HttpServiceContext， 一个是WebAppHttpContext，还有servlet的context。WebAppHttpContext是jetty stop context时候停掉的，每个web app对应一个。前者是jetty server停掉的时候停掉的。感觉server停掉的时候，webAppHttpContext不一定都结束了。但是jetty server停掉的时候，HttpServiceContext是停止了。servlet的context结构是servlet里面的一个internal class，跟每个uri绑定。</li>
+<li>connector是在jetty里面定义的,有几种connector，比如<code>org.eclipse.jetty.server.ssl.SslSelectChannelConnector</code>，<code>org.eclipse.jetty.server.nio.SelectChannelConnector</code>。</li>
+</ul>
+<p>在Connector的interface里面有个maxIdleTimeout的参数，标示这个connection在idle时候会等多久从ESTABLISH状态变成TIME_WAIT状态。但是并没有在代码里面找到调用的地方。</p>
+<p>___ 这个是在停的时候调用的那个吗？果然写blog要再清楚一点才好___</p>
+<ul>
+<li>Connector是在jetty的配置文件里面配置的</li>
+</ul>
+<h3 id="jetty启动过程"><a class="header-anchor" href="#jetty启动过程"></a>Jetty启动过程</h3>
+<p>大部分web容器的启动过程都差不多，分为如下几步：</p>
+<ul>
+<li>创建用于连接的connector，创建线程池</li>
+<li>扫描当前的web程序的部署目录，为他们创建上下文环境，并对他们进行path的路由设置，这个的名字是WebAppHttpContext</li>
+<li>初始化创建的web程序上下文，这里就包括创建servlet啥的。，初始化linstener啥的。并做好自己的path路由。.</li>
+<li>启动connector，开始监听，整个server开始运行</li>
+<li>没看出来HttpServiceContext是什么</li>
+<li>参考文档：
+<ul>
+<li><a href="https://blog.csdn.net/kobejayandy/article/details/20291953" target="_blank" rel="noopener">Jetty的Server创建与启动</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="filter-servlet-listener顺序"><a class="header-anchor" href="#filter-servlet-listener顺序"></a>Filter、Servlet、Listener顺序</h3>
+<h4 id="启动顺序"><a class="header-anchor" href="#启动顺序"></a>启动顺序</h4>
+<ul>
+<li>filter的初始化是web server启动的时候初始化的</li>
+<li>servlet的初始化是收到对应的第一条request时候进行的</li>
+<li>执行时候是先执行filter，再执行servlet</li>
+<li>从启动日志来看，启动的顺序为listener-&gt;Filter-&gt;servlet.</li>
+</ul>
+<h4 id="停止顺序"><a class="header-anchor" href="#停止顺序"></a>停止顺序</h4>
+<ul>
+<li>容器关闭或者context重新部署，这时候servlet先destroy掉</li>
+<li>servlet之后才是filter关闭</li>
+</ul>
+<h4 id="参考资料"><a class="header-anchor" href="#参考资料"></a>参考资料</h4>
+<ul>
+<li><a href="https://www.jianshu.com/p/612c3a6673b2" target="_blank" rel="noopener">Listener、Filter、Servlet执行顺序</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/02/15/常用k8s命令记录/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1052,7 +1264,7 @@
 <h3 id="keyspace"><a class="header-anchor" href="#keyspace"></a>KeySpace</h3>
 <ul>
 <li>好像没啥需要解释的。</li>
-<li>在论文里面看到说namespace的另一个作用的可以做数据重复。</li>
+<li>在论文里面看到说namespace的另一个作用是可以做数据重复。</li>
 </ul>
 <h3 id="column"><a class="header-anchor" href="#column"></a>Column</h3>
 <ul>
@@ -1074,58 +1286,61 @@
 </blockquote>
 <ul>
 <li>
-<p>参考链接里面有以下的例子，但是从这个例子里面，<br>
-{   // 这是一个SuperColumn<br>
-name: “info”,<br>
-// 包含一系列的Columns<br>
-value: {<br>
-street: {name: “street”, value: “1234 x street”, timestamp: 123456789},<br>
-city: {name: “city”, value: “san francisco”, timestamp: 123456789},<br>
-zip: {name: “zip”, value: “94107”, timestamp: 123456789},<br>
-}<br>
-}</p>
-</li>
-<li>
-<p><strong><em>感觉例子和图片不太对得上啊。例子反而更像一个columnFamily了?</em></strong></p>
+<p>参考链接里面有以下的例子</p>
+<pre><code> {   // 这是一个SuperColumn
+     name: &quot;info&quot;,
+     // 包含一系列的Columns
+     value: {
+        street: {name: &quot;street&quot;, value: &quot;1234 x street&quot;, timestamp: 123456789},
+        city: {name: &quot;city&quot;, value: &quot;san francisco&quot;, timestamp: 123456789},
+        zip: {name: &quot;zip&quot;, value: &quot;94107&quot;, timestamp: 123456789},
+  }
+}
+</code></pre>
 </li>
 </ul>
 <h3 id="columnfamily"><a class="header-anchor" href="#columnfamily"></a>ColumnFamily</h3>
 <ul>
-<li>columnFamily相当于数据库中的表</li>
-<li>每一行有一个row的名字，然后每一行里面是一个个的column，也可以是super column</li>
-<li>ColumnFamily是一个包含了许多Row的结构，每一个Row都包含有client提供的Key以及和该Key关联的一系列Column。</li>
-<li>每一行里面的column的名字可以是不变的。也可以是可变的。静态和动态column</li>
-<li>需要注意的是，数据写入的时候已经经过排序了。就是说一行的所有column，会根据它的名字来进行排序。<br>
-<img src="https://img-blog.csdn.net/20140302154950812?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt></li>
+<li><code>columnFamily</code>相当于数据库中的表</li>
+<li>每一行有一个<code>row</code>的名字，然后每一行里面是一个个的<code>column</code>，也可以是<code>super column</code></li>
+<li><code>ColumnFamily</code>是一个包含了许多<code>Row</code>的结构，每一个<code>Row</code>都包含有client提供的Key以及和该Key关联的一系列Column。</li>
+<li>每一行里面的<code>column</code>的名字可以是不变的。也可以是可变的。静态和动态column</li>
+<li>需要注意的是，数据写入的时候已经经过排序了。就是说一行的所有<code>column</code>，会根据它的名字来进行排序。<br>
+<img src="https://img-blog.csdn.net/20140302154940656?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt></li>
 </ul>
 <blockquote>
 <p>引用自csdn</p>
 </blockquote>
 <ul>
-<li>第二个参考链接里面的例子：<br>
-UserProfile = { // 这是一个ColumnFamily<br>
-phatduckk: {   // 这是对应ColumnFamily的key<br>
-// 这是Key下对应的Column<br>
-username: “gpcuster”,<br>
-email: <a href="mailto:%22gpcuster@gmail.com" target="_blank" rel="noopener">&quot;gpcuster@gmail.com</a>&quot;,<br>
-phone: “6666”<br>
-}, // 第一个row结束<br>
-ieure: {   // 这是ColumnFamily的另一个key<br>
-//这是另一个Key对应的column<br>
-username: “pengguo”,<br>
-email: <a href="mailto:%22pengguo@live.com" target="_blank" rel="noopener">&quot;pengguo@live.com</a>&quot;,<br>
-phone: “888”<br>
-}</li>
+<li>第二个参考链接里面的例子：</li>
 </ul>
+<pre><code>   UserProfile = { // 这是一个ColumnFamily
+        phatduckk: {   // 这是对应ColumnFamily的key
+            // 这是Key下对应的Column
+            username: &quot;gpcuster&quot;,
+            email: &quot;gpcuster@gmail.com&quot;,
+            phone: &quot;6666&quot;
+        }, // 第一个row结束
+        ieure: {   // 这是ColumnFamily的另一个key
+          //这是另一个Key对应的column
+          username: &quot;pengguo&quot;,
+          email: &quot;pengguo@live.com&quot;,
+          phone: &quot;888&quot;
+        }
+</code></pre>
 <h3 id="对应到表里面"><a class="header-anchor" href="#对应到表里面"></a>对应到表里面</h3>
 <p>目前对于表结构的理解是这样的，可能后面有更正：</p>
 <ul>
 <li>如果用<code>desc tables</code>去查看一张表。那么可以看到primaryKey字样，类似<code>PRIMARY KEY ()</code>，还有<code>CLUSTERING ORDER</code> 字样</li>
 <li><strong><em>那么这个primary key就是对应数据模型里面的row的名字。也就是super column的名字。只不过这个名字是几个primaryKey联合起来组成的。？</em></strong></li>
-<li>primaryKey可以用来查询数据。每个primary Key可以单独使用来查询。</li>
-<li>然后cassandra的数据存储的时候是排序的，这个clustering order的属性，就是说基于这个属性来进行排序</li>
+<li><code>primaryKey</code>可以用来查询数据。<code>primary key</code>分为两个部分<code>partition key</code>和<code>clustering key</code>， 前者组合起来决定一个数据的存储在哪个<code>node</code>上面, 后者会用来排序。而 <code>CLUSTERING ORDER</code>决定排序时候使用的参数的顺序</li>
+<li>查询是时候必须给出所有的<code>partition key</code>，之前有过<code>ALLOW FILTERING</code>的字段来容忍缺失<code>partition key</code>，现在没有这个功能了。</li>
 </ul>
-<p><img src="http://images.cnblogs.com/cnblogs_com/gpcuster/WindowsLiveWriter/Cassandra_8E88/image_2.png" alt></p>
+<p>如下：</p>
+<pre><code>PRIMARY KEY ((race_year, race_name), rank)
+</code></pre>
+<p>这里的<code>race_year</code>和<code>race_name</code>就是组合的<code>partition key</code>,而<code>rank</code>就是<code>a clustering column</code>，用来排序的</p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/gpcuster/WindowsLiveWriter/Cassandra_8E88/image_thumb.png" alt></p>
 <blockquote>
 <p>引用自第二篇参考链接文档</p>
 </blockquote>
@@ -2179,185 +2394,6 @@ logger.info(String.format(&quot;%-25s%20s&quot;,
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/01/14/React入门-1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/01/14/React入门-1/" itemprop="url">React入门(1)</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-14T16:35:28+08:00">
-                2019-01-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/React/" itemprop="url" rel="index">
-                    <span itemprop="name">React</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="react入门"><a class="header-anchor" href="#react入门"></a>React入门</h1>
-<h2 id="参考文档"><a class="header-anchor" href="#参考文档"></a>参考文档</h2>
-<p><a href="http://www.ruanyifeng.com/blog/2015/03/react.html" target="_blank" rel="noopener">阮一峰的博客</a></p>
-<h2 id="react-是什么"><a class="header-anchor" href="#react-是什么"></a>React 是什么</h2>
-<p>React是Facebook发布的前端框架</p>
-<h2 id="react的优势"><a class="header-anchor" href="#react的优势"></a>React的优势</h2>
-<p>现在还不知道哪里有优势。最大的应该就是JXS，然后可以组件化。</p>
-<h2 id="react的一些相关概念"><a class="header-anchor" href="#react的一些相关概念"></a>React的一些相关概念</h2>
-<h3 id="dom"><a class="header-anchor" href="#dom"></a>DOM</h3>
-<ul>
-<li><code>DOM</code>: 文档对象模型(Document Object Model). 这是表示和处理一个HTML或XML文档的常用方法。<br>
-<a href="https://baike.baidu.com/item/DOM/50288#1_2" target="_blank" rel="noopener">DOM:百度百科解释</a></li>
-<li>目前的理解是：DOM其实就是一套描述数据结构的方法。一开始大家不统一，后来有W3C给出了规范，可以分为DOM核心，HTML的DOM，XML的DOM这几个</li>
-<li>进一步的理解：DOM是前端原来就有的一个概念，然后React给这个概念赋予了一些新的内涵。所有有React DOM这个说法。React DOM其实就是组件。</li>
-</ul>
-<h3 id="jsx"><a class="header-anchor" href="#jsx"></a>JSX</h3>
-<p>JSX 语法是React独有的。目前的理解是：</p>
-<ul>
-<li>JSX语法在支持JS里面处理HTML。</li>
-<li>如果这样的脚本插在html里面，要用<code>text/babel</code>来标记。 babel命令可以将JSX语法编译成为JS语法。</li>
-<li>JSX 的基本语法规则：遇到 HTML 标签（以 <code>&lt;</code> 开头），就用 HTML 规则解析；遇到代码块（以 <code>{</code> 开头），就用 JavaScript 规则解析。</li>
-</ul>
-<p><a href="https://reactjs.org/docs/rendering-elements.html#jsx-syntax" target="_blank" rel="noopener">JSX语法</a></p>
-<h3 id="react组件"><a class="header-anchor" href="#react组件"></a>React组件</h3>
-<ul>
-<li>使用<code>React.createClass(</code> 来创建一个组件，组件可以认为和HTML的标签一样使用。e.g：MyComponents是创建出来的一个组件。</li>
-</ul>
-<pre><code>&lt;MyComponent
-    &quot;Hello world!&quot;;
-/MyComponent&gt;
-</code></pre>
-<ul>
-<li>前面提到过React DOM，其实就是组件。组件在定义时候，只是内存里面的一个数据，但是因为可以作为HTML标签使用，然后render成为HTML里面的DOM，所有被称为virtual DOM</li>
-<li>组件类只能包含一个顶层元素。</li>
-<li>所有的组件类必须有自己的render方法，来</li>
-<li>组件的属性可以在组件类的 <code>this.props</code> 对象上获取, 其中的<code>this.props.children</code>代表所有的子节点。</li>
-<li><code>PropTypes</code> 可以用来限定参数的类型， <code>getDefaultProps</code> 方法可以用来设置组件属性的默认值</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2408,7 +2444,7 @@ logger.info(String.format(&quot;%-25s%20s&quot;,
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">33</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

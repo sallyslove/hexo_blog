@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/hexo_blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/hexo_blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/hexo_blog/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="作为通信行业的一名软件开发人员，我要开始学习5G啦。😃 里面有非常多的新网元引入。各种缩写漫天飞舞 😢 参考链接  5G Service-Based Architecture (SBA) 5G Core Network Functions  5GC 概述  5G里面的新的core network一般叫做NR，但是也有的地方，比如霓虹国，称为next generation SA和NSA：SA就是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="5G">
+<meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/08/22/5G/index.html">
+<meta property="og:site_name" content="跬步">
+<meta property="og:description" content="作为通信行业的一名软件开发人员，我要开始学习5G啦。😃 里面有非常多的新网元引入。各种缩写漫天飞舞 😢 参考链接  5G Service-Based Architecture (SBA) 5G Core Network Functions  5GC 概述  5G里面的新的core network一般叫做NR，但是也有的地方，比如霓虹国，称为next generation SA和NSA：SA就是">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://www.grandmetric.com/wp-content/uploads/2018/03/5G_Core_Network.png">
+<meta property="og:image" content="https://miro.medium.com/max/1008/1*VfK1R5ie3DRElDFHjrI-kw.png">
+<meta property="og:updated_time" content="2019-10-22T07:45:30.091Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="5G">
+<meta name="twitter:description" content="作为通信行业的一名软件开发人员，我要开始学习5G啦。😃 里面有非常多的新网元引入。各种缩写漫天飞舞 😢 参考链接  5G Service-Based Architecture (SBA) 5G Core Network Functions  5GC 概述  5G里面的新的core network一般叫做NR，但是也有的地方，比如霓虹国，称为next generation SA和NSA：SA就是">
+<meta name="twitter:image" content="https://www.grandmetric.com/wp-content/uploads/2018/03/5G_Core_Network.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/hexo_blog/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://sallyslove.github.io/hexo_blog/2019/08/22/5G/">
+
+
+
+
+
+  <title>5G | 跬步</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/hexo_blog/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">跬步</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">不积跬步，无以至千里</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/hexo_blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/hexo_blog/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/hexo_blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/08/22/5G/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">5G</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-22T14:04:36+08:00">
+                2019-08-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>作为通信行业的一名软件开发人员，我要开始学习5G啦。😃</p>
+<p>里面有非常多的新网元引入。各种缩写漫天飞舞 😢</p>
+<h2 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h2>
+<ul>
+<li><a href="https://medium.com/5g-nr/5g-service-based-architecture-sba-47900b0ded0a" target="_blank" rel="noopener">5G Service-Based Architecture (SBA)</a></li>
+<li><a href="https://www.grandmetric.com/2018/03/02/5g-core-network-functions/" target="_blank" rel="noopener">5G Core Network Functions</a></li>
+</ul>
+<h2 id="5gc-概述"><a class="header-anchor" href="#5gc-概述"></a>5GC 概述</h2>
+<ul>
+<li><code>5G</code>里面的新的<code>core network</code>一般叫做NR，但是也有的地方，比如霓虹国，称为<code>next generation</code></li>
+<li><code>SA</code>和<code>NSA</code>：<code>SA</code>就是<code>standalone</code>,<code>NSA</code>就是<code>non standslone</code>。这边的<code>SA</code>其实就是说只有<code>5G</code>，后面就是<code>4G</code>和<code>5G</code>并存。不同的运营商会有不同的网络状况。
+<ul>
+<li>现在正处于一个过渡期间，也可能会长期存在，出现了一些在4G的网元上面开发5G的功能，然后作为5G的网元来用的情况。</li>
+</ul>
+</li>
+<li>通常我们关心的<code>5GC</code>是<code>5G corenetwork</code>的缩写。然后<code>5G</code>的核心有三大类: <code>SBA - service based architecture</code>, <code>CUPS - Control and User Plane Separation</code> 和 网络切片<br>
+<strong>所以5GC和NR是一个东西?</strong></li>
+</ul>
+<h3 id="sba"><a class="header-anchor" href="#sba"></a>SBA</h3>
+<ul>
+<li>
+<p><code>SBA</code> 感觉和软件架构上面的微服务有点异曲同工的感觉。<code>4G</code>时代是各种各样的协议，每两个网元之间就可能有一种协议，并且还各不相同。但是到了<code>5G</code>的时候就是大家统一都是用<code>HTTP</code>协议了。然后各个网元只是提供<code>service</code></p>
+</li>
+<li>
+<p>所以SBA是一种架构</p>
+<p><img src="https://www.grandmetric.com/wp-content/uploads/2018/03/5G_Core_Network.png" alt></p>
+</li>
+</ul>
+<h2 id="5g-nr"><a class="header-anchor" href="#5g-nr"></a>5G NR</h2>
+<p><code>NR</code>指的是<code>new Radio</code>。在<code>5G</code>里面分为了<code>NE - Network Element</code>和<code>NF Network Function</code>两个概念。顾名思义，<code>NF</code>是往外提供服务的</p>
+<h3 id="amf"><a class="header-anchor" href="#amf"></a>AMF</h3>
+<h3 id="nef-network-exposure-function"><a class="header-anchor" href="#nef-network-exposure-function"></a>NEF - Network Exposure Function</h3>
+<h4 id="scef-和-mtc-iwf"><a class="header-anchor" href="#scef-和-mtc-iwf"></a>SCEF 和 MTC - IWF</h4>
+<ul>
+<li><code>(MTC - IWF) Machine Type Communications - Interwording Function</code>,</li>
+</ul>
+<h4 id="nef是什么"><a class="header-anchor" href="#nef是什么"></a>NEF是什么</h4>
+<ul>
+<li>NEF provides a mechanism for securely exposing services and features of the 5G core.</li>
+<li></li>
+</ul>
+<h3 id="nrf"><a class="header-anchor" href="#nrf"></a>NRF</h3>
+<h4 id="nrf是什么"><a class="header-anchor" href="#nrf是什么"></a>NRF是什么</h4>
+<ul>
+<li><code>NF Repository function (NRF)</code> supports: service discovery function, maintains NF profile and available NF instances. (not present in EPC world)。</li>
+<li><code>NRF</code>的功能看起来比较简单，有以下：
+<ul>
+<li>Service registration and discovery function so that Network Functions can discover each other.</li>
+<li>Maintains NF profile and available NF instances</li>
+<li>嗯，就是以上说的，<code>NR</code>会将自己注册到<code>NRF</code>里面，注册时候会带上不少信息，比如能提供的服务，自己认可的能访问服务的<code>NR</code>之类，同时会将自己的名字告诉给<code>NRF</code>。还有订阅功能。就是在<code>NRF</code>订阅自己关注哪些<code>NF</code>的哪些service</li>
+<li><code>NR</code>可以通过<code>NRF</code>来访问其他<code>NR</code>。过程如下图所示。</li>
+<li><code>NRF</code>在告诉同时会颁发一个<code>token</code>，做一些初步的验证。</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://miro.medium.com/max/1008/1*VfK1R5ie3DRElDFHjrI-kw.png" alt></p>
+<p><em>Network Repository Function service registration and discovery</em> (Credit: <a href="http://www.3gpp.org/ftp/information/presentations/Presentations_2017/webinar-ct-status-11-2017.pdf" target="_blank" rel="noopener">3GPP</a>)</p>
+<ul>
+<li>实际的部署和功能可能会更加复杂，例如，
+<ul>
+<li>每个网络切片可以有自己的<code>NRF</code></li>
+<li>我大中华地域广阔，还会有地域的概念，一个不够。</li>
+<li>那么一个上海人漫游到北京，联上了北京的<code>NRF</code>,北京的<code>NRF</code>得和上海的进行通信。如果漫游到了境外， 就更加复杂了。</li>
+<li><code>NRF</code>也可以监控各个网元的状态，或者提供更加复杂的功能</li>
+</ul>
+</li>
+<li>在<code>R16</code>里面提出了一个proxy的概念，<code>SCP - service Communication proxy</code>，因为<code>NRF</code>的网络通信过于繁杂，造成了很大的负担，所以引入的。</li>
+</ul>
+<h3 id="nssf"><a class="header-anchor" href="#nssf"></a>NSSF</h3>
+<h3 id="pcf-policy-control-function"><a class="header-anchor" href="#pcf-policy-control-function"></a>PCF -  Policy Control Function</h3>
+<ul>
+<li>PCF其实就是4G里面的PCRF。都是做policy control的</li>
+<li>PCF可以支持AMF的policy control和网络切片的policy control</li>
+<li>PCF理解UE级别的，就是这个UE可以使用哪些AMF和NSSF。</li>
+</ul>
+<h2 id="5g基站和接入网的演进"><a class="header-anchor" href="#5g基站和接入网的演进"></a>5G基站和接入网的演进</h2>
+<p>由于工作缘故，接触到的基本是核心网，话说刚刚入行的时候，我是做接入网的来着。<br>
+但是其实，5G虽然是核心网变化最大，接入网也是有改变的</p>
+<h3 id="参考链接-v2"><a class="header-anchor" href="#参考链接-v2"></a>参考链接</h3>
+<ul>
+<li><a href="https://blog.csdn.net/ityouknow/article/details/81351317" target="_blank" rel="noopener">第一次有人把5G讲的这么简单明了</a></li>
+<li><a href="https://blog.csdn.xn--ne5Gt-vq5hmb652jn0tuwkpp6bfuycjqfvo0b/cf2SudS8x8F0v/article/details/78778384" target="_blank" rel="noopener">详解5G的六大关键技术</a></li>
+</ul>
+<h3 id="5g的改变"><a class="header-anchor" href="#5g的改变"></a>5G的改变</h3>
+<ul>
+<li>高频段传输：频率越高，能使用的频率资源越丰富。频率资源越丰富，能实现的传输速率就越高。</li>
+<li>微基站：这个老早就有了。嗯，基站越小越好，覆盖好，而且能搞一大堆。高频段传输，距离短，正好用一大堆小基站</li>
+<li>Ｍassive MIMO（大规模多天线技术）</li>
+<li>D2D： 这个技术还是不错的，就是说如果靠得近，手机之间直接进行连接，不需要走基站了。但是后面技术如何支持的，并没有提到</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/hexo_blog/2019/08/16/OAuth2-0/" rel="next" title="OAuth2.0">
+                <i class="fa fa-chevron-left"></i> OAuth2.0
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/hexo_blog/2019/10/11/K8s-Service/" rel="prev" title="K8s Service">
+                K8s Service <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Lynn Shen</p>
+              <p class="site-description motion-element" itemprop="description">35岁开始的博客，有点晚哦</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/hexo_blog/archives/">
+              
+                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/hexo_blog/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5gc-概述"><span class="nav-number">2.</span> <span class="nav-text">5GC 概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sba"><span class="nav-number">2.1.</span> <span class="nav-text">SBA</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5g-nr"><span class="nav-number">3.</span> <span class="nav-text">5G NR</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#amf"><span class="nav-number">3.1.</span> <span class="nav-text">AMF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nef-network-exposure-function"><span class="nav-number">3.2.</span> <span class="nav-text">NEF - Network Exposure Function</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#scef-和-mtc-iwf"><span class="nav-number">3.2.1.</span> <span class="nav-text">SCEF 和 MTC - IWF</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#nef是什么"><span class="nav-number">3.2.2.</span> <span class="nav-text">NEF是什么</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nrf"><span class="nav-number">3.3.</span> <span class="nav-text">NRF</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#nrf是什么"><span class="nav-number">3.3.1.</span> <span class="nav-text">NRF是什么</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nssf"><span class="nav-number">3.4.</span> <span class="nav-text">NSSF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pcf-policy-control-function"><span class="nav-number">3.5.</span> <span class="nav-text">PCF -  Policy Control Function</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5g基站和接入网的演进"><span class="nav-number">4.</span> <span class="nav-text">5G基站和接入网的演进</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参考链接-v2"><span class="nav-number">4.1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5g的改变"><span class="nav-number">4.2.</span> <span class="nav-text">5G的改变</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lynn Shen</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/hexo_blog/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/hexo_blog/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://billts.site/extra_css/gitment.css">
+        <script src="https://billts.site/js/gitment.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitment({
+            id: window.location.pathname, 
+            owner: 'sallyslove',
+            repo: 'blog_comments',
+            
+            oauth: {
+            
+            
+                client_secret: '6eefacd862f6eee016278732c7470c216afce267',
+            
+                client_id: '2fca3ca261d5bf6d52eb'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

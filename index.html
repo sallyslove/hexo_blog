@@ -345,7 +345,7 @@
 <p>按照参考链接2里面的解释，倒是很容易理解。POD可以起很多个，是实体，还一会有一会没的。<br>
 而service是暴露服务的，这么说，应该只有一个service才对吧。瞅着确实如此啊。</p>
 <h2 id="services"><a class="header-anchor" href="#services"></a>Services</h2>
-<p>service是K8s里面另一个非常重要的概念，而且实在是有点复杂。类型比较多。K8s中文文档里面的名词解释还是比较清楚的，并且给出了为什么需要service，service和pod有什么区别</p>
+<p>service是K8s里面一个非常重要的概念。类型比较多。K8s中文文档里面的名词解释还是比较清楚的，并且给出了为什么需要service，service和pod有什么区别</p>
 <ul>
 <li>
 <p>Kubernete Service 是一个定义了一组Pod的策略的抽象，我们也有时候叫做宏观服务。这些被服务标记的Pod都是（一般）通过label Selector决定的（下面我们会讲到我们为什么需要一个没有label selector的服务）</p>
@@ -453,12 +453,23 @@ spec:
 -A KUBE-SEP-5ZXTVLEM4DKNW7T2 -p tcp -m tcp -j DNAT --to-destination 10.244.1.15:8000
 </code></pre>
 <h3 id="endpoint"><a class="header-anchor" href="#endpoint"></a>endpoint</h3>
-<p>在service创建的时候，kube-proxy组件（每个k8s服务器都会有的组件）会自动创建同名的endpoint对象，动态地跟踪匹配selector的一组pod当前ip（pod的ip在pod的yaml文件里面可以知道，名字就是podIP）及端口，并生成相应的iptables KUBE-SVC-xxx规则<br>
-<code>endpoint</code>可以认为是k8s的另一个对象，生成一个service的时候，会相对应生成一个<code>endpoint</code>.</p>
-<pre><code>$ kubectl get ep -n sheild-1 eric-act-activation-mml
-NAME         ENDPOINTS                           AGE
-eric-act-activation-mml  192.168.15.102:8111,192.168.15.102:8010   1h
-</code></pre>
+<ul>
+<li>
+<p>在service创建的时候，kube-proxy组件（每个k8s服务器都会有的组件）会自动创建同名的endpoint对象。</p>
+</li>
+<li>
+<p>动态地跟踪匹配selector的一组pod当前ip（pod的ip在pod的yaml文件里面可以知道，名字就是podIP）及端口，并生成相应的iptables KUBE-SVC-xxx规则</p>
+</li>
+<li>
+<p><code>service</code>是用了endpoint来对pod进行动态的跟踪的。一个pod的IP发生变化的时候，endpoint和KUBE-SVC-XXX规则会相应变化</p>
+</li>
+<li>
+<p><code>endpoint</code>是k8s的另一个对象，生成一个<code>service</code>的时候，会相对应生成一个<code>endpoint</code>.</p>
+<p>$ kubectl get ep -n sheild-1 eric-act-activation-mml<br>
+NAME         ENDPOINTS                           AGE<br>
+eric-act-activation-mml  192.168.15.102:8111,192.168.15.102:8010   1h</p>
+</li>
+</ul>
 <h3 id="请求代理的三种方式"><a class="header-anchor" href="#请求代理的三种方式"></a>请求代理的三种方式</h3>
 <p>全文参考链接二里面有三种方式。由于网络基础较差，先记录在这里：</p>
 <ul>
@@ -503,6 +514,215 @@ eric-act-activation-mml  192.168.15.102:8111,192.168.15.102:8010   1h
 <p>所以NodePort的service也是有cluster IP的。</p>
 <h4 id="loadbalancer"><a class="header-anchor" href="#loadbalancer"></a>LoadBalancer</h4>
 <h4 id="ingress"><a class="header-anchor" href="#ingress"></a>Ingress</h4>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/08/22/5G/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/08/22/5G/" itemprop="url">5G</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-22T14:04:36+08:00">
+                2019-08-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>作为通信行业的一名软件开发人员，我要开始学习5G啦。😃</p>
+<p>里面有非常多的新网元引入。各种缩写漫天飞舞 😢</p>
+<h2 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h2>
+<ul>
+<li><a href="https://medium.com/5g-nr/5g-service-based-architecture-sba-47900b0ded0a" target="_blank" rel="noopener">5G Service-Based Architecture (SBA)</a></li>
+<li><a href="https://www.grandmetric.com/2018/03/02/5g-core-network-functions/" target="_blank" rel="noopener">5G Core Network Functions</a></li>
+</ul>
+<h2 id="5gc-概述"><a class="header-anchor" href="#5gc-概述"></a>5GC 概述</h2>
+<ul>
+<li><code>5G</code>里面的新的<code>core network</code>一般叫做NR，但是也有的地方，比如霓虹国，称为<code>next generation</code></li>
+<li><code>SA</code>和<code>NSA</code>：<code>SA</code>就是<code>standalone</code>,<code>NSA</code>就是<code>non standslone</code>。这边的<code>SA</code>其实就是说只有<code>5G</code>，后面就是<code>4G</code>和<code>5G</code>并存。不同的运营商会有不同的网络状况。
+<ul>
+<li>现在正处于一个过渡期间，也可能会长期存在，出现了一些在4G的网元上面开发5G的功能，然后作为5G的网元来用的情况。</li>
+</ul>
+</li>
+<li>通常我们关心的<code>5GC</code>是<code>5G corenetwork</code>的缩写。然后<code>5G</code>的核心有三大类: <code>SBA - service based architecture</code>, <code>CUPS - Control and User Plane Separation</code> 和 网络切片<br>
+<strong>所以5GC和NR是一个东西?</strong></li>
+</ul>
+<h3 id="sba"><a class="header-anchor" href="#sba"></a>SBA</h3>
+<ul>
+<li>
+<p><code>SBA</code> 感觉和软件架构上面的微服务有点异曲同工的感觉。<code>4G</code>时代是各种各样的协议，每两个网元之间就可能有一种协议，并且还各不相同。但是到了<code>5G</code>的时候就是大家统一都是用<code>HTTP</code>协议了。然后各个网元只是提供<code>service</code></p>
+</li>
+<li>
+<p>所以SBA是一种架构</p>
+<p><img src="https://www.grandmetric.com/wp-content/uploads/2018/03/5G_Core_Network.png" alt></p>
+</li>
+</ul>
+<h2 id="5g-nr"><a class="header-anchor" href="#5g-nr"></a>5G NR</h2>
+<p><code>NR</code>指的是<code>new Radio</code>。在<code>5G</code>里面分为了<code>NE - Network Element</code>和<code>NF Network Function</code>两个概念。顾名思义，<code>NF</code>是往外提供服务的</p>
+<h3 id="amf"><a class="header-anchor" href="#amf"></a>AMF</h3>
+<h3 id="nef-network-exposure-function"><a class="header-anchor" href="#nef-network-exposure-function"></a>NEF - Network Exposure Function</h3>
+<h4 id="scef-和-mtc-iwf"><a class="header-anchor" href="#scef-和-mtc-iwf"></a>SCEF 和 MTC - IWF</h4>
+<ul>
+<li><code>(MTC - IWF) Machine Type Communications - Interwording Function</code>,</li>
+</ul>
+<h4 id="nef是什么"><a class="header-anchor" href="#nef是什么"></a>NEF是什么</h4>
+<ul>
+<li>NEF provides a mechanism for securely exposing services and features of the 5G core.</li>
+<li></li>
+</ul>
+<h3 id="nrf"><a class="header-anchor" href="#nrf"></a>NRF</h3>
+<h4 id="nrf是什么"><a class="header-anchor" href="#nrf是什么"></a>NRF是什么</h4>
+<ul>
+<li><code>NF Repository function (NRF)</code> supports: service discovery function, maintains NF profile and available NF instances. (not present in EPC world)。</li>
+<li><code>NRF</code>的功能看起来比较简单，有以下：
+<ul>
+<li>Service registration and discovery function so that Network Functions can discover each other.</li>
+<li>Maintains NF profile and available NF instances</li>
+<li>嗯，就是以上说的，<code>NR</code>会将自己注册到<code>NRF</code>里面，注册时候会带上不少信息，比如能提供的服务，自己认可的能访问服务的<code>NR</code>之类，同时会将自己的名字告诉给<code>NRF</code>。还有订阅功能。就是在<code>NRF</code>订阅自己关注哪些<code>NF</code>的哪些service</li>
+<li><code>NR</code>可以通过<code>NRF</code>来访问其他<code>NR</code>。过程如下图所示。</li>
+<li><code>NRF</code>在告诉同时会颁发一个<code>token</code>，做一些初步的验证。</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://miro.medium.com/max/1008/1*VfK1R5ie3DRElDFHjrI-kw.png" alt></p>
+<p><em>Network Repository Function service registration and discovery</em> (Credit: <a href="http://www.3gpp.org/ftp/information/presentations/Presentations_2017/webinar-ct-status-11-2017.pdf" target="_blank" rel="noopener">3GPP</a>)</p>
+<ul>
+<li>实际的部署和功能可能会更加复杂，例如，
+<ul>
+<li>每个网络切片可以有自己的<code>NRF</code></li>
+<li>我大中华地域广阔，还会有地域的概念，一个不够。</li>
+<li>那么一个上海人漫游到北京，联上了北京的<code>NRF</code>,北京的<code>NRF</code>得和上海的进行通信。如果漫游到了境外， 就更加复杂了。</li>
+<li><code>NRF</code>也可以监控各个网元的状态，或者提供更加复杂的功能</li>
+</ul>
+</li>
+<li>在<code>R16</code>里面提出了一个proxy的概念，<code>SCP - service Communication proxy</code>，因为<code>NRF</code>的网络通信过于繁杂，造成了很大的负担，所以引入的。</li>
+</ul>
+<h3 id="nssf"><a class="header-anchor" href="#nssf"></a>NSSF</h3>
+<h3 id="pcf-policy-control-function"><a class="header-anchor" href="#pcf-policy-control-function"></a>PCF -  Policy Control Function</h3>
+<ul>
+<li>PCF其实就是4G里面的PCRF。都是做policy control的</li>
+<li>PCF可以支持AMF的policy control和网络切片的policy control</li>
+<li>PCF理解UE级别的，就是这个UE可以使用哪些AMF和NSSF。</li>
+</ul>
+<h2 id="5g基站和接入网的演进"><a class="header-anchor" href="#5g基站和接入网的演进"></a>5G基站和接入网的演进</h2>
+<p>由于工作缘故，接触到的基本是核心网，话说刚刚入行的时候，我是做接入网的来着。<br>
+但是其实，5G虽然是核心网变化最大，接入网也是有改变的</p>
+<h3 id="参考链接-v2"><a class="header-anchor" href="#参考链接-v2"></a>参考链接</h3>
+<ul>
+<li><a href="https://blog.csdn.net/ityouknow/article/details/81351317" target="_blank" rel="noopener">第一次有人把5G讲的这么简单明了</a></li>
+<li><a href="https://blog.csdn.xn--ne5Gt-vq5hmb652jn0tuwkpp6bfuycjqfvo0b/cf2SudS8x8F0v/article/details/78778384" target="_blank" rel="noopener">详解5G的六大关键技术</a></li>
+</ul>
+<h3 id="5g的改变"><a class="header-anchor" href="#5g的改变"></a>5G的改变</h3>
+<ul>
+<li>高频段传输：频率越高，能使用的频率资源越丰富。频率资源越丰富，能实现的传输速率就越高。</li>
+<li>微基站：这个老早就有了。嗯，基站越小越好，覆盖好，而且能搞一大堆。高频段传输，距离短，正好用一大堆小基站</li>
+<li>Ｍassive MIMO（大规模多天线技术）</li>
+<li>D2D： 这个技术还是不错的，就是说如果靠得近，手机之间直接进行连接，不需要走基站了。但是后面技术如何支持的，并没有提到</li>
+</ul>
 
           
         
@@ -1048,17 +1268,17 @@ jti (JWT ID)：编号
 <h3 id="什么是micro-service"><a class="header-anchor" href="#什么是micro-service"></a>什么是micro service</h3>
 <ul>
 <li>只占用需要的内存和处理器处理能力</li>
-<li>如果是处理数据的，假设我们有一个处理inventory data的<code>micro service</code>，那么这个micro service仅仅需要在意inventory data。而不需要考虑其他数据的影响。</li>
-<li>micro service不受语言限制，不同语言的micro service仍旧可以联合起来的完成一个solution的</li>
+<li>如果是处理数据的，假设我们有一个处理inventory data的<code>micro service</code>，那么这个<code>micro service</code>仅仅需要在意inventory data。而不需要考虑其他数据的影响。</li>
+<li><code>micro service</code>不受语言限制，不同语言的<code>micro service</code>仍旧可以联合起来的完成一个solution的</li>
 </ul>
 <h3 id="micro-service-combination"><a class="header-anchor" href="#micro-service-combination"></a>micro service combination</h3>
 <ul>
-<li>micro service本身是一个complete application，它独立完成某个功能，可以有interface或者没有，可以访问数据库，也可以不访问。</li>
-<li>很多micro service联合起来，成为一个solution。</li>
-<li>默认只需要知道对方的endpoint就可以进行通信。<strong><em>所以是http base？</em></strong></li>
-<li>___ each micro service has to offer an API endpoint! 通常都是REST的endpoint，但是也可以是wisdom endpoint___</li>
+<li><code>micro service</code>本身是一个<code>complete application</code>，它独立完成某个功能，可以有interface或者没有，可以访问数据库，也可以不访问。</li>
+<li>很多<code>micro service</code>联合起来，成为一个solution。</li>
+<li>默认只需要知道对方的<code>endpoint</code>就可以进行通信。<strong><em>所以是http base？</em></strong></li>
+<li><strong><em>each micro service has to offer an API endpoint! 通常都是REST的endpoint，但是也可以是<code>wisdom endpoint</code></em></strong></li>
 </ul>
-<h3 id="micro-service优势"><a class="header-anchor" href="#micro-service优势"></a>micro service优势</h3>
+<h3 id="micro-service特点"><a class="header-anchor" href="#micro-service特点"></a>micro service特点</h3>
 <ul>
 <li>增加了scalability。话说这个吧，其实很复杂。看我另外一篇博客。而且未必多加pod，能力就一定上升啊</li>
 <li>从下面杂谈里面的几篇文章里面看起来，大家都认为<code>micro service</code>之后，模块之间基本是完全解耦的，大家都开开心心的全栈式就关心自己的模块，从需求到后期客户维护，完全自主，不用管其他模块。<em>A benefit of microservices is that each team can be responsible for releasing their services independently and without coordination with other teams.</em>
@@ -1071,23 +1291,42 @@ jti (JWT ID)：编号
 </ul>
 </li>
 </ul>
-<h3 id="微服务架构"><a class="header-anchor" href="#微服务架构"></a>微服务架构</h3>
-<p>关于微服务架构的文章真是多如牛毛。一搜一大把。还是从陈晧大神的极客看到了一篇上等的英文文章。果然，要跟着大牛走啊。<br>
-这里总结出一些常见的优势和原因，每篇文章都会提到的。</p>
+<h4 id="优势"><a class="header-anchor" href="#优势"></a>优势</h4>
 <ul>
-<li>改动：一个微小的改动需要很多工作去做，一个微小的改动会影响很多部分，增加一个需要资源的模块，需要增加整个系统的资源，而不是只增加需要增加的部分</li>
-<li>扩展：基本上就是指<code>load scalability</code>,在monolithich时代，扩展是扩展所有的模块，就是复制出新的一份系统来。而微服务时候，是扩展需要扩展的部分，这点很有优势
+<li>
+<p>改动：一个微小的改动需要很多工作去做，一个微小的改动会影响很多部分，增加一个需要资源的模块，需要增加整个系统的资源，而不是只增加需要增加的部分</p>
+</li>
+<li>
+<p>扩展：基本上就是指<code>load scalability</code>,在monolithich时代，扩展是扩展所有的模块，就是复制出新的一份系统来。而微服务时候，是扩展需要扩展的部分，这点很有优势</p>
 <ul>
 <li>所以从以上两点来说，一个微服务在部署和扩展上面，从业务角度来说，就是service角度来说，应该是独立的。<strong><em>那么反过来成立吗？就是说一个pod或者service，可以独立部署，独立扩展，但是并不能提供独立的服务，那么是不是边界定义得不对呢</em></strong></li>
 <li><em>We define libraries as components that are linked into a program and called using in-memory function calls, while services are out-of-process components who communicate with a mechanism such as a web service request, or remote procedure call.</em></li>
 </ul>
 </li>
-<li>参考链接
+<li>
+<p>方便CI和CD</p>
+</li>
+<li>
+<p>参考链接</p>
 <ul>
-<li><a href="https://martinfowler.com/articles/microservices.html" target="_blank" rel="noopener">Microservices Architecture</a>: 看到有将 <em>intelligence in the endpoints</em> 翻译成端点智能的，哈哈，这是什么鬼。</li>
+<li><a href="https://martinfowler.com/articles/microservices.html" target="_blank" rel="noopener">Microservices Architecture</a>:</li>
+<li><a href="https://mp.weixin.qq.com/s?__biz=MjM5MjEwNTEzOQ==&amp;mid=401500724&amp;idx=1&amp;sn=4e42fa2ffcd5732ae044fe6a387a1cc3#rd" target="_blank" rel="noopener">上一篇的中文翻译</a></li>
 </ul>
 </li>
 </ul>
+<h4 id="逆势"><a class="header-anchor" href="#逆势"></a>逆势</h4>
+<p>微服务也是会有一些问题和难点的，比如：</p>
+<ul>
+<li>进程间通信会比进程内通信代价大很多，所以应该谨慎设计边界。<em>remote APIs need to be coarser-grained, which is often more awkward to use.</em> 不是很理解这句话</li>
+<li>Consequently the teams are cross-functional, including the full range of skills required for the development: user-experience, database, and project management. 所以嘛，我就说对技术人员的要求越发高了。虽说是team，但是这种team也很不好搭配的好不好。</li>
+<li>并且这种方式，将团队和自己开发的产品绑在了一起。感觉回到了以模块来组织team的年代。实在是有利有弊。还有一个问题，按照现在推荐的，将一部分support的事务归到了技术团队里面，那么有向前延伸吗？话说薪水呢，得涨薪啊</li>
+</ul>
+<h3 id="微服务架构"><a class="header-anchor" href="#微服务架构"></a>微服务架构</h3>
+<p>关于微服务架构的文章真是多如牛毛。一搜一大把。看了陈晧推荐的一篇据说入门级英文文章，确实清晰明了。话说很多中文翻译简直是惨不忍睹啊。真心惨不忍睹！</p>
+<p>看了总觉得有有点心惊啊，从<code>warterful</code>到<code>agile</code>，从<code>monolithic</code>到<code>micro service</code>，对开发人员的要求是越来越高了啊。😦</p>
+<p>还能不能愉快地做开发了啊？<br>
+<em>The microservice approach to division is different, splitting up into services organized around business capability</em></p>
+<p>还得有<code>business capability</code>，话说技术人员理解的<code>business capability</code>正确吗</p>
 <h3 id="杂谈"><a class="header-anchor" href="#杂谈"></a>杂谈</h3>
 <ul>
 <li>
@@ -2326,207 +2565,6 @@ Interrupt:5 Base address:0x8c00
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/06/17/软件衡量标准/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/06/17/软件衡量标准/" itemprop="url">软件衡量标准</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-17T17:20:49+08:00">
-                2019-06-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/Other/" itemprop="url" rel="index">
-                    <span itemprop="name">Other</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>工作中接触到一些软件衡量标准的需求，必须对这些概念有所了解和理解。所以解释如下了。</p>
-<h3 id="scalability"><a class="header-anchor" href="#scalability"></a>Scalability</h3>
-<ul>
-<li>
-<blockquote>
-<p>Scalability is the property of a system to handle a growing amount of work by adding resources to the system 维基百科里面的这个解释实在很到位啊。通过加资源来获得更大的能力</p>
-</blockquote>
-</li>
-<li>以下内容基本是维基百科的翻译：
-<ul>
-<li>用户可扩展性： 能够同时支持多少用户</li>
-<li>功能可扩展性： 能不能扩展功能，而不会影响现有功能</li>
-<li>地理上的可扩展性： 就是直接的字面含义，类似部署时候的机器是不是必须local在一起。</li>
-<li>负载可扩展性： 这就是我们通常意义上面知道的，加node或者加cpu，加内存，能不能够加可处理的能力</li>
-<li>代扩展性： 这个有点难以理解，我理解成能不能支持不同版本。比如说，我同时安装java8和java7，那么我可以在maven里面指定生成的代码之类的</li>
-<li>种类的可扩展性： 这个可以理解的，就是是不是支持multi-verdor。就像java，可以在windows上面，也可以在linux上面</li>
-</ul>
-</li>
-<li>Scaling horizontally： 就是增减node</li>
-<li>Scaling vertically： 增减resource，增减cpu或者内存</li>
-<li>总的来说，还是挺复杂的。</li>
-<li>参考链接：
-<ul>
-<li><a href="https://en.wikipedia.org/wiki/Scalability" target="_blank" rel="noopener">维基百科</a></li>
-</ul>
-</li>
-</ul>
-<h3 id="testability"><a class="header-anchor" href="#testability"></a>Testability</h3>
-<p>testability跟我想象的稍有不同，就是说这个模块或者软件的可测试性。实在有点复杂啊</p>
-<ul>
-<li>总的来说，感觉实在是太抽象了。 <strong><em>没看懂</em></strong>
-<ul>
-<li>Class I: there exists a finite complete test suite.</li>
-<li>Class II: any partial distinguishing rate (i.e. any incomplete capability to distinguish correct systems from incorrect systems) can be reached with a finite test suite.</li>
-<li>Class III: there exists a countable complete test suite.</li>
-<li>Class IV: there exists a complete test suite.</li>
-<li>Class V: all cases.</li>
-</ul>
-</li>
-<li>参考链接：<br>
-+<a href="https://en.wikipedia.org/wiki/Software_testability" target="_blank" rel="noopener">维基百科</a></li>
-</ul>
-<h3 id="robustness-computer-science"><a class="header-anchor" href="#robustness-computer-science"></a>Robustness (computer science)</h3>
-<ul>
-<li>robustness is the ability of a computer system to cope with errors during execution and cope with erroneous input。跟想象的不一样啊，更多focus的是handle error的能力</li>
-<li>参考链接：
-<ul>
-<li>[维基百科](<a href="https://en.wikipedia.org/wiki/Robustness_(computer_science)" target="_blank" rel="noopener">https://en.wikipedia.org/wiki/Robustness_(computer_science)</a></li>
-</ul>
-</li>
-</ul>
-<h3 id="computer-security"><a class="header-anchor" href="#computer-security"></a>Computer Security</h3>
-<ul>
-<li>the protection of computer systems from theft or damage to their hardware, software or electronic data, as well as from disruption or misdirection of the services they provide.</li>
-<li>参考链接
-<ul>
-<li><a href="https://en.wikipedia.org/wiki/Computer_security" target="_blank" rel="noopener">维基百科</a></li>
-</ul>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2577,7 +2615,7 @@ Interrupt:5 Base address:0x8c00
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">33</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

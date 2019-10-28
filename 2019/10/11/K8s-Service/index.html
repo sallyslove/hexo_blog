@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="Service的概念有点多，内容，单独拎出来做一篇。 参考链接  名词解释 Services Kubernetes Service详解  为什么需要service 按照参考链接2里面的解释，倒是很容易理解。POD可以起很多个，是实体，还一会有一会没的。 而service是暴露服务的，这么说，应该只有一个service才对吧。瞅着确实如此啊。 Services service是K8s里面另一个非常重">
+<meta name="description" content="Service的概念有点多，内容，单独拎出来做一篇。 参考链接  名词解释 Services Kubernetes Service详解  为什么需要service 按照参考链接2里面的解释，倒是很容易理解。POD可以起很多个，是实体，还一会有一会没的。 而service是暴露服务的，这么说，应该只有一个service才对吧。瞅着确实如此啊。 Services service是K8s里面一个非常重要">
 <meta property="og:type" content="article">
 <meta property="og:title" content="K8s Service">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/10/11/K8s-Service/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="Service的概念有点多，内容，单独拎出来做一篇。 参考链接  名词解释 Services Kubernetes Service详解  为什么需要service 按照参考链接2里面的解释，倒是很容易理解。POD可以起很多个，是实体，还一会有一会没的。 而service是暴露服务的，这么说，应该只有一个service才对吧。瞅着确实如此啊。 Services service是K8s里面另一个非常重">
+<meta property="og:description" content="Service的概念有点多，内容，单独拎出来做一篇。 参考链接  名词解释 Services Kubernetes Service详解  为什么需要service 按照参考链接2里面的解释，倒是很容易理解。POD可以起很多个，是实体，还一会有一会没的。 而service是暴露服务的，这么说，应该只有一个service才对吧。瞅着确实如此啊。 Services service是K8s里面一个非常重要">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-10-21T03:24:15.282Z">
+<meta property="og:updated_time" content="2019-10-22T03:23:34.397Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="K8s Service">
-<meta name="twitter:description" content="Service的概念有点多，内容，单独拎出来做一篇。 参考链接  名词解释 Services Kubernetes Service详解  为什么需要service 按照参考链接2里面的解释，倒是很容易理解。POD可以起很多个，是实体，还一会有一会没的。 而service是暴露服务的，这么说，应该只有一个service才对吧。瞅着确实如此啊。 Services service是K8s里面另一个非常重">
+<meta name="twitter:description" content="Service的概念有点多，内容，单独拎出来做一篇。 参考链接  名词解释 Services Kubernetes Service详解  为什么需要service 按照参考链接2里面的解释，倒是很容易理解。POD可以起很多个，是实体，还一会有一会没的。 而service是暴露服务的，这么说，应该只有一个service才对吧。瞅着确实如此啊。 Services service是K8s里面一个非常重要">
 
 
 
@@ -341,7 +341,7 @@
 <p>按照参考链接2里面的解释，倒是很容易理解。POD可以起很多个，是实体，还一会有一会没的。<br>
 而service是暴露服务的，这么说，应该只有一个service才对吧。瞅着确实如此啊。</p>
 <h2 id="services"><a class="header-anchor" href="#services"></a>Services</h2>
-<p>service是K8s里面另一个非常重要的概念，而且实在是有点复杂。类型比较多。K8s中文文档里面的名词解释还是比较清楚的，并且给出了为什么需要service，service和pod有什么区别</p>
+<p>service是K8s里面一个非常重要的概念。类型比较多。K8s中文文档里面的名词解释还是比较清楚的，并且给出了为什么需要service，service和pod有什么区别</p>
 <ul>
 <li>
 <p>Kubernete Service 是一个定义了一组Pod的策略的抽象，我们也有时候叫做宏观服务。这些被服务标记的Pod都是（一般）通过label Selector决定的（下面我们会讲到我们为什么需要一个没有label selector的服务）</p>
@@ -449,12 +449,23 @@ spec:
 -A KUBE-SEP-5ZXTVLEM4DKNW7T2 -p tcp -m tcp -j DNAT --to-destination 10.244.1.15:8000
 </code></pre>
 <h3 id="endpoint"><a class="header-anchor" href="#endpoint"></a>endpoint</h3>
-<p>在service创建的时候，kube-proxy组件（每个k8s服务器都会有的组件）会自动创建同名的endpoint对象，动态地跟踪匹配selector的一组pod当前ip（pod的ip在pod的yaml文件里面可以知道，名字就是podIP）及端口，并生成相应的iptables KUBE-SVC-xxx规则<br>
-<code>endpoint</code>可以认为是k8s的另一个对象，生成一个service的时候，会相对应生成一个<code>endpoint</code>.</p>
-<pre><code>$ kubectl get ep -n sheild-1 eric-act-activation-mml
-NAME         ENDPOINTS                           AGE
-eric-act-activation-mml  192.168.15.102:8111,192.168.15.102:8010   1h
-</code></pre>
+<ul>
+<li>
+<p>在service创建的时候，kube-proxy组件（每个k8s服务器都会有的组件）会自动创建同名的endpoint对象。</p>
+</li>
+<li>
+<p>动态地跟踪匹配selector的一组pod当前ip（pod的ip在pod的yaml文件里面可以知道，名字就是podIP）及端口，并生成相应的iptables KUBE-SVC-xxx规则</p>
+</li>
+<li>
+<p><code>service</code>是用了endpoint来对pod进行动态的跟踪的。一个pod的IP发生变化的时候，endpoint和KUBE-SVC-XXX规则会相应变化</p>
+</li>
+<li>
+<p><code>endpoint</code>是k8s的另一个对象，生成一个<code>service</code>的时候，会相对应生成一个<code>endpoint</code>.</p>
+<p>$ kubectl get ep -n sheild-1 eric-act-activation-mml<br>
+NAME         ENDPOINTS                           AGE<br>
+eric-act-activation-mml  192.168.15.102:8111,192.168.15.102:8010   1h</p>
+</li>
+</ul>
 <h3 id="请求代理的三种方式"><a class="header-anchor" href="#请求代理的三种方式"></a>请求代理的三种方式</h3>
 <p>全文参考链接二里面有三种方式。由于网络基础较差，先记录在这里：</p>
 <ul>
@@ -523,8 +534,8 @@ eric-act-activation-mml  192.168.15.102:8111,192.168.15.102:8010   1h
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/hexo_blog/2019/08/16/OAuth2-0/" rel="next" title="OAuth2.0">
-                <i class="fa fa-chevron-left"></i> OAuth2.0
+              <a href="/hexo_blog/2019/08/22/5G/" rel="next" title="5G">
+                <i class="fa fa-chevron-left"></i> 5G
               </a>
             
           </div>
@@ -615,7 +626,7 @@ eric-act-activation-mml  192.168.15.102:8111,192.168.15.102:8010   1h
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">33</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

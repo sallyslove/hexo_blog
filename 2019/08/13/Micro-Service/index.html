@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="跬步">
 <meta property="og:description" content="在学习一些micro service相关，记录在这里。 现在都是说micro service，但是什么是micro service，可能不同的人有不同的定义，但是单纯地只是将软件部署到docker或者k8s上面去，可能并不完全符合micro service，所以学习一下。 将一些学习到的tips和理念记录下来，最后形成自己的理解。 学习了一阵，感觉还是不一样的，有一套架构体系的，记录在这里。 什么">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-09-11T05:23:43.101Z">
+<meta property="og:updated_time" content="2019-10-22T03:13:14.212Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Micro Service">
 <meta name="twitter:description" content="在学习一些micro service相关，记录在这里。 现在都是说micro service，但是什么是micro service，可能不同的人有不同的定义，但是单纯地只是将软件部署到docker或者k8s上面去，可能并不完全符合micro service，所以学习一下。 将一些学习到的tips和理念记录下来，最后形成自己的理解。 学习了一阵，感觉还是不一样的，有一套架构体系的，记录在这里。 什么">
@@ -338,17 +338,17 @@
 <h3 id="什么是micro-service"><a class="header-anchor" href="#什么是micro-service"></a>什么是micro service</h3>
 <ul>
 <li>只占用需要的内存和处理器处理能力</li>
-<li>如果是处理数据的，假设我们有一个处理inventory data的<code>micro service</code>，那么这个micro service仅仅需要在意inventory data。而不需要考虑其他数据的影响。</li>
-<li>micro service不受语言限制，不同语言的micro service仍旧可以联合起来的完成一个solution的</li>
+<li>如果是处理数据的，假设我们有一个处理inventory data的<code>micro service</code>，那么这个<code>micro service</code>仅仅需要在意inventory data。而不需要考虑其他数据的影响。</li>
+<li><code>micro service</code>不受语言限制，不同语言的<code>micro service</code>仍旧可以联合起来的完成一个solution的</li>
 </ul>
 <h3 id="micro-service-combination"><a class="header-anchor" href="#micro-service-combination"></a>micro service combination</h3>
 <ul>
-<li>micro service本身是一个complete application，它独立完成某个功能，可以有interface或者没有，可以访问数据库，也可以不访问。</li>
-<li>很多micro service联合起来，成为一个solution。</li>
-<li>默认只需要知道对方的endpoint就可以进行通信。<strong><em>所以是http base？</em></strong></li>
-<li>___ each micro service has to offer an API endpoint! 通常都是REST的endpoint，但是也可以是wisdom endpoint___</li>
+<li><code>micro service</code>本身是一个<code>complete application</code>，它独立完成某个功能，可以有interface或者没有，可以访问数据库，也可以不访问。</li>
+<li>很多<code>micro service</code>联合起来，成为一个solution。</li>
+<li>默认只需要知道对方的<code>endpoint</code>就可以进行通信。<strong><em>所以是http base？</em></strong></li>
+<li><strong><em>each micro service has to offer an API endpoint! 通常都是REST的endpoint，但是也可以是<code>wisdom endpoint</code></em></strong></li>
 </ul>
-<h3 id="micro-service优势"><a class="header-anchor" href="#micro-service优势"></a>micro service优势</h3>
+<h3 id="micro-service特点"><a class="header-anchor" href="#micro-service特点"></a>micro service特点</h3>
 <ul>
 <li>增加了scalability。话说这个吧，其实很复杂。看我另外一篇博客。而且未必多加pod，能力就一定上升啊</li>
 <li>从下面杂谈里面的几篇文章里面看起来，大家都认为<code>micro service</code>之后，模块之间基本是完全解耦的，大家都开开心心的全栈式就关心自己的模块，从需求到后期客户维护，完全自主，不用管其他模块。<em>A benefit of microservices is that each team can be responsible for releasing their services independently and without coordination with other teams.</em>
@@ -361,23 +361,42 @@
 </ul>
 </li>
 </ul>
-<h3 id="微服务架构"><a class="header-anchor" href="#微服务架构"></a>微服务架构</h3>
-<p>关于微服务架构的文章真是多如牛毛。一搜一大把。还是从陈晧大神的极客看到了一篇上等的英文文章。果然，要跟着大牛走啊。<br>
-这里总结出一些常见的优势和原因，每篇文章都会提到的。</p>
+<h4 id="优势"><a class="header-anchor" href="#优势"></a>优势</h4>
 <ul>
-<li>改动：一个微小的改动需要很多工作去做，一个微小的改动会影响很多部分，增加一个需要资源的模块，需要增加整个系统的资源，而不是只增加需要增加的部分</li>
-<li>扩展：基本上就是指<code>load scalability</code>,在monolithich时代，扩展是扩展所有的模块，就是复制出新的一份系统来。而微服务时候，是扩展需要扩展的部分，这点很有优势
+<li>
+<p>改动：一个微小的改动需要很多工作去做，一个微小的改动会影响很多部分，增加一个需要资源的模块，需要增加整个系统的资源，而不是只增加需要增加的部分</p>
+</li>
+<li>
+<p>扩展：基本上就是指<code>load scalability</code>,在monolithich时代，扩展是扩展所有的模块，就是复制出新的一份系统来。而微服务时候，是扩展需要扩展的部分，这点很有优势</p>
 <ul>
 <li>所以从以上两点来说，一个微服务在部署和扩展上面，从业务角度来说，就是service角度来说，应该是独立的。<strong><em>那么反过来成立吗？就是说一个pod或者service，可以独立部署，独立扩展，但是并不能提供独立的服务，那么是不是边界定义得不对呢</em></strong></li>
 <li><em>We define libraries as components that are linked into a program and called using in-memory function calls, while services are out-of-process components who communicate with a mechanism such as a web service request, or remote procedure call.</em></li>
 </ul>
 </li>
-<li>参考链接
+<li>
+<p>方便CI和CD</p>
+</li>
+<li>
+<p>参考链接</p>
 <ul>
-<li><a href="https://martinfowler.com/articles/microservices.html" target="_blank" rel="noopener">Microservices Architecture</a>: 看到有将 <em>intelligence in the endpoints</em> 翻译成端点智能的，哈哈，这是什么鬼。</li>
+<li><a href="https://martinfowler.com/articles/microservices.html" target="_blank" rel="noopener">Microservices Architecture</a>:</li>
+<li><a href="https://mp.weixin.qq.com/s?__biz=MjM5MjEwNTEzOQ==&amp;mid=401500724&amp;idx=1&amp;sn=4e42fa2ffcd5732ae044fe6a387a1cc3#rd" target="_blank" rel="noopener">上一篇的中文翻译</a></li>
 </ul>
 </li>
 </ul>
+<h4 id="逆势"><a class="header-anchor" href="#逆势"></a>逆势</h4>
+<p>微服务也是会有一些问题和难点的，比如：</p>
+<ul>
+<li>进程间通信会比进程内通信代价大很多，所以应该谨慎设计边界。<em>remote APIs need to be coarser-grained, which is often more awkward to use.</em> 不是很理解这句话</li>
+<li>Consequently the teams are cross-functional, including the full range of skills required for the development: user-experience, database, and project management. 所以嘛，我就说对技术人员的要求越发高了。虽说是team，但是这种team也很不好搭配的好不好。</li>
+<li>并且这种方式，将团队和自己开发的产品绑在了一起。感觉回到了以模块来组织team的年代。实在是有利有弊。还有一个问题，按照现在推荐的，将一部分support的事务归到了技术团队里面，那么有向前延伸吗？话说薪水呢，得涨薪啊</li>
+</ul>
+<h3 id="微服务架构"><a class="header-anchor" href="#微服务架构"></a>微服务架构</h3>
+<p>关于微服务架构的文章真是多如牛毛。一搜一大把。看了陈晧推荐的一篇据说入门级英文文章，确实清晰明了。话说很多中文翻译简直是惨不忍睹啊。真心惨不忍睹！</p>
+<p>看了总觉得有有点心惊啊，从<code>warterful</code>到<code>agile</code>，从<code>monolithic</code>到<code>micro service</code>，对开发人员的要求是越来越高了啊。😦</p>
+<p>还能不能愉快地做开发了啊？<br>
+<em>The microservice approach to division is different, splitting up into services organized around business capability</em></p>
+<p>还得有<code>business capability</code>，话说技术人员理解的<code>business capability</code>正确吗</p>
 <h3 id="杂谈"><a class="header-anchor" href="#杂谈"></a>杂谈</h3>
 <ul>
 <li>
@@ -518,7 +537,7 @@
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">33</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -564,7 +583,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是micro-service"><span class="nav-number">1.</span> <span class="nav-text">什么是micro service</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#micro-service-combination"><span class="nav-number">2.</span> <span class="nav-text">micro service combination</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#micro-service优势"><span class="nav-number">3.</span> <span class="nav-text">micro service优势</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#微服务架构"><span class="nav-number">4.</span> <span class="nav-text">微服务架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#杂谈"><span class="nav-number">5.</span> <span class="nav-text">杂谈</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是micro-service"><span class="nav-number">1.</span> <span class="nav-text">什么是micro service</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#micro-service-combination"><span class="nav-number">2.</span> <span class="nav-text">micro service combination</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#micro-service特点"><span class="nav-number">3.</span> <span class="nav-text">micro service特点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#优势"><span class="nav-number">3.1.</span> <span class="nav-text">优势</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#逆势"><span class="nav-number">3.2.</span> <span class="nav-text">逆势</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#微服务架构"><span class="nav-number">4.</span> <span class="nav-text">微服务架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#杂谈"><span class="nav-number">5.</span> <span class="nav-text">杂谈</span></a></li></ol></div>
             
 
           </div>
