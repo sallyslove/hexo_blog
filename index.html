@@ -242,6 +242,363 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/11/15/Maven-Dependency/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/11/15/Maven-Dependency/" itemprop="url">Maven Dependency</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-15T13:43:28+08:00">
+                2019-11-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><code>maven</code>的<code>dependency</code>咋说呢，项目大了之后就有点复杂，在工作中配到一个由于<code>dependency</code>引入的问题，将一些细节记录在这里。<br>
+篇幅不会很长，但是实际问题中应该很有帮助。</p>
+<ul>
+<li>
+<p><code>mvn dependency:tree -Dverbose -Dincludes=&lt;groupID&gt;:&lt;artifiactID&gt;</code><br>
+这条命令可以比较相近地打印出需要知道的包的情况。</p>
+</li>
+<li>
+<p>在一个<code>pom</code>文件里面，同层次的排在前面的会被优先采用，而后面的一个会被忽略。<br>
+比如， <code>A depend on C 0.1</code>, <code>B depend on C 0.2</code>，在<code>pom</code>里面写的时候，<code>A</code>在<code>B</code>前面，那么最终<code>C 0.1</code>会成为整个项目使用的版本</p>
+</li>
+<li>
+<p>像上面这种情况，如果想使用<code>C 0.2</code>，那么有一个方法是在<code>A</code>的依赖加入的时候，使用<code>exclusions</code>字段将对<code>C</code>的依赖排除掉。</p>
+</li>
+<li>
+<p>有的时候一个项目里面的相对底层的lib库，可能会被各种上层调用，比如打印log的，访问数据库的，那么更容易出现各种版本冲突，事实上，到最后没有办法来理出来，犹如一团乱麻。那么一个简单的方式就是，在顶层项目的<code>pom</code>文件里面，使用<code>dependencymanagement</code>来指定一个范围和版本号。这种实在是一招破万军。</p>
+</li>
+<li>
+<p>使用第一条命令之后打印出来的<code>log</code>里面有</p>
+</li>
+<li>
+<p>以下代表是<code>dependencymanagement</code>在起作用</p>
+<pre><code>- version managed from 0.17; omitted for duplicate)
+</code></pre>
+</li>
+<li>
+<p>以下代表是版本冲突了</p>
+<pre><code>omitted for conflict with 0.17
+</code></pre>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/11/08/TLS相关知识/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/11/08/TLS相关知识/" itemprop="url">TLS相关知识</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-08T14:47:48+08:00">
+                2019-11-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="ssl相关知识"><a class="header-anchor" href="#ssl相关知识"></a>SSL相关知识</h2>
+<p><code>KeyStore</code>工作中碰到的不少。相关的问题先放这里吧。</p>
+<h3 id="certificate"><a class="header-anchor" href="#certificate"></a>Certificate</h3>
+<p>证书的相关知识</p>
+<h4 id="为啥需要证书"><a class="header-anchor" href="#为啥需要证书"></a>为啥需要证书</h4>
+<ul>
+<li>我们知道在<code>TLS</code>传输中需要使用不对称加密算法，在其中有公钥，私钥。公钥用来给客户端给自己发消息，私钥用来解密收到的消息。</li>
+<li>但是以下场景中即使是不对称加密也是不安全的：
+<ul>
+<li>小明用浏览器往百度发了个消息，然后百度将自己的公钥返回给小明。</li>
+<li>攻击者在中途截住了这个公钥，并且替换为自己的公钥发给了小明。</li>
+<li>小明并不清楚，用这个假的公钥加密了自己的私钥，并且发给了百度。</li>
+<li>攻击者于是拥有了小明的私钥，接着用上一次截获的百度的公钥加密小明的私钥，返回给百度。</li>
+<li>于是百度会认为<code>TLS</code>通道已经建立。接下来小明和百度之间的所有消息都会被攻击者得知。</li>
+<li>这时候就需要证书了。证书颁发机构由<code>X.509</code>标准指定，以确保数据的完整性。证书的目的就是保证数据的完整性。啧，听上去好厉害！</li>
+</ul>
+</li>
+</ul>
+<h4 id="root-ca"><a class="header-anchor" href="#root-ca"></a>Root CA</h4>
+<ul>
+<li>参考链接
+<ul>
+<li><a href="https://support.dnsimple.com/articles/what-is-certificate-authority/" target="_blank" rel="noopener">什么是CA</a></li>
+<li><a href="https://support.dnsimple.com/articles/what-is-ssl-root-certificate/" target="_blank" rel="noopener">什么是Root CA</a></li>
+</ul>
+</li>
+<li>有两种解释，一个是被信任的机构，另一个是这个机构颁发出来的证书</li>
+<li>比如<code>Digicert</code>就是一个CA</li>
+</ul>
+<h4 id="证书的使用过程"><a class="header-anchor" href="#证书的使用过程"></a>证书的使用过程</h4>
+<ol>
+<li>首先是百度作为一个服务器，向<code>CA</code>申请签名证书。这里用<code>Digicert</code>作为CA</li>
+<li>那么<code>CA</code>会为百度创建一个证书，里面包含一些信息，比如例如服务器名称，服务器的公钥等。</li>
+<li><code>Digicert</code>将创建数据（证书）的哈希值，并使用自己的私钥对其进行加密</li>
+<li>浏览器和操作系统自带<code>Digicert</code>等权威机构的公钥。</li>
+<li>当浏览器收到签名证书时，它将使用<code>Digicert</code>的公钥从签名生成哈希值，它还将使用证书中指定的散列算法生成数据（证书）的散列，6. 如果两个哈希值匹配，则签名验证成功并且证书是可信的</li>
+<li>现在浏览器可以使用证书中指定的百度的公钥继续进行身份验证过程。</li>
+</ol>
+<p>也就是说在客户端和服务器端交换公钥秘钥的过程中，加入了<code>CA</code>的签名认证，这样保证客户端可以信任收到的公钥确实是服务器端的公钥，而不是攻击者的公钥。</p>
+<h3 id="tls版本"><a class="header-anchor" href="#tls版本"></a>TLS版本</h3>
+<ul>
+<li><code>SSL3.0</code> 和 <code>TLS1.0</code> 是一个东西。嗯，微软干的。微软虽然是一个伟大的公司，但是这个干得不好，相当不好，至少我本人觉得不好。实在是除了增加大家的混淆以外，没有任何意义。嘛，我们自己的产品也经常干这种事情。通常呢，是因为自己认为发生了跨时代的改变，希望让别人也明白。</li>
+<li>目前最流行的版本是<code>TLS1.2</code>，最新的版本是<code>TLS1.3</code>。</li>
+<li><code>java8</code>中默认的是<code>TLS1.2</code>版本。<code>java11</code>里面支持的是<code>TLS1.3</code></li>
+<li>各种<code>web</code>应用服务器的配置文件里面都可以配置支持或者不支持的版本。比如<code>tomcat</code>提供了参数:<code>sslEnabledProtocols</code></li>
+</ul>
+<h4 id="如何发现我的浏览器使用的tls版本"><a class="header-anchor" href="#如何发现我的浏览器使用的tls版本"></a>如何发现我的浏览器使用的TLS版本</h4>
+<ul>
+<li>因为要测试<code>tomcat</code>里面配置的参数是否生效，所以第一反应就是我咋知道呢。后来经同事提点，其实用<code>openssl</code>就可以了</li>
+<li>在浏览器的配置中能看到， 比如IE, <code>File</code>-&gt;<code>Properties</code>, 在<code>Connection</code>一栏就能看到。</li>
+<li>参考链接：
+<ul>
+<li><a href="https://www.thesslstore.com/blog/google-chrome-72-deprecates-support-for-tls-1-0-tls-1-1/" target="_blank" rel="noopener">chrome如何配置和查看</a></li>
+<li><a href="https://security.stackexchange.com/questions/19096/how-to-determine-if-a-browser-is-using-an-ssl-or-tls-connection/169418" target="_blank" rel="noopener">如何查看website的TLS版本</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="如何测试tls连接"><a class="header-anchor" href="#如何测试tls连接"></a>如何测试TLS连接</h4>
+<ul>
+<li>这个是刚需啊刚需。使用<code>openssl</code>肯定也是可以的。这回使用的是<code>curl</code>命令。</li>
+<li><code>curl help</code>一下可以看到，使用参数就可以指定<code>TLS</code>版本，还是很好用的。<br>
+😦 我觉得自己有时候是很奇怪的人啊，下回要把实际使用的命令写在这里。╭(╯^╰)╮</li>
+</ul>
+<h3 id="tls和oauth"><a class="header-anchor" href="#tls和oauth"></a>TLS和OAuth</h3>
+<ul>
+<li><a href="https://stackoverflow.com/questions/8378664/does-an-oauth-2-client-really-need-tls" target="_blank" rel="noopener">does-an-oauth-2-client-really-need-tls</a>： 我自己有点搞不清楚这些的关系，这边有一个解释很是清晰，看了就明白了
+<ul>
+<li><em>3.1.2.1.  Endpoint Request Confidentiality If a redirection request will result in the transmission of an authorization code or access token over an open network (between the resource owner’s user-agent and the client), the client SHOULD require the use of a transport-layer security mechanism.</em> 这个是<code>Oauth</code>官方文档里面的一段话。</li>
+<li>上面一段的意思应该是这样的：一个第三方认证的请求在传输<code>authorization code</code>或者<code>access token</code>的时候应当在传输层使用安全机制。这里的安全机制就是指<code>TLS</code>协议。</li>
+</ul>
+</li>
+</ul>
+<h3 id="tls双向握手"><a class="header-anchor" href="#tls双向握手"></a>TLS双向握手</h3>
+<h3 id="keystore和truststore"><a class="header-anchor" href="#keystore和truststore"></a>KeyStore和TrustStore</h3>
+<ul>
+<li><code>keystore</code>和<code>truststore</code>从其文件格式来看其实是一个东西，都是<code>.jks</code>文件，只是为了方便管理将其分开</li>
+<li><code>keystore</code>中一般保存的是服务器端的私钥，用来加解密或者为别人做签名。存储服务器端的公钥和私钥。</li>
+<li><code>truststore</code>中保存的是一些可信任的证书，主要是<code>java</code>在代码中访问某个<code>https</code>的时候对被访问者进行认证的，以确保其实可信任的。一般为公钥<br>
+<code>truststore</code>里面存储的是服务器的信任密钥存储库，存<code>CA</code>公钥，也会有人在里面存储客户端的证书集合。</li>
+<li>应该在不同的协议中都有可能碰到，不仅仅是<code>HTTPS</code>，在网上搜索过程中有<code>LDAP</code>也用到的。</li>
+<li>参考链接
+<ol>
+<li><a href="https://www.cnblogs.com/gsls200808/p/4500246.html" target="_blank" rel="noopener">KeyStore和TrustStore</a></li>
+</ol>
+</li>
+</ul>
+<h3 id="keytool"><a class="header-anchor" href="#keytool"></a>Keytool</h3>
+<h3 id="openssl"><a class="header-anchor" href="#openssl"></a>openssl</h3>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/10/11/K8s-Service/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -642,7 +999,7 @@ eric-act-activation-mml  192.168.15.102:8111,192.168.15.102:8010   1h</p>
 </ul>
 <h2 id="5gc-概述"><a class="header-anchor" href="#5gc-概述"></a>5GC 概述</h2>
 <ul>
-<li><code>5G</code>里面的新的<code>core network</code>一般叫做NR，但是也有的地方，比如霓虹国，称为<code>next generation</code></li>
+<li><code>5G</code>里面的新的<code>core network</code>一般叫做<code>NR</code>，但是也有的地方，比如霓虹国，称为<code>next generation</code></li>
 <li><code>SA</code>和<code>NSA</code>：<code>SA</code>就是<code>standalone</code>,<code>NSA</code>就是<code>non standslone</code>。这边的<code>SA</code>其实就是说只有<code>5G</code>，后面就是<code>4G</code>和<code>5G</code>并存。不同的运营商会有不同的网络状况。
 <ul>
 <li>现在正处于一个过渡期间，也可能会长期存在，出现了一些在4G的网元上面开发5G的功能，然后作为5G的网元来用的情况。</li>
@@ -650,6 +1007,8 @@ eric-act-activation-mml  192.168.15.102:8111,192.168.15.102:8010   1h</p>
 </li>
 <li>通常我们关心的<code>5GC</code>是<code>5G corenetwork</code>的缩写。然后<code>5G</code>的核心有三大类: <code>SBA - service based architecture</code>, <code>CUPS - Control and User Plane Separation</code> 和 网络切片<br>
 <strong>所以5GC和NR是一个东西?</strong></li>
+<li>配置还是和4G一样的。统一来配置的。<code>E&amp;M</code>统一来做，因为现在平台软件是一致，所以RAN和core都一样，都用一个来做配置</li>
+<li><code>UDC</code>换了个名字叫<code>UDR</code></li>
 </ul>
 <h3 id="sba"><a class="header-anchor" href="#sba"></a>SBA</h3>
 <ul>
@@ -662,8 +1021,14 @@ eric-act-activation-mml  192.168.15.102:8111,192.168.15.102:8010   1h</p>
 </li>
 </ul>
 <h2 id="5g-nr"><a class="header-anchor" href="#5g-nr"></a>5G NR</h2>
-<p><code>NR</code>指的是<code>new Radio</code>。在<code>5G</code>里面分为了<code>NE - Network Element</code>和<code>NF Network Function</code>两个概念。顾名思义，<code>NF</code>是往外提供服务的</p>
+<p><code>NR</code>指的是<code>new Radio</code>。在<code>5G</code>里面分为了<code>NE - Network Element</code>和<code>NF - Network Function</code>两个概念。顾名思义，<code>NF</code>是往外提供服务的</p>
+<ul>
+<li><code>NF</code>是一个功能，3GPP里面定义的，NE是一个实际的网元。一个NE可能会实现多个NF。</li>
+</ul>
 <h3 id="amf"><a class="header-anchor" href="#amf"></a>AMF</h3>
+<p>与接入网相关</p>
+<h4 id="smf"><a class="header-anchor" href="#smf"></a>SMF</h4>
+<p>可能有一些与provision相关的</p>
 <h3 id="nef-network-exposure-function"><a class="header-anchor" href="#nef-network-exposure-function"></a>NEF - Network Exposure Function</h3>
 <h4 id="scef-和-mtc-iwf"><a class="header-anchor" href="#scef-和-mtc-iwf"></a>SCEF 和 MTC - IWF</h4>
 <ul>
@@ -672,12 +1037,13 @@ eric-act-activation-mml  192.168.15.102:8111,192.168.15.102:8010   1h</p>
 <h4 id="nef是什么"><a class="header-anchor" href="#nef是什么"></a>NEF是什么</h4>
 <ul>
 <li>NEF provides a mechanism for securely exposing services and features of the 5G core.</li>
-<li></li>
+<li><code>NEF</code>是和<code>SMF</code>连接在一起的。将<code>core</code>里面的功能暴露给外界的应用</li>
 </ul>
 <h3 id="nrf"><a class="header-anchor" href="#nrf"></a>NRF</h3>
 <h4 id="nrf是什么"><a class="header-anchor" href="#nrf是什么"></a>NRF是什么</h4>
 <ul>
 <li><code>NF Repository function (NRF)</code> supports: service discovery function, maintains NF profile and available NF instances. (not present in EPC world)。</li>
+<li>替换了原来<code>4G</code>里面的<code>ENUM</code>和<code>AAA</code></li>
 <li><code>NRF</code>的功能看起来比较简单，有以下：
 <ul>
 <li>Service registration and discovery function so that Network Functions can discover each other.</li>
@@ -701,12 +1067,18 @@ eric-act-activation-mml  192.168.15.102:8111,192.168.15.102:8010   1h</p>
 </li>
 <li>在<code>R16</code>里面提出了一个proxy的概念，<code>SCP - service Communication proxy</code>，因为<code>NRF</code>的网络通信过于繁杂，造成了很大的负担，所以引入的。</li>
 </ul>
+<h4 id="scp"><a class="header-anchor" href="#scp"></a>SCP</h4>
 <h3 id="nssf"><a class="header-anchor" href="#nssf"></a>NSSF</h3>
+<ul>
+<li><code>NSSF</code>的数据分为<code>static</code>和<code>synamic</code>的数据。前者存在<code>UDM</code>里面，后者在<code>NSSF</code>里面。</li>
+<li><code>UE</code>连入的时候会申请使用某种<code>slice</code>，然后网络会返回许可，存储的时候可以存在<code>UDM</code>里面</li>
+<li>切片分为接入网，<code>RAN</code>和核心网，接入网是频段等的切片，目前没有合适的solution，而核心网的切片实际上就是拉一套小型的核心网起来，虚拟的，里面可能<code>AMF</code>是独立的，而<code>PCF</code>就是共用的。</li>
+</ul>
 <h3 id="pcf-policy-control-function"><a class="header-anchor" href="#pcf-policy-control-function"></a>PCF -  Policy Control Function</h3>
 <ul>
-<li>PCF其实就是4G里面的PCRF。都是做policy control的</li>
-<li>PCF可以支持AMF的policy control和网络切片的policy control</li>
-<li>PCF理解UE级别的，就是这个UE可以使用哪些AMF和NSSF。</li>
+<li><code>PCF</code>其实就是<code>4G</code>里面的<code>PCRF</code>。都是做<code>policy control</code>的</li>
+<li><code>PCF</code>可以支持<code>AMF</code>的<code>policy control</code>和网络切片的<code>policy control</code></li>
+<li><code>PCF</code>理解<code>UE</code>级别的，就是这个<code>UE</code>可以使用哪些<code>AMF</code>和<code>NSSF</code>。</li>
 </ul>
 <h2 id="5g基站和接入网的演进"><a class="header-anchor" href="#5g基站和接入网的演进"></a>5G基站和接入网的演进</h2>
 <p>由于工作缘故，接触到的基本是核心网，话说刚刚入行的时候，我是做接入网的来着。<br>
@@ -1271,11 +1643,33 @@ jti (JWT ID)：编号
 <li>如果是处理数据的，假设我们有一个处理inventory data的<code>micro service</code>，那么这个<code>micro service</code>仅仅需要在意inventory data。而不需要考虑其他数据的影响。</li>
 <li><code>micro service</code>不受语言限制，不同语言的<code>micro service</code>仍旧可以联合起来的完成一个solution的</li>
 </ul>
+<h4 id="aws的理解"><a class="header-anchor" href="#aws的理解"></a>AWS的理解</h4>
+<ul>
+<li>
+<p>参考链接：<a href="https://aws.amazon.com/microservices/" target="_blank" rel="noopener">AWS微服务理解</a></p>
+</li>
+<li>
+<p>每个服务都是独立提供服务的模块，可以独立的开发、升级、部署和扩展</p>
+</li>
+<li>
+<p>每个服务不应该和任何其他服务共享代码</p>
+</li>
+<li>
+<p>服务间的任何交互都应该通过<code>API</code>来进行</p>
+</li>
+<li>
+<p>每个服务都是</p>
+</li>
+</ul>
+<h4 id="微软的理解"><a class="header-anchor" href="#微软的理解"></a>微软的理解</h4>
+<ul>
+<li>参考链接：<a href="https://docs.microsoft.com/en-us/azure/architecture/guide/architecture-styles/microservices" target="_blank" rel="noopener">微软文章</a></li>
+</ul>
 <h3 id="micro-service-combination"><a class="header-anchor" href="#micro-service-combination"></a>micro service combination</h3>
 <ul>
 <li><code>micro service</code>本身是一个<code>complete application</code>，它独立完成某个功能，可以有interface或者没有，可以访问数据库，也可以不访问。</li>
 <li>很多<code>micro service</code>联合起来，成为一个solution。</li>
-<li>默认只需要知道对方的<code>endpoint</code>就可以进行通信。<strong><em>所以是http base？</em></strong></li>
+<li>默认只需要知道对方的<code>endpoint</code>就可以进行通信。其实不一定是<code>http</code>协议的，也有一些其他的很流行的总线方式。</li>
 <li><strong><em>each micro service has to offer an API endpoint! 通常都是REST的endpoint，但是也可以是<code>wisdom endpoint</code></em></strong></li>
 </ul>
 <h3 id="micro-service特点"><a class="header-anchor" href="#micro-service特点"></a>micro service特点</h3>
@@ -2155,416 +2549,6 @@ Interrupt:5 Base address:0x8c00
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/07/09/DNS协议/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/07/09/DNS协议/" itemprop="url">DNS协议</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-09T15:35:36+08:00">
-                2019-07-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/protocal/" itemprop="url" rel="index">
-                    <span itemprop="name">protocal</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="引言"><a class="header-anchor" href="#引言"></a>引言</h2>
-<p>工作中要用到DNS协议，需要学习一下，省得碰到的时候每次都要再看一遍。 DNS也是TCP/IP里面的一个基础协议。所以也会涉及到一些TCP/IP协议的部分。<br>
-话说一个简单的DNS协议也有一堆可以写啊。不容易啊。</p>
-<h3 id="dns在tcp-ip协议里的位置"><a class="header-anchor" href="#dns在tcp-ip协议里的位置"></a>DNS在TCP/IP协议里的位置</h3>
-<ul>
-<li>从参考链接名就能看出来， DNS是应用层的协议</li>
-<li>TCP/IP是四层。OSI是7层。</li>
-</ul>
-<p><img src="https://ask.qcloudimg.com/http-save/yehe-1195962/e9uc1yy5n7.png?imageView2/2/w/1620" alt></p>
-<blockquote>
-<p>图片来自参考链接1</p>
-</blockquote>
-<ul>
-<li>参考链接：
-<ul>
-<li><a href="https://cloud.tencent.com/developer/article/1023700" target="_blank" rel="noopener">TCP/IP（六）应用层（DNS和HTTP协议）</a></li>
-<li><a href="https://cloud.tencent.com/developer/article/1358564" target="_blank" rel="noopener">DNS协议入门</a></li>
-<li><a href="https://cloud.tencent.com/developer/information/dns%E7%9A%84%E5%8D%8F%E8%AE%AE" target="_blank" rel="noopener">DNS协议栈</a></li>
-</ul>
-</li>
-</ul>
-<h3 id="概述"><a class="header-anchor" href="#概述"></a>概述</h3>
-<ul>
-<li><code>Domain Name System</code> 域名系统。也可以叫做域名解析协议。</li>
-<li>简单的解释就是DNS协议会把网址，比如将”<a href="http://sallyslove.github.io/hexo_blog%E2%80%9D%E7%9A%84%E5%9F%9F%E5%90%8D%E8%BD%AC%E6%8D%A2%E6%88%90%E4%B8%BA%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%83%BD%E5%A4%9F%E7%90%86%E8%A7%A3%E7%9A%8432%E4%BD%8D%E7%9A%84IP%EF%BC%8C%E5%8F%91%E5%88%B0%E7%BD%91%E7%BB%9C%E5%B1%82%E5%8E%BB%E3%80%82">sallyslove.github.io/hexo_blog”的域名转换成为计算机能够理解的32位的IP，发到网络层去。</a></li>
-<li>域名和IP的对应关系保存在一个叫hosts文件中。最初，通过互联网信息中心来管理这个文件，如果有一个新的计算机想接入网络，或者某个计算IP变更都需要到信息中心申请变更hosts文件。其他计算机也需要定期更新，才能上网。但是这样太麻烦了，就出现了DNS系统。</li>
-<li>其实我们现在的电脑上面也是有这个文件的，就是<code>/window/systems/drivers/etc</code>下面也有hosts文件。注释里面很清楚写着，这个文件“used by Microsoft TCP/IP for Windows.”</li>
-<li>目前的DNS系统中，如果有 hosts文件，仍旧会优先查询这个文件的</li>
-</ul>
-<h3 id="流程"><a class="header-anchor" href="#流程"></a>流程</h3>
-<ul>
-<li>过程相当的简单明了啊。client端发消息给域名解析服务器，服务器在自己里面一顿找，有就直接返回</li>
-<li>没有就去根服务器找，根服务器找了之后会存到低一次没找到的域名解析服务器进行缓存。</li>
-<li>再去找的时候就从缓存里面直接拿。不需要再去根服务器跑一趟了</li>
-</ul>
-<p><img src="https://ask.qcloudimg.com/http-save/yehe-1195962/vspbulgxi2.png?imageView2/2/w/1620" alt></p>
-<blockquote>
-<p>图片来自参考链接1</p>
-</blockquote>
-<h3 id="详解"><a class="header-anchor" href="#详解"></a>详解</h3>
-<ul>
-<li>参考链接：
-<ul>
-<li><a href="https://blog.csdn.net/baidu_37964071/article/details/80500825" target="_blank" rel="noopener">DNS（域名解析协议）详解</a></li>
-<li><a href="https://cloud.tencent.com/developer/article/1358564" target="_blank" rel="noopener">DNS 协议入门</a></li>
-</ul>
-</li>
-</ul>
-<h4 id="域名"><a class="header-anchor" href="#域名"></a>域名</h4>
-<p>好吧，要了解DNS协议，首先要了解域名。各种域名都隶属于域名系统根域的下级。</p>
-<ul>
-<li>域名是分层次的。第一级域名，比如com，代表公司，这是company的缩写吧。再比如org,嗯，我看出来了，organization的开头。net网络提供商。大家有严格遵守吗?</li>
-<li>第二级域名其实是公司名，比如baidu，bing。微软为啥叫bing啊。</li>
-<li>对应不同层级的域名，有相应的服务器。根域名服务器之类。每一级域名服务器都知道下级域名服务器的IP地址。这个按照上面的流程也能知道。应该下层也知道上一层的地址，不然没法求助啊。</li>
-</ul>
-<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/protocal/DNS_domain_name.png" alt></p>
-<blockquote>
-<p>图片来自上面的参考链接1</p>
-</blockquote>
-<h4 id="协议"><a class="header-anchor" href="#协议"></a>协议</h4>
-<ul>
-<li>DNS占用53号端口，同时使用TCP和UDP协议。那么DNS在什么情况下使用这两种协议？DNS在区域传输的时候使用TCP协议，其他时候使用UDP协议。</li>
-<li>上面提到不同层级的域名会有不同层级的域名服务器来对应，每一层级也有主副服务器，辅助服务器与主服务器会进行同步，这个时候会用TCP协议，大批量数据传输，TCP是相对稳定的链接</li>
-<li>而客户端向域名服务器查询时候用的是UDP协议， 效率更高，不需要经过三次握手</li>
-</ul>
-<h4 id="实现"><a class="header-anchor" href="#实现"></a>实现</h4>
-<ul>
-<li><code>dnsjava</code>是DNS的一个Java实现。这是一个3pp。还有其他一些实现，比如<code>dns4j</code>，<code>dnsjnio</code>，<code>jdnss</code>,<code>eagledns</code>。</li>
-<li>要打开dnsjava的log，需要将设置<code>System.setProperty(&quot;dnsjava.options&quot;,&quot;verbose&quot;);</code> 这种操作也真是比较老了。</li>
-<li>maven dependency是以下这样。</li>
-</ul>
-<pre><code>&lt;dependency&gt;
-   &lt;groupId&gt;dnsjava&lt;/groupId&gt;
-   &lt;artifactId&gt;dnsjava&lt;/artifactId&gt;
-   &lt;version&gt;2.1.7&lt;/version&gt;
-</code></pre>
-<ul>
-<li><code>dnsjava</code>类图</li>
-</ul>
-<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/protocal/dnsjava_class_diagram.png" alt></p>
-<ul>
-<li>
-<p><code>dnsjava</code> 流程图<br>
-<img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/protocal/dnsjava_sequence_diagram.png" alt></p>
-</li>
-<li>
-<p>参考链接：</p>
-<ul>
-<li><a href="https://blog.csdn.net/zhu_tianwei/article/details/45128537" target="_blank" rel="noopener">DNS BIND之dnsjava java客户端操作</a></li>
-</ul>
-</li>
-</ul>
-<h4 id="使用"><a class="header-anchor" href="#使用"></a>使用</h4>
-<ul>
-<li><code>lookup</code>遇到错误“network error”，这个是因为在以下原因。 其实我碰到的就是BindException，“address already in use”</li>
-<li>参考链接：
-<ul>
-<li><a href="https://coderanch.com/t/585844/java/org-xbill-DNS-Lookup-error" target="_blank" rel="noopener">org.xbill.DNS.Lookup() error.</a></li>
-<li><a href="https://github.com/dnsjava/dnsjava/issues/71" target="_blank" rel="noopener">我自己报的issue</a></li>
-<li><a href="https://www.programcreek.com/java-api-examples/index.php?api=org.xbill.DNS.ExtendedResolver" target="_blank" rel="noopener">Java Code Examples for org.xbill.DNS.ExtendedResolver</a></li>
-</ul>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/06/25/Cassandra的数据维护/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/06/25/Cassandra的数据维护/" itemprop="url">Cassandra的数据维护</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-25T17:01:57+08:00">
-                2019-06-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/cassandra/" itemprop="url" rel="index">
-                    <span itemprop="name">cassandra</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="compacting-sstable-data"><a class="header-anchor" href="#compacting-sstable-data"></a>Compacting SSTable Data</h3>
-<h4 id="why-do-we-need-compaction"><a class="header-anchor" href="#why-do-we-need-compaction"></a>Why Do We Need Compaction</h4>
-<ul>
-<li>cassandra并不会删除数据。当需要update一个数据的时候，也不是在SSTable里面进行覆盖，而是会插入一个新的数据，带上新的version。</li>
-<li>这样做的话，cassandra写入数据会非常快，因为不需要查询，但是弊端就是会有越来越多的数据。</li>
-<li>这个时候就需要进行compaction。</li>
-</ul>
-<h4 id="what-is-compaction"><a class="header-anchor" href="#what-is-compaction"></a>What Is Compaction</h4>
-<ul>
-<li>To keep the multiple versions of the SSTables from overwhelming it, the database merges SSTables on a regular basis to get rid of the older versions of the data。 cassandra会在一个基础之上对旧的版本的数据进行合并，这个就是compaction</li>
-<li>cassandra默认会进行很多次小的compaction</li>
-</ul>
-<h4 id="campaction细节"><a class="header-anchor" href="#campaction细节"></a>Campaction细节</h4>
-<ul>
-<li>在compaction期间，cassandra会合并key和column，同时会将过期的墓碑删除，还会生成一个新的index？ <strong><em>这个index是什么东西啊</em></strong></li>
-<li>合并之后会生成一个新的SSTable。<strong><em>回头要试一下</em></strong></li>
-<li>compaction期间的资源耗用会上升，但是compaction结束之后应该会释放空间，因为它合并了SSTable</li>
-<li>旧的被合并的table会被加上deletion标签，并且在数据库重启或者在使用reference counting mechanism的时候。<strong><em>这个reference counting mechanism是什么啊</em></strong></li>
-<li>compaction的算法是可以配置的，默认的是<code>size-tiered compaction</code>。这个算法会合并大小相近的table，生成大table</li>
-</ul>
-<h4 id="compaction对读数据的影响"><a class="header-anchor" href="#compaction对读数据的影响"></a>Compaction对读数据的影响</h4>
-<ul>
-<li>compaction是per-node的，所以某个数据在node1上面的旧版本可能删除了。但是在node2上面还有。</li>
-<li>这样读的时候会进行一个合并，并且返回最后一个写的version。这个原则是<code>last-write-win</code></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2615,7 +2599,7 @@ Interrupt:5 Base address:0x8c00
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-count">35</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

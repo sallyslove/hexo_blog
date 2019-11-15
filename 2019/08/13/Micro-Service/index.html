@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="跬步">
 <meta property="og:description" content="在学习一些micro service相关，记录在这里。 现在都是说micro service，但是什么是micro service，可能不同的人有不同的定义，但是单纯地只是将软件部署到docker或者k8s上面去，可能并不完全符合micro service，所以学习一下。 将一些学习到的tips和理念记录下来，最后形成自己的理解。 学习了一阵，感觉还是不一样的，有一套架构体系的，记录在这里。 什么">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-10-22T03:13:14.212Z">
+<meta property="og:updated_time" content="2019-10-28T08:37:31.646Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Micro Service">
 <meta name="twitter:description" content="在学习一些micro service相关，记录在这里。 现在都是说micro service，但是什么是micro service，可能不同的人有不同的定义，但是单纯地只是将软件部署到docker或者k8s上面去，可能并不完全符合micro service，所以学习一下。 将一些学习到的tips和理念记录下来，最后形成自己的理解。 学习了一阵，感觉还是不一样的，有一套架构体系的，记录在这里。 什么">
@@ -341,11 +341,33 @@
 <li>如果是处理数据的，假设我们有一个处理inventory data的<code>micro service</code>，那么这个<code>micro service</code>仅仅需要在意inventory data。而不需要考虑其他数据的影响。</li>
 <li><code>micro service</code>不受语言限制，不同语言的<code>micro service</code>仍旧可以联合起来的完成一个solution的</li>
 </ul>
+<h4 id="aws的理解"><a class="header-anchor" href="#aws的理解"></a>AWS的理解</h4>
+<ul>
+<li>
+<p>参考链接：<a href="https://aws.amazon.com/microservices/" target="_blank" rel="noopener">AWS微服务理解</a></p>
+</li>
+<li>
+<p>每个服务都是独立提供服务的模块，可以独立的开发、升级、部署和扩展</p>
+</li>
+<li>
+<p>每个服务不应该和任何其他服务共享代码</p>
+</li>
+<li>
+<p>服务间的任何交互都应该通过<code>API</code>来进行</p>
+</li>
+<li>
+<p>每个服务都是</p>
+</li>
+</ul>
+<h4 id="微软的理解"><a class="header-anchor" href="#微软的理解"></a>微软的理解</h4>
+<ul>
+<li>参考链接：<a href="https://docs.microsoft.com/en-us/azure/architecture/guide/architecture-styles/microservices" target="_blank" rel="noopener">微软文章</a></li>
+</ul>
 <h3 id="micro-service-combination"><a class="header-anchor" href="#micro-service-combination"></a>micro service combination</h3>
 <ul>
 <li><code>micro service</code>本身是一个<code>complete application</code>，它独立完成某个功能，可以有interface或者没有，可以访问数据库，也可以不访问。</li>
 <li>很多<code>micro service</code>联合起来，成为一个solution。</li>
-<li>默认只需要知道对方的<code>endpoint</code>就可以进行通信。<strong><em>所以是http base？</em></strong></li>
+<li>默认只需要知道对方的<code>endpoint</code>就可以进行通信。其实不一定是<code>http</code>协议的，也有一些其他的很流行的总线方式。</li>
 <li><strong><em>each micro service has to offer an API endpoint! 通常都是REST的endpoint，但是也可以是<code>wisdom endpoint</code></em></strong></li>
 </ul>
 <h3 id="micro-service特点"><a class="header-anchor" href="#micro-service特点"></a>micro service特点</h3>
@@ -537,7 +559,7 @@
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-count">35</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -583,7 +605,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是micro-service"><span class="nav-number">1.</span> <span class="nav-text">什么是micro service</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#micro-service-combination"><span class="nav-number">2.</span> <span class="nav-text">micro service combination</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#micro-service特点"><span class="nav-number">3.</span> <span class="nav-text">micro service特点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#优势"><span class="nav-number">3.1.</span> <span class="nav-text">优势</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#逆势"><span class="nav-number">3.2.</span> <span class="nav-text">逆势</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#微服务架构"><span class="nav-number">4.</span> <span class="nav-text">微服务架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#杂谈"><span class="nav-number">5.</span> <span class="nav-text">杂谈</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是micro-service"><span class="nav-number">1.</span> <span class="nav-text">什么是micro service</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#aws的理解"><span class="nav-number">1.1.</span> <span class="nav-text">AWS的理解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#微软的理解"><span class="nav-number">1.2.</span> <span class="nav-text">微软的理解</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#micro-service-combination"><span class="nav-number">2.</span> <span class="nav-text">micro service combination</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#micro-service特点"><span class="nav-number">3.</span> <span class="nav-text">micro service特点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#优势"><span class="nav-number">3.1.</span> <span class="nav-text">优势</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#逆势"><span class="nav-number">3.2.</span> <span class="nav-text">逆势</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#微服务架构"><span class="nav-number">4.</span> <span class="nav-text">微服务架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#杂谈"><span class="nav-number">5.</span> <span class="nav-text">杂谈</span></a></li></ol></div>
             
 
           </div>

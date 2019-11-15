@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="参考链接  SSL/TLS协议详解(上)：密码套件，哈希，加密，密钥交换算法  英文版: SSL/TLS for dummies part 1 : Ciphersuite, Hashing,Encryption   SSL/TLS协议详解(中)——证书颁发机构 SSL/TLS协议详解(下)——TLS握手协议 以上是一个系列，真的是详解，非常详尽。  加密算法  这边主要是参考了上面参考链接里面的第">
+<meta name="description" content="参考链接  SSL/TLS协议详解(上)：密码套件，哈希，加密，密钥交换算法  英文版: SSL/TLS for dummies part 1 : Ciphersuite, Hashing,Encryption   SSL/TLS协议详解(中)——证书颁发机构 SSL/TLS协议详解(下)——TLS握手协议 以上是一个系列，真的是详解，非常详尽。  算法  这边主要是参考了上面参考链接里面的第一篇">
 <meta property="og:type" content="article">
-<meta property="og:title" content="SSL&#x2F;TLS相关知识">
+<meta property="og:title" content="SSL&#x2F;TLS相关知识-算法">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/03/04/TLS/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="参考链接  SSL/TLS协议详解(上)：密码套件，哈希，加密，密钥交换算法  英文版: SSL/TLS for dummies part 1 : Ciphersuite, Hashing,Encryption   SSL/TLS协议详解(中)——证书颁发机构 SSL/TLS协议详解(下)——TLS握手协议 以上是一个系列，真的是详解，非常详尽。  加密算法  这边主要是参考了上面参考链接里面的第">
+<meta property="og:description" content="参考链接  SSL/TLS协议详解(上)：密码套件，哈希，加密，密钥交换算法  英文版: SSL/TLS for dummies part 1 : Ciphersuite, Hashing,Encryption   SSL/TLS协议详解(中)——证书颁发机构 SSL/TLS协议详解(下)——TLS握手协议 以上是一个系列，真的是详解，非常详尽。  算法  这边主要是参考了上面参考链接里面的第一篇">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-09-05T03:23:32.011Z">
+<meta property="og:updated_time" content="2019-11-08T06:47:33.789Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="SSL&#x2F;TLS相关知识">
-<meta name="twitter:description" content="参考链接  SSL/TLS协议详解(上)：密码套件，哈希，加密，密钥交换算法  英文版: SSL/TLS for dummies part 1 : Ciphersuite, Hashing,Encryption   SSL/TLS协议详解(中)——证书颁发机构 SSL/TLS协议详解(下)——TLS握手协议 以上是一个系列，真的是详解，非常详尽。  加密算法  这边主要是参考了上面参考链接里面的第">
+<meta name="twitter:title" content="SSL&#x2F;TLS相关知识-算法">
+<meta name="twitter:description" content="参考链接  SSL/TLS协议详解(上)：密码套件，哈希，加密，密钥交换算法  英文版: SSL/TLS for dummies part 1 : Ciphersuite, Hashing,Encryption   SSL/TLS协议详解(中)——证书颁发机构 SSL/TLS协议详解(下)——TLS握手协议 以上是一个系列，真的是详解，非常详尽。  算法  这边主要是参考了上面参考链接里面的第一篇">
 
 
 
@@ -125,7 +125,7 @@
 
 
 
-  <title>SSL/TLS相关知识 | 跬步</title>
+  <title>SSL/TLS相关知识-算法 | 跬步</title>
   
 
 
@@ -259,7 +259,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">SSL/TLS相关知识</h1>
+          <h1 class="post-title" itemprop="name headline">SSL/TLS相关知识-算法</h1>
         
 
         <div class="post-meta">
@@ -342,18 +342,19 @@
 <li><a href="https://xz.aliyun.com/t/2531" target="_blank" rel="noopener">SSL/TLS协议详解(下)——TLS握手协议</a></li>
 <li>以上是一个系列，真的是详解，非常详尽。</li>
 </ul>
-<h2 id="加密算法"><a class="header-anchor" href="#加密算法"></a>加密算法</h2>
+<h2 id="算法"><a class="header-anchor" href="#算法"></a>算法</h2>
 <ul>
 <li>这边主要是参考了上面参考链接里面的第一篇，总的来说，应该了解一下这些</li>
 </ul>
 <h3 id="哈希算法"><a class="header-anchor" href="#哈希算法"></a>哈希算法</h3>
 <ul>
-<li>哈希算法生成的数据格式被称为散列，散列不是一个可逆的过程。而之前说过，<code>Base64</code>只是编码，顾名思义，编码只要知道规则，是可以解码的，没有安全性可言。</li>
+<li>哈希算法生成的数据格式被称为散列，散列不是一个可逆的过程。<br>
+而之前说过，<code>Base64</code>只是编码，顾名思义，编码只要知道规则，是可以解码的，没有安全性可言。所以编码算法和加密算法不是一回事来着。</li>
 <li>所以讲密码哈希一下，是没法看出来原始密码是什么的。</li>
-<li>这边可以扩展，进一步研究的是，如果进行攻击的话，称为字典攻击，就是猜密码，将常用的都哈希一下，去对比。</li>
+<li>这边可以扩展，进一步研究的是，如果进行攻击的话，称为字典攻击，就是猜密码，将常用的，可能出现的密码都哈希算法一下，去对比。</li>
 <li>哈希算法有很多种，比如<code>MD5</code>是一种，虽然之前说就是提取摘要的。<code>SHA-512</code>是另一种。</li>
 </ul>
-<h3 id="加密"><a class="header-anchor" href="#加密"></a>加密</h3>
+<h3 id="加密算法"><a class="header-anchor" href="#加密算法"></a>加密算法</h3>
 <ul>
 <li><em>Encryption lies in between hashing and encoding</em> 这句没看明白</li>
 <li>加密算法可以分为对称加密和非对称加密两种</li>
@@ -362,15 +363,25 @@
 <ul>
 <li>主要来自参考链接一， 对称加密的话，文章中用一个例子来讲解：“移位”。比如有数字&quot;123&quot;，对其进行加密，都增大3，成为“456”，就是对称加密了。</li>
 <li>其中的数字3就是<code>Encryption key (symmetric key)</code>。对称加密的时候，知道<code>key</code>的话，就可以进行解密了。</li>
-<li><em>Anyone who knows the encryption key and can apply the reverse of Caesar’s algorithm and retrieve the original Plaintext.</em></li>
-<li>有此可知，在<code>TLS</code>中使用简单的对称加密不是很安全的。毕竟知道<code>Encryption key</code>就可以进行解密了。对称加密一代代发展，现在也有比较复杂的算法，比如<code>Triple Data Encryption Algorithm</code>，后面可以再进一步研究。</li>
+<li><em>Anyone who knows the encryption key and can apply the reverse of Caesar’s algorithm and retrieve the original Plaintext.</em> 凯撒算法就是上面这种意味式的加密算法。</li>
+<li>有此可知，在<code>TLS</code>中使用简单的对称加密不是很安全的。毕竟知道<code>Encryption key</code>就可以进行解密了。<br>
+对称加密一代代发展，现在也有比较复杂的算法，比如<code>Triple Data Encryption Algorithm</code>，后面可以再进一步研究。AES（高级加密标准）和3DES（三重数据加密算法）的复杂算法也是有的</li>
 <li>从过程可以知道，<code>key</code>是非常关键的。但是由于是对称加密解密，双方必须都知道约定的值，那么第一步就是传递<code>key</code>，而这个时候是没法加密的。所以就出现了不对称加密。<em>So we need a secure mechanism to exchange the keys without an attacker actually seeing it. There comes the role of Asymmetric Key Encryption.</em></li>
+<li>在<code>TLS</code>中，传输和接收数据的时候，可以使用对称加密算法。事实上，很可能大部分都是使用的对称加密。不对称加密涉及双密钥架构并且密钥长度通常很大，因此加密-解密开销非常高。与对称密钥加密相比，它需要更多的时间和<code>CPU</code>占有率。</li>
 </ul>
 <h4 id="不对称加密"><a class="header-anchor" href="#不对称加密"></a>不对称加密</h4>
 <ul>
-<li>不对称加密始于<code>RSA</code>算法。简单的解释就是，用不同的<code>key</code>来进行加密和解密。</li>
-<li>公钥用来给对方使用，比如A想给B发消息，那么A需要使用B的公钥来加密自己的消息。</li>
+<li>1976年，Whitfield Diffie和Martin Hellman首次提出了非对称加密的概念，该算法被称为<code>Diffie-Hellman</code>密钥交换。然后在1978年，麻省理工学院的Ron Rivest，Adi Shamir和Leonard Adleman发表了<code>RSA</code>算法。</li>
+<li>不对称加密的简单解释就是：用不同的<code>key</code>来进行加密和解密。</li>
+<li>非对称加密也称为公钥基础结构，又称<code>PKI public key ixxx</code></li>
+<li>不对称加密通常用于在刚开始传输对称加密的<code>key</code>的时候</li>
+<li>公钥用来给对方使用，比如A想给B发消息，那么A需要使用B的公钥来加密自己的消息。<br>
+所以公钥是可以与任何想与你通信的人共享的，一般来说，在公钥中会指定使用何种加密算法。 <em>如果密钥对是使用RSA算法生成的，那么它们应该在加密数据时使用相同的算法。</em></li>
 <li>私钥用来解密收到的消息。比如A收到了一条消息，那么A应当使用自己的私钥来解密收到的消息</li>
+<li>非对称加密算法除了<code>RSA</code>、<code>Diffie-Hellman密钥交换</code>、<code>ECDH（Elliptic Curve Diffie-Hellman）</code>、<code>SRP（安全远程密码）</code>以及由TLS 1.2支持密钥交换算法<code>PSK（Pre Shared Key）</code>。总之，也是有一大堆的</li>
+</ul>
+<h5 id="rsa算法细节"><a class="header-anchor" href="#rsa算法细节"></a>RSA算法细节</h5>
+<ul>
 <li>所以<code>RSA</code>算法有几个比较重要的组成，私钥，公钥，加密算法和解密算法</li>
 <li>那么一个严肃的问题就是，不同的钥匙进行计算的消息，怎么能够解开呢？接下来就是数学课的时间了。
 <ul>
@@ -402,54 +413,12 @@
 (m^φ(n)) mod n≡1 又 1^k≡1, 所以(m^k*φ(n)) mod n≡1 ，所以(m^(k*φ(n)+1)) mod n≡m
 结合以上两条，ed=k*φ(n)+1 , d=(k*φ(n)+1)/e
 </code></pre>
-<h2 id="ssl相关知识"><a class="header-anchor" href="#ssl相关知识"></a>SSL相关知识</h2>
-<p><code>KeyStore</code>工作中碰到的不少。相关的问题先放这里吧。</p>
-<h3 id="tls版本"><a class="header-anchor" href="#tls版本"></a>TLS版本</h3>
+<h5 id="dh和rsa的区别"><a class="header-anchor" href="#dh和rsa的区别"></a>DH和RSA的区别</h5>
 <ul>
-<li><code>SSL3.0</code> 和 <code>TLS1.0</code> 是一个东西。嗯，微软干的。微软虽然是一个伟大的公司，但是这个干得不好，相当不好，至少我本人觉得不好。实在是除了增加大家的混淆以外，没有任何意义。嘛，我们自己的产品也经常干这种事情。通常呢，是因为自己认为发生了跨时代的改变，希望让别人也明白。</li>
-<li>目前最流行的版本是<code>TLS1.2</code>，最新的版本是<code>TLS1.3</code>。</li>
-<li><code>java8</code>中默认的是<code>TLS1.2</code>版本。<code>java11</code>里面支持的是<code>TLS1.3</code></li>
-<li>各种<code>web</code>应用服务器的配置文件里面都可以配置支持或者不支持的版本。比如<code>tomcat</code>提供了参数:<code>sslEnabledProtocols</code></li>
+<li>有一本书，叫做“图解密码技术”，</li>
+<li><code>RSA</code>利用最大公约数（互质）来求出公钥和私钥。<code>DH密钥协商</code>则是利用生成元来得到共享密钥。</li>
+<li>在第一篇参考链接中有<code>DH</code>算法的详细数学过程，暂时略过，这些需要数学基础啊。</li>
 </ul>
-<h4 id="如何发现我的浏览器使用的tls版本"><a class="header-anchor" href="#如何发现我的浏览器使用的tls版本"></a>如何发现我的浏览器使用的TLS版本</h4>
-<ul>
-<li>因为要测试<code>tomcat</code>里面配置的参数是否生效，所以第一反应就是我咋知道呢。后来经同事提点，其实用<code>openssl</code>就可以了。当然，目前，我还不知道当如何使用。</li>
-<li>在浏览器的配置中能看到， 比如IE, <code>File</code>-&gt;<code>Properties</code>, 在<code>Connection</code>一栏就能看到。</li>
-<li>参考链接：
-<ul>
-<li><a href="https://www.thesslstore.com/blog/google-chrome-72-deprecates-support-for-tls-1-0-tls-1-1/" target="_blank" rel="noopener">chrome如何配置和查看</a></li>
-<li><a href="https://security.stackexchange.com/questions/19096/how-to-determine-if-a-browser-is-using-an-ssl-or-tls-connection/169418" target="_blank" rel="noopener">如何查看website的TLS版本</a></li>
-</ul>
-</li>
-</ul>
-<h4 id="如何测试tls连接"><a class="header-anchor" href="#如何测试tls连接"></a>如何测试TLS连接</h4>
-<ul>
-<li>这个是刚需啊刚需。我想使用<code>openssl</code>肯定也是可以的。这回使用的是<code>curl</code>命令。</li>
-<li><code>curl help</code>一下可以看到，使用参数就可以指定<code>TLS</code>版本，还是很好用的。</li>
-</ul>
-<h3 id="tls和oauth"><a class="header-anchor" href="#tls和oauth"></a>TLS和OAuth</h3>
-<ul>
-<li><a href="https://stackoverflow.com/questions/8378664/does-an-oauth-2-client-really-need-tls" target="_blank" rel="noopener">does-an-oauth-2-client-really-need-tls</a>： 我自己有点搞不清楚这些的关系，这边有一个解释很是清晰，看了就明白了
-<ul>
-<li><em>3.1.2.1.  Endpoint Request Confidentiality If a redirection request will result in the transmission of an authorization code or access token over an open network (between the resource owner’s user-agent and the client), the client SHOULD require the use of a transport-layer security mechanism.</em> 这个是<code>Oauth</code>官方文档里面的一段话。</li>
-<li>上面一段的意思应该是这样的：一个第三方认证的请求在传输<code>authorization code</code>或者<code>access token</code>的时候应当在传输层使用安全机制。这里的安全机制就是指<code>TLS</code>协议。</li>
-</ul>
-</li>
-</ul>
-<h3 id="tls双向握手"><a class="header-anchor" href="#tls双向握手"></a>TLS双向握手</h3>
-<h3 id="keystore和truststore"><a class="header-anchor" href="#keystore和truststore"></a>KeyStore和TrustStore</h3>
-<ul>
-<li>keystore和truststore从其文件格式来看其实是一个东西，只是为了方便管理将其分开</li>
-<li>keystore中一般保存的是我们的私钥，用来加解密或者为别人做签名</li>
-<li>truststore中保存的是一些可信任的证书，主要是java在代码中访问某个https的时候对被访问者进行认证的，以确保其实可信任的。一般为公钥</li>
-<li>只有HTTPS才需要这些吗？</li>
-<li>参考链接
-<ol>
-<li><a href="https://www.cnblogs.com/gsls200808/p/4500246.html" target="_blank" rel="noopener">KeyStore和TrustStore</a></li>
-</ol>
-</li>
-</ul>
-<h3 id="certificate"><a class="header-anchor" href="#certificate"></a>Certificate</h3>
 
       
     </div>
@@ -570,7 +539,7 @@
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-count">35</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -616,7 +585,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#加密算法"><span class="nav-number">2.</span> <span class="nav-text">加密算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#哈希算法"><span class="nav-number">2.1.</span> <span class="nav-text">哈希算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#加密"><span class="nav-number">2.2.</span> <span class="nav-text">加密</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#对称加密"><span class="nav-number">2.2.1.</span> <span class="nav-text">对称加密</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#不对称加密"><span class="nav-number">2.2.2.</span> <span class="nav-text">不对称加密</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ssl相关知识"><span class="nav-number">3.</span> <span class="nav-text">SSL相关知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#tls版本"><span class="nav-number">3.1.</span> <span class="nav-text">TLS版本</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#如何发现我的浏览器使用的tls版本"><span class="nav-number">3.1.1.</span> <span class="nav-text">如何发现我的浏览器使用的TLS版本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#如何测试tls连接"><span class="nav-number">3.1.2.</span> <span class="nav-text">如何测试TLS连接</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tls和oauth"><span class="nav-number">3.2.</span> <span class="nav-text">TLS和OAuth</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tls双向握手"><span class="nav-number">3.3.</span> <span class="nav-text">TLS双向握手</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#keystore和truststore"><span class="nav-number">3.4.</span> <span class="nav-text">KeyStore和TrustStore</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#certificate"><span class="nav-number">3.5.</span> <span class="nav-text">Certificate</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算法"><span class="nav-number">2.</span> <span class="nav-text">算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#哈希算法"><span class="nav-number">2.1.</span> <span class="nav-text">哈希算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#加密算法"><span class="nav-number">2.2.</span> <span class="nav-text">加密算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#对称加密"><span class="nav-number">2.2.1.</span> <span class="nav-text">对称加密</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#不对称加密"><span class="nav-number">2.2.2.</span> <span class="nav-text">不对称加密</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#rsa算法细节"><span class="nav-number">2.2.2.1.</span> <span class="nav-text">RSA算法细节</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#dh和rsa的区别"><span class="nav-number">2.2.2.2.</span> <span class="nav-text">DH和RSA的区别</span></a></li></ol></li></ol></li></ol></li></ol></div>
             
 
           </div>

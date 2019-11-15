@@ -242,6 +242,639 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/01/17/Cassandra-写数据过程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/01/17/Cassandra-写数据过程/" itemprop="url">Cassandra 写数据过程</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-17T16:37:00+08:00">
+                2019-01-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/cassandra/" itemprop="url" rel="index">
+                    <span itemprop="name">cassandra</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="cassandra-写流程"><a class="header-anchor" href="#cassandra-写流程"></a>Cassandra 写流程</h2>
+<h3 id="大致流程"><a class="header-anchor" href="#大致流程"></a>大致流程</h3>
+<p>到把数据写到磁盘中分为以下几个步骤：</p>
+<ol>
+<li>先找到应该往哪几个节点写</li>
+<li>写log到commit log</li>
+<li>写数据到memtable</li>
+<li>从memtable中flush数据</li>
+<li>将数据存储在SSTables中的磁盘中</li>
+</ol>
+<ul>
+<li>客户端写一条数据必须指定 Keyspace、ColumnFamily、Key、Column Name 和 Value，还可以指定 Timestamp，以及数据的安全等级。<strong><em>这个key又是什么key呢，partition Key, primary Key,是后文说根据key算出token，然后再根据token算出partition Index的</em></strong></li>
+</ul>
+<pre><code>Cassandra Node ---&gt;Commitlog---&gt; Memtable
+
+Commitlog ---&gt; Periodically sync to  disk
+
+Memtable  ---&gt; Periodically flush to SSTable
+</code></pre>
+<p><strong><em>如果看下面的流程图的话，那么上面这个顺序是不对的。是先写到memtable，然后再写commitLog？看官方文档，上面的是正确的。应该是流程图不够好。或者是一个相对并行的过程</em></strong></p>
+<p><img src="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image012-large.jpg" alt></p>
+<blockquote>
+<p>引用自第二篇链接</p>
+</blockquote>
+<ul>
+<li>这张图里面有的结构可能不太对了。没有找到RowMutation这个结构，只有Mutation</li>
+</ul>
+<h3 id="replica-factor"><a class="header-anchor" href="#replica-factor"></a>Replica Factor</h3>
+<ul>
+<li>
+<p>CassandraServer 接收到要写入的数据时：</p>
+<ul>
+<li>创建一个 <code>RowMutation</code> 对象，再创建一个 <code>QueryPath</code> 对象，这个对象中保存了 <code>ColumnFamily</code>、<code>Column Name</code> 或者 <code>Super Column Name</code>。</li>
+<li>把用户提交的所有数据保存在 <code>RowMutation</code> 对象的 Map&lt;String, ColumnFamily&gt; 结构中。</li>
+<li>根据提交的<code>Key</code>计算集群中那个节点应该保存这条数据。这个计算的规则是：将<code>Key</code>转化成<code>Token</code>，然后在整个集群的<code>Token</code>环中根据二分查找算法找到与给定的<code>Token</code>最接近的一个节点。</li>
+<li>如果用户指定了数据要保存多个备份，那么将会顺序在<code>Token</code>环中返回与备份数相等的节点。这是一个基本的节点列表，后面<code>Cassandra</code>会判断这些节点是否正常工作，如果不正常寻找替换节点。还有还要检查是否有节点正在启动，这种节点也是要在考虑的范围内，最终会形成一个目标节点列表。最后把数据发送到这些节点。</li>
+<li><strong><em>所以在真正开始写入数据之前，cassandra会做这些事情？在commitLog之前？</em></strong> 我想应该是之前</li>
+</ul>
+</li>
+<li>
+<p><code>Replica Factor</code>和<code>consistency level</code>不是一个东西，然后有一个算法。比如，<code>replica set</code>是3， <code>consistency level</code>的策略是<code>Querum</code>。这样需要consistent的节点是replica set/2 +1 ，所以就是2</p>
+</li>
+</ul>
+<h3 id="eventual-consistency"><a class="header-anchor" href="#eventual-consistency"></a>Eventual Consistency</h3>
+<p>这在Cassandra里面是非常关键的一个概念。写在这里。因为与写的机制相关最多。</p>
+<ul>
+<li>
+<p>Cassandra must make tradeoffs among data consistency, availability, and partition tolerance. Cassandra必须在数据一致性、可用性和分区容忍之间平衡</p>
+<ul>
+<li>
+<p>Availability: all clients are able to access the data so they can read and write data. 可用性：所有客户都能够读取和写入数据</p>
+</li>
+<li>
+<p>Consistency的概念：</p>
+<ul>
+<li>a read always return the latest written data： 读取时候返回最后一次写入的数据</li>
+<li>All clients will read the same value for an element of data even when the database is simultaneously updating data： 当数据库同步完成的时候，所有客户端应该得到同样的数据</li>
+</ul>
+</li>
+<li>
+<p>Partition tolerance：a database can be split into multiple machines and be able keep functioning even during network segmentation breaks： 一个数据库可以分布在不同的机器上面，并且能够在网络出现故障时候保持正常功能</p>
+<p>这里应该和关系型的传统数据库不一样。Cassandra是分布式数据库，所有node的地位是一样的。<strong><em>说好的seed呢，怎么感觉有seed， seed应该是Gossip机制里面提出的。参考博客内文档<code>Cassandra system log分析</code>后面也许会换一份文档放</em></strong></p>
+<p>Oracle这种数据库一般是单机版的，没有cluster， 但是有主从备份，所有不一样的</p>
+</li>
+</ul>
+</li>
+<li>
+<p>严格意义上面的Consistency对于分布式数据库来说很难做到。所以有Eventual consistency requires that all updates must be present on all the copies (replicas) of data in a distributed database, but allows for the fact that the process can take a bit of time.<br>
+就是说更新是都要进行的，但是可以有一段时间差</p>
+</li>
+<li>
+<p>tuneable consistency： 可配置的consistency。写和读都可以配。</p>
+</li>
+</ul>
+<h3 id="commit-log"><a class="header-anchor" href="#commit-log"></a>commit log</h3>
+<p><a href="https://stackoverflow.com/questions/34592948/what-is-the-purpose-of-cassandras-commit-log" target="_blank" rel="noopener">stackoverflow问答</a><br>
+这篇文章里面解释得挺清楚的。这里基本就是翻译以下。这个commit log也就是装机时候配置的那个<code>commitlog_directory</code>的配置项。<br>
+commit log大小配置是per-node来配置的，所有的table share这个配置。而Memtable和SSTable是per-table配置的</p>
+<ul>
+<li>
+<p>cassandra是先写到内存，再写到disk上面的，但是如果当机了。那么内存的数据就会丢。</p>
+</li>
+<li>
+<p>这个时候就需要commitLog，cassandra会从当机的时间点开始，将commitlog里面的数据再写到memTable里面。这个过程并不快，所以最好在restart之前手动进行一下memTable的flush。</p>
+</li>
+<li>
+<p>A commit log serves just one purpose: to hold committed data until it’s permanently written to disk in the SSTables</p>
+</li>
+<li>
+<p>commitLog需要写的数据少，并且只写到一个地方，所以比写SSTable要快</p>
+</li>
+<li>
+<p>在工作中碰到的一个问题就是commitLog损坏了，然后cassandra就起不来了。有一个配置项可以忽略commitLog报错。</p>
+</li>
+<li>
+<blockquote>
+<p>Data in the commit log is purged after its corresponding data in the memtable is flushed to an SSTable on disk.</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>Commit log replay is the process of reading the commit log to recover lost writes in the event of interrupted operations.</p>
+</blockquote>
+</li>
+<li>
+<p>The database flushes memtables to disk when the space configured for the commit log reaches its limit. 这里配置的应该是磁盘空间大小，commit log只会写到磁盘上面。不会写到内存里面。</p>
+</li>
+<li>
+<p>By default, the database doesn’t compress the commit log, but you can make it compress.</p>
+</li>
+<li>
+<p>The database archives the commit log at the following times. You configure commit log archiving in the commitlog_archiving.properties file. _<strong><em>archive和compress不是一个概念的感觉。但是前者是指什么呢</em></strong></p>
+<ul>
+<li>When the node starts up</li>
+<li>When it writes a commit log to disk</li>
+<li>At a point in time that you specify</li>
+</ul>
+</li>
+</ul>
+<h3 id="memtable"><a class="header-anchor" href="#memtable"></a>MemTable</h3>
+<ul>
+<li>
+<blockquote>
+<p>Each memtable is dedicated to storing data for a specific table, and there may be multiple memtables per table.</p>
+</blockquote>
+</li>
+<li>每次写的时候只写其中一张memtable memTable在内存里面看不到哦</li>
+<li>memTable有两种，一种是写的这种，另外一种是从SSTable读进来的，这种不会重新写回到磁盘里面</li>
+<li><code>nodetool flush</code> or the <code>nodetool drain</code> command 来触法手动的flush。前者是指定table。后一个命令是flush这个node。期间会停止任何connection的接听，所以需要在执行命令之后重启整个node</li>
+</ul>
+<h3 id="sstable"><a class="header-anchor" href="#sstable"></a>SSTable</h3>
+<p>第二篇参考链接非常好，但是图片忒不清楚。</p>
+<p><img src="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image010-large.jpg" alt></p>
+<blockquote>
+<p>引用自第二篇参考链接</p>
+</blockquote>
+<ul>
+<li>SSTable是<code>Sorted String Table</code></li>
+<li>SSTable分为data、index、filter三个文件写到磁盘上面，其实还有好几个其他文件:<br>
+以下是一个目录里面的文件</li>
+</ul>
+<pre><code> Filter.db
+ Statistics.db
+ CompressionInfo.db
+ Digest.adler32
+ TOC.txt(就是文件列表)
+ Summary.db
+ Data.db
+ Index.db
+</code></pre>
+<ul>
+<li>Primary index: A list of partition keys and the start position of rows in the data file written on disk(记得读的时候蛮有用的)</li>
+<li>Partition summary： 这个summary文件跟上面的Index Summary应该就是一个文件。解释也是一样。A sample of the partition index stored in memory</li>
+<li>Bloom filter：
+<ul>
+<li>
+<blockquote>
+<p>A structure stored in memory that checks if row data exists in the memtable before accessing SSTables on disk<br>
+按照这个解释，有点不明白，这么说应该是memory里面才有的。<br>
+- 找到解释了：Filter 文件存的内容就是 BloomFilter 对象的序列化结果。<strong><em>但是这样的话，将其序列化后保存到disk上面有什么用呢？ Bloom filters for an SSTable enhance read performance。后面读的时候看看怎么来enhance的</em></strong></p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li>Statistics： Contains the statistical metadata about the SSTable’s data</li>
+</ul>
+<ul>
+<li>
+<p>存贮的目录就是yaml文件里面配置的<code>data_file_directories</code>确定</p>
+</li>
+<li>
+<p>For example, /data/data/ks1/cf1-5be396077b811e3a3ab9dc4b9ac088d/la-1-big-Data.db represents a data file. ks1 represents the keyspace name to distinguish the keyspace for streaming or bulk loading data. A hexadecimal string, 5be396077b811e3a3ab9dc4b9ac088d in this example, is appended to table names to represent unique table IDs.<br>
+同样会有：la-1-big-Index.db</p>
+</li>
+<li>
+<p><strong><em>la是啥？</em></strong></p>
+</li>
+<li>
+<p>用<code>./tools/bin/sstable2json</code>可以打开这堆data文件来看。下面是打开一个data文件的输出。</p>
+<ul>
+<li>从输出来看，存储的时候的key就是partition key。如果有多个，会用<code>：</code>隔开</li>
+<li>然后它是这样的：
+<ul>
+<li>不是partition key的primary key会作为第一个column的名字，同样用:隔开。</li>
+<li>接下来不是key的column和不是partition key的primary key联合起来作为column的名字。</li>
+<li>比如：那么key就是&quot;name:age&quot;, 然后cells里面的第一行会是,最后是时间戳<br>
+<code>[&quot;address:salary&quot;,&quot;&quot;,1558958953681000]</code></li>
+<li>第二行会是：<br>
+<code>[&quot;address:salary:character&quot;,character_value,1558958953681000]</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<pre><code>    name text PRIMARY KEY,
+    age bigint,
+    address int,
+    salary int,
+    character blob,
+    PRIMARY KEY ((name, age), address, salary)
+</code></pre>
+<h3 id="从memtables到sstable"><a class="header-anchor" href="#从memtables到sstable"></a>从memTables到SSTable</h3>
+<ul>
+<li>
+<p>Cassandra flushes the memtables to disk when either the commit log space threshold or the memtable cleanup threshold is reached.</p>
+<ul>
+<li><code>memtable_cleanup_threshold</code> 后面一种应该和这个参数有关</li>
+<li>在<code>expert cassandra</code>的书里有三种情况下面会flush。不包括手动flush</li>
+</ul>
+</li>
+<li>
+<blockquote>
+<p>To flush the data, Cassandra sorts memtables by token and then writes the data to disk sequentially.<br>
+Cassandra在将数据写到disk的时候，同时会将memtables按照token排序。___这个token是不是就是key算出来的那个token？但是table怎么按照token排序呢，应该说的是table里面的数据吧 ___</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>A partition index is also created on the disk that maps the tokens to a location on disk.<br>
+partition index是在这里才算出来的。那么之前就都是token。___ Memtble里面的也都是token？___</p>
+</blockquote>
+</li>
+<li>
+<p>flush的时候不是一把头全写进去的。会先把memTable的数据放到一个queue里面。这个queue的大小可以在configuration里面定义。</p>
+<blockquote>
+<p>The queue can be configured with the memtable_heap_space_in_mb or memtable_offheap_space_in_mb setting</p>
+</blockquote>
+</li>
+<li>
+<p>You can manually flush a table using nodetool flush.</p>
+</li>
+<li>
+<blockquote>
+<p>Consequently, a partition is typically stored across multiple SSTable files.</p>
+</blockquote>
+</li>
+<li>
+<p>相同partition key的记录应该是存贮在一个node上面，但是也有可能是多个文件，要看数据量。</p>
+</li>
+</ul>
+<h3 id="参考文档"><a class="header-anchor" href="#参考文档"></a>参考文档</h3>
+<ul>
+<li><a href="https://blog.csdn.net/fs1360472174/article/details/55005335/" target="_blank" rel="noopener">官方文档–读写数据</a></li>
+<li><a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/index.html" target="_blank" rel="noopener">cassandra数据库详解</a></li>
+<li><a href="https://docs.datastax.com/en/cassandra/3.0/cassandra/dml/dmlHowDataWritten.html" target="_blank" rel="noopener">cassandra读写过程</a></li>
+<li><a href="https://blog.csdn.net/qinzhihu/article/details/8807776" target="_blank" rel="noopener">一篇很通俗的blog</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/01/17/还没想好/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/01/17/还没想好/" itemprop="url">Cassandra system log分析</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-17T14:28:35+08:00">
+                2019-01-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/cassandra/" itemprop="url" rel="index">
+                    <span itemprop="name">cassandra</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="cassandra-system-log分析"><a class="header-anchor" href="#cassandra-system-log分析"></a>Cassandra system log分析</h2>
+<p>最近一周可能都会在看Cassandra的system log，看Cassandra在干嘛。其中会涉及到cassandra的一些机制，概念记录下来。<br>
+文档名字暂时的，其中的概念可能后期会移走。</p>
+<h3 id="nodetool"><a class="header-anchor" href="#nodetool"></a>Nodetool</h3>
+<p>Cassandra的状态可以用<code>NodeTool</code>来check，如果采用了ssl 认证，那么命令是 <code>NodeTool --ssl</code></p>
+<h3 id="gossip-tasks"><a class="header-anchor" href="#gossip-tasks"></a>Gossip Tasks</h3>
+<h4 id="pending-task-log"><a class="header-anchor" href="#pending-task-log"></a>Pending task log</h4>
+<p>名字太好记 ，有没有 😃<br>
+Cassandra 的各个节点是无中心化对待的。能做到这一点的一个关键是使用了Gossip协议。这是一个很适用于不可信网络的协议</p>
+<ul>
+<li>参考链接， 后续需要更为仔细深入的学习： <a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-apache-cassandra3x3/index.html" target="_blank" rel="noopener">Apache Cassandra 3.X 系列</a></li>
+<li>Cassandra中Gossip协议被实现在类<code>Gossiper</code>中。</li>
+<li>Gossiper 类维护了一个节点列表，这个列表里包括存活的和死亡的节点。</li>
+<li><code>GossipTask</code> 是位于 <code>org.apche.cassandra.gms.Gossip</code> 类下的一个内部类。</li>
+<li>GossipTask会向其他节点发消息，默认时间是1s</li>
+<li>在log里面会有：<br>
+[GossipTasks:1] 2019-01-03 04:19:33,680 Gossiper.java:751 - Gossip stage has 378 pending tasks; skipping status check (no nodes will be marked down)</li>
+</ul>
+<h4 id="pause-error-not-making-nodes-down"><a class="header-anchor" href="#pause-error-not-making-nodes-down"></a>Pause Error: Not making Nodes Down</h4>
+<ul>
+<li>在log里面经常会出现:以下是说cassandra在做其他事情，导致Gossip停顿了， hang住了。但是并不标示node状态。</li>
+<li>通常是GC的时候，这一句的上一句log确实提示了一次55742ms的GC，但是GC通常也发生在有很多task的时候，所以应该看看其他在做什么task</li>
+</ul>
+<pre><code>WARN  [GossipTasks:1] 2019-01-02 00:00:04,546 FailureDetector.java:287 - Not marking nodes down due to local pause of 54491963082 &gt; 5000000000
+</code></pre>
+<ul>
+<li><a href="http://www.cnblogs.com/jobforlife/p/7092467.html" target="_blank" rel="noopener">error解释</a></li>
+</ul>
+<h3 id="service-thread"><a class="header-anchor" href="#service-thread"></a>Service Thread</h3>
+<p>没有看到这个Service Thread的具体解释。从log里面看有很多功能</p>
+<h4 id="statuslogger"><a class="header-anchor" href="#statuslogger"></a>StatusLogger</h4>
+<p>如此简单的一个函数也有好几种log啦。</p>
+<h5 id="threadpoolmetrics：-stage"><a class="header-anchor" href="#threadpoolmetrics：-stage"></a>ThreadPoolMetrics： Stage</h5>
+<p>打印出各种stage的状态，一个接一个的pool的状态。真心不少啊。</p>
+<ul>
+<li>在log里面会有：</li>
+</ul>
+<pre><code>INFO  [Service Thread] 2019-01-02 00:00:04,547 StatusLogger.java:52 - Pool Name Active   Pending      Completed   Blocked  All Time Blocked
+</code></pre>
+<ul>
+<li>鉴于stage比较多，另外写一篇blog来解释这堆。请看本站的stage。</li>
+</ul>
+<h5 id="cache"><a class="header-anchor" href="#cache"></a>Cache</h5>
+<p>输出KeyCache 和 RowCache的状态</p>
+<ul>
+<li>在log里面是：</li>
+</ul>
+<pre><code>INFO  [Service Thread] 2019-01-02 00:00:05,130 StatusLogger.java:88 - Cache Type  Size Capacity KeysToSave
+INFO  [Service Thread] 2019-01-02 00:00:05,130 StatusLogger.java:90 - KeyCache   1406343  104857600
+</code></pre>
+<ul>
+<li>这篇 log已经很长了。KeyCache和RowCache另开一篇log。</li>
+</ul>
+<h5 id="per-cf-stats"><a class="header-anchor" href="#per-cf-stats"></a>per-CF stats</h5>
+<p>per-CF stats是源码里面的注释，我也不知道是啥哦</p>
+<ul>
+<li>在log里面是：</li>
+</ul>
+<pre><code>INFO  [Service Thread] 2019-01-03 02:54:45,722 StatusLogger.java:106 (table_name)    6284,288376
+</code></pre>
+<ul>
+<li>Cassandra的API里面对于<code>StatusLogger</code>也没有解释。 ORZ，看来是个很直白的文件啊<br>
+-<code>org.apache.cassandra.utils.StatusLogger</code> 只有一个函数<code>log()</code></li>
+</ul>
+<pre><code>logger.info(String.format(&quot;%-25s%20s&quot;, &quot;Table&quot;, &quot;Memtable ops,data&quot;));
+logger.info(String.format(&quot;%-25s%20s&quot;,
+                   cfs.keyspace.getName() 
+				   + &quot;.&quot; + cfs.name,                                      cfs.metric.memtableColumnsCount.getValue() 
+				   + &quot;,&quot; + cfs.metric.memtableLiveDataSize.getValue()));
+    }。
+</code></pre>
+<ul>
+<li>所以，第一个数值是memTable的column的个数，第二个是data的size</li>
+<li>一个问题是： 这个column也太多了吧。。。。。。</li>
+<li>被大神吊打了。这个值是表访问次数。</li>
+</ul>
+<h4 id="gcinspector"><a class="header-anchor" href="#gcinspector"></a>GCInspector</h4>
+<p>-在log里面是：</p>
+<pre><code>INFO  [Service Thread] 2019-01-02 00:00:04,546 GCInspector.java:284 - ConcurrentMarkSweep GC in 55742ms.  CMS Old Gen: 7331643368 -&gt; 7331643360; Par Eden Space: 1006632960 -&gt; 784484600; Par Survivor Space: 125829104 -&gt; 0
+</code></pre>
+<ul>
+<li>这句log的意思是：做了一次CMS GC。然后数字对应，11位是G，9位是M，所以 eden区是784M</li>
+<li>参考本站GC的文章了解更多CMS算法的内容</li>
+</ul>
+<h3 id="periodic-commit-log-syncer"><a class="header-anchor" href="#periodic-commit-log-syncer"></a>PERIODIC-COMMIT-LOG-SYNCER</h3>
+<ul>
+<li>在log里面是：</li>
+</ul>
+<pre><code>WARN  [PERIODIC-COMMIT-LOG-SYNCER] 2019-01-03 04:04:17,232 AbstractCommitLogService.java:117 - Out of 5 commit log syncs over the past 573s with average duration of 9734.40ms...
+</code></pre>
+<ul>
+<li>这个应该是将commit log写到disk上面的task。没有再查资料。参考本站cassandra写过程那篇博客</li>
+</ul>
+<h3 id="rmi-tcp-connection-idle"><a class="header-anchor" href="#rmi-tcp-connection-idle"></a>RMI TCP Connection(idle)</h3>
+<h3 id="indexsummarymanager"><a class="header-anchor" href="#indexsummarymanager"></a>IndexSummaryManager</h3>
+<ul>
+<li>在log里面是：</li>
+</ul>
+<pre><code> INFO  [IndexSummaryManager:1] 2019-01-02 03:21:59,849 IndexSummaryRedistribution.java:74 - Redistributing index summaries
+</code></pre>
+<ul>
+<li>Manages the fixed-size memory pool for index summaries, periodically resizing them in order to give more memory to hot sstables and less memory to cold sstables.</li>
+<li>还不是很理解，就是说index summary一开始也是存在内存中的吗？确实在参数配置里面有index_summary_capacity_in_mb和index_summary_resize_interval_in_minutes</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/01/14/React入门-1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -830,7 +1463,7 @@ saved_caches_directory几个参数前面不能空格</p>
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-count">35</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

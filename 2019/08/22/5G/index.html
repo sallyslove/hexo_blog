@@ -88,7 +88,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://www.grandmetric.com/wp-content/uploads/2018/03/5G_Core_Network.png">
 <meta property="og:image" content="https://miro.medium.com/max/1008/1*VfK1R5ie3DRElDFHjrI-kw.png">
-<meta property="og:updated_time" content="2019-10-22T07:45:30.091Z">
+<meta property="og:updated_time" content="2019-11-06T06:49:45.537Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="5G">
 <meta name="twitter:description" content="作为通信行业的一名软件开发人员，我要开始学习5G啦。😃 里面有非常多的新网元引入。各种缩写漫天飞舞 😢 参考链接  5G Service-Based Architecture (SBA) 5G Core Network Functions  5GC 概述  5G里面的新的core network一般叫做NR，但是也有的地方，比如霓虹国，称为next generation SA和NSA：SA就是">
@@ -321,7 +321,7 @@
 </ul>
 <h2 id="5gc-概述"><a class="header-anchor" href="#5gc-概述"></a>5GC 概述</h2>
 <ul>
-<li><code>5G</code>里面的新的<code>core network</code>一般叫做NR，但是也有的地方，比如霓虹国，称为<code>next generation</code></li>
+<li><code>5G</code>里面的新的<code>core network</code>一般叫做<code>NR</code>，但是也有的地方，比如霓虹国，称为<code>next generation</code></li>
 <li><code>SA</code>和<code>NSA</code>：<code>SA</code>就是<code>standalone</code>,<code>NSA</code>就是<code>non standslone</code>。这边的<code>SA</code>其实就是说只有<code>5G</code>，后面就是<code>4G</code>和<code>5G</code>并存。不同的运营商会有不同的网络状况。
 <ul>
 <li>现在正处于一个过渡期间，也可能会长期存在，出现了一些在4G的网元上面开发5G的功能，然后作为5G的网元来用的情况。</li>
@@ -329,6 +329,8 @@
 </li>
 <li>通常我们关心的<code>5GC</code>是<code>5G corenetwork</code>的缩写。然后<code>5G</code>的核心有三大类: <code>SBA - service based architecture</code>, <code>CUPS - Control and User Plane Separation</code> 和 网络切片<br>
 <strong>所以5GC和NR是一个东西?</strong></li>
+<li>配置还是和4G一样的。统一来配置的。<code>E&amp;M</code>统一来做，因为现在平台软件是一致，所以RAN和core都一样，都用一个来做配置</li>
+<li><code>UDC</code>换了个名字叫<code>UDR</code></li>
 </ul>
 <h3 id="sba"><a class="header-anchor" href="#sba"></a>SBA</h3>
 <ul>
@@ -341,8 +343,14 @@
 </li>
 </ul>
 <h2 id="5g-nr"><a class="header-anchor" href="#5g-nr"></a>5G NR</h2>
-<p><code>NR</code>指的是<code>new Radio</code>。在<code>5G</code>里面分为了<code>NE - Network Element</code>和<code>NF Network Function</code>两个概念。顾名思义，<code>NF</code>是往外提供服务的</p>
+<p><code>NR</code>指的是<code>new Radio</code>。在<code>5G</code>里面分为了<code>NE - Network Element</code>和<code>NF - Network Function</code>两个概念。顾名思义，<code>NF</code>是往外提供服务的</p>
+<ul>
+<li><code>NF</code>是一个功能，3GPP里面定义的，NE是一个实际的网元。一个NE可能会实现多个NF。</li>
+</ul>
 <h3 id="amf"><a class="header-anchor" href="#amf"></a>AMF</h3>
+<p>与接入网相关</p>
+<h4 id="smf"><a class="header-anchor" href="#smf"></a>SMF</h4>
+<p>可能有一些与provision相关的</p>
 <h3 id="nef-network-exposure-function"><a class="header-anchor" href="#nef-network-exposure-function"></a>NEF - Network Exposure Function</h3>
 <h4 id="scef-和-mtc-iwf"><a class="header-anchor" href="#scef-和-mtc-iwf"></a>SCEF 和 MTC - IWF</h4>
 <ul>
@@ -351,12 +359,13 @@
 <h4 id="nef是什么"><a class="header-anchor" href="#nef是什么"></a>NEF是什么</h4>
 <ul>
 <li>NEF provides a mechanism for securely exposing services and features of the 5G core.</li>
-<li></li>
+<li><code>NEF</code>是和<code>SMF</code>连接在一起的。将<code>core</code>里面的功能暴露给外界的应用</li>
 </ul>
 <h3 id="nrf"><a class="header-anchor" href="#nrf"></a>NRF</h3>
 <h4 id="nrf是什么"><a class="header-anchor" href="#nrf是什么"></a>NRF是什么</h4>
 <ul>
 <li><code>NF Repository function (NRF)</code> supports: service discovery function, maintains NF profile and available NF instances. (not present in EPC world)。</li>
+<li>替换了原来<code>4G</code>里面的<code>ENUM</code>和<code>AAA</code></li>
 <li><code>NRF</code>的功能看起来比较简单，有以下：
 <ul>
 <li>Service registration and discovery function so that Network Functions can discover each other.</li>
@@ -380,12 +389,18 @@
 </li>
 <li>在<code>R16</code>里面提出了一个proxy的概念，<code>SCP - service Communication proxy</code>，因为<code>NRF</code>的网络通信过于繁杂，造成了很大的负担，所以引入的。</li>
 </ul>
+<h4 id="scp"><a class="header-anchor" href="#scp"></a>SCP</h4>
 <h3 id="nssf"><a class="header-anchor" href="#nssf"></a>NSSF</h3>
+<ul>
+<li><code>NSSF</code>的数据分为<code>static</code>和<code>synamic</code>的数据。前者存在<code>UDM</code>里面，后者在<code>NSSF</code>里面。</li>
+<li><code>UE</code>连入的时候会申请使用某种<code>slice</code>，然后网络会返回许可，存储的时候可以存在<code>UDM</code>里面</li>
+<li>切片分为接入网，<code>RAN</code>和核心网，接入网是频段等的切片，目前没有合适的solution，而核心网的切片实际上就是拉一套小型的核心网起来，虚拟的，里面可能<code>AMF</code>是独立的，而<code>PCF</code>就是共用的。</li>
+</ul>
 <h3 id="pcf-policy-control-function"><a class="header-anchor" href="#pcf-policy-control-function"></a>PCF -  Policy Control Function</h3>
 <ul>
-<li>PCF其实就是4G里面的PCRF。都是做policy control的</li>
-<li>PCF可以支持AMF的policy control和网络切片的policy control</li>
-<li>PCF理解UE级别的，就是这个UE可以使用哪些AMF和NSSF。</li>
+<li><code>PCF</code>其实就是<code>4G</code>里面的<code>PCRF</code>。都是做<code>policy control</code>的</li>
+<li><code>PCF</code>可以支持<code>AMF</code>的<code>policy control</code>和网络切片的<code>policy control</code></li>
+<li><code>PCF</code>理解<code>UE</code>级别的，就是这个<code>UE</code>可以使用哪些<code>AMF</code>和<code>NSSF</code>。</li>
 </ul>
 <h2 id="5g基站和接入网的演进"><a class="header-anchor" href="#5g基站和接入网的演进"></a>5G基站和接入网的演进</h2>
 <p>由于工作缘故，接触到的基本是核心网，话说刚刚入行的时候，我是做接入网的来着。<br>
@@ -522,7 +537,7 @@
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-count">35</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -568,7 +583,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5gc-概述"><span class="nav-number">2.</span> <span class="nav-text">5GC 概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sba"><span class="nav-number">2.1.</span> <span class="nav-text">SBA</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5g-nr"><span class="nav-number">3.</span> <span class="nav-text">5G NR</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#amf"><span class="nav-number">3.1.</span> <span class="nav-text">AMF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nef-network-exposure-function"><span class="nav-number">3.2.</span> <span class="nav-text">NEF - Network Exposure Function</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#scef-和-mtc-iwf"><span class="nav-number">3.2.1.</span> <span class="nav-text">SCEF 和 MTC - IWF</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#nef是什么"><span class="nav-number">3.2.2.</span> <span class="nav-text">NEF是什么</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nrf"><span class="nav-number">3.3.</span> <span class="nav-text">NRF</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#nrf是什么"><span class="nav-number">3.3.1.</span> <span class="nav-text">NRF是什么</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nssf"><span class="nav-number">3.4.</span> <span class="nav-text">NSSF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pcf-policy-control-function"><span class="nav-number">3.5.</span> <span class="nav-text">PCF -  Policy Control Function</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5g基站和接入网的演进"><span class="nav-number">4.</span> <span class="nav-text">5G基站和接入网的演进</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参考链接-v2"><span class="nav-number">4.1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5g的改变"><span class="nav-number">4.2.</span> <span class="nav-text">5G的改变</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5gc-概述"><span class="nav-number">2.</span> <span class="nav-text">5GC 概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sba"><span class="nav-number">2.1.</span> <span class="nav-text">SBA</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5g-nr"><span class="nav-number">3.</span> <span class="nav-text">5G NR</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#amf"><span class="nav-number">3.1.</span> <span class="nav-text">AMF</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#smf"><span class="nav-number">3.1.1.</span> <span class="nav-text">SMF</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nef-network-exposure-function"><span class="nav-number">3.2.</span> <span class="nav-text">NEF - Network Exposure Function</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#scef-和-mtc-iwf"><span class="nav-number">3.2.1.</span> <span class="nav-text">SCEF 和 MTC - IWF</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#nef是什么"><span class="nav-number">3.2.2.</span> <span class="nav-text">NEF是什么</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nrf"><span class="nav-number">3.3.</span> <span class="nav-text">NRF</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#nrf是什么"><span class="nav-number">3.3.1.</span> <span class="nav-text">NRF是什么</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#scp"><span class="nav-number">3.3.2.</span> <span class="nav-text">SCP</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nssf"><span class="nav-number">3.4.</span> <span class="nav-text">NSSF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pcf-policy-control-function"><span class="nav-number">3.5.</span> <span class="nav-text">PCF -  Policy Control Function</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5g基站和接入网的演进"><span class="nav-number">4.</span> <span class="nav-text">5G基站和接入网的演进</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参考链接-v2"><span class="nav-number">4.1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5g的改变"><span class="nav-number">4.2.</span> <span class="nav-text">5G的改变</span></a></li></ol></li></ol></div>
             
 
           </div>

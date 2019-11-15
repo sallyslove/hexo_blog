@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/hexo_blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/hexo_blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/hexo_blog/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="SSL相关知识 KeyStore工作中碰到的不少。相关的问题先放这里吧。 Certificate 证书的相关知识 为啥需要证书  我们知道在TLS传输中需要使用不对称加密算法，在其中有公钥，私钥。公钥用来给客户端给自己发消息，私钥用来解密收到的消息。 但是以下场景中即使是不对称加密也是不安全的：  小明用浏览器往百度发了个消息，然后百度将自己的公钥返回给小明。 攻击者在中途截住了这个公钥，并且替换">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TLS相关知识">
+<meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/11/08/TLS相关知识/index.html">
+<meta property="og:site_name" content="跬步">
+<meta property="og:description" content="SSL相关知识 KeyStore工作中碰到的不少。相关的问题先放这里吧。 Certificate 证书的相关知识 为啥需要证书  我们知道在TLS传输中需要使用不对称加密算法，在其中有公钥，私钥。公钥用来给客户端给自己发消息，私钥用来解密收到的消息。 但是以下场景中即使是不对称加密也是不安全的：  小明用浏览器往百度发了个消息，然后百度将自己的公钥返回给小明。 攻击者在中途截住了这个公钥，并且替换">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-11-08T07:54:41.287Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="TLS相关知识">
+<meta name="twitter:description" content="SSL相关知识 KeyStore工作中碰到的不少。相关的问题先放这里吧。 Certificate 证书的相关知识 为啥需要证书  我们知道在TLS传输中需要使用不对称加密算法，在其中有公钥，私钥。公钥用来给客户端给自己发消息，私钥用来解密收到的消息。 但是以下场景中即使是不对称加密也是不安全的：  小明用浏览器往百度发了个消息，然后百度将自己的公钥返回给小明。 攻击者在中途截住了这个公钥，并且替换">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/hexo_blog/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://sallyslove.github.io/hexo_blog/2019/11/08/TLS相关知识/">
+
+
+
+
+
+  <title>TLS相关知识 | 跬步</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/hexo_blog/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">跬步</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">不积跬步，无以至千里</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/hexo_blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/hexo_blog/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/hexo_blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/11/08/TLS相关知识/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">TLS相关知识</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-08T14:47:48+08:00">
+                2019-11-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="ssl相关知识"><a class="header-anchor" href="#ssl相关知识"></a>SSL相关知识</h2>
+<p><code>KeyStore</code>工作中碰到的不少。相关的问题先放这里吧。</p>
+<h3 id="certificate"><a class="header-anchor" href="#certificate"></a>Certificate</h3>
+<p>证书的相关知识</p>
+<h4 id="为啥需要证书"><a class="header-anchor" href="#为啥需要证书"></a>为啥需要证书</h4>
+<ul>
+<li>我们知道在<code>TLS</code>传输中需要使用不对称加密算法，在其中有公钥，私钥。公钥用来给客户端给自己发消息，私钥用来解密收到的消息。</li>
+<li>但是以下场景中即使是不对称加密也是不安全的：
+<ul>
+<li>小明用浏览器往百度发了个消息，然后百度将自己的公钥返回给小明。</li>
+<li>攻击者在中途截住了这个公钥，并且替换为自己的公钥发给了小明。</li>
+<li>小明并不清楚，用这个假的公钥加密了自己的私钥，并且发给了百度。</li>
+<li>攻击者于是拥有了小明的私钥，接着用上一次截获的百度的公钥加密小明的私钥，返回给百度。</li>
+<li>于是百度会认为<code>TLS</code>通道已经建立。接下来小明和百度之间的所有消息都会被攻击者得知。</li>
+<li>这时候就需要证书了。证书颁发机构由<code>X.509</code>标准指定，以确保数据的完整性。证书的目的就是保证数据的完整性。啧，听上去好厉害！</li>
+</ul>
+</li>
+</ul>
+<h4 id="root-ca"><a class="header-anchor" href="#root-ca"></a>Root CA</h4>
+<ul>
+<li>参考链接
+<ul>
+<li><a href="https://support.dnsimple.com/articles/what-is-certificate-authority/" target="_blank" rel="noopener">什么是CA</a></li>
+<li><a href="https://support.dnsimple.com/articles/what-is-ssl-root-certificate/" target="_blank" rel="noopener">什么是Root CA</a></li>
+</ul>
+</li>
+<li>有两种解释，一个是被信任的机构，另一个是这个机构颁发出来的证书</li>
+<li>比如<code>Digicert</code>就是一个CA</li>
+</ul>
+<h4 id="证书的使用过程"><a class="header-anchor" href="#证书的使用过程"></a>证书的使用过程</h4>
+<ol>
+<li>首先是百度作为一个服务器，向<code>CA</code>申请签名证书。这里用<code>Digicert</code>作为CA</li>
+<li>那么<code>CA</code>会为百度创建一个证书，里面包含一些信息，比如例如服务器名称，服务器的公钥等。</li>
+<li><code>Digicert</code>将创建数据（证书）的哈希值，并使用自己的私钥对其进行加密</li>
+<li>浏览器和操作系统自带<code>Digicert</code>等权威机构的公钥。</li>
+<li>当浏览器收到签名证书时，它将使用<code>Digicert</code>的公钥从签名生成哈希值，它还将使用证书中指定的散列算法生成数据（证书）的散列，6. 如果两个哈希值匹配，则签名验证成功并且证书是可信的</li>
+<li>现在浏览器可以使用证书中指定的百度的公钥继续进行身份验证过程。</li>
+</ol>
+<p>也就是说在客户端和服务器端交换公钥秘钥的过程中，加入了<code>CA</code>的签名认证，这样保证客户端可以信任收到的公钥确实是服务器端的公钥，而不是攻击者的公钥。</p>
+<h3 id="tls版本"><a class="header-anchor" href="#tls版本"></a>TLS版本</h3>
+<ul>
+<li><code>SSL3.0</code> 和 <code>TLS1.0</code> 是一个东西。嗯，微软干的。微软虽然是一个伟大的公司，但是这个干得不好，相当不好，至少我本人觉得不好。实在是除了增加大家的混淆以外，没有任何意义。嘛，我们自己的产品也经常干这种事情。通常呢，是因为自己认为发生了跨时代的改变，希望让别人也明白。</li>
+<li>目前最流行的版本是<code>TLS1.2</code>，最新的版本是<code>TLS1.3</code>。</li>
+<li><code>java8</code>中默认的是<code>TLS1.2</code>版本。<code>java11</code>里面支持的是<code>TLS1.3</code></li>
+<li>各种<code>web</code>应用服务器的配置文件里面都可以配置支持或者不支持的版本。比如<code>tomcat</code>提供了参数:<code>sslEnabledProtocols</code></li>
+</ul>
+<h4 id="如何发现我的浏览器使用的tls版本"><a class="header-anchor" href="#如何发现我的浏览器使用的tls版本"></a>如何发现我的浏览器使用的TLS版本</h4>
+<ul>
+<li>因为要测试<code>tomcat</code>里面配置的参数是否生效，所以第一反应就是我咋知道呢。后来经同事提点，其实用<code>openssl</code>就可以了</li>
+<li>在浏览器的配置中能看到， 比如IE, <code>File</code>-&gt;<code>Properties</code>, 在<code>Connection</code>一栏就能看到。</li>
+<li>参考链接：
+<ul>
+<li><a href="https://www.thesslstore.com/blog/google-chrome-72-deprecates-support-for-tls-1-0-tls-1-1/" target="_blank" rel="noopener">chrome如何配置和查看</a></li>
+<li><a href="https://security.stackexchange.com/questions/19096/how-to-determine-if-a-browser-is-using-an-ssl-or-tls-connection/169418" target="_blank" rel="noopener">如何查看website的TLS版本</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="如何测试tls连接"><a class="header-anchor" href="#如何测试tls连接"></a>如何测试TLS连接</h4>
+<ul>
+<li>这个是刚需啊刚需。使用<code>openssl</code>肯定也是可以的。这回使用的是<code>curl</code>命令。</li>
+<li><code>curl help</code>一下可以看到，使用参数就可以指定<code>TLS</code>版本，还是很好用的。<br>
+😦 我觉得自己有时候是很奇怪的人啊，下回要把实际使用的命令写在这里。╭(╯^╰)╮</li>
+</ul>
+<h3 id="tls和oauth"><a class="header-anchor" href="#tls和oauth"></a>TLS和OAuth</h3>
+<ul>
+<li><a href="https://stackoverflow.com/questions/8378664/does-an-oauth-2-client-really-need-tls" target="_blank" rel="noopener">does-an-oauth-2-client-really-need-tls</a>： 我自己有点搞不清楚这些的关系，这边有一个解释很是清晰，看了就明白了
+<ul>
+<li><em>3.1.2.1.  Endpoint Request Confidentiality If a redirection request will result in the transmission of an authorization code or access token over an open network (between the resource owner’s user-agent and the client), the client SHOULD require the use of a transport-layer security mechanism.</em> 这个是<code>Oauth</code>官方文档里面的一段话。</li>
+<li>上面一段的意思应该是这样的：一个第三方认证的请求在传输<code>authorization code</code>或者<code>access token</code>的时候应当在传输层使用安全机制。这里的安全机制就是指<code>TLS</code>协议。</li>
+</ul>
+</li>
+</ul>
+<h3 id="tls双向握手"><a class="header-anchor" href="#tls双向握手"></a>TLS双向握手</h3>
+<h3 id="keystore和truststore"><a class="header-anchor" href="#keystore和truststore"></a>KeyStore和TrustStore</h3>
+<ul>
+<li><code>keystore</code>和<code>truststore</code>从其文件格式来看其实是一个东西，都是<code>.jks</code>文件，只是为了方便管理将其分开</li>
+<li><code>keystore</code>中一般保存的是服务器端的私钥，用来加解密或者为别人做签名。存储服务器端的公钥和私钥。</li>
+<li><code>truststore</code>中保存的是一些可信任的证书，主要是<code>java</code>在代码中访问某个<code>https</code>的时候对被访问者进行认证的，以确保其实可信任的。一般为公钥<br>
+<code>truststore</code>里面存储的是服务器的信任密钥存储库，存<code>CA</code>公钥，也会有人在里面存储客户端的证书集合。</li>
+<li>应该在不同的协议中都有可能碰到，不仅仅是<code>HTTPS</code>，在网上搜索过程中有<code>LDAP</code>也用到的。</li>
+<li>参考链接
+<ol>
+<li><a href="https://www.cnblogs.com/gsls200808/p/4500246.html" target="_blank" rel="noopener">KeyStore和TrustStore</a></li>
+</ol>
+</li>
+</ul>
+<h3 id="keytool"><a class="header-anchor" href="#keytool"></a>Keytool</h3>
+<h3 id="openssl"><a class="header-anchor" href="#openssl"></a>openssl</h3>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/hexo_blog/2019/10/11/K8s-Service/" rel="next" title="K8s Service">
+                <i class="fa fa-chevron-left"></i> K8s Service
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/hexo_blog/2019/11/15/Maven-Dependency/" rel="prev" title="Maven Dependency">
+                Maven Dependency <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Lynn Shen</p>
+              <p class="site-description motion-element" itemprop="description">35岁开始的博客，有点晚哦</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/hexo_blog/archives/">
+              
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/hexo_blog/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ssl相关知识"><span class="nav-number">1.</span> <span class="nav-text">SSL相关知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#certificate"><span class="nav-number">1.1.</span> <span class="nav-text">Certificate</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#为啥需要证书"><span class="nav-number">1.1.1.</span> <span class="nav-text">为啥需要证书</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#root-ca"><span class="nav-number">1.1.2.</span> <span class="nav-text">Root CA</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#证书的使用过程"><span class="nav-number">1.1.3.</span> <span class="nav-text">证书的使用过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tls版本"><span class="nav-number">1.2.</span> <span class="nav-text">TLS版本</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#如何发现我的浏览器使用的tls版本"><span class="nav-number">1.2.1.</span> <span class="nav-text">如何发现我的浏览器使用的TLS版本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#如何测试tls连接"><span class="nav-number">1.2.2.</span> <span class="nav-text">如何测试TLS连接</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tls和oauth"><span class="nav-number">1.3.</span> <span class="nav-text">TLS和OAuth</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tls双向握手"><span class="nav-number">1.4.</span> <span class="nav-text">TLS双向握手</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#keystore和truststore"><span class="nav-number">1.5.</span> <span class="nav-text">KeyStore和TrustStore</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#keytool"><span class="nav-number">1.6.</span> <span class="nav-text">Keytool</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#openssl"><span class="nav-number">1.7.</span> <span class="nav-text">openssl</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lynn Shen</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/hexo_blog/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/hexo_blog/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://billts.site/extra_css/gitment.css">
+        <script src="https://billts.site/js/gitment.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitment({
+            id: window.location.pathname, 
+            owner: 'sallyslove',
+            repo: 'blog_comments',
+            
+            oauth: {
+            
+            
+                client_secret: '6eefacd862f6eee016278732c7470c216afce267',
+            
+                client_id: '2fca3ca261d5bf6d52eb'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -86,15 +86,15 @@
 <meta property="og:site_name" content="跬步">
 <meta property="og:description" content="Cassandra 数据结构 必须了解Cassandra的数据结构。本身并不是多么复杂，而且有足够多的文档，所以简单写一下。 KeySpace  好像没啥需要解释的。 在论文里面看到说namespace的另一个作用是可以做数据重复。  Column  Column是Cassandra中最小的数据单元，它是一个三元的数据类型，包含name,value,timestamp. name是必须的，valu">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://img-blog.csdn.net/20140302154940656?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
-<meta property="og:image" content="https://img-blog.csdn.net/20140302154945843?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
-<meta property="og:image" content="https://img-blog.csdn.net/20140302154940656?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
-<meta property="og:image" content="https://images.cnblogs.com/cnblogs_com/gpcuster/WindowsLiveWriter/Cassandra_8E88/image_thumb.png">
-<meta property="og:updated_time" content="2019-10-28T03:15:23.038Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_column.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_super_column.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_column_family.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_storage_picture.png">
+<meta property="og:updated_time" content="2019-10-28T06:27:38.963Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Cassandra数据结构">
 <meta name="twitter:description" content="Cassandra 数据结构 必须了解Cassandra的数据结构。本身并不是多么复杂，而且有足够多的文档，所以简单写一下。 KeySpace  好像没啥需要解释的。 在论文里面看到说namespace的另一个作用是可以做数据重复。  Column  Column是Cassandra中最小的数据单元，它是一个三元的数据类型，包含name,value,timestamp. name是必须的，valu">
-<meta name="twitter:image" content="https://img-blog.csdn.net/20140302154940656?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_column.png">
 
 
 
@@ -347,7 +347,7 @@
 <ul>
 <li>Column是Cassandra中最小的数据单元，它是一个三元的数据类型，包含name,value,timestamp.</li>
 <li>name是必须的，value不是必须的，timestamp经常可以忽略不计，如下图<br>
-<img src="https://img-blog.csdn.net/20140302154940656?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="引用自第一篇参考链接"></li>
+<img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_column.png" alt="引用自第一篇参考链接"></li>
 </ul>
 <blockquote>
 <p>引用自csdn</p>
@@ -356,7 +356,7 @@
 <ul>
 <li>可以将SuperColumn想象成Column的数组，它包含一个name以及一系列Column.</li>
 <li>SuperColumn本身不包含timestamp属性。使用SuperColumn有一个限制，要读取其中一个子列的值，必须把所有子列都反序列化，且不能在子列中建索引<br>
-<img src="https://img-blog.csdn.net/20140302154945843?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt></li>
+<img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_super_column.png" alt></li>
 </ul>
 <blockquote>
 <p>引用自csdn</p>
@@ -378,18 +378,24 @@
 </ul>
 <h3 id="columnfamily"><a class="header-anchor" href="#columnfamily"></a>ColumnFamily</h3>
 <ul>
-<li><code>columnFamily</code>相当于数据库中的表</li>
-<li>每一行有一个<code>row</code>的名字，然后每一行里面是一个个的<code>column</code>，也可以是<code>super column</code></li>
-<li><code>ColumnFamily</code>是一个包含了许多<code>Row</code>的结构，每一个<code>Row</code>都包含有client提供的Key以及和该Key关联的一系列Column。</li>
-<li>每一行里面的<code>column</code>的名字可以是不变的。也可以是可变的。静态和动态column</li>
-<li>需要注意的是，数据写入的时候已经经过排序了。就是说一行的所有<code>column</code>，会根据它的名字来进行排序。<br>
-<img src="https://img-blog.csdn.net/20140302154940656?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt></li>
-</ul>
-<blockquote>
-<p>引用自csdn</p>
-</blockquote>
-<ul>
-<li>第二个参考链接里面的例子：</li>
+<li>
+<p><code>columnFamily</code>相当于数据库中的表</p>
+</li>
+<li>
+<p>每一行有一个<code>row</code>的名字，然后每一行里面是一个个的<code>column</code>，也可以是<code>super column</code></p>
+</li>
+<li>
+<p><code>ColumnFamily</code>是一个包含了许多<code>Row</code>的结构，每一个<code>Row</code>都包含有client提供的Key以及和该Key关联的一系列Column。</p>
+</li>
+<li>
+<p>每一行里面的<code>column</code>的名字可以是不变的。也可以是可变的。静态和动态column</p>
+</li>
+<li>
+<p>需要注意的是，数据写入的时候已经经过排序了。就是说一行的所有<code>column</code>，会根据它的名字来进行排序。</p>
+</li>
+<li>
+<p>第二个参考链接里面的例子：</p>
+</li>
 </ul>
 <pre><code>   UserProfile = { // 这是一个ColumnFamily
         phatduckk: {   // 这是对应ColumnFamily的key
@@ -405,7 +411,15 @@
           phone: &quot;888&quot;
         }
 </code></pre>
-<h3 id="对应到表里面"><a class="header-anchor" href="#对应到表里面"></a>对应到表里面</h3>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_column_family.png" alt></p>
+<blockquote>
+<p>引用自第一篇参考链接文档</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_storage_picture.png" alt></p>
+<blockquote>
+<p>引用自第二篇参考链接文档</p>
+</blockquote>
+<h3 id="对应到表的定义里面"><a class="header-anchor" href="#对应到表的定义里面"></a>对应到表的定义里面</h3>
 <p>目前对于表结构的理解是这样的，可能后面有更正：</p>
 <ul>
 <li>如果用<code>desc tables</code>去查看一张表。那么可以看到primaryKey字样，类似<code>PRIMARY KEY ()</code>，还有<code>CLUSTERING ORDER</code> 字样</li>
@@ -417,18 +431,18 @@
 <pre><code>PRIMARY KEY ((race_year, race_name), rank)
 </code></pre>
 <p>这里的<code>race_year</code>和<code>race_name</code>就是组合的<code>partition key</code>,而<code>rank</code>就是<code>a clustering column</code>，用来排序的</p>
-<p><img src="https://images.cnblogs.com/cnblogs_com/gpcuster/WindowsLiveWriter/Cassandra_8E88/image_thumb.png" alt></p>
-<blockquote>
-<p>引用自第二篇参考链接文档</p>
-</blockquote>
+<ul>
+<li>也可能看到<code>CLUSTERING ORDER BY</code>的字样里面，有<code>ASC</code>，代表升序排序，可以指定为<code>DESC</code>降序排序</li>
+<li>在3.0的版本之前，还可能看到<code>COMPACT STORAGE</code>，现在已经没有啦，所以也就不写了。</li>
+</ul>
 <h3 id="data-moduling"><a class="header-anchor" href="#data-moduling"></a>data moduling</h3>
 <ul>
 <li>最近看了一些关于建模的文章。文章里面一些反复强调的事如下：
 <ul>
-<li>cassandra不同于其他数据库的是，它写的成本低，读的成本高。</li>
-<li>基于这一点，必须在一开始先考虑query的需求，然后数据可以duplicated。而在关系数据库建模时候，完全是不一样的。</li>
-<li>基于cassandra的写和存储的方式，需要读取的数据应该放在同一个partition里面。这个partition是cassandra里面的一个概念</li>
-<li>文章里面的这句话说明了partition的定义和重要性：</li>
+<li><code>cassandra</code>不同于其他数据库的是，它写的成本低，读的成本高。</li>
+<li>基于这一点，必须在一开始先考虑<code>query</code>的需求，然后数据可以<code>duplicated</code>。而在关系数据库建模时候，完全是不一样的。</li>
+<li>基于<code>cassandra</code>的写和存储的方式，需要读取的数据应该放在同一个<code>partition</code>里面。</li>
+<li>文章里面的这句话说明了<code>partition</code>的定义和重要性：</li>
 </ul>
 <blockquote>
 <p>a set of rows that share a partition key is called a partition<br>
@@ -562,7 +576,7 @@ You perform several optimizations in the physical data modeling stage, including
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-count">35</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -608,7 +622,7 @@ You perform several optimizations in the physical data modeling stage, including
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#cassandra-数据结构"><span class="nav-number">1.</span> <span class="nav-text">Cassandra 数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#keyspace"><span class="nav-number">1.1.</span> <span class="nav-text">KeySpace</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#column"><span class="nav-number">1.2.</span> <span class="nav-text">Column</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#super-column"><span class="nav-number">1.3.</span> <span class="nav-text">Super Column</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#columnfamily"><span class="nav-number">1.4.</span> <span class="nav-text">ColumnFamily</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对应到表里面"><span class="nav-number">1.5.</span> <span class="nav-text">对应到表里面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#data-moduling"><span class="nav-number">1.6.</span> <span class="nav-text">data moduling</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文档"><span class="nav-number">1.7.</span> <span class="nav-text">参考文档</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#cassandra-数据结构"><span class="nav-number">1.</span> <span class="nav-text">Cassandra 数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#keyspace"><span class="nav-number">1.1.</span> <span class="nav-text">KeySpace</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#column"><span class="nav-number">1.2.</span> <span class="nav-text">Column</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#super-column"><span class="nav-number">1.3.</span> <span class="nav-text">Super Column</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#columnfamily"><span class="nav-number">1.4.</span> <span class="nav-text">ColumnFamily</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对应到表的定义里面"><span class="nav-number">1.5.</span> <span class="nav-text">对应到表的定义里面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#data-moduling"><span class="nav-number">1.6.</span> <span class="nav-text">data moduling</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文档"><span class="nav-number">1.7.</span> <span class="nav-text">参考文档</span></a></li></ol></li></ol></div>
             
 
           </div>

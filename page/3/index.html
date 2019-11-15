@@ -242,6 +242,709 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/02/26/Helm入门/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/02/26/Helm入门/" itemprop="url">Helm入门</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-26T15:50:36+08:00">
+                2019-02-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/docker/" itemprop="url" rel="index">
+                    <span itemprop="name">docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="helm"><a class="header-anchor" href="#helm"></a>Helm</h2>
+<p><code>Helm</code>入门篇。感觉有点类似<code>maven</code>，总归有这样一个管理工具。其实是想看<code>Ingress</code>的，可是不看<code>Helm</code>，yaml看不懂呀。只好滚回来看Helm。</p>
+<p>写了一阵之后再看看，会发现有些看不明白的地方。果然，我写博客的风格和上学年代记笔记的风格一样，喜欢简略而不够详尽啊。这是说好多年没有变化和进步嘛 😂</p>
+<h3 id="helm是什么"><a class="header-anchor" href="#helm是什么"></a>Helm是什么</h3>
+<ul>
+<li><code>Helm</code>是在Kubernetes中安装部署容器的一个工具。</li>
+<li><em>Helm is a tool for managing Kubernetes charts.</em> 所以Charts可能是K8s的一个概念。中文的博客不一定对。也不一定，可能就是Helm引入的一个概念。</li>
+<li><code>Helm</code>由<code>Helm</code>客户端、<code>Tiller</code>服务器端和<code>Chart</code>仓库所组成
+<ul>
+<li><code>Helm</code>客户端： 客户端交互</li>
+<li><code>Tiller</code>服务器端： 装在k8s的cluster里面，管理<code>chart</code></li>
+<li><code>Chart</code>仓库：创建<code>Kubernetes</code>应用实例的信息集合
+<ul>
+<li><code>Chart</code>由两个部分组成，第一个部分是A description of the package (Chart.yaml)</li>
+<li>One or more templates, which contain Kubernetes manifest files。这个templates的话，应该也是yaml文件吧。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="常用的helm命令"><a class="header-anchor" href="#常用的helm命令"></a>常用的helm命令</h3>
+<ul>
+<li>
+<p><code>helm status &lt;namespace&gt;</code> 查看<code>Helm</code>的状态</p>
+</li>
+<li>
+<p><code>helm install</code>: 实际将helm里面的内容安装到当前的k8s上面。比如我创了一个<code>configMap.yaml</code>的<code>templete</code>，那么就会安装上去。</p>
+<ul>
+<li>
+<p>如果只是想看看template的rending，那么使用命令<code>helm install ./mychart --debug --dry-run</code></p>
+</li>
+<li>
+<p>如果想传值进去，可以使用<code>-f</code> 命令，比如<code>helm install -f myvals.yaml ./mychart</code>。这样传的值，可以用<code>.Value</code>来访问</p>
+</li>
+<li>
+<p>单独传值是<code>--set foo=bar</code>，<code>--set</code>比文件的级别高，可以覆盖文件里面的值</p>
+</li>
+<li>
+<p><code>helm install stable/drupal --set image=my-registry/drupal:0.1.0 --set livenessProbe.exec.command=[cat,docroot/CHANGELOG.txt] --set livenessProbe.httpGet=null</code> 这条命令里面将<code>livenessProbe.httpGet</code>删除掉了。</p>
+<pre><code>$ helm install ./mychart
+ NAME:   guiding-ocelot
+ LAST DEPLOYED: Mon Aug 19 17:23:00 2019
+ NAMESPACE: gear-1
+ STATUS: DEPLOYED
+
+ RESOURCES:
+ ==&gt; v1/ConfigMap
+ NAME               DATA  AGE
+ mychart-configmap  1     0s
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><code>helm get manifest &lt;release name&gt;</code>: 比如上面的这个<code>guiding-ocelot</code></p>
+<pre><code> $ helm get manifest guiding-ocelot
+
+ ---
+  # Source: myChart/templates/configmap.yaml
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: mychart-configmap
+  data:
+    myvalue: &quot;Hello World&quot;
+</code></pre>
+</li>
+<li>
+<p><code>helm init</code>:安装tiller服务器端</p>
+</li>
+<li>
+<p><code>helm delete --purge &lt;release name&gt;</code></p>
+</li>
+<li>
+<p><code>helm repo add &lt;repo name&gt; &lt;repo address&gt;</code></p>
+</li>
+<li>
+<p><code>helm create &lt;chart name&gt;</code>: 生成一个目录</p>
+<pre><code>$ find myChart/
+  myChart/
+  myChart/.helmignore
+  myChart/Chart.yaml
+  myChart/charts
+  myChart/templates
+  myChart/templates/deployment.yaml
+  myChart/templates/ingress.yaml
+  myChart/templates/NOTES.txt
+  myChart/templates/service.yaml
+  myChart/templates/tests
+  myChart/templates/tests/test-connection.yaml
+  myChart/templates/_helpers.tpl
+  myChart/values.yaml
+</code></pre>
+</li>
+</ul>
+<h3 id="helm-chart"><a class="header-anchor" href="#helm-chart"></a>Helm Chart</h3>
+<h3 id="helm-template"><a class="header-anchor" href="#helm-template"></a>Helm Template</h3>
+<ul>
+<li>参考以上，默认生成一套chart的时候会生成template目录。
+<ul>
+<li><em>NOTES.txt: The “help text” for your chart. This will be displayed to your users when they run helm install.</em></li>
+<li><em>deployment.yaml: A basic manifest for creating a Kubernetes deployment</em></li>
+<li><em>service.yaml: A basic manifest for creating a service endpoint for your deployment</em></li>
+<li>_ <em>helpers.tpl: A place to put template helpers that you can re-use throughout the chart</em></li>
+</ul>
+</li>
+</ul>
+<h4 id="template-values"><a class="header-anchor" href="#template-values"></a>Template Values</h4>
+<ul>
+<li>
+<p>E.g. <code>name：</code>，下面这个例子里面用<code>release name</code> 来做前缀。话说这个<code>release name</code>在哪里定义的，我没找到。</p>
+<ul>
+<li>
+<p><em>So we could read <code>.Release.Name</code> as “start at the top namespace, find the <code>Release</code> object, then look inside of it for an object called <code>Name</code>”.</em></p>
+</li>
+<li>
+<p><code>.Release</code>表示<code>Release</code>是顶级的object</p>
+<pre><code>apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-configmap
+data:
+  myvalue: &quot;Hello World&quot;
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p>顶级的自带的object包括： <code>Release</code>,<code>Value</code>,<code>Chart</code>,<code>Template</code>, <code>Capabilities</code>还有<code>File</code>。后两个还不是很理解</p>
+<ul>
+<li>
+<p><code>Release</code>里面包含很多变量，有<code>Release.Time</code>,<code>Release.Namespace</code>, <code>Release.Revision</code>,详情可以看官方文档</p>
+</li>
+<li>
+<p><code>Values</code>里面的其实是从<code>values.yaml</code>里面来的</p>
+</li>
+<li>
+<p><code>Chart</code> 里面的就是<code>chart.yaml</code>来的。比如</p>
+<pre><code>{{.Chart.Name}}-{{.Chart.Version}} 
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="template-functions"><a class="header-anchor" href="#template-functions"></a>Template Functions</h4>
+<ul>
+<li>
+<p><em>Helm has over 60 available functions.</em> 其中一些是调用<code>GO</code>语言里面<code>tamplate</code>定义的函数。在<a href="https://godoc.org/text/template" target="_blank" rel="noopener">Go Template Function</a>可以查询到</p>
+</li>
+<li>
+<p>其实<code>Helm Template</code>并不是Helm自身做出来的，其实是从Go这些来的。就是个拿来再集成一下。并不是Helm自己的。</p>
+</li>
+<li>
+<p><code>Helm functions</code>支持管道<code>pipeline</code>。这里的<code>pipeline</code>和<code>Unix</code>里面的同样含义。如下面的例子里面的：</p>
+<pre><code>food: {{ .Values.favorite.food | upper | quote }}
+drink: {{ .Values.favorite.drink | repeat 5 | quote }}
+</code></pre>
+</li>
+</ul>
+<h5 id="常用函数"><a class="header-anchor" href="#常用函数"></a>常用函数</h5>
+<ul>
+<li>
+<p><code>default</code>：用来指定默认值</p>
+<pre><code>  drink: {{ .Values.favorite.drink | default "tea" | quote }}
+</code></pre>
+</li>
+<li>
+<p><code>toyaml</code>: 转成yaml格式 <strong><em>其实不明白啥叫做Yaml格式</em></strong></p>
+</li>
+</ul>
+<h5 id="函数控制和操作运算符"><a class="header-anchor" href="#函数控制和操作运算符"></a>函数控制和操作运算符</h5>
+<ul>
+<li><code>Helm Template</code>的函数是可以引入逻辑控制的</li>
+<li>运算符有：
+<ul>
+<li><code>if/else</code> for creating conditional blocks： <code>if</code>判断有点不一样的是空的字符串或者空的集合也会被认为是<code>false</code>，还有数字0</li>
+<li><code>with</code> to specify a scope</li>
+<li><code>range</code> which provides a “for each”-style loop</li>
+</ul>
+</li>
+</ul>
+<h6 id="function-if-else"><a class="header-anchor" href="#function-if-else"></a>Function if/else</h6>
+<ul>
+<li>
+<p>逻辑稍微有点难理解。就是<code>if</code>语句里面的内容是判断条件成立的时候包含的。然后关系运算符在前，这里是<code>or</code>运算符</p>
+<pre><code>  {{/* include the body of this if statement when the variable .Values.anUnsetVariable is set or .values.aSetVariable is not set */}}
+  {{ if or .Values.anUnsetVariable (not    .Values.aSetVariable) }}
+   {{ ... }}
+  {{ end }}
+</code></pre>
+</li>
+</ul>
+<h6 id="function-range"><a class="header-anchor" href="#function-range"></a>Function Range</h6>
+<ul>
+<li>
+<p><code>range</code>相当于是<code>foreach</code>,比如以下是一个<code>slice</code>，其实就是列表。</p>
+<pre><code>pizzaToppings:
+ - mushrooms
+ - cheese
+ - peppers
+ - onions
+</code></pre>
+<p>我们可以这样操作：</p>
+<pre><code> toppings: |-
+  {{- range .Values.pizzaToppings }}
+  - {{ . | title | quote }}
+  {{- end }}
+</code></pre>
+<ul>
+<li>以上<code>range</code>函数遍历<code>pizzaToppings</code>里面的每个数值， <code>.</code>代表其中每个数值，传递给<code>title</code>和<code>quote</code>函数。</li>
+<li><code>|-</code>代表以下内容是一个长字符串。因为<code>Configmap</code>只支持键值对。</li>
+</ul>
+</li>
+<li>
+<p><code>range</code>也可以和<code>list</code>合并起来用。如下：</p>
+<pre><code> sizes: |-
+ {{- range list "small" "medium" "large" }}
+  - {{ . }}
+ {{- end }}
+</code></pre>
+<ul>
+<li>引号里面的组成一个字符串，然后再遍历字符串</li>
+</ul>
+</li>
+<li>
+<p><code>range</code>也可以和其他集合函数联合使用，比如<code>dict</code>和<code>map</code></p>
+</li>
+</ul>
+<h6 id="function-with"><a class="header-anchor" href="#function-with"></a>Function with</h6>
+<ul>
+<li>
+<p><code>.</code>指的是当前作用域，比如<code>.Values</code>，就是在当前作用域的<code>Value</code>里面</p>
+</li>
+<li>
+<p>使用<code>with</code>函数可以改变作用域，用法和<code>if</code>类似。如下：</p>
+<pre><code>{{ with PIPELINE }}
+# restricted scope
+{{ end }}
+</code></pre>
+</li>
+</ul>
+<h5 id="空格和空行"><a class="header-anchor" href="#空格和空行"></a>空格和空行</h5>
+<ul>
+<li>
+<p>这就是为啥每行都两个大括号加小横线的缘故，瞅着一堆小横线实在无语啊。这个两个大括号加小横线markdown还打不出来，OMG 😕</p>
+<ul>
+<li>
+<p>以下的语句会产生一个<code>Json</code>字段<code>mug：true</code>并且没有空行</p>
+<pre><code>{{ if and .Values.favorite.drink (eq .Values.favorite.drink "coffee") }}mug: true{{ end }}
+</code></pre>
+</li>
+<li>
+<p>但是如果是以下语句就会产生在这个字段之前生成一个空行。估计<code>helm</code>就是简单的将<code>if</code>语句的一行给用空格替代了</p>
+<pre><code>{{if eq .Values.favorite.drink "coffee"}}
+ mug: true
+{{end}}
+</code></pre>
+</li>
+<li>
+<p>所以上面的语句其实较为清晰，却必须用以下样式替代，这样<code>Helm</code>就知道将这边的空格都删除掉</p>
+<pre><code>{{- if eq .Values.favorite.drink "coffee"}}
+ mug: true
+{{- end}}
+</code></pre>
+</li>
+<li>
+<p>For the details on whitespace control in templates,see the Official <a href="https://godoc.org/text/template" target="_blank" rel="noopener">Go template documentation</a></p>
+</li>
+</ul>
+</li>
+<li>
+<p>也可以更为精确得控制空格，如下。这种用法在代码里也看到很多。</p>
+<pre><code>{{indent 2 "mug:true"}}
+</code></pre>
+</li>
+<li>
+<p>还可以用<code>*</code>符号，<em>Just for the sake of making this point clear, let’s adjust the above, and substitute an <code>*</code> for each whitespace that will be deleted following this rule. an <code>*</code> at the end of the line indicates a newline character that would be removed</em> 没看的太明白。这个<code>*</code>是干嘛用的。</p>
+<pre><code>**{{- if eq .Values.favorite.drink "coffee"}}
+  mug: true*
+**{{- end}}
+</code></pre>
+</li>
+</ul>
+<h4 id="变量"><a class="header-anchor" href="#变量"></a>变量</h4>
+<ul>
+<li>
+<p>变量是用<code>:=</code>来定义的。</p>
+</li>
+<li>
+<p>如下。原本在使用了<code>with</code>之后作用域已经改变了，找不到<code>Release</code>了，但是使用了变量，就又可以访问了。</p>
+<pre><code>data:
+myvalue: &quot;Hello World&quot;
+{{- $relname := .Release.Name -}}
+{{- with .Values.favorite }}
+drink: {{ .drink | default "tea" | quote }}
+food: {{ .food | upper | quote }}
+release: {{ $relname }}
+{{- end }}
+</code></pre>
+</li>
+<li>
+<p>可以和<code>range</code>结合起来用。</p>
+<ul>
+<li>
+<p>遍历一个列表。<code>index</code>变量是下标，从<code>0</code>开始</p>
+<pre><code>toppings: |-
+  {{- range $index, $topping := .Values.pizzaToppings }}
+    {{ $index }}: {{ $topping }}
+  {{- end }}
+</code></pre>
+</li>
+<li>
+<p>键值对。注意<code>Values.favorite</code>是键值对的集合。所以第一次是一对，第二次是第二对</p>
+<pre><code>{{- range $key, $val := .Values.favorite }}
+  {{ $key }}: {{ $val | quote }}
+{{- end}}
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p>变量是有作用域的。顶层声明的就是整个<code>template</code>可用，<code>range</code>里面声明的，就是<code>range</code>里面可用。比如上面这个例子，出了<code>end</code>就没用了。</p>
+</li>
+<li>
+<p><strong>有一个特殊的变量 <code>$</code>，代表根作用域！</strong></p>
+</li>
+</ul>
+<h4 id="已命名的template"><a class="header-anchor" href="#已命名的template"></a>已命名的Template</h4>
+<p>就是介绍一下如何引用啊，命名之类。需要注意的是名字是全局的，不管这个<code>template</code>是不是包在其他的<code>template</code>里面。<br>
+__需要的一点是，名字中有下划线的<code>template</code>是不会被部署到<code>kubernate</code>上面的。但是可以被其他<code>template</code>引用</p>
+<h5 id="define"><a class="header-anchor" href="#define"></a>define</h5>
+<ul>
+<li>
+<p>使用<code>define</code>可以在一个<code>template</code>内部创建一个新的<code>template</code>。语法如下：</p>
+<pre><code>{{- define "mychart.labels" }}
+  labels:
+    generator: helm
+    date: {{ now | htmlDate }}
+{{- end }}
+</code></pre>
+</li>
+<li></li>
+</ul>
+<h5 id="template和include"><a class="header-anchor" href="#template和include"></a>template和include</h5>
+<ul>
+<li>
+<p><code>template</code>感觉和<code>include</code>有点相似。是调用用<code>define</code>定义的<code>template</code>的。如下：</p>
+<pre><code>metadata:
+  name: {{ .Release.Name }}-configmap
+  {{- template "mychart.labels" }}
+</code></pre>
+</li>
+<li>
+<p>通常这类<code>template</code>会被放在<code>_helpers.tpl</code>文件里面。我的感觉是，这类<code>template</code>很像<code>util</code>函数，然后放在一个集中的文件里面。一般会在前面加一个注释，如下的格式：</p>
+<pre><code>{{/* ... */}}
+</code></pre>
+</li>
+<li>
+<p>但是还有一个问题，如上面例子的调用，并没有给任何的作用域，而<code>template</code>的默认作用域为空。如下的<code>template</code>里面的<code>.Chart</code>是无法生效的。所以调用时候应该用以下形式。这样传入一个作用域就可以了。</p>
+<pre><code>{{/* Generate basic labels */}}
+  {{- define "mychart.labels" }}
+    labels:
+      generator: helm
+      date: {{ now | htmlDate }}
+      chart: {{ .Chart.Name }}
+      version: {{ .Chart.Version }}
+  {{- end }}
+  
+
+{{- template "mychart.labels" .}}
+</code></pre>
+</li>
+<li>
+<p>还有一个问题，<code>template</code>有点类似<code>inline</code>，就是简单的将内容展开，并不考虑缩进的问题。为此，引入了<code>include</code>， <code>include</code>可以用<code>pipeline</code>来指定缩进。推荐使用<code>include</code>来替代<code>template</code></p>
+<pre><code>{{- include "mychart.app" . | nindent 2 }}
+</code></pre>
+</li>
+</ul>
+<h4 id="引用文件"><a class="header-anchor" href="#引用文件"></a>引用文件</h4>
+<ul>
+<li>
+<p><code>.File</code>可以将文件包含进来。需要注意的有，<code>template</code>目录下面的文件没法被包含。如下例子。<code>.File.Get</code>就是读取文件的内容的函数</p>
+<pre><code> {{- $files := .Files }}
+ {{- range list "config1.toml" "config2.toml" "config3.toml" }}
+  {{ . }}: |-
+    {{ $files.Get . }}
+ {{- end }}
+</code></pre>
+</li>
+</ul>
+<h3 id="参考文档"><a class="header-anchor" href="#参考文档"></a>参考文档</h3>
+<ul>
+<li><a href="https://www.cnblogs.com/Erik_Xu/p/8893725.html" target="_blank" rel="noopener">Helm介绍</a></li>
+<li><a href="https://github.com/helm/helm" target="_blank" rel="noopener">Helm GitHub页面</a></li>
+<li><a href="https://helm.sh/docs/using_helm/#quickstart-guide" target="_blank" rel="noopener">Helm使用文档</a></li>
+<li><a href="https://helm.sh/docs/chart_template_guide/" target="_blank" rel="noopener">Helm官方文档</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/02/26/Liveness-Readiness/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/02/26/Liveness-Readiness/" itemprop="url">Liveness & Readiness</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-26T14:29:11+08:00">
+                2019-02-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/docker/" itemprop="url" rel="index">
+                    <span itemprop="name">docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="liveness-readiness"><a class="header-anchor" href="#liveness-readiness"></a>Liveness &amp; Readiness</h2>
+<h3 id="readiness"><a class="header-anchor" href="#readiness"></a>Readiness</h3>
+<ul>
+<li>Readiness Probes checks if an application is ready to start processing traffic.</li>
+<li>This probe solves the problem of the container having started, but the process still warming up and configuring itself meaning it’s not ready to receive traffic.</li>
+<li>The configuration is as following:<br>
+readinessProbe:<br>
+httpGet:<br>
+path: /<br>
+port: 80<br>
+initialDelaySeconds: 1<br>
+timeoutSeconds: 1</li>
+</ul>
+<h3 id="liveness"><a class="header-anchor" href="#liveness"></a>Liveness</h3>
+<ul>
+<li>Liveness Probes ensure that the application is healthy and capable of processing requests.</li>
+<li>The configuration is as following:<br>
+livenessProbe:<br>
+httpGet:<br>
+path: /<br>
+port: 80<br>
+initialDelaySeconds: 1<br>
+timeoutSeconds: 1</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/02/22/Jetty-Graceful-shutdown/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1270,7 +1973,7 @@ not very sure here. It seems that connector and context are different. I think t
 <ul>
 <li>Column是Cassandra中最小的数据单元，它是一个三元的数据类型，包含name,value,timestamp.</li>
 <li>name是必须的，value不是必须的，timestamp经常可以忽略不计，如下图<br>
-<img src="https://img-blog.csdn.net/20140302154940656?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="引用自第一篇参考链接"></li>
+<img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_column.png" alt="引用自第一篇参考链接"></li>
 </ul>
 <blockquote>
 <p>引用自csdn</p>
@@ -1279,7 +1982,7 @@ not very sure here. It seems that connector and context are different. I think t
 <ul>
 <li>可以将SuperColumn想象成Column的数组，它包含一个name以及一系列Column.</li>
 <li>SuperColumn本身不包含timestamp属性。使用SuperColumn有一个限制，要读取其中一个子列的值，必须把所有子列都反序列化，且不能在子列中建索引<br>
-<img src="https://img-blog.csdn.net/20140302154945843?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt></li>
+<img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_super_column.png" alt></li>
 </ul>
 <blockquote>
 <p>引用自csdn</p>
@@ -1301,18 +2004,24 @@ not very sure here. It seems that connector and context are different. I think t
 </ul>
 <h3 id="columnfamily"><a class="header-anchor" href="#columnfamily"></a>ColumnFamily</h3>
 <ul>
-<li><code>columnFamily</code>相当于数据库中的表</li>
-<li>每一行有一个<code>row</code>的名字，然后每一行里面是一个个的<code>column</code>，也可以是<code>super column</code></li>
-<li><code>ColumnFamily</code>是一个包含了许多<code>Row</code>的结构，每一个<code>Row</code>都包含有client提供的Key以及和该Key关联的一系列Column。</li>
-<li>每一行里面的<code>column</code>的名字可以是不变的。也可以是可变的。静态和动态column</li>
-<li>需要注意的是，数据写入的时候已经经过排序了。就是说一行的所有<code>column</code>，会根据它的名字来进行排序。<br>
-<img src="https://img-blog.csdn.net/20140302154940656?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYWVzb3Bfd3Vibw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt></li>
-</ul>
-<blockquote>
-<p>引用自csdn</p>
-</blockquote>
-<ul>
-<li>第二个参考链接里面的例子：</li>
+<li>
+<p><code>columnFamily</code>相当于数据库中的表</p>
+</li>
+<li>
+<p>每一行有一个<code>row</code>的名字，然后每一行里面是一个个的<code>column</code>，也可以是<code>super column</code></p>
+</li>
+<li>
+<p><code>ColumnFamily</code>是一个包含了许多<code>Row</code>的结构，每一个<code>Row</code>都包含有client提供的Key以及和该Key关联的一系列Column。</p>
+</li>
+<li>
+<p>每一行里面的<code>column</code>的名字可以是不变的。也可以是可变的。静态和动态column</p>
+</li>
+<li>
+<p>需要注意的是，数据写入的时候已经经过排序了。就是说一行的所有<code>column</code>，会根据它的名字来进行排序。</p>
+</li>
+<li>
+<p>第二个参考链接里面的例子：</p>
+</li>
 </ul>
 <pre><code>   UserProfile = { // 这是一个ColumnFamily
         phatduckk: {   // 这是对应ColumnFamily的key
@@ -1328,7 +2037,15 @@ not very sure here. It seems that connector and context are different. I think t
           phone: &quot;888&quot;
         }
 </code></pre>
-<h3 id="对应到表里面"><a class="header-anchor" href="#对应到表里面"></a>对应到表里面</h3>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_column_family.png" alt></p>
+<blockquote>
+<p>引用自第一篇参考链接文档</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_storage_picture.png" alt></p>
+<blockquote>
+<p>引用自第二篇参考链接文档</p>
+</blockquote>
+<h3 id="对应到表的定义里面"><a class="header-anchor" href="#对应到表的定义里面"></a>对应到表的定义里面</h3>
 <p>目前对于表结构的理解是这样的，可能后面有更正：</p>
 <ul>
 <li>如果用<code>desc tables</code>去查看一张表。那么可以看到primaryKey字样，类似<code>PRIMARY KEY ()</code>，还有<code>CLUSTERING ORDER</code> 字样</li>
@@ -1340,18 +2057,18 @@ not very sure here. It seems that connector and context are different. I think t
 <pre><code>PRIMARY KEY ((race_year, race_name), rank)
 </code></pre>
 <p>这里的<code>race_year</code>和<code>race_name</code>就是组合的<code>partition key</code>,而<code>rank</code>就是<code>a clustering column</code>，用来排序的</p>
-<p><img src="https://images.cnblogs.com/cnblogs_com/gpcuster/WindowsLiveWriter/Cassandra_8E88/image_thumb.png" alt></p>
-<blockquote>
-<p>引用自第二篇参考链接文档</p>
-</blockquote>
+<ul>
+<li>也可能看到<code>CLUSTERING ORDER BY</code>的字样里面，有<code>ASC</code>，代表升序排序，可以指定为<code>DESC</code>降序排序</li>
+<li>在3.0的版本之前，还可能看到<code>COMPACT STORAGE</code>，现在已经没有啦，所以也就不写了。</li>
+</ul>
 <h3 id="data-moduling"><a class="header-anchor" href="#data-moduling"></a>data moduling</h3>
 <ul>
 <li>最近看了一些关于建模的文章。文章里面一些反复强调的事如下：
 <ul>
-<li>cassandra不同于其他数据库的是，它写的成本低，读的成本高。</li>
-<li>基于这一点，必须在一开始先考虑query的需求，然后数据可以duplicated。而在关系数据库建模时候，完全是不一样的。</li>
-<li>基于cassandra的写和存储的方式，需要读取的数据应该放在同一个partition里面。这个partition是cassandra里面的一个概念</li>
-<li>文章里面的这句话说明了partition的定义和重要性：</li>
+<li><code>cassandra</code>不同于其他数据库的是，它写的成本低，读的成本高。</li>
+<li>基于这一点，必须在一开始先考虑<code>query</code>的需求，然后数据可以<code>duplicated</code>。而在关系数据库建模时候，完全是不一样的。</li>
+<li>基于<code>cassandra</code>的写和存储的方式，需要读取的数据应该放在同一个<code>partition</code>里面。</li>
+<li>文章里面的这句话说明了<code>partition</code>的定义和重要性：</li>
 </ul>
 <blockquote>
 <p>a set of rows that share a partition key is called a partition<br>
@@ -1761,639 +2478,6 @@ Cassandra的是读数据慢，写数据快。</p>
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/01/17/Cassandra-写数据过程/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/01/17/Cassandra-写数据过程/" itemprop="url">Cassandra 写数据过程</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-17T16:37:00+08:00">
-                2019-01-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/cassandra/" itemprop="url" rel="index">
-                    <span itemprop="name">cassandra</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="cassandra-写流程"><a class="header-anchor" href="#cassandra-写流程"></a>Cassandra 写流程</h2>
-<h3 id="大致流程"><a class="header-anchor" href="#大致流程"></a>大致流程</h3>
-<p>到把数据写到磁盘中分为以下几个步骤：</p>
-<ol>
-<li>先找到应该往哪几个节点写</li>
-<li>写log到commit log</li>
-<li>写数据到memtable</li>
-<li>从memtable中flush数据</li>
-<li>将数据存储在SSTables中的磁盘中</li>
-</ol>
-<ul>
-<li>客户端写一条数据必须指定 Keyspace、ColumnFamily、Key、Column Name 和 Value，还可以指定 Timestamp，以及数据的安全等级。<strong><em>这个key又是什么key呢，partition Key, primary Key,是后文说根据key算出token，然后再根据token算出partition Index的</em></strong></li>
-</ul>
-<pre><code>Cassandra Node ---&gt;Commitlog---&gt; Memtable
-
-Commitlog ---&gt; Periodically sync to  disk
-
-Memtable  ---&gt; Periodically flush to SSTable
-</code></pre>
-<p><strong><em>如果看下面的流程图的话，那么上面这个顺序是不对的。是先写到memtable，然后再写commitLog？看官方文档，上面的是正确的。应该是流程图不够好。或者是一个相对并行的过程</em></strong></p>
-<p><img src="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image012-large.jpg" alt></p>
-<blockquote>
-<p>引用自第二篇链接</p>
-</blockquote>
-<ul>
-<li>这张图里面有的结构可能不太对了。没有找到RowMutation这个结构，只有Mutation</li>
-</ul>
-<h3 id="replica-factor"><a class="header-anchor" href="#replica-factor"></a>Replica Factor</h3>
-<ul>
-<li>
-<p>CassandraServer 接收到要写入的数据时：</p>
-<ul>
-<li>创建一个 <code>RowMutation</code> 对象，再创建一个 <code>QueryPath</code> 对象，这个对象中保存了 <code>ColumnFamily</code>、<code>Column Name</code> 或者 <code>Super Column Name</code>。</li>
-<li>把用户提交的所有数据保存在 <code>RowMutation</code> 对象的 Map&lt;String, ColumnFamily&gt; 结构中。</li>
-<li>根据提交的<code>Key</code>计算集群中那个节点应该保存这条数据。这个计算的规则是：将<code>Key</code>转化成<code>Token</code>，然后在整个集群的<code>Token</code>环中根据二分查找算法找到与给定的<code>Token</code>最接近的一个节点。</li>
-<li>如果用户指定了数据要保存多个备份，那么将会顺序在<code>Token</code>环中返回与备份数相等的节点。这是一个基本的节点列表，后面<code>Cassandra</code>会判断这些节点是否正常工作，如果不正常寻找替换节点。还有还要检查是否有节点正在启动，这种节点也是要在考虑的范围内，最终会形成一个目标节点列表。最后把数据发送到这些节点。</li>
-<li><strong><em>所以在真正开始写入数据之前，cassandra会做这些事情？在commitLog之前？</em></strong> 我想应该是之前</li>
-</ul>
-</li>
-<li>
-<p><code>Replica Factor</code>和<code>consistency level</code>不是一个东西，然后有一个算法。比如，<code>replica set</code>是3， <code>consistency level</code>的策略是<code>Querum</code>。这样需要consistent的节点是replica set/2 +1 ，所以就是2</p>
-</li>
-</ul>
-<h3 id="eventual-consistency"><a class="header-anchor" href="#eventual-consistency"></a>Eventual Consistency</h3>
-<p>这在Cassandra里面是非常关键的一个概念。写在这里。因为与写的机制相关最多。</p>
-<ul>
-<li>
-<p>Cassandra must make tradeoffs among data consistency, availability, and partition tolerance. Cassandra必须在数据一致性、可用性和分区容忍之间平衡</p>
-<ul>
-<li>
-<p>Availability: all clients are able to access the data so they can read and write data. 可用性：所有客户都能够读取和写入数据</p>
-</li>
-<li>
-<p>Consistency的概念：</p>
-<ul>
-<li>a read always return the latest written data： 读取时候返回最后一次写入的数据</li>
-<li>All clients will read the same value for an element of data even when the database is simultaneously updating data： 当数据库同步完成的时候，所有客户端应该得到同样的数据</li>
-</ul>
-</li>
-<li>
-<p>Partition tolerance：a database can be split into multiple machines and be able keep functioning even during network segmentation breaks： 一个数据库可以分布在不同的机器上面，并且能够在网络出现故障时候保持正常功能</p>
-<p>这里应该和关系型的传统数据库不一样。Cassandra是分布式数据库，所有node的地位是一样的。<strong><em>说好的seed呢，怎么感觉有seed， seed应该是Gossip机制里面提出的。参考博客内文档<code>Cassandra system log分析</code>后面也许会换一份文档放</em></strong></p>
-<p>Oracle这种数据库一般是单机版的，没有cluster， 但是有主从备份，所有不一样的</p>
-</li>
-</ul>
-</li>
-<li>
-<p>严格意义上面的Consistency对于分布式数据库来说很难做到。所以有Eventual consistency requires that all updates must be present on all the copies (replicas) of data in a distributed database, but allows for the fact that the process can take a bit of time.<br>
-就是说更新是都要进行的，但是可以有一段时间差</p>
-</li>
-<li>
-<p>tuneable consistency： 可配置的consistency。写和读都可以配。</p>
-</li>
-</ul>
-<h3 id="commit-log"><a class="header-anchor" href="#commit-log"></a>commit log</h3>
-<p><a href="https://stackoverflow.com/questions/34592948/what-is-the-purpose-of-cassandras-commit-log" target="_blank" rel="noopener">stackoverflow问答</a><br>
-这篇文章里面解释得挺清楚的。这里基本就是翻译以下。这个commit log也就是装机时候配置的那个<code>commitlog_directory</code>的配置项。<br>
-commit log大小配置是per-node来配置的，所有的table share这个配置。而Memtable和SSTable是per-table配置的</p>
-<ul>
-<li>
-<p>cassandra是先写到内存，再写到disk上面的，但是如果当机了。那么内存的数据就会丢。</p>
-</li>
-<li>
-<p>这个时候就需要commitLog，cassandra会从当机的时间点开始，将commitlog里面的数据再写到memTable里面。这个过程并不快，所以最好在restart之前手动进行一下memTable的flush。</p>
-</li>
-<li>
-<p>A commit log serves just one purpose: to hold committed data until it’s permanently written to disk in the SSTables</p>
-</li>
-<li>
-<p>commitLog需要写的数据少，并且只写到一个地方，所以比写SSTable要快</p>
-</li>
-<li>
-<p>在工作中碰到的一个问题就是commitLog损坏了，然后cassandra就起不来了。有一个配置项可以忽略commitLog报错。</p>
-</li>
-<li>
-<blockquote>
-<p>Data in the commit log is purged after its corresponding data in the memtable is flushed to an SSTable on disk.</p>
-</blockquote>
-</li>
-<li>
-<blockquote>
-<p>Commit log replay is the process of reading the commit log to recover lost writes in the event of interrupted operations.</p>
-</blockquote>
-</li>
-<li>
-<p>The database flushes memtables to disk when the space configured for the commit log reaches its limit. 这里配置的应该是磁盘空间大小，commit log只会写到磁盘上面。不会写到内存里面。</p>
-</li>
-<li>
-<p>By default, the database doesn’t compress the commit log, but you can make it compress.</p>
-</li>
-<li>
-<p>The database archives the commit log at the following times. You configure commit log archiving in the commitlog_archiving.properties file. _<strong><em>archive和compress不是一个概念的感觉。但是前者是指什么呢</em></strong></p>
-<ul>
-<li>When the node starts up</li>
-<li>When it writes a commit log to disk</li>
-<li>At a point in time that you specify</li>
-</ul>
-</li>
-</ul>
-<h3 id="memtable"><a class="header-anchor" href="#memtable"></a>MemTable</h3>
-<ul>
-<li>
-<blockquote>
-<p>Each memtable is dedicated to storing data for a specific table, and there may be multiple memtables per table.</p>
-</blockquote>
-</li>
-<li>每次写的时候只写其中一张memtable memTable在内存里面看不到哦</li>
-<li>memTable有两种，一种是写的这种，另外一种是从SSTable读进来的，这种不会重新写回到磁盘里面</li>
-<li><code>nodetool flush</code> or the <code>nodetool drain</code> command 来触法手动的flush。前者是指定table。后一个命令是flush这个node。期间会停止任何connection的接听，所以需要在执行命令之后重启整个node</li>
-</ul>
-<h3 id="sstable"><a class="header-anchor" href="#sstable"></a>SSTable</h3>
-<p>第二篇参考链接非常好，但是图片忒不清楚。</p>
-<p><img src="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image010-large.jpg" alt></p>
-<blockquote>
-<p>引用自第二篇参考链接</p>
-</blockquote>
-<ul>
-<li>SSTable是<code>Sorted String Table</code></li>
-<li>SSTable分为data、index、filter三个文件写到磁盘上面，其实还有好几个其他文件:<br>
-以下是一个目录里面的文件</li>
-</ul>
-<pre><code> Filter.db
- Statistics.db
- CompressionInfo.db
- Digest.adler32
- TOC.txt(就是文件列表)
- Summary.db
- Data.db
- Index.db
-</code></pre>
-<ul>
-<li>Primary index: A list of partition keys and the start position of rows in the data file written on disk(记得读的时候蛮有用的)</li>
-<li>Partition summary： 这个summary文件跟上面的Index Summary应该就是一个文件。解释也是一样。A sample of the partition index stored in memory</li>
-<li>Bloom filter：
-<ul>
-<li>
-<blockquote>
-<p>A structure stored in memory that checks if row data exists in the memtable before accessing SSTables on disk<br>
-按照这个解释，有点不明白，这么说应该是memory里面才有的。<br>
-- 找到解释了：Filter 文件存的内容就是 BloomFilter 对象的序列化结果。<strong><em>但是这样的话，将其序列化后保存到disk上面有什么用呢？ Bloom filters for an SSTable enhance read performance。后面读的时候看看怎么来enhance的</em></strong></p>
-</blockquote>
-</li>
-</ul>
-</li>
-<li>Statistics： Contains the statistical metadata about the SSTable’s data</li>
-</ul>
-<ul>
-<li>
-<p>存贮的目录就是yaml文件里面配置的<code>data_file_directories</code>确定</p>
-</li>
-<li>
-<p>For example, /data/data/ks1/cf1-5be396077b811e3a3ab9dc4b9ac088d/la-1-big-Data.db represents a data file. ks1 represents the keyspace name to distinguish the keyspace for streaming or bulk loading data. A hexadecimal string, 5be396077b811e3a3ab9dc4b9ac088d in this example, is appended to table names to represent unique table IDs.<br>
-同样会有：la-1-big-Index.db</p>
-</li>
-<li>
-<p><strong><em>la是啥？</em></strong></p>
-</li>
-<li>
-<p>用<code>./tools/bin/sstable2json</code>可以打开这堆data文件来看。下面是打开一个data文件的输出。</p>
-<ul>
-<li>从输出来看，存储的时候的key就是partition key。如果有多个，会用<code>：</code>隔开</li>
-<li>然后它是这样的：
-<ul>
-<li>不是partition key的primary key会作为第一个column的名字，同样用:隔开。</li>
-<li>接下来不是key的column和不是partition key的primary key联合起来作为column的名字。</li>
-<li>比如：那么key就是&quot;name:age&quot;, 然后cells里面的第一行会是,最后是时间戳<br>
-<code>[&quot;address:salary&quot;,&quot;&quot;,1558958953681000]</code></li>
-<li>第二行会是：<br>
-<code>[&quot;address:salary:character&quot;,character_value,1558958953681000]</code></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<pre><code>    name text PRIMARY KEY,
-    age bigint,
-    address int,
-    salary int,
-    character blob,
-    PRIMARY KEY ((name, age), address, salary)
-</code></pre>
-<h3 id="从memtables到sstable"><a class="header-anchor" href="#从memtables到sstable"></a>从memTables到SSTable</h3>
-<ul>
-<li>
-<p>Cassandra flushes the memtables to disk when either the commit log space threshold or the memtable cleanup threshold is reached.</p>
-<ul>
-<li><code>memtable_cleanup_threshold</code> 后面一种应该和这个参数有关</li>
-<li>在<code>expert cassandra</code>的书里有三种情况下面会flush。不包括手动flush</li>
-</ul>
-</li>
-<li>
-<blockquote>
-<p>To flush the data, Cassandra sorts memtables by token and then writes the data to disk sequentially.<br>
-Cassandra在将数据写到disk的时候，同时会将memtables按照token排序。___这个token是不是就是key算出来的那个token？但是table怎么按照token排序呢，应该说的是table里面的数据吧 ___</p>
-</blockquote>
-</li>
-<li>
-<blockquote>
-<p>A partition index is also created on the disk that maps the tokens to a location on disk.<br>
-partition index是在这里才算出来的。那么之前就都是token。___ Memtble里面的也都是token？___</p>
-</blockquote>
-</li>
-<li>
-<p>flush的时候不是一把头全写进去的。会先把memTable的数据放到一个queue里面。这个queue的大小可以在configuration里面定义。</p>
-<blockquote>
-<p>The queue can be configured with the memtable_heap_space_in_mb or memtable_offheap_space_in_mb setting</p>
-</blockquote>
-</li>
-<li>
-<p>You can manually flush a table using nodetool flush.</p>
-</li>
-<li>
-<blockquote>
-<p>Consequently, a partition is typically stored across multiple SSTable files.</p>
-</blockquote>
-</li>
-<li>
-<p>相同partition key的记录应该是存贮在一个node上面，但是也有可能是多个文件，要看数据量。</p>
-</li>
-</ul>
-<h3 id="参考文档"><a class="header-anchor" href="#参考文档"></a>参考文档</h3>
-<ul>
-<li><a href="https://blog.csdn.net/fs1360472174/article/details/55005335/" target="_blank" rel="noopener">官方文档–读写数据</a></li>
-<li><a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/index.html" target="_blank" rel="noopener">cassandra数据库详解</a></li>
-<li><a href="https://docs.datastax.com/en/cassandra/3.0/cassandra/dml/dmlHowDataWritten.html" target="_blank" rel="noopener">cassandra读写过程</a></li>
-<li><a href="https://blog.csdn.net/qinzhihu/article/details/8807776" target="_blank" rel="noopener">一篇很通俗的blog</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/01/17/还没想好/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/01/17/还没想好/" itemprop="url">Cassandra system log分析</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-17T14:28:35+08:00">
-                2019-01-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/cassandra/" itemprop="url" rel="index">
-                    <span itemprop="name">cassandra</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="cassandra-system-log分析"><a class="header-anchor" href="#cassandra-system-log分析"></a>Cassandra system log分析</h2>
-<p>最近一周可能都会在看Cassandra的system log，看Cassandra在干嘛。其中会涉及到cassandra的一些机制，概念记录下来。<br>
-文档名字暂时的，其中的概念可能后期会移走。</p>
-<h3 id="nodetool"><a class="header-anchor" href="#nodetool"></a>Nodetool</h3>
-<p>Cassandra的状态可以用<code>NodeTool</code>来check，如果采用了ssl 认证，那么命令是 <code>NodeTool --ssl</code></p>
-<h3 id="gossip-tasks"><a class="header-anchor" href="#gossip-tasks"></a>Gossip Tasks</h3>
-<h4 id="pending-task-log"><a class="header-anchor" href="#pending-task-log"></a>Pending task log</h4>
-<p>名字太好记 ，有没有 😃<br>
-Cassandra 的各个节点是无中心化对待的。能做到这一点的一个关键是使用了Gossip协议。这是一个很适用于不可信网络的协议</p>
-<ul>
-<li>参考链接， 后续需要更为仔细深入的学习： <a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-apache-cassandra3x3/index.html" target="_blank" rel="noopener">Apache Cassandra 3.X 系列</a></li>
-<li>Cassandra中Gossip协议被实现在类<code>Gossiper</code>中。</li>
-<li>Gossiper 类维护了一个节点列表，这个列表里包括存活的和死亡的节点。</li>
-<li><code>GossipTask</code> 是位于 <code>org.apche.cassandra.gms.Gossip</code> 类下的一个内部类。</li>
-<li>GossipTask会向其他节点发消息，默认时间是1s</li>
-<li>在log里面会有：<br>
-[GossipTasks:1] 2019-01-03 04:19:33,680 Gossiper.java:751 - Gossip stage has 378 pending tasks; skipping status check (no nodes will be marked down)</li>
-</ul>
-<h4 id="pause-error-not-making-nodes-down"><a class="header-anchor" href="#pause-error-not-making-nodes-down"></a>Pause Error: Not making Nodes Down</h4>
-<ul>
-<li>在log里面经常会出现:以下是说cassandra在做其他事情，导致Gossip停顿了， hang住了。但是并不标示node状态。</li>
-<li>通常是GC的时候，这一句的上一句log确实提示了一次55742ms的GC，但是GC通常也发生在有很多task的时候，所以应该看看其他在做什么task</li>
-</ul>
-<pre><code>WARN  [GossipTasks:1] 2019-01-02 00:00:04,546 FailureDetector.java:287 - Not marking nodes down due to local pause of 54491963082 &gt; 5000000000
-</code></pre>
-<ul>
-<li><a href="http://www.cnblogs.com/jobforlife/p/7092467.html" target="_blank" rel="noopener">error解释</a></li>
-</ul>
-<h3 id="service-thread"><a class="header-anchor" href="#service-thread"></a>Service Thread</h3>
-<p>没有看到这个Service Thread的具体解释。从log里面看有很多功能</p>
-<h4 id="statuslogger"><a class="header-anchor" href="#statuslogger"></a>StatusLogger</h4>
-<p>如此简单的一个函数也有好几种log啦。</p>
-<h5 id="threadpoolmetrics：-stage"><a class="header-anchor" href="#threadpoolmetrics：-stage"></a>ThreadPoolMetrics： Stage</h5>
-<p>打印出各种stage的状态，一个接一个的pool的状态。真心不少啊。</p>
-<ul>
-<li>在log里面会有：</li>
-</ul>
-<pre><code>INFO  [Service Thread] 2019-01-02 00:00:04,547 StatusLogger.java:52 - Pool Name Active   Pending      Completed   Blocked  All Time Blocked
-</code></pre>
-<ul>
-<li>鉴于stage比较多，另外写一篇blog来解释这堆。请看本站的stage。</li>
-</ul>
-<h5 id="cache"><a class="header-anchor" href="#cache"></a>Cache</h5>
-<p>输出KeyCache 和 RowCache的状态</p>
-<ul>
-<li>在log里面是：</li>
-</ul>
-<pre><code>INFO  [Service Thread] 2019-01-02 00:00:05,130 StatusLogger.java:88 - Cache Type  Size Capacity KeysToSave
-INFO  [Service Thread] 2019-01-02 00:00:05,130 StatusLogger.java:90 - KeyCache   1406343  104857600
-</code></pre>
-<ul>
-<li>这篇 log已经很长了。KeyCache和RowCache另开一篇log。</li>
-</ul>
-<h5 id="per-cf-stats"><a class="header-anchor" href="#per-cf-stats"></a>per-CF stats</h5>
-<p>per-CF stats是源码里面的注释，我也不知道是啥哦</p>
-<ul>
-<li>在log里面是：</li>
-</ul>
-<pre><code>INFO  [Service Thread] 2019-01-03 02:54:45,722 StatusLogger.java:106 (table_name)    6284,288376
-</code></pre>
-<ul>
-<li>Cassandra的API里面对于<code>StatusLogger</code>也没有解释。 ORZ，看来是个很直白的文件啊<br>
--<code>org.apache.cassandra.utils.StatusLogger</code> 只有一个函数<code>log()</code></li>
-</ul>
-<pre><code>logger.info(String.format(&quot;%-25s%20s&quot;, &quot;Table&quot;, &quot;Memtable ops,data&quot;));
-logger.info(String.format(&quot;%-25s%20s&quot;,
-                   cfs.keyspace.getName() 
-				   + &quot;.&quot; + cfs.name,                                      cfs.metric.memtableColumnsCount.getValue() 
-				   + &quot;,&quot; + cfs.metric.memtableLiveDataSize.getValue()));
-    }。
-</code></pre>
-<ul>
-<li>所以，第一个数值是memTable的column的个数，第二个是data的size</li>
-<li>一个问题是： 这个column也太多了吧。。。。。。</li>
-<li>被大神吊打了。这个值是表访问次数。</li>
-</ul>
-<h4 id="gcinspector"><a class="header-anchor" href="#gcinspector"></a>GCInspector</h4>
-<p>-在log里面是：</p>
-<pre><code>INFO  [Service Thread] 2019-01-02 00:00:04,546 GCInspector.java:284 - ConcurrentMarkSweep GC in 55742ms.  CMS Old Gen: 7331643368 -&gt; 7331643360; Par Eden Space: 1006632960 -&gt; 784484600; Par Survivor Space: 125829104 -&gt; 0
-</code></pre>
-<ul>
-<li>这句log的意思是：做了一次CMS GC。然后数字对应，11位是G，9位是M，所以 eden区是784M</li>
-<li>参考本站GC的文章了解更多CMS算法的内容</li>
-</ul>
-<h3 id="periodic-commit-log-syncer"><a class="header-anchor" href="#periodic-commit-log-syncer"></a>PERIODIC-COMMIT-LOG-SYNCER</h3>
-<ul>
-<li>在log里面是：</li>
-</ul>
-<pre><code>WARN  [PERIODIC-COMMIT-LOG-SYNCER] 2019-01-03 04:04:17,232 AbstractCommitLogService.java:117 - Out of 5 commit log syncs over the past 573s with average duration of 9734.40ms...
-</code></pre>
-<ul>
-<li>这个应该是将commit log写到disk上面的task。没有再查资料。参考本站cassandra写过程那篇博客</li>
-</ul>
-<h3 id="rmi-tcp-connection-idle"><a class="header-anchor" href="#rmi-tcp-connection-idle"></a>RMI TCP Connection(idle)</h3>
-<h3 id="indexsummarymanager"><a class="header-anchor" href="#indexsummarymanager"></a>IndexSummaryManager</h3>
-<ul>
-<li>在log里面是：</li>
-</ul>
-<pre><code> INFO  [IndexSummaryManager:1] 2019-01-02 03:21:59,849 IndexSummaryRedistribution.java:74 - Redistributing index summaries
-</code></pre>
-<ul>
-<li>Manages the fixed-size memory pool for index summaries, periodically resizing them in order to give more memory to hot sstables and less memory to cold sstables.</li>
-<li>还不是很理解，就是说index summary一开始也是存在内存中的吗？确实在参数配置里面有index_summary_capacity_in_mb和index_summary_resize_interval_in_minutes</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2444,7 +2528,7 @@ logger.info(String.format(&quot;%-25s%20s&quot;,
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-count">35</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

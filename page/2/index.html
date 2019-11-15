@@ -242,6 +242,416 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/07/09/DNS协议/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/07/09/DNS协议/" itemprop="url">DNS协议</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-09T15:35:36+08:00">
+                2019-07-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/protocal/" itemprop="url" rel="index">
+                    <span itemprop="name">protocal</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="引言"><a class="header-anchor" href="#引言"></a>引言</h2>
+<p>工作中要用到DNS协议，需要学习一下，省得碰到的时候每次都要再看一遍。 DNS也是TCP/IP里面的一个基础协议。所以也会涉及到一些TCP/IP协议的部分。<br>
+话说一个简单的DNS协议也有一堆可以写啊。不容易啊。</p>
+<h3 id="dns在tcp-ip协议里的位置"><a class="header-anchor" href="#dns在tcp-ip协议里的位置"></a>DNS在TCP/IP协议里的位置</h3>
+<ul>
+<li>从参考链接名就能看出来， DNS是应用层的协议</li>
+<li>TCP/IP是四层。OSI是7层。</li>
+</ul>
+<p><img src="https://ask.qcloudimg.com/http-save/yehe-1195962/e9uc1yy5n7.png?imageView2/2/w/1620" alt></p>
+<blockquote>
+<p>图片来自参考链接1</p>
+</blockquote>
+<ul>
+<li>参考链接：
+<ul>
+<li><a href="https://cloud.tencent.com/developer/article/1023700" target="_blank" rel="noopener">TCP/IP（六）应用层（DNS和HTTP协议）</a></li>
+<li><a href="https://cloud.tencent.com/developer/article/1358564" target="_blank" rel="noopener">DNS协议入门</a></li>
+<li><a href="https://cloud.tencent.com/developer/information/dns%E7%9A%84%E5%8D%8F%E8%AE%AE" target="_blank" rel="noopener">DNS协议栈</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="概述"><a class="header-anchor" href="#概述"></a>概述</h3>
+<ul>
+<li><code>Domain Name System</code> 域名系统。也可以叫做域名解析协议。</li>
+<li>简单的解释就是DNS协议会把网址，比如将”<a href="http://sallyslove.github.io/hexo_blog%E2%80%9D%E7%9A%84%E5%9F%9F%E5%90%8D%E8%BD%AC%E6%8D%A2%E6%88%90%E4%B8%BA%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%83%BD%E5%A4%9F%E7%90%86%E8%A7%A3%E7%9A%8432%E4%BD%8D%E7%9A%84IP%EF%BC%8C%E5%8F%91%E5%88%B0%E7%BD%91%E7%BB%9C%E5%B1%82%E5%8E%BB%E3%80%82">sallyslove.github.io/hexo_blog”的域名转换成为计算机能够理解的32位的IP，发到网络层去。</a></li>
+<li>域名和IP的对应关系保存在一个叫hosts文件中。最初，通过互联网信息中心来管理这个文件，如果有一个新的计算机想接入网络，或者某个计算IP变更都需要到信息中心申请变更hosts文件。其他计算机也需要定期更新，才能上网。但是这样太麻烦了，就出现了DNS系统。</li>
+<li>其实我们现在的电脑上面也是有这个文件的，就是<code>/window/systems/drivers/etc</code>下面也有hosts文件。注释里面很清楚写着，这个文件“used by Microsoft TCP/IP for Windows.”</li>
+<li>目前的DNS系统中，如果有 hosts文件，仍旧会优先查询这个文件的</li>
+</ul>
+<h3 id="流程"><a class="header-anchor" href="#流程"></a>流程</h3>
+<ul>
+<li>过程相当的简单明了啊。client端发消息给域名解析服务器，服务器在自己里面一顿找，有就直接返回</li>
+<li>没有就去根服务器找，根服务器找了之后会存到低一次没找到的域名解析服务器进行缓存。</li>
+<li>再去找的时候就从缓存里面直接拿。不需要再去根服务器跑一趟了</li>
+</ul>
+<p><img src="https://ask.qcloudimg.com/http-save/yehe-1195962/vspbulgxi2.png?imageView2/2/w/1620" alt></p>
+<blockquote>
+<p>图片来自参考链接1</p>
+</blockquote>
+<h3 id="详解"><a class="header-anchor" href="#详解"></a>详解</h3>
+<ul>
+<li>参考链接：
+<ul>
+<li><a href="https://blog.csdn.net/baidu_37964071/article/details/80500825" target="_blank" rel="noopener">DNS（域名解析协议）详解</a></li>
+<li><a href="https://cloud.tencent.com/developer/article/1358564" target="_blank" rel="noopener">DNS 协议入门</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="域名"><a class="header-anchor" href="#域名"></a>域名</h4>
+<p>好吧，要了解DNS协议，首先要了解域名。各种域名都隶属于域名系统根域的下级。</p>
+<ul>
+<li>域名是分层次的。第一级域名，比如com，代表公司，这是company的缩写吧。再比如org,嗯，我看出来了，organization的开头。net网络提供商。大家有严格遵守吗?</li>
+<li>第二级域名其实是公司名，比如baidu，bing。微软为啥叫bing啊。</li>
+<li>对应不同层级的域名，有相应的服务器。根域名服务器之类。每一级域名服务器都知道下级域名服务器的IP地址。这个按照上面的流程也能知道。应该下层也知道上一层的地址，不然没法求助啊。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/protocal/DNS_domain_name.png" alt></p>
+<blockquote>
+<p>图片来自上面的参考链接1</p>
+</blockquote>
+<h4 id="协议"><a class="header-anchor" href="#协议"></a>协议</h4>
+<ul>
+<li>DNS占用53号端口，同时使用TCP和UDP协议。那么DNS在什么情况下使用这两种协议？DNS在区域传输的时候使用TCP协议，其他时候使用UDP协议。</li>
+<li>上面提到不同层级的域名会有不同层级的域名服务器来对应，每一层级也有主副服务器，辅助服务器与主服务器会进行同步，这个时候会用TCP协议，大批量数据传输，TCP是相对稳定的链接</li>
+<li>而客户端向域名服务器查询时候用的是UDP协议， 效率更高，不需要经过三次握手</li>
+</ul>
+<h4 id="实现"><a class="header-anchor" href="#实现"></a>实现</h4>
+<ul>
+<li><code>dnsjava</code>是DNS的一个Java实现。这是一个3pp。还有其他一些实现，比如<code>dns4j</code>，<code>dnsjnio</code>，<code>jdnss</code>,<code>eagledns</code>。</li>
+<li>要打开dnsjava的log，需要将设置<code>System.setProperty(&quot;dnsjava.options&quot;,&quot;verbose&quot;);</code> 这种操作也真是比较老了。</li>
+<li>maven dependency是以下这样。</li>
+</ul>
+<pre><code>&lt;dependency&gt;
+   &lt;groupId&gt;dnsjava&lt;/groupId&gt;
+   &lt;artifactId&gt;dnsjava&lt;/artifactId&gt;
+   &lt;version&gt;2.1.7&lt;/version&gt;
+</code></pre>
+<ul>
+<li><code>dnsjava</code>类图</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/protocal/dnsjava_class_diagram.png" alt></p>
+<ul>
+<li>
+<p><code>dnsjava</code> 流程图<br>
+<img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/protocal/dnsjava_sequence_diagram.png" alt></p>
+</li>
+<li>
+<p>参考链接：</p>
+<ul>
+<li><a href="https://blog.csdn.net/zhu_tianwei/article/details/45128537" target="_blank" rel="noopener">DNS BIND之dnsjava java客户端操作</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="使用"><a class="header-anchor" href="#使用"></a>使用</h4>
+<ul>
+<li><code>lookup</code>遇到错误“network error”，这个是因为在以下原因。 其实我碰到的就是BindException，“address already in use”</li>
+<li>参考链接：
+<ul>
+<li><a href="https://coderanch.com/t/585844/java/org-xbill-DNS-Lookup-error" target="_blank" rel="noopener">org.xbill.DNS.Lookup() error.</a></li>
+<li><a href="https://github.com/dnsjava/dnsjava/issues/71" target="_blank" rel="noopener">我自己报的issue</a></li>
+<li><a href="https://www.programcreek.com/java-api-examples/index.php?api=org.xbill.DNS.ExtendedResolver" target="_blank" rel="noopener">Java Code Examples for org.xbill.DNS.ExtendedResolver</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/06/25/Cassandra的数据维护/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/06/25/Cassandra的数据维护/" itemprop="url">Cassandra的数据维护</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-25T17:01:57+08:00">
+                2019-06-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/cassandra/" itemprop="url" rel="index">
+                    <span itemprop="name">cassandra</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="compacting-sstable-data"><a class="header-anchor" href="#compacting-sstable-data"></a>Compacting SSTable Data</h3>
+<h4 id="why-do-we-need-compaction"><a class="header-anchor" href="#why-do-we-need-compaction"></a>Why Do We Need Compaction</h4>
+<ul>
+<li>cassandra并不会删除数据。当需要update一个数据的时候，也不是在SSTable里面进行覆盖，而是会插入一个新的数据，带上新的version。</li>
+<li>这样做的话，cassandra写入数据会非常快，因为不需要查询，但是弊端就是会有越来越多的数据。</li>
+<li>这个时候就需要进行compaction。</li>
+</ul>
+<h4 id="what-is-compaction"><a class="header-anchor" href="#what-is-compaction"></a>What Is Compaction</h4>
+<ul>
+<li>To keep the multiple versions of the SSTables from overwhelming it, the database merges SSTables on a regular basis to get rid of the older versions of the data。 cassandra会在一个基础之上对旧的版本的数据进行合并，这个就是compaction</li>
+<li>cassandra默认会进行很多次小的compaction</li>
+</ul>
+<h4 id="campaction细节"><a class="header-anchor" href="#campaction细节"></a>Campaction细节</h4>
+<ul>
+<li>在compaction期间，cassandra会合并key和column，同时会将过期的墓碑删除，还会生成一个新的index？ <strong><em>这个index是什么东西啊</em></strong></li>
+<li>合并之后会生成一个新的SSTable。<strong><em>回头要试一下</em></strong></li>
+<li>compaction期间的资源耗用会上升，但是compaction结束之后应该会释放空间，因为它合并了SSTable</li>
+<li>旧的被合并的table会被加上deletion标签，并且在数据库重启或者在使用reference counting mechanism的时候。<strong><em>这个reference counting mechanism是什么啊</em></strong></li>
+<li>compaction的算法是可以配置的，默认的是<code>size-tiered compaction</code>。这个算法会合并大小相近的table，生成大table</li>
+</ul>
+<h4 id="compaction对读数据的影响"><a class="header-anchor" href="#compaction对读数据的影响"></a>Compaction对读数据的影响</h4>
+<ul>
+<li>compaction是per-node的，所以某个数据在node1上面的旧版本可能删除了。但是在node2上面还有。</li>
+<li>这样读的时候会进行一个合并，并且返回最后一个写的version。这个原则是<code>last-write-win</code></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/06/17/软件衡量标准/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1503,7 +1913,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/hexo_blog/2019/03/04/TLS/" itemprop="url">SSL/TLS相关知识</a></h1>
+                <a class="post-title-link" href="/hexo_blog/2019/03/04/TLS/" itemprop="url">SSL/TLS相关知识-算法</a></h1>
         
 
         <div class="post-meta">
@@ -1588,18 +1998,19 @@ public class ThreadPoolExecutor extends AbstractExecutorService
 <li><a href="https://xz.aliyun.com/t/2531" target="_blank" rel="noopener">SSL/TLS协议详解(下)——TLS握手协议</a></li>
 <li>以上是一个系列，真的是详解，非常详尽。</li>
 </ul>
-<h2 id="加密算法"><a class="header-anchor" href="#加密算法"></a>加密算法</h2>
+<h2 id="算法"><a class="header-anchor" href="#算法"></a>算法</h2>
 <ul>
 <li>这边主要是参考了上面参考链接里面的第一篇，总的来说，应该了解一下这些</li>
 </ul>
 <h3 id="哈希算法"><a class="header-anchor" href="#哈希算法"></a>哈希算法</h3>
 <ul>
-<li>哈希算法生成的数据格式被称为散列，散列不是一个可逆的过程。而之前说过，<code>Base64</code>只是编码，顾名思义，编码只要知道规则，是可以解码的，没有安全性可言。</li>
+<li>哈希算法生成的数据格式被称为散列，散列不是一个可逆的过程。<br>
+而之前说过，<code>Base64</code>只是编码，顾名思义，编码只要知道规则，是可以解码的，没有安全性可言。所以编码算法和加密算法不是一回事来着。</li>
 <li>所以讲密码哈希一下，是没法看出来原始密码是什么的。</li>
-<li>这边可以扩展，进一步研究的是，如果进行攻击的话，称为字典攻击，就是猜密码，将常用的都哈希一下，去对比。</li>
+<li>这边可以扩展，进一步研究的是，如果进行攻击的话，称为字典攻击，就是猜密码，将常用的，可能出现的密码都哈希算法一下，去对比。</li>
 <li>哈希算法有很多种，比如<code>MD5</code>是一种，虽然之前说就是提取摘要的。<code>SHA-512</code>是另一种。</li>
 </ul>
-<h3 id="加密"><a class="header-anchor" href="#加密"></a>加密</h3>
+<h3 id="加密算法"><a class="header-anchor" href="#加密算法"></a>加密算法</h3>
 <ul>
 <li><em>Encryption lies in between hashing and encoding</em> 这句没看明白</li>
 <li>加密算法可以分为对称加密和非对称加密两种</li>
@@ -1608,15 +2019,25 @@ public class ThreadPoolExecutor extends AbstractExecutorService
 <ul>
 <li>主要来自参考链接一， 对称加密的话，文章中用一个例子来讲解：“移位”。比如有数字&quot;123&quot;，对其进行加密，都增大3，成为“456”，就是对称加密了。</li>
 <li>其中的数字3就是<code>Encryption key (symmetric key)</code>。对称加密的时候，知道<code>key</code>的话，就可以进行解密了。</li>
-<li><em>Anyone who knows the encryption key and can apply the reverse of Caesar’s algorithm and retrieve the original Plaintext.</em></li>
-<li>有此可知，在<code>TLS</code>中使用简单的对称加密不是很安全的。毕竟知道<code>Encryption key</code>就可以进行解密了。对称加密一代代发展，现在也有比较复杂的算法，比如<code>Triple Data Encryption Algorithm</code>，后面可以再进一步研究。</li>
+<li><em>Anyone who knows the encryption key and can apply the reverse of Caesar’s algorithm and retrieve the original Plaintext.</em> 凯撒算法就是上面这种意味式的加密算法。</li>
+<li>有此可知，在<code>TLS</code>中使用简单的对称加密不是很安全的。毕竟知道<code>Encryption key</code>就可以进行解密了。<br>
+对称加密一代代发展，现在也有比较复杂的算法，比如<code>Triple Data Encryption Algorithm</code>，后面可以再进一步研究。AES（高级加密标准）和3DES（三重数据加密算法）的复杂算法也是有的</li>
 <li>从过程可以知道，<code>key</code>是非常关键的。但是由于是对称加密解密，双方必须都知道约定的值，那么第一步就是传递<code>key</code>，而这个时候是没法加密的。所以就出现了不对称加密。<em>So we need a secure mechanism to exchange the keys without an attacker actually seeing it. There comes the role of Asymmetric Key Encryption.</em></li>
+<li>在<code>TLS</code>中，传输和接收数据的时候，可以使用对称加密算法。事实上，很可能大部分都是使用的对称加密。不对称加密涉及双密钥架构并且密钥长度通常很大，因此加密-解密开销非常高。与对称密钥加密相比，它需要更多的时间和<code>CPU</code>占有率。</li>
 </ul>
 <h4 id="不对称加密"><a class="header-anchor" href="#不对称加密"></a>不对称加密</h4>
 <ul>
-<li>不对称加密始于<code>RSA</code>算法。简单的解释就是，用不同的<code>key</code>来进行加密和解密。</li>
-<li>公钥用来给对方使用，比如A想给B发消息，那么A需要使用B的公钥来加密自己的消息。</li>
+<li>1976年，Whitfield Diffie和Martin Hellman首次提出了非对称加密的概念，该算法被称为<code>Diffie-Hellman</code>密钥交换。然后在1978年，麻省理工学院的Ron Rivest，Adi Shamir和Leonard Adleman发表了<code>RSA</code>算法。</li>
+<li>不对称加密的简单解释就是：用不同的<code>key</code>来进行加密和解密。</li>
+<li>非对称加密也称为公钥基础结构，又称<code>PKI public key ixxx</code></li>
+<li>不对称加密通常用于在刚开始传输对称加密的<code>key</code>的时候</li>
+<li>公钥用来给对方使用，比如A想给B发消息，那么A需要使用B的公钥来加密自己的消息。<br>
+所以公钥是可以与任何想与你通信的人共享的，一般来说，在公钥中会指定使用何种加密算法。 <em>如果密钥对是使用RSA算法生成的，那么它们应该在加密数据时使用相同的算法。</em></li>
 <li>私钥用来解密收到的消息。比如A收到了一条消息，那么A应当使用自己的私钥来解密收到的消息</li>
+<li>非对称加密算法除了<code>RSA</code>、<code>Diffie-Hellman密钥交换</code>、<code>ECDH（Elliptic Curve Diffie-Hellman）</code>、<code>SRP（安全远程密码）</code>以及由TLS 1.2支持密钥交换算法<code>PSK（Pre Shared Key）</code>。总之，也是有一大堆的</li>
+</ul>
+<h5 id="rsa算法细节"><a class="header-anchor" href="#rsa算法细节"></a>RSA算法细节</h5>
+<ul>
 <li>所以<code>RSA</code>算法有几个比较重要的组成，私钥，公钥，加密算法和解密算法</li>
 <li>那么一个严肃的问题就是，不同的钥匙进行计算的消息，怎么能够解开呢？接下来就是数学课的时间了。
 <ul>
@@ -1648,54 +2069,12 @@ public class ThreadPoolExecutor extends AbstractExecutorService
 (m^φ(n)) mod n≡1 又 1^k≡1, 所以(m^k*φ(n)) mod n≡1 ，所以(m^(k*φ(n)+1)) mod n≡m
 结合以上两条，ed=k*φ(n)+1 , d=(k*φ(n)+1)/e
 </code></pre>
-<h2 id="ssl相关知识"><a class="header-anchor" href="#ssl相关知识"></a>SSL相关知识</h2>
-<p><code>KeyStore</code>工作中碰到的不少。相关的问题先放这里吧。</p>
-<h3 id="tls版本"><a class="header-anchor" href="#tls版本"></a>TLS版本</h3>
+<h5 id="dh和rsa的区别"><a class="header-anchor" href="#dh和rsa的区别"></a>DH和RSA的区别</h5>
 <ul>
-<li><code>SSL3.0</code> 和 <code>TLS1.0</code> 是一个东西。嗯，微软干的。微软虽然是一个伟大的公司，但是这个干得不好，相当不好，至少我本人觉得不好。实在是除了增加大家的混淆以外，没有任何意义。嘛，我们自己的产品也经常干这种事情。通常呢，是因为自己认为发生了跨时代的改变，希望让别人也明白。</li>
-<li>目前最流行的版本是<code>TLS1.2</code>，最新的版本是<code>TLS1.3</code>。</li>
-<li><code>java8</code>中默认的是<code>TLS1.2</code>版本。<code>java11</code>里面支持的是<code>TLS1.3</code></li>
-<li>各种<code>web</code>应用服务器的配置文件里面都可以配置支持或者不支持的版本。比如<code>tomcat</code>提供了参数:<code>sslEnabledProtocols</code></li>
+<li>有一本书，叫做“图解密码技术”，</li>
+<li><code>RSA</code>利用最大公约数（互质）来求出公钥和私钥。<code>DH密钥协商</code>则是利用生成元来得到共享密钥。</li>
+<li>在第一篇参考链接中有<code>DH</code>算法的详细数学过程，暂时略过，这些需要数学基础啊。</li>
 </ul>
-<h4 id="如何发现我的浏览器使用的tls版本"><a class="header-anchor" href="#如何发现我的浏览器使用的tls版本"></a>如何发现我的浏览器使用的TLS版本</h4>
-<ul>
-<li>因为要测试<code>tomcat</code>里面配置的参数是否生效，所以第一反应就是我咋知道呢。后来经同事提点，其实用<code>openssl</code>就可以了。当然，目前，我还不知道当如何使用。</li>
-<li>在浏览器的配置中能看到， 比如IE, <code>File</code>-&gt;<code>Properties</code>, 在<code>Connection</code>一栏就能看到。</li>
-<li>参考链接：
-<ul>
-<li><a href="https://www.thesslstore.com/blog/google-chrome-72-deprecates-support-for-tls-1-0-tls-1-1/" target="_blank" rel="noopener">chrome如何配置和查看</a></li>
-<li><a href="https://security.stackexchange.com/questions/19096/how-to-determine-if-a-browser-is-using-an-ssl-or-tls-connection/169418" target="_blank" rel="noopener">如何查看website的TLS版本</a></li>
-</ul>
-</li>
-</ul>
-<h4 id="如何测试tls连接"><a class="header-anchor" href="#如何测试tls连接"></a>如何测试TLS连接</h4>
-<ul>
-<li>这个是刚需啊刚需。我想使用<code>openssl</code>肯定也是可以的。这回使用的是<code>curl</code>命令。</li>
-<li><code>curl help</code>一下可以看到，使用参数就可以指定<code>TLS</code>版本，还是很好用的。</li>
-</ul>
-<h3 id="tls和oauth"><a class="header-anchor" href="#tls和oauth"></a>TLS和OAuth</h3>
-<ul>
-<li><a href="https://stackoverflow.com/questions/8378664/does-an-oauth-2-client-really-need-tls" target="_blank" rel="noopener">does-an-oauth-2-client-really-need-tls</a>： 我自己有点搞不清楚这些的关系，这边有一个解释很是清晰，看了就明白了
-<ul>
-<li><em>3.1.2.1.  Endpoint Request Confidentiality If a redirection request will result in the transmission of an authorization code or access token over an open network (between the resource owner’s user-agent and the client), the client SHOULD require the use of a transport-layer security mechanism.</em> 这个是<code>Oauth</code>官方文档里面的一段话。</li>
-<li>上面一段的意思应该是这样的：一个第三方认证的请求在传输<code>authorization code</code>或者<code>access token</code>的时候应当在传输层使用安全机制。这里的安全机制就是指<code>TLS</code>协议。</li>
-</ul>
-</li>
-</ul>
-<h3 id="tls双向握手"><a class="header-anchor" href="#tls双向握手"></a>TLS双向握手</h3>
-<h3 id="keystore和truststore"><a class="header-anchor" href="#keystore和truststore"></a>KeyStore和TrustStore</h3>
-<ul>
-<li>keystore和truststore从其文件格式来看其实是一个东西，只是为了方便管理将其分开</li>
-<li>keystore中一般保存的是我们的私钥，用来加解密或者为别人做签名</li>
-<li>truststore中保存的是一些可信任的证书，主要是java在代码中访问某个https的时候对被访问者进行认证的，以确保其实可信任的。一般为公钥</li>
-<li>只有HTTPS才需要这些吗？</li>
-<li>参考链接
-<ol>
-<li><a href="https://www.cnblogs.com/gsls200808/p/4500246.html" target="_blank" rel="noopener">KeyStore和TrustStore</a></li>
-</ol>
-</li>
-</ul>
-<h3 id="certificate"><a class="header-anchor" href="#certificate"></a>Certificate</h3>
 
           
         
@@ -1985,709 +2364,6 @@ kube-system    Active    15d
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/02/26/Helm入门/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/02/26/Helm入门/" itemprop="url">Helm入门</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-26T15:50:36+08:00">
-                2019-02-26
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/docker/" itemprop="url" rel="index">
-                    <span itemprop="name">docker</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="helm"><a class="header-anchor" href="#helm"></a>Helm</h2>
-<p><code>Helm</code>入门篇。感觉有点类似<code>maven</code>，总归有这样一个管理工具。其实是想看<code>Ingress</code>的，可是不看<code>Helm</code>，yaml看不懂呀。只好滚回来看Helm。</p>
-<p>写了一阵之后再看看，会发现有些看不明白的地方。果然，我写博客的风格和上学年代记笔记的风格一样，喜欢简略而不够详尽啊。这是说好多年没有变化和进步嘛 😂</p>
-<h3 id="helm是什么"><a class="header-anchor" href="#helm是什么"></a>Helm是什么</h3>
-<ul>
-<li><code>Helm</code>是在Kubernetes中安装部署容器的一个工具。</li>
-<li><em>Helm is a tool for managing Kubernetes charts.</em> 所以Charts可能是K8s的一个概念。中文的博客不一定对。也不一定，可能就是Helm引入的一个概念。</li>
-<li><code>Helm</code>由<code>Helm</code>客户端、<code>Tiller</code>服务器端和<code>Chart</code>仓库所组成
-<ul>
-<li><code>Helm</code>客户端： 客户端交互</li>
-<li><code>Tiller</code>服务器端： 装在k8s的cluster里面，管理<code>chart</code></li>
-<li><code>Chart</code>仓库：创建<code>Kubernetes</code>应用实例的信息集合
-<ul>
-<li><code>Chart</code>由两个部分组成，第一个部分是A description of the package (Chart.yaml)</li>
-<li>One or more templates, which contain Kubernetes manifest files。这个templates的话，应该也是yaml文件吧。</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h3 id="常用的helm命令"><a class="header-anchor" href="#常用的helm命令"></a>常用的helm命令</h3>
-<ul>
-<li>
-<p><code>helm status &lt;namespace&gt;</code> 查看<code>Helm</code>的状态</p>
-</li>
-<li>
-<p><code>helm install</code>: 实际将helm里面的内容安装到当前的k8s上面。比如我创了一个<code>configMap.yaml</code>的<code>templete</code>，那么就会安装上去。</p>
-<ul>
-<li>
-<p>如果只是想看看template的rending，那么使用命令<code>helm install ./mychart --debug --dry-run</code></p>
-</li>
-<li>
-<p>如果想传值进去，可以使用<code>-f</code> 命令，比如<code>helm install -f myvals.yaml ./mychart</code>。这样传的值，可以用<code>.Value</code>来访问</p>
-</li>
-<li>
-<p>单独传值是<code>--set foo=bar</code>，<code>--set</code>比文件的级别高，可以覆盖文件里面的值</p>
-</li>
-<li>
-<p><code>helm install stable/drupal --set image=my-registry/drupal:0.1.0 --set livenessProbe.exec.command=[cat,docroot/CHANGELOG.txt] --set livenessProbe.httpGet=null</code> 这条命令里面将<code>livenessProbe.httpGet</code>删除掉了。</p>
-<pre><code>$ helm install ./mychart
- NAME:   guiding-ocelot
- LAST DEPLOYED: Mon Aug 19 17:23:00 2019
- NAMESPACE: gear-1
- STATUS: DEPLOYED
-
- RESOURCES:
- ==&gt; v1/ConfigMap
- NAME               DATA  AGE
- mychart-configmap  1     0s
-</code></pre>
-</li>
-</ul>
-</li>
-<li>
-<p><code>helm get manifest &lt;release name&gt;</code>: 比如上面的这个<code>guiding-ocelot</code></p>
-<pre><code> $ helm get manifest guiding-ocelot
-
- ---
-  # Source: myChart/templates/configmap.yaml
-  apiVersion: v1
-  kind: ConfigMap
-  metadata:
-    name: mychart-configmap
-  data:
-    myvalue: &quot;Hello World&quot;
-</code></pre>
-</li>
-<li>
-<p><code>helm init</code>:安装tiller服务器端</p>
-</li>
-<li>
-<p><code>helm delete --purge &lt;release name&gt;</code></p>
-</li>
-<li>
-<p><code>helm repo add &lt;repo name&gt; &lt;repo address&gt;</code></p>
-</li>
-<li>
-<p><code>helm create &lt;chart name&gt;</code>: 生成一个目录</p>
-<pre><code>$ find myChart/
-  myChart/
-  myChart/.helmignore
-  myChart/Chart.yaml
-  myChart/charts
-  myChart/templates
-  myChart/templates/deployment.yaml
-  myChart/templates/ingress.yaml
-  myChart/templates/NOTES.txt
-  myChart/templates/service.yaml
-  myChart/templates/tests
-  myChart/templates/tests/test-connection.yaml
-  myChart/templates/_helpers.tpl
-  myChart/values.yaml
-</code></pre>
-</li>
-</ul>
-<h3 id="helm-chart"><a class="header-anchor" href="#helm-chart"></a>Helm Chart</h3>
-<h3 id="helm-template"><a class="header-anchor" href="#helm-template"></a>Helm Template</h3>
-<ul>
-<li>参考以上，默认生成一套chart的时候会生成template目录。
-<ul>
-<li><em>NOTES.txt: The “help text” for your chart. This will be displayed to your users when they run helm install.</em></li>
-<li><em>deployment.yaml: A basic manifest for creating a Kubernetes deployment</em></li>
-<li><em>service.yaml: A basic manifest for creating a service endpoint for your deployment</em></li>
-<li>_ <em>helpers.tpl: A place to put template helpers that you can re-use throughout the chart</em></li>
-</ul>
-</li>
-</ul>
-<h4 id="template-values"><a class="header-anchor" href="#template-values"></a>Template Values</h4>
-<ul>
-<li>
-<p>E.g. <code>name：</code>，下面这个例子里面用<code>release name</code> 来做前缀。话说这个<code>release name</code>在哪里定义的，我没找到。</p>
-<ul>
-<li>
-<p><em>So we could read <code>.Release.Name</code> as “start at the top namespace, find the <code>Release</code> object, then look inside of it for an object called <code>Name</code>”.</em></p>
-</li>
-<li>
-<p><code>.Release</code>表示<code>Release</code>是顶级的object</p>
-<pre><code>apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ .Release.Name }}-configmap
-data:
-  myvalue: &quot;Hello World&quot;
-</code></pre>
-</li>
-</ul>
-</li>
-<li>
-<p>顶级的自带的object包括： <code>Release</code>,<code>Value</code>,<code>Chart</code>,<code>Template</code>, <code>Capabilities</code>还有<code>File</code>。后两个还不是很理解</p>
-<ul>
-<li>
-<p><code>Release</code>里面包含很多变量，有<code>Release.Time</code>,<code>Release.Namespace</code>, <code>Release.Revision</code>,详情可以看官方文档</p>
-</li>
-<li>
-<p><code>Values</code>里面的其实是从<code>values.yaml</code>里面来的</p>
-</li>
-<li>
-<p><code>Chart</code> 里面的就是<code>chart.yaml</code>来的。比如</p>
-<pre><code>{{.Chart.Name}}-{{.Chart.Version}} 
-</code></pre>
-</li>
-</ul>
-</li>
-</ul>
-<h4 id="template-functions"><a class="header-anchor" href="#template-functions"></a>Template Functions</h4>
-<ul>
-<li>
-<p><em>Helm has over 60 available functions.</em> 其中一些是调用<code>GO</code>语言里面<code>tamplate</code>定义的函数。在<a href="https://godoc.org/text/template" target="_blank" rel="noopener">Go Template Function</a>可以查询到</p>
-</li>
-<li>
-<p>其实<code>Helm Template</code>并不是Helm自身做出来的，其实是从Go这些来的。就是个拿来再集成一下。并不是Helm自己的。</p>
-</li>
-<li>
-<p><code>Helm functions</code>支持管道<code>pipeline</code>。这里的<code>pipeline</code>和<code>Unix</code>里面的同样含义。如下面的例子里面的：</p>
-<pre><code>food: {{ .Values.favorite.food | upper | quote }}
-drink: {{ .Values.favorite.drink | repeat 5 | quote }}
-</code></pre>
-</li>
-</ul>
-<h5 id="常用函数"><a class="header-anchor" href="#常用函数"></a>常用函数</h5>
-<ul>
-<li>
-<p><code>default</code>：用来指定默认值</p>
-<pre><code>  drink: {{ .Values.favorite.drink | default "tea" | quote }}
-</code></pre>
-</li>
-<li>
-<p><code>toyaml</code>: 转成yaml格式 <strong><em>其实不明白啥叫做Yaml格式</em></strong></p>
-</li>
-</ul>
-<h5 id="函数控制和操作运算符"><a class="header-anchor" href="#函数控制和操作运算符"></a>函数控制和操作运算符</h5>
-<ul>
-<li><code>Helm Template</code>的函数是可以引入逻辑控制的</li>
-<li>运算符有：
-<ul>
-<li><code>if/else</code> for creating conditional blocks： <code>if</code>判断有点不一样的是空的字符串或者空的集合也会被认为是<code>false</code>，还有数字0</li>
-<li><code>with</code> to specify a scope</li>
-<li><code>range</code> which provides a “for each”-style loop</li>
-</ul>
-</li>
-</ul>
-<h6 id="function-if-else"><a class="header-anchor" href="#function-if-else"></a>Function if/else</h6>
-<ul>
-<li>
-<p>逻辑稍微有点难理解。就是<code>if</code>语句里面的内容是判断条件成立的时候包含的。然后关系运算符在前，这里是<code>or</code>运算符</p>
-<pre><code>  {{/* include the body of this if statement when the variable .Values.anUnsetVariable is set or .values.aSetVariable is not set */}}
-  {{ if or .Values.anUnsetVariable (not    .Values.aSetVariable) }}
-   {{ ... }}
-  {{ end }}
-</code></pre>
-</li>
-</ul>
-<h6 id="function-range"><a class="header-anchor" href="#function-range"></a>Function Range</h6>
-<ul>
-<li>
-<p><code>range</code>相当于是<code>foreach</code>,比如以下是一个<code>slice</code>，其实就是列表。</p>
-<pre><code>pizzaToppings:
- - mushrooms
- - cheese
- - peppers
- - onions
-</code></pre>
-<p>我们可以这样操作：</p>
-<pre><code> toppings: |-
-  {{- range .Values.pizzaToppings }}
-  - {{ . | title | quote }}
-  {{- end }}
-</code></pre>
-<ul>
-<li>以上<code>range</code>函数遍历<code>pizzaToppings</code>里面的每个数值， <code>.</code>代表其中每个数值，传递给<code>title</code>和<code>quote</code>函数。</li>
-<li><code>|-</code>代表以下内容是一个长字符串。因为<code>Configmap</code>只支持键值对。</li>
-</ul>
-</li>
-<li>
-<p><code>range</code>也可以和<code>list</code>合并起来用。如下：</p>
-<pre><code> sizes: |-
- {{- range list "small" "medium" "large" }}
-  - {{ . }}
- {{- end }}
-</code></pre>
-<ul>
-<li>引号里面的组成一个字符串，然后再遍历字符串</li>
-</ul>
-</li>
-<li>
-<p><code>range</code>也可以和其他集合函数联合使用，比如<code>dict</code>和<code>map</code></p>
-</li>
-</ul>
-<h6 id="function-with"><a class="header-anchor" href="#function-with"></a>Function with</h6>
-<ul>
-<li>
-<p><code>.</code>指的是当前作用域，比如<code>.Values</code>，就是在当前作用域的<code>Value</code>里面</p>
-</li>
-<li>
-<p>使用<code>with</code>函数可以改变作用域，用法和<code>if</code>类似。如下：</p>
-<pre><code>{{ with PIPELINE }}
-# restricted scope
-{{ end }}
-</code></pre>
-</li>
-</ul>
-<h5 id="空格和空行"><a class="header-anchor" href="#空格和空行"></a>空格和空行</h5>
-<ul>
-<li>
-<p>这就是为啥每行都两个大括号加小横线的缘故，瞅着一堆小横线实在无语啊。这个两个大括号加小横线markdown还打不出来，OMG 😕</p>
-<ul>
-<li>
-<p>以下的语句会产生一个<code>Json</code>字段<code>mug：true</code>并且没有空行</p>
-<pre><code>{{ if and .Values.favorite.drink (eq .Values.favorite.drink "coffee") }}mug: true{{ end }}
-</code></pre>
-</li>
-<li>
-<p>但是如果是以下语句就会产生在这个字段之前生成一个空行。估计<code>helm</code>就是简单的将<code>if</code>语句的一行给用空格替代了</p>
-<pre><code>{{if eq .Values.favorite.drink "coffee"}}
- mug: true
-{{end}}
-</code></pre>
-</li>
-<li>
-<p>所以上面的语句其实较为清晰，却必须用以下样式替代，这样<code>Helm</code>就知道将这边的空格都删除掉</p>
-<pre><code>{{- if eq .Values.favorite.drink "coffee"}}
- mug: true
-{{- end}}
-</code></pre>
-</li>
-<li>
-<p>For the details on whitespace control in templates,see the Official <a href="https://godoc.org/text/template" target="_blank" rel="noopener">Go template documentation</a></p>
-</li>
-</ul>
-</li>
-<li>
-<p>也可以更为精确得控制空格，如下。这种用法在代码里也看到很多。</p>
-<pre><code>{{indent 2 "mug:true"}}
-</code></pre>
-</li>
-<li>
-<p>还可以用<code>*</code>符号，<em>Just for the sake of making this point clear, let’s adjust the above, and substitute an <code>*</code> for each whitespace that will be deleted following this rule. an <code>*</code> at the end of the line indicates a newline character that would be removed</em> 没看的太明白。这个<code>*</code>是干嘛用的。</p>
-<pre><code>**{{- if eq .Values.favorite.drink "coffee"}}
-  mug: true*
-**{{- end}}
-</code></pre>
-</li>
-</ul>
-<h4 id="变量"><a class="header-anchor" href="#变量"></a>变量</h4>
-<ul>
-<li>
-<p>变量是用<code>:=</code>来定义的。</p>
-</li>
-<li>
-<p>如下。原本在使用了<code>with</code>之后作用域已经改变了，找不到<code>Release</code>了，但是使用了变量，就又可以访问了。</p>
-<pre><code>data:
-myvalue: &quot;Hello World&quot;
-{{- $relname := .Release.Name -}}
-{{- with .Values.favorite }}
-drink: {{ .drink | default "tea" | quote }}
-food: {{ .food | upper | quote }}
-release: {{ $relname }}
-{{- end }}
-</code></pre>
-</li>
-<li>
-<p>可以和<code>range</code>结合起来用。</p>
-<ul>
-<li>
-<p>遍历一个列表。<code>index</code>变量是下标，从<code>0</code>开始</p>
-<pre><code>toppings: |-
-  {{- range $index, $topping := .Values.pizzaToppings }}
-    {{ $index }}: {{ $topping }}
-  {{- end }}
-</code></pre>
-</li>
-<li>
-<p>键值对。注意<code>Values.favorite</code>是键值对的集合。所以第一次是一对，第二次是第二对</p>
-<pre><code>{{- range $key, $val := .Values.favorite }}
-  {{ $key }}: {{ $val | quote }}
-{{- end}}
-</code></pre>
-</li>
-</ul>
-</li>
-<li>
-<p>变量是有作用域的。顶层声明的就是整个<code>template</code>可用，<code>range</code>里面声明的，就是<code>range</code>里面可用。比如上面这个例子，出了<code>end</code>就没用了。</p>
-</li>
-<li>
-<p><strong>有一个特殊的变量 <code>$</code>，代表根作用域！</strong></p>
-</li>
-</ul>
-<h4 id="已命名的template"><a class="header-anchor" href="#已命名的template"></a>已命名的Template</h4>
-<p>就是介绍一下如何引用啊，命名之类。需要注意的是名字是全局的，不管这个<code>template</code>是不是包在其他的<code>template</code>里面。<br>
-__需要的一点是，名字中有下划线的<code>template</code>是不会被部署到<code>kubernate</code>上面的。但是可以被其他<code>template</code>引用</p>
-<h5 id="define"><a class="header-anchor" href="#define"></a>define</h5>
-<ul>
-<li>
-<p>使用<code>define</code>可以在一个<code>template</code>内部创建一个新的<code>template</code>。语法如下：</p>
-<pre><code>{{- define "mychart.labels" }}
-  labels:
-    generator: helm
-    date: {{ now | htmlDate }}
-{{- end }}
-</code></pre>
-</li>
-<li></li>
-</ul>
-<h5 id="template和include"><a class="header-anchor" href="#template和include"></a>template和include</h5>
-<ul>
-<li>
-<p><code>template</code>感觉和<code>include</code>有点相似。是调用用<code>define</code>定义的<code>template</code>的。如下：</p>
-<pre><code>metadata:
-  name: {{ .Release.Name }}-configmap
-  {{- template "mychart.labels" }}
-</code></pre>
-</li>
-<li>
-<p>通常这类<code>template</code>会被放在<code>_helpers.tpl</code>文件里面。我的感觉是，这类<code>template</code>很像<code>util</code>函数，然后放在一个集中的文件里面。一般会在前面加一个注释，如下的格式：</p>
-<pre><code>{{/* ... */}}
-</code></pre>
-</li>
-<li>
-<p>但是还有一个问题，如上面例子的调用，并没有给任何的作用域，而<code>template</code>的默认作用域为空。如下的<code>template</code>里面的<code>.Chart</code>是无法生效的。所以调用时候应该用以下形式。这样传入一个作用域就可以了。</p>
-<pre><code>{{/* Generate basic labels */}}
-  {{- define "mychart.labels" }}
-    labels:
-      generator: helm
-      date: {{ now | htmlDate }}
-      chart: {{ .Chart.Name }}
-      version: {{ .Chart.Version }}
-  {{- end }}
-  
-
-{{- template "mychart.labels" .}}
-</code></pre>
-</li>
-<li>
-<p>还有一个问题，<code>template</code>有点类似<code>inline</code>，就是简单的将内容展开，并不考虑缩进的问题。为此，引入了<code>include</code>， <code>include</code>可以用<code>pipeline</code>来指定缩进。推荐使用<code>include</code>来替代<code>template</code></p>
-<pre><code>{{- include "mychart.app" . | nindent 2 }}
-</code></pre>
-</li>
-</ul>
-<h4 id="引用文件"><a class="header-anchor" href="#引用文件"></a>引用文件</h4>
-<ul>
-<li>
-<p><code>.File</code>可以将文件包含进来。需要注意的有，<code>template</code>目录下面的文件没法被包含。如下例子。<code>.File.Get</code>就是读取文件的内容的函数</p>
-<pre><code> {{- $files := .Files }}
- {{- range list "config1.toml" "config2.toml" "config3.toml" }}
-  {{ . }}: |-
-    {{ $files.Get . }}
- {{- end }}
-</code></pre>
-</li>
-</ul>
-<h3 id="参考文档"><a class="header-anchor" href="#参考文档"></a>参考文档</h3>
-<ul>
-<li><a href="https://www.cnblogs.com/Erik_Xu/p/8893725.html" target="_blank" rel="noopener">Helm介绍</a></li>
-<li><a href="https://github.com/helm/helm" target="_blank" rel="noopener">Helm GitHub页面</a></li>
-<li><a href="https://helm.sh/docs/using_helm/#quickstart-guide" target="_blank" rel="noopener">Helm使用文档</a></li>
-<li><a href="https://helm.sh/docs/chart_template_guide/" target="_blank" rel="noopener">Helm官方文档</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/02/26/Liveness-Readiness/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/02/26/Liveness-Readiness/" itemprop="url">Liveness & Readiness</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-26T14:29:11+08:00">
-                2019-02-26
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/docker/" itemprop="url" rel="index">
-                    <span itemprop="name">docker</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="liveness-readiness"><a class="header-anchor" href="#liveness-readiness"></a>Liveness &amp; Readiness</h2>
-<h3 id="readiness"><a class="header-anchor" href="#readiness"></a>Readiness</h3>
-<ul>
-<li>Readiness Probes checks if an application is ready to start processing traffic.</li>
-<li>This probe solves the problem of the container having started, but the process still warming up and configuring itself meaning it’s not ready to receive traffic.</li>
-<li>The configuration is as following:<br>
-readinessProbe:<br>
-httpGet:<br>
-path: /<br>
-port: 80<br>
-initialDelaySeconds: 1<br>
-timeoutSeconds: 1</li>
-</ul>
-<h3 id="liveness"><a class="header-anchor" href="#liveness"></a>Liveness</h3>
-<ul>
-<li>Liveness Probes ensure that the application is healthy and capable of processing requests.</li>
-<li>The configuration is as following:<br>
-livenessProbe:<br>
-httpGet:<br>
-path: /<br>
-port: 80<br>
-initialDelaySeconds: 1<br>
-timeoutSeconds: 1</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2738,7 +2414,7 @@ timeoutSeconds: 1</li>
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-count">35</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
