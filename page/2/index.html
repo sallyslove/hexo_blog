@@ -242,6 +242,231 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/07/19/ifconfig命令和网络基础/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/07/19/ifconfig命令和网络基础/" itemprop="url">ifconfig命令和网络基础</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-19T10:21:25+08:00">
+                2019-07-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/protocal/" itemprop="url" rel="index">
+                    <span itemprop="name">protocal</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>ifconfig和ipconfig一样，实在是最常用的命令。然而，只是大概的了解。每次看一下之后，后面又会忘。<br>
+网络的基本概念也是，每次都是看一点，不成系统的感觉。所以把基础网络概念放在这里。</p>
+<h3 id="ifconfig"><a class="header-anchor" href="#ifconfig"></a>ifconfig</h3>
+<p>这个命令是linux的</p>
+<h4 id="物理地址-mac地址"><a class="header-anchor" href="#物理地址-mac地址"></a>物理地址(MAC地址)</h4>
+<ul>
+<li>什么是MAC地址？ MAC地址（Media Access Control Address，介质访问控制），直译为媒体访问控制地址，也称为局域网地址（LAN Address），以太网地址（Ethernet Address）或物理地址（Physical Address），它是一个用来确认网上设备位置的地址。形象地说，MAC地址就如同身份证上的身份证号码，具有全球唯一性。</li>
+<li>MAC地址采用十六进制数表示，共六个字节（48位）。其中，前三个字节是由IEEE的注册管理机构RA负责给不同厂家分配的代码(高位24位），也称为“编制上唯一的标识符”，后三个字节(低位24位)由各厂家自行指派给生产的适配器接口，称为扩展标识符（唯一性）。</li>
+<li>MAC地址用于在网络中唯一标示一个网卡，一台设备若有一或多个网卡，则每个网卡都需要并会有一个唯一的MAC地址。</li>
+<li>参考链接
+<ul>
+<li><a href="https://zhidao.baidu.com/question/6331169.html" target="_blank" rel="noopener">百度知道的迅速概念</a></li>
+<li><a href="https://www.zhihu.com/question/21546408" target="_blank" rel="noopener">有了 IP 地址，为什么还要用 MAC 地址？</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="子网掩码"><a class="header-anchor" href="#子网掩码"></a>子网掩码</h4>
+<ul>
+<li>子网掩码(subnet mask)又叫网络掩码、地址掩码、子网络遮罩，它是一种用来指明一个IP地址的哪些位标识的是主机所在的子网，以及哪些位标识的是主机的位掩码。子网掩码不能单独存在，它必须结合IP地址一起使用。子网掩码只有一个作用，就是将某个IP地址划分成网络地址和主机地址两部分</li>
+<li>子网掩码是一个32位地址，用于屏蔽IP地址的一部分以区别网络标识和主机标识，并说明该IP地址是在局域网上，还是在远程网上。</li>
+<li>计算稍微有点绕，看知乎上面的比喻比较清楚，举例：
+<ul>
+<li>
+<p>比如我们申请到的网络号为 <code>210.73.a.b</code>，该网络地址为c类IP地址，网络标识为<code>210.73.a</code>，主机标识是<code>b</code>。</p>
+</li>
+<li>
+<p>假设需要16个子网。那么就是<code>1111</code></p>
+</li>
+<li>
+<p>然后c类地址的最后一位是主机标识。那么就是<code>11110000</code>.前四位代表子网，后四位代表主机名。最后掩码是<code>255.255.255.240</code>。也可以写成<code>210.73.a.0/28</code></p>
+</li>
+<li>
+<p>28代表28个1</p>
+</li>
+<li>
+<p>再看知乎的例子，<code>192.168.1.x</code>分成4个子网。那么就是<code>11111111,11111111,11111111,11000000</code>， 所以第一个子网就是<code>192.168.1.0/26</code></p>
+</li>
+<li>
+<p>看IP地址的话就是，这四个网段的开头就是：</p>
+<pre><code>192.168.1. 00 000000 --&gt; 00 111111 
+192.168.1. 01 000000 --&gt; 01 111111
+192.168.1. 10 000000 --&gt; 10 111111
+192.168.1. 11 000000 --&gt; 11 111111
+</code></pre>
+</li>
+</ul>
+</li>
+<li>参考链接</li>
+</ul>
+<ul>
+<li><a href="https://baike.baidu.com/item/%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81" target="_blank" rel="noopener">百度百科的解释</a></li>
+<li><a href="https://www.zhihu.com/question/56895036" target="_blank" rel="noopener">知乎问答</a></li>
+</ul>
+<h4 id="广播地址"><a class="header-anchor" href="#广播地址"></a>广播地址</h4>
+<ul>
+<li>Broadcast Address(广播地址)是专门用于同时向网络中所有工作站进行发送的一个地址。在使用TCP/IP 协议的网络中，主机标识段host ID 为全1 的IP 地址为广播地址，广播的分组传送给host ID段所涉及的所有计算机。例如，对于10.1.1.0 （255.255.255.0 ）网段，其广播地址为10.1.1.255 （255 即为2 进制的11111111 ），当发出一个目的地址为10.1.1.255的分组（封包）时，它将被分发给该网段上的所有计算机。</li>
+</ul>
+<h4 id="ifconfig命令输出详解"><a class="header-anchor" href="#ifconfig命令输出详解"></a>ifconfig命令输出详解</h4>
+<ul>
+<li><code>eth0</code> --&gt; 网卡</li>
+<li><code>HWaddr</code> --&gt; MAC</li>
+<li><code>inet addr</code> --&gt; internal address, IP</li>
+<li><code>Bcast</code> --&gt; 广播地址</li>
+<li><code>Mask</code> --&gt; 子网掩码</li>
+<li><code>Link encap</code> --&gt; 网络类型为以太网，这里也可能出现其他类型。比如 <code>Local Loopback</code></li>
+</ul>
+<pre><code>[root@linuxchao ~]# ifconfig
+eth0 Link encap:Ethernet HWaddr 00:03:0D:27:86:41
+inet addr:192.168.1.86 Bcast:192.168.1.255 Mask:255.255.255.0
+inet6 addr: fe80::203:dff:fe27:8641/64 Scope:Link
+UP BROADCAST RUNNING MULTICAST MTU:1500 Metric:1
+RX packets:618 errors:0 dropped:0 overruns:0 frame:0
+TX packets:676 errors:0 dropped:0 overruns:0 carrier:0
+collisions:0 txqueuelen:1000
+RX bytes:491238 (479.7 KiB) TX bytes:86286 (84.2 KiB)
+Interrupt:5 Base address:0x8c00
+</code></pre>
+<ul>
+<li>参加链接： 写得非常清楚的博客并不多。
+<ul>
+<li><a href="http://c.biancheng.net/view/797.html" target="_blank" rel="noopener">Linux ifconfig命令：配置网络接口</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/07/09/DNS协议/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2110,260 +2335,6 @@ public class ThreadPoolExecutor extends AbstractExecutorService
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/02/27/K8s概念理解/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/02/27/K8s概念理解/" itemprop="url">K8s概念理解</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-27T14:44:21+08:00">
-                2019-02-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/docker/" itemprop="url" rel="index">
-                    <span itemprop="name">docker</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="k8s概念"><a class="header-anchor" href="#k8s概念"></a>K8s概念</h2>
-<p>这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。</p>
-<h3 id="deployment"><a class="header-anchor" href="#deployment"></a>deployment</h3>
-<ul>
-<li>这几者的关系比较复杂。还需要进一步去看。目前先记录一下：deployment是实际的deploy，然后pod是根据replica里面的设定来起的。所以，如果将deployment删除掉，那么相应的pod和replica set都会没有</li>
-</ul>
-<h3 id="pod"><a class="header-anchor" href="#pod"></a>Pod</h3>
-<p>pod实在是K8s里面很重要的一个概念，也是很宽泛的一个概念。很多都可以是一个pod。</p>
-<ul>
-<li>All containers described as Pods.包括replication cotronller， service， deployment。<br>
-<strong>不知道是不是所有的service类型都会被当做是pod，这一点有待确认</strong></li>
-<li>A pod is a collection of containers that makes up a particular application, for example Redis.<br>
-<strong>这句没有很明白啊，不是说pod是一个container嘛，又变成一堆container了</strong><br>
-<strong>经过一段时间的学习，我想这里可能指的是initContainer之类的，所以一个pod里面可能是有很多container的</strong></li>
-</ul>
-<h3 id="services"><a class="header-anchor" href="#services"></a>Services</h3>
-<p>service是K8s里面另一个非常重要的概念，而且实在是有点复杂。类型比较多。K8s中文文档里面的名词解释还是比较清楚的，并且给出了为什么需要service，service和pod有什么区别</p>
-<p>挪到另一篇单独的博客里面了。</p>
-<ul>
-<li>参考链接
-<ul>
-<li><a href="https://www.kubernetes.org.cn/kubernetes-services" target="_blank" rel="noopener">名词解释 Services</a></li>
-</ul>
-</li>
-</ul>
-<h3 id="configmap"><a class="header-anchor" href="#configmap"></a>configmap</h3>
-<ul>
-<li><em>In Kubernetes, a ConfigMap is simply a container for storing configuration data. Other things, like pods, can access the data in a ConfigMap.</em></li>
-</ul>
-<h3 id="secrets"><a class="header-anchor" href="#secrets"></a>secrets</h3>
-<h3 id="persistentvolumnclumns"><a class="header-anchor" href="#persistentvolumnclumns"></a>PersistentVolumnClumns</h3>
-<ul>
-<li>PVC在定义的时候有个storageclass。这个storageclass是定义在<code>kube-system</code>的namespace里面的</li>
-<li>在安装时候，share C盘遇到了问题，用“docker for desktop”的默认的storageclass：hostpath来创PVC，就起不来了。于是在大神的教导下另创了一个StorageClass，将其映射到docker machine的虚机里面。解决了这个问题。</li>
-<li>在尝试解决这个C盘没法share的问题时候参考了很多资料。工作电脑由于系统关系，没有办法创建administrator group的user，所以绕不过去。</li>
-<li>参考的链接有：
-<ul>
-<li><a href="https://dotblogs.com.tw/swater111/2017/01/26/101009" target="_blank" rel="noopener">share C盘总结</a>：这篇资料还是不错的，里面汇总了可能遇到的好几个问题。</li>
-<li><a href="https://blogs.msdn.microsoft.com/stevelasker/2016/06/14/configuring-docker-for-windows-volumes/" target="_blank" rel="noopener">share C盘家里咋整</a></li>
-<li><a href="https://tomssl.com/2018/01/11/sharing-your-c-drive-with-docker-for-windows-when-using-azure-active-directory-azuread-aad/" target="_blank" rel="noopener">local user方法</a></li>
-</ul>
-</li>
-</ul>
-<h3 id="namespace"><a class="header-anchor" href="#namespace"></a>namespace</h3>
-<ul>
-<li>
-<p>当团队或项目中具有许多用户时，可以考虑使用Namespace来区分。</p>
-</li>
-<li>
-<p>默认情况下，相同Namespace中的对象将具有相同的访问控制策略。</p>
-</li>
-<li>
-<p>Kubernetes从两个初始的Namespace开始：</p>
-<ul>
-<li>
-<p>default</p>
-</li>
-<li>
-<p>kube-system 由Kubernetes系统创建的对象的Namespace</p>
-</li>
-<li>
-<p>自己电脑上面装好的docker for desktop里面有以下的namespace</p>
-<pre><code>$ kubectl get namespaces
-NAME           STATUS    AGE
-default        Active    15d
-docker         Active    15d
-kube-public    Active    15d
-kube-system    Active    15d
-</code></pre>
-</li>
-</ul>
-</li>
-<li>
-<p>大多数<code>Kubernetes</code>资源（例如<code>pod</code>、<code>services</code>、<code>replication controllers</code>或其他）都在某些Namespace中，但Namespace资源本身并不在Namespace中。而低级别资源（如<code>Node</code>和<code>persistentVolumes</code>）不在任何Namespace中。</p>
-</li>
-<li>
-<p><code>Events</code>是一个例外：它们可能有也可能没有Namespace，具体取决于<code>Events</code>的对象。</p>
-</li>
-<li>
-<p>参考链接：<a href="http://docs.kubernetes.org.cn/242.html" target="_blank" rel="noopener">Kubernetes Namespaces</a></p>
-</li>
-</ul>
-<h3 id="replication-controller"><a class="header-anchor" href="#replication-controller"></a>replication controller</h3>
-<ul>
-<li>The replication controller defines how many instances should be running, the Docker Image to use, and a name to identify the service.<br>
-<strong>决定多少个instance可以理解，不同的instance可以使用不同的image吗</strong></li>
-</ul>
-<h3 id="ingress"><a class="header-anchor" href="#ingress"></a>Ingress</h3>
-<ul>
-<li>Ingress：An Ingress enables inbound connections to the cluster, allowing external traffic to reach the correct Pod.前一句没看懂。</li>
-<li>Ingress enables externally-reachable urls, load balance traffic, terminate SSL, offer name based virtual hosting for a Kubernetes cluster.</li>
-<li>通常情况下，service和pod的IP仅可在集群内部访问。集群外部的请求需要通过负载均衡转发到service在Node上暴露的NodePort上，然后再由kube-proxy将其转发给相关的Pod。而Ingress就是为进入集群的请求提供路由规则的集合</li>
-<li>Ingress.yaml里面的信息不可能完全列这里，有以下一些元素和类型:
-<ul>
-<li>Kind: namespace 从这边看ingress的实质是namespace？</li>
-<li>Kind：secret  type：Opaque，里面的数据看起来是证书形式 The default server secret is a self-signed certificate for other Nginx example SSL connections and is required by the Nginx Default Example.</li>
-<li>Kind：ServiceAccount: The ServiceAccount defines the account with a set of permissions on how to access the cluster to access the defined Ingress Rules.</li>
-<li>Kind：ConfigMap</li>
-<li>现在看来，上面这一段有点误解。因为当时是学习k8s的在线training，我想这个Ingress.yaml只不过是部署一个元素。真正起作用的是ingress-rules.yaml文件。这个才是如何生成一个ingress。</li>
-</ul>
-</li>
-<li>还有个ingress-rules的yaml文件。里面的内容如下：
-<ul>
-<li>Kind: Ingress 这个rule就是rule，哪个endPoint进哪个deployment</li>
-<li>每个Ingress都需要配置rules，目前Kubernetes仅支持http规则。所以最关键的就是rule</li>
-</ul>
-</li>
-<li>参考链接：
-<ul>
-<li><a href="https://www.kubernetes.org.cn/ingress" target="_blank" rel="noopener">官方文档 名词解释：Ingress</a></li>
-</ul>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2414,7 +2385,7 @@ kube-system    Active    15d
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-count">36</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

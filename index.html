@@ -242,6 +242,199 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/11/15/TLS-Certification/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/11/15/TLS-Certification/" itemprop="url">TLS - Certification</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-15T16:03:26+08:00">
+                2019-11-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>新开一篇吧，证书的内容也不少啊。</p>
+<h2 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h2>
+<ul>
+<li><a href="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Certificate/certificate_detail.png" target="_blank" rel="noopener">SSL/TLS for dummies part 3 – Understanding Certificate Authority</a></li>
+</ul>
+<h2 id="为啥需要证书"><a class="header-anchor" href="#为啥需要证书"></a>为啥需要证书</h2>
+<ul>
+<li>我们知道在<code>TLS</code>传输中需要使用不对称加密算法，在其中有公钥，私钥。公钥用来给客户端给自己发消息，私钥用来解密收到的消息。</li>
+<li>但是以下场景中即使是不对称加密也是不安全的：
+<ul>
+<li>小明用浏览器往百度发了个消息，然后百度将自己的公钥返回给小明。</li>
+<li>攻击者在中途截住了这个公钥，并且替换为自己的公钥发给了小明。</li>
+<li>小明并不清楚，用这个假的公钥加密了自己的私钥，并且发给了百度。</li>
+<li>攻击者于是拥有了小明的私钥，接着用上一次截获的百度的公钥加密小明的私钥，返回给百度。</li>
+<li>于是百度会认为<code>TLS</code>通道已经建立。接下来小明和百度之间的所有消息都会被攻击者得知。</li>
+<li>这时候就需要证书了。证书颁发机构由<code>X.509</code>标准指定，以确保数据的完整性。证书的目的就是保证数据的完整性。啧，听上去好厉害！</li>
+</ul>
+</li>
+</ul>
+<h2 id="证书的使用过程"><a class="header-anchor" href="#证书的使用过程"></a>证书的使用过程</h2>
+<ol>
+<li>首先是百度作为一个服务器，向<code>CA</code>申请签名证书。这里用<code>Digicert</code>作为CA</li>
+<li>那么<code>CA</code>会为百度创建一个证书，里面包含一些信息，比如例如服务器名称，服务器的公钥等。</li>
+<li><code>Digicert</code>将创建数据（这里的数据，其实就是证书）的哈希值，并使用自己的私钥对其进行加密</li>
+<li>浏览器和操作系统自带<code>Digicert</code>等权威机构的公钥。</li>
+<li>当浏览器收到签名证书时，它将使用<code>Digicert</code>的公钥从签名生成哈希值，它还将使用证书中指定的散列算法生成数据（证书）的散列</li>
+<li>如果两个哈希值匹配，则签名验证成功并且证书是可信的</li>
+<li>现在浏览器可以使用证书中指定的百度的公钥继续进行身份验证过程。</li>
+</ol>
+<ul>
+<li>也就是说在客户端和服务器端交换公钥秘钥的过程中，加入了<code>CA</code>的签名认证，这样保证客户端可以信任收到的公钥确实是服务器端的公钥，而不是攻击者的公钥。</li>
+<li>其实就是证书服务器对自己的一份数据，这个数据包含证书服务器的信息和百度的公钥信息，还有其他一些信息。然后先进行hash运算，再用自己的私钥进行加密，然后和数据一起发给浏览器。</li>
+<li>这样，浏览器对数据进行hash运算，然后，用证书服务器的公钥解密，再跟算出来的hash值进行对比。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Certificate/Certificate.png" alt="来自参考链接1"></p>
+<ul>
+<li>为了绕过上述机制，攻击者需要使签名来匹配数据，为了做到这点，他需要拥有<code>Digicert</code>的私钥（最初为example.com签发并签署了证书），所以攻击者此时会失败，因为他可以创建的唯一签名来自他的私钥，我们的浏览器并不会信任这一点。浏览器的证书存储区也不会有攻击者的公钥，并且在发生此类攻击时会显示证书异常，如下所示。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Certificate/certificate_not_safe.png" alt></p>
+<h2 id="root-ca-和-中间ca"><a class="header-anchor" href="#root-ca-和-中间ca"></a>Root CA 和 中间CA</h2>
+<p><code>CA</code>的一堆看得想吐啊。😦</p>
+<h3 id="root-ca"><a class="header-anchor" href="#root-ca"></a>Root CA</h3>
+<ul>
+<li>参考链接
+<ul>
+<li><a href="https://support.dnsimple.com/articles/what-is-certificate-authority/" target="_blank" rel="noopener">什么是CA</a></li>
+<li><a href="https://support.dnsimple.com/articles/what-is-ssl-root-certificate/" target="_blank" rel="noopener">什么是Root CA</a></li>
+</ul>
+</li>
+<li>有两种解释，一个是被信任的机构，另一个是这个机构颁发出来的证书</li>
+<li>比如<code>Digicert</code>就是一个<code>root CA</code></li>
+</ul>
+<h3 id="中间ca"><a class="header-anchor" href="#中间ca"></a>中间CA</h3>
+<ul>
+<li>简单地说，将鸡蛋放在一个篮子里面是很危险的， <code>CA</code>也是一样，如果所有的证书都由<code>root CA</code>签发，那么<code>root CA</code>的工作量繁重，而且一旦<code>root CA</code>被攻击了，后果实在不可想象</li>
+<li>于是出现了中间的<code>CA</code>服务器，也就是被根<code>CA</code>服务器信任的中间服务器</li>
+<li><em><code>intermediate CA</code>是<code>Root CA</code>信任的证书颁发机构。 <code>example.com</code>的证书将由<code>intermediate CA</code>颁发，<code>intermediate CA</code>还将具有将由<code>Root CA</code>签名的证书，并且只有<code>Root CA</code>的详细信息会被存储在浏览器的证书库中。</em></li>
+<li>在浏览器里面能看到证书的详细信息。比如以下的这个证书。G2就是一个中间CA。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Certificate/certificate_detail.png" alt></p>
+<h3 id="证书签名算法"><a class="header-anchor" href="#证书签名算法"></a>证书签名算法</h3>
+<ul>
+<li>在证书将数据的<code>hash值</code>用自己的私钥进行加密的时候可以选择不同的加密算法.</li>
+<li><code>RSA解密加密</code>和<code>RSA签名</code>算法应该有一些差异，这里暂时并不深究。看下图中可以看到，这边签名算法用的是<code>sha256RSA</code>。<code>sha256</code>是哈希算法。</li>
+<li>需要知道的是，签名是通过使用<code>intermediate CA</code>的私钥来完成的。并且签名验证由浏览器使用相应的公钥完成的。</li>
+<li>数据长度超过其密钥长度，<code>RSA</code>无法加密数据。假设我们使用<code>2048</code>位密钥进行加密，那么证书数据不应超过<code>2048</code>位，也就是<code>255</code>个字节，这并不总是可行的，因为证书包含很多信息。因此，在加密之前，在证书上应用哈希函数（哈希函数又称为散列算法），该函数生成指定长度的唯一随机字符串。下图中就是<code>sha256</code>.</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Certificate/certificate_algorithm.png" alt></p>
+<h3 id="证书校验"><a class="header-anchor" href="#证书校验"></a>证书校验</h3>
+<ul>
+<li>浏览器是有根CA的公钥的，所以浏览器会先用根CA的公钥来验证中间CA的证书</li>
+<li>然后就可以信任中间CA的公钥，再用这个公钥来解服务器的证书</li>
+<li>然后得到服务器，比如百度的公钥</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/11/15/Maven-Dependency/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -463,53 +656,23 @@
       
         
           
-            <h2 id="ssl相关知识"><a class="header-anchor" href="#ssl相关知识"></a>SSL相关知识</h2>
-<p><code>KeyStore</code>工作中碰到的不少。相关的问题先放这里吧。</p>
-<h3 id="certificate"><a class="header-anchor" href="#certificate"></a>Certificate</h3>
-<p>证书的相关知识</p>
-<h4 id="为啥需要证书"><a class="header-anchor" href="#为啥需要证书"></a>为啥需要证书</h4>
+            <h2 id="tls和oauth"><a class="header-anchor" href="#tls和oauth"></a>TLS和OAuth</h2>
 <ul>
-<li>我们知道在<code>TLS</code>传输中需要使用不对称加密算法，在其中有公钥，私钥。公钥用来给客户端给自己发消息，私钥用来解密收到的消息。</li>
-<li>但是以下场景中即使是不对称加密也是不安全的：
+<li><a href="https://stackoverflow.com/questions/8378664/does-an-oauth-2-client-really-need-tls" target="_blank" rel="noopener">does-an-oauth-2-client-really-need-tls</a>： 我自己有点搞不清楚这些的关系，这边有一个解释很是清晰，看了就明白了
 <ul>
-<li>小明用浏览器往百度发了个消息，然后百度将自己的公钥返回给小明。</li>
-<li>攻击者在中途截住了这个公钥，并且替换为自己的公钥发给了小明。</li>
-<li>小明并不清楚，用这个假的公钥加密了自己的私钥，并且发给了百度。</li>
-<li>攻击者于是拥有了小明的私钥，接着用上一次截获的百度的公钥加密小明的私钥，返回给百度。</li>
-<li>于是百度会认为<code>TLS</code>通道已经建立。接下来小明和百度之间的所有消息都会被攻击者得知。</li>
-<li>这时候就需要证书了。证书颁发机构由<code>X.509</code>标准指定，以确保数据的完整性。证书的目的就是保证数据的完整性。啧，听上去好厉害！</li>
+<li><em>3.1.2.1.  Endpoint Request Confidentiality If a redirection request will result in the transmission of an authorization code or access token over an open network (between the resource owner’s user-agent and the client), the client SHOULD require the use of a transport-layer security mechanism.</em> 这个是<code>Oauth</code>官方文档里面的一段话。</li>
+<li>上面一段的意思应该是这样的：一个第三方认证的请求在传输<code>authorization code</code>或者<code>access token</code>的时候应当在传输层使用安全机制。这里的安全机制就是指<code>TLS</code>协议。</li>
 </ul>
 </li>
 </ul>
-<h4 id="root-ca"><a class="header-anchor" href="#root-ca"></a>Root CA</h4>
-<ul>
-<li>参考链接
-<ul>
-<li><a href="https://support.dnsimple.com/articles/what-is-certificate-authority/" target="_blank" rel="noopener">什么是CA</a></li>
-<li><a href="https://support.dnsimple.com/articles/what-is-ssl-root-certificate/" target="_blank" rel="noopener">什么是Root CA</a></li>
-</ul>
-</li>
-<li>有两种解释，一个是被信任的机构，另一个是这个机构颁发出来的证书</li>
-<li>比如<code>Digicert</code>就是一个CA</li>
-</ul>
-<h4 id="证书的使用过程"><a class="header-anchor" href="#证书的使用过程"></a>证书的使用过程</h4>
-<ol>
-<li>首先是百度作为一个服务器，向<code>CA</code>申请签名证书。这里用<code>Digicert</code>作为CA</li>
-<li>那么<code>CA</code>会为百度创建一个证书，里面包含一些信息，比如例如服务器名称，服务器的公钥等。</li>
-<li><code>Digicert</code>将创建数据（证书）的哈希值，并使用自己的私钥对其进行加密</li>
-<li>浏览器和操作系统自带<code>Digicert</code>等权威机构的公钥。</li>
-<li>当浏览器收到签名证书时，它将使用<code>Digicert</code>的公钥从签名生成哈希值，它还将使用证书中指定的散列算法生成数据（证书）的散列，6. 如果两个哈希值匹配，则签名验证成功并且证书是可信的</li>
-<li>现在浏览器可以使用证书中指定的百度的公钥继续进行身份验证过程。</li>
-</ol>
-<p>也就是说在客户端和服务器端交换公钥秘钥的过程中，加入了<code>CA</code>的签名认证，这样保证客户端可以信任收到的公钥确实是服务器端的公钥，而不是攻击者的公钥。</p>
-<h3 id="tls版本"><a class="header-anchor" href="#tls版本"></a>TLS版本</h3>
+<h2 id="tls版本"><a class="header-anchor" href="#tls版本"></a>TLS版本</h2>
 <ul>
 <li><code>SSL3.0</code> 和 <code>TLS1.0</code> 是一个东西。嗯，微软干的。微软虽然是一个伟大的公司，但是这个干得不好，相当不好，至少我本人觉得不好。实在是除了增加大家的混淆以外，没有任何意义。嘛，我们自己的产品也经常干这种事情。通常呢，是因为自己认为发生了跨时代的改变，希望让别人也明白。</li>
 <li>目前最流行的版本是<code>TLS1.2</code>，最新的版本是<code>TLS1.3</code>。</li>
 <li><code>java8</code>中默认的是<code>TLS1.2</code>版本。<code>java11</code>里面支持的是<code>TLS1.3</code></li>
 <li>各种<code>web</code>应用服务器的配置文件里面都可以配置支持或者不支持的版本。比如<code>tomcat</code>提供了参数:<code>sslEnabledProtocols</code></li>
 </ul>
-<h4 id="如何发现我的浏览器使用的tls版本"><a class="header-anchor" href="#如何发现我的浏览器使用的tls版本"></a>如何发现我的浏览器使用的TLS版本</h4>
+<h3 id="如何发现我的浏览器使用的tls版本"><a class="header-anchor" href="#如何发现我的浏览器使用的tls版本"></a>如何发现我的浏览器使用的TLS版本</h3>
 <ul>
 <li>因为要测试<code>tomcat</code>里面配置的参数是否生效，所以第一反应就是我咋知道呢。后来经同事提点，其实用<code>openssl</code>就可以了</li>
 <li>在浏览器的配置中能看到， 比如IE, <code>File</code>-&gt;<code>Properties</code>, 在<code>Connection</code>一栏就能看到。</li>
@@ -520,22 +683,13 @@
 </ul>
 </li>
 </ul>
-<h4 id="如何测试tls连接"><a class="header-anchor" href="#如何测试tls连接"></a>如何测试TLS连接</h4>
+<h3 id="如何测试tls连接"><a class="header-anchor" href="#如何测试tls连接"></a>如何测试TLS连接</h3>
 <ul>
 <li>这个是刚需啊刚需。使用<code>openssl</code>肯定也是可以的。这回使用的是<code>curl</code>命令。</li>
 <li><code>curl help</code>一下可以看到，使用参数就可以指定<code>TLS</code>版本，还是很好用的。<br>
 😦 我觉得自己有时候是很奇怪的人啊，下回要把实际使用的命令写在这里。╭(╯^╰)╮</li>
 </ul>
-<h3 id="tls和oauth"><a class="header-anchor" href="#tls和oauth"></a>TLS和OAuth</h3>
-<ul>
-<li><a href="https://stackoverflow.com/questions/8378664/does-an-oauth-2-client-really-need-tls" target="_blank" rel="noopener">does-an-oauth-2-client-really-need-tls</a>： 我自己有点搞不清楚这些的关系，这边有一个解释很是清晰，看了就明白了
-<ul>
-<li><em>3.1.2.1.  Endpoint Request Confidentiality If a redirection request will result in the transmission of an authorization code or access token over an open network (between the resource owner’s user-agent and the client), the client SHOULD require the use of a transport-layer security mechanism.</em> 这个是<code>Oauth</code>官方文档里面的一段话。</li>
-<li>上面一段的意思应该是这样的：一个第三方认证的请求在传输<code>authorization code</code>或者<code>access token</code>的时候应当在传输层使用安全机制。这里的安全机制就是指<code>TLS</code>协议。</li>
-</ul>
-</li>
-</ul>
-<h3 id="tls双向握手"><a class="header-anchor" href="#tls双向握手"></a>TLS双向握手</h3>
+<h2 id="tls双向握手"><a class="header-anchor" href="#tls双向握手"></a>TLS双向握手</h2>
 <h3 id="keystore和truststore"><a class="header-anchor" href="#keystore和truststore"></a>KeyStore和TrustStore</h3>
 <ul>
 <li><code>keystore</code>和<code>truststore</code>从其文件格式来看其实是一个东西，都是<code>.jks</code>文件，只是为了方便管理将其分开</li>
@@ -551,6 +705,10 @@
 </ul>
 <h3 id="keytool"><a class="header-anchor" href="#keytool"></a>Keytool</h3>
 <h3 id="openssl"><a class="header-anchor" href="#openssl"></a>openssl</h3>
+<h2 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h2>
+<ul>
+<li><a href="https://xz.aliyun.com/t/2530" target="_blank" rel="noopener">TLS 协议详解</a></li>
+</ul>
 
           
         
@@ -2324,231 +2482,6 @@ jti (JWT ID)：编号
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/07/19/ifconfig命令和网络基础/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/07/19/ifconfig命令和网络基础/" itemprop="url">ifconfig命令和网络基础</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-19T10:21:25+08:00">
-                2019-07-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/protocal/" itemprop="url" rel="index">
-                    <span itemprop="name">protocal</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>ifconfig和ipconfig一样，实在是最常用的命令。然而，只是大概的了解。每次看一下之后，后面又会忘。<br>
-网络的基本概念也是，每次都是看一点，不成系统的感觉。所以把基础网络概念放在这里。</p>
-<h3 id="ifconfig"><a class="header-anchor" href="#ifconfig"></a>ifconfig</h3>
-<p>这个命令是linux的</p>
-<h4 id="物理地址-mac地址"><a class="header-anchor" href="#物理地址-mac地址"></a>物理地址(MAC地址)</h4>
-<ul>
-<li>什么是MAC地址？ MAC地址（Media Access Control Address，介质访问控制），直译为媒体访问控制地址，也称为局域网地址（LAN Address），以太网地址（Ethernet Address）或物理地址（Physical Address），它是一个用来确认网上设备位置的地址。形象地说，MAC地址就如同身份证上的身份证号码，具有全球唯一性。</li>
-<li>MAC地址采用十六进制数表示，共六个字节（48位）。其中，前三个字节是由IEEE的注册管理机构RA负责给不同厂家分配的代码(高位24位），也称为“编制上唯一的标识符”，后三个字节(低位24位)由各厂家自行指派给生产的适配器接口，称为扩展标识符（唯一性）。</li>
-<li>MAC地址用于在网络中唯一标示一个网卡，一台设备若有一或多个网卡，则每个网卡都需要并会有一个唯一的MAC地址。</li>
-<li>参考链接
-<ul>
-<li><a href="https://zhidao.baidu.com/question/6331169.html" target="_blank" rel="noopener">百度知道的迅速概念</a></li>
-<li><a href="https://www.zhihu.com/question/21546408" target="_blank" rel="noopener">有了 IP 地址，为什么还要用 MAC 地址？</a></li>
-</ul>
-</li>
-</ul>
-<h4 id="子网掩码"><a class="header-anchor" href="#子网掩码"></a>子网掩码</h4>
-<ul>
-<li>子网掩码(subnet mask)又叫网络掩码、地址掩码、子网络遮罩，它是一种用来指明一个IP地址的哪些位标识的是主机所在的子网，以及哪些位标识的是主机的位掩码。子网掩码不能单独存在，它必须结合IP地址一起使用。子网掩码只有一个作用，就是将某个IP地址划分成网络地址和主机地址两部分</li>
-<li>子网掩码是一个32位地址，用于屏蔽IP地址的一部分以区别网络标识和主机标识，并说明该IP地址是在局域网上，还是在远程网上。</li>
-<li>计算稍微有点绕，看知乎上面的比喻比较清楚，举例：
-<ul>
-<li>
-<p>比如我们申请到的网络号为 <code>210.73.a.b</code>，该网络地址为c类IP地址，网络标识为<code>210.73.a</code>，主机标识是<code>b</code>。</p>
-</li>
-<li>
-<p>假设需要16个子网。那么就是<code>1111</code></p>
-</li>
-<li>
-<p>然后c类地址的最后一位是主机标识。那么就是<code>11110000</code>.前四位代表子网，后四位代表主机名。最后掩码是<code>255.255.255.240</code>。也可以写成<code>210.73.a.0/28</code></p>
-</li>
-<li>
-<p>28代表28个1</p>
-</li>
-<li>
-<p>再看知乎的例子，<code>192.168.1.x</code>分成4个子网。那么就是<code>11111111,11111111,11111111,11000000</code>， 所以第一个子网就是<code>192.168.1.0/26</code></p>
-</li>
-<li>
-<p>看IP地址的话就是，这四个网段的开头就是：</p>
-<pre><code>192.168.1. 00 000000 --&gt; 00 111111 
-192.168.1. 01 000000 --&gt; 01 111111
-192.168.1. 10 000000 --&gt; 10 111111
-192.168.1. 11 000000 --&gt; 11 111111
-</code></pre>
-</li>
-</ul>
-</li>
-<li>参考链接</li>
-</ul>
-<ul>
-<li><a href="https://baike.baidu.com/item/%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81" target="_blank" rel="noopener">百度百科的解释</a></li>
-<li><a href="https://www.zhihu.com/question/56895036" target="_blank" rel="noopener">知乎问答</a></li>
-</ul>
-<h4 id="广播地址"><a class="header-anchor" href="#广播地址"></a>广播地址</h4>
-<ul>
-<li>Broadcast Address(广播地址)是专门用于同时向网络中所有工作站进行发送的一个地址。在使用TCP/IP 协议的网络中，主机标识段host ID 为全1 的IP 地址为广播地址，广播的分组传送给host ID段所涉及的所有计算机。例如，对于10.1.1.0 （255.255.255.0 ）网段，其广播地址为10.1.1.255 （255 即为2 进制的11111111 ），当发出一个目的地址为10.1.1.255的分组（封包）时，它将被分发给该网段上的所有计算机。</li>
-</ul>
-<h4 id="ifconfig命令输出详解"><a class="header-anchor" href="#ifconfig命令输出详解"></a>ifconfig命令输出详解</h4>
-<ul>
-<li><code>eth0</code> --&gt; 网卡</li>
-<li><code>HWaddr</code> --&gt; MAC</li>
-<li><code>inet addr</code> --&gt; internal address, IP</li>
-<li><code>Bcast</code> --&gt; 广播地址</li>
-<li><code>Mask</code> --&gt; 子网掩码</li>
-<li><code>Link encap</code> --&gt; 网络类型为以太网，这里也可能出现其他类型。比如 <code>Local Loopback</code></li>
-</ul>
-<pre><code>[root@linuxchao ~]# ifconfig
-eth0 Link encap:Ethernet HWaddr 00:03:0D:27:86:41
-inet addr:192.168.1.86 Bcast:192.168.1.255 Mask:255.255.255.0
-inet6 addr: fe80::203:dff:fe27:8641/64 Scope:Link
-UP BROADCAST RUNNING MULTICAST MTU:1500 Metric:1
-RX packets:618 errors:0 dropped:0 overruns:0 frame:0
-TX packets:676 errors:0 dropped:0 overruns:0 carrier:0
-collisions:0 txqueuelen:1000
-RX bytes:491238 (479.7 KiB) TX bytes:86286 (84.2 KiB)
-Interrupt:5 Base address:0x8c00
-</code></pre>
-<ul>
-<li>参加链接： 写得非常清楚的博客并不多。
-<ul>
-<li><a href="http://c.biancheng.net/view/797.html" target="_blank" rel="noopener">Linux ifconfig命令：配置网络接口</a></li>
-</ul>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2599,7 +2532,7 @@ Interrupt:5 Base address:0x8c00
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-count">36</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

@@ -79,19 +79,22 @@
 
 
 
-<meta name="description" content="Cassandra读数据过程 数据库读数据过程必须知道。 大致的读流程   官方读流程图片   Check the memtable Check row cache, if enabled Checks Bloom filter Checks partition key cache, if enabled Goes directly to the compression offset map if">
+<meta name="description" content="新开一篇吧，证书的内容也不少啊。 参考链接  SSL/TLS for dummies part 3 – Understanding Certificate Authority  为啥需要证书  我们知道在TLS传输中需要使用不对称加密算法，在其中有公钥，私钥。公钥用来给客户端给自己发消息，私钥用来解密收到的消息。 但是以下场景中即使是不对称加密也是不安全的：  小明用浏览器往百度发了个消息，然后百">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Cassandra读数据过程">
-<meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/01/21/Cassandra读数据过程/index.html">
+<meta property="og:title" content="TLS - Certification">
+<meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/11/15/TLS-Certification/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="Cassandra读数据过程 数据库读数据过程必须知道。 大致的读流程   官方读流程图片   Check the memtable Check row cache, if enabled Checks Bloom filter Checks partition key cache, if enabled Goes directly to the compression offset map if">
+<meta property="og:description" content="新开一篇吧，证书的内容也不少啊。 参考链接  SSL/TLS for dummies part 3 – Understanding Certificate Authority  为啥需要证书  我们知道在TLS传输中需要使用不对称加密算法，在其中有公钥，私钥。公钥用来给客户端给自己发消息，私钥用来解密收到的消息。 但是以下场景中即使是不对称加密也是不安全的：  小明用浏览器往百度发了个消息，然后百">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://docs.datastax.com/en/archived/cassandra/3.0/cassandra/images/dml_caching-reads_12.png">
-<meta property="og:updated_time" content="2019-07-18T03:17:57.765Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Certificate/Certificate.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Certificate/certificate_not_safe.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Certificate/certificate_detail.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Certificate/certificate_algorithm.png">
+<meta property="og:updated_time" content="2019-11-20T06:06:01.203Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Cassandra读数据过程">
-<meta name="twitter:description" content="Cassandra读数据过程 数据库读数据过程必须知道。 大致的读流程   官方读流程图片   Check the memtable Check row cache, if enabled Checks Bloom filter Checks partition key cache, if enabled Goes directly to the compression offset map if">
-<meta name="twitter:image" content="https://docs.datastax.com/en/archived/cassandra/3.0/cassandra/images/dml_caching-reads_12.png">
+<meta name="twitter:title" content="TLS - Certification">
+<meta name="twitter:description" content="新开一篇吧，证书的内容也不少啊。 参考链接  SSL/TLS for dummies part 3 – Understanding Certificate Authority  为啥需要证书  我们知道在TLS传输中需要使用不对称加密算法，在其中有公钥，私钥。公钥用来给客户端给自己发消息，私钥用来解密收到的消息。 但是以下场景中即使是不对称加密也是不安全的：  小明用浏览器往百度发了个消息，然后百">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Certificate/Certificate.png">
 
 
 
@@ -121,13 +124,13 @@
 
 
 
-  <link rel="canonical" href="https://sallyslove.github.io/hexo_blog/2019/01/21/Cassandra读数据过程/">
+  <link rel="canonical" href="https://sallyslove.github.io/hexo_blog/2019/11/15/TLS-Certification/">
 
 
 
 
 
-  <title>Cassandra读数据过程 | 跬步</title>
+  <title>TLS - Certification | 跬步</title>
   
 
 
@@ -244,7 +247,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/01/21/Cassandra读数据过程/">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/11/15/TLS-Certification/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Lynn Shen">
@@ -261,7 +264,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Cassandra读数据过程</h1>
+          <h1 class="post-title" itemprop="name headline">TLS - Certification</h1>
         
 
         <div class="post-meta">
@@ -273,8 +276,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-21T15:35:32+08:00">
-                2019-01-21
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-15T16:03:26+08:00">
+                2019-11-15
               </time>
             
 
@@ -283,28 +286,6 @@
             
           </span>
 
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/cassandra/" itemprop="url" rel="index">
-                    <span itemprop="name">cassandra</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
           
 
           
@@ -333,58 +314,79 @@
       
 
       
-        <h2 id="cassandra读数据过程"><a class="header-anchor" href="#cassandra读数据过程"></a>Cassandra读数据过程</h2>
-<p>数据库读数据过程必须知道。</p>
-<h3 id="大致的读流程"><a class="header-anchor" href="#大致的读流程"></a>大致的读流程</h3>
-<p><img src="https://docs.datastax.com/en/archived/cassandra/3.0/cassandra/images/dml_caching-reads_12.png" alt="官方读流程图片"></p>
-<blockquote>
-<p>官方读流程图片</p>
-</blockquote>
+        <p>新开一篇吧，证书的内容也不少啊。</p>
+<h2 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h2>
 <ul>
-<li>Check the memtable</li>
-<li>Check row cache, if enabled</li>
-<li>Checks Bloom filter</li>
-<li>Checks partition key cache, if enabled</li>
-<li>Goes directly to the compression offset map if a partition key is found in the partition key cache, or checks the partition summary if not<br>
-If the partition summary is checked, then the partition index is accessed</li>
-<li>Locates the data on disk using the compression offset map</li>
-<li>Fetches the data from the SSTable on disk<br>
-<strong><em><code>partition summary</code>是什么东西?记得之前看的时候说就是一个例子呀</em></strong></li>
+<li><a href="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Certificate/certificate_detail.png" target="_blank" rel="noopener">SSL/TLS for dummies part 3 – Understanding Certificate Authority</a></li>
 </ul>
-<h3 id="caches"><a class="header-anchor" href="#caches"></a>Caches</h3>
-<p>这篇也作为<code>KeyCache</code>和<code>RowCache</code>学习的blog.<br>
-<code>RowCache</code>缓存的是数据，而<code>KeyCache</code>缓存的是在<code>SSTable</code>文件中的位置。<br>
-Cassandra的是读数据慢，写数据快。</p>
-<p>以下几种<code>cache</code>都是针对<code>SSTable</code>来说的</p>
-<h4 id="keycache"><a class="header-anchor" href="#keycache"></a>keyCache</h4>
+<h2 id="为啥需要证书"><a class="header-anchor" href="#为啥需要证书"></a>为啥需要证书</h2>
 <ul>
-<li>key cache：stores a map of partition keys to row index entries。感觉和Index.db里面的内容有点相似。什么时候要把内存dump下来看看</li>
+<li>我们知道在<code>TLS</code>传输中需要使用不对称加密算法，在其中有公钥，私钥。公钥用来给客户端给自己发消息，私钥用来解密收到的消息。</li>
+<li>但是以下场景中即使是不对称加密也是不安全的：
+<ul>
+<li>小明用浏览器往百度发了个消息，然后百度将自己的公钥返回给小明。</li>
+<li>攻击者在中途截住了这个公钥，并且替换为自己的公钥发给了小明。</li>
+<li>小明并不清楚，用这个假的公钥加密了自己的私钥，并且发给了百度。</li>
+<li>攻击者于是拥有了小明的私钥，接着用上一次截获的百度的公钥加密小明的私钥，返回给百度。</li>
+<li>于是百度会认为<code>TLS</code>通道已经建立。接下来小明和百度之间的所有消息都会被攻击者得知。</li>
+<li>这时候就需要证书了。证书颁发机构由<code>X.509</code>标准指定，以确保数据的完整性。证书的目的就是保证数据的完整性。啧，听上去好厉害！</li>
 </ul>
-<h4 id="rowcache"><a class="header-anchor" href="#rowcache"></a>rowCache</h4>
-<ul>
-<li>row cache： caches frequently accessed rows to speed up access to those rows.</li>
+</li>
 </ul>
-<h4 id="counter-cache"><a class="header-anchor" href="#counter-cache"></a>counter cache</h4>
+<h2 id="证书的使用过程"><a class="header-anchor" href="#证书的使用过程"></a>证书的使用过程</h2>
+<ol>
+<li>首先是百度作为一个服务器，向<code>CA</code>申请签名证书。这里用<code>Digicert</code>作为CA</li>
+<li>那么<code>CA</code>会为百度创建一个证书，里面包含一些信息，比如例如服务器名称，服务器的公钥等。</li>
+<li><code>Digicert</code>将创建数据（这里的数据，其实就是证书）的哈希值，并使用自己的私钥对其进行加密</li>
+<li>浏览器和操作系统自带<code>Digicert</code>等权威机构的公钥。</li>
+<li>当浏览器收到签名证书时，它将使用<code>Digicert</code>的公钥从签名生成哈希值，它还将使用证书中指定的散列算法生成数据（证书）的散列</li>
+<li>如果两个哈希值匹配，则签名验证成功并且证书是可信的</li>
+<li>现在浏览器可以使用证书中指定的百度的公钥继续进行身份验证过程。</li>
+</ol>
 <ul>
-<li>A counter cache improves performance for the counters that you’ll need to access frequently. 好像没怎么听说过counter的概念。这个cache也是第一次看到有。</li>
+<li>也就是说在客户端和服务器端交换公钥秘钥的过程中，加入了<code>CA</code>的签名认证，这样保证客户端可以信任收到的公钥确实是服务器端的公钥，而不是攻击者的公钥。</li>
+<li>其实就是证书服务器对自己的一份数据，这个数据包含证书服务器的信息和百度的公钥信息，还有其他一些信息。然后先进行hash运算，再用自己的私钥进行加密，然后和数据一起发给浏览器。</li>
+<li>这样，浏览器对数据进行hash运算，然后，用证书服务器的公钥解密，再跟算出来的hash值进行对比。</li>
 </ul>
-<h4 id="bloom-filters"><a class="header-anchor" href="#bloom-filters"></a>bloom filters</h4>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Certificate/Certificate.png" alt="来自参考链接1"></p>
 <ul>
-<li><code>Bloom Filters</code> 就是在写ssTable时候同时写的filter.db文件。但是实际是读的时候用的一个机制</li>
-<li>读的时候会用这个机制来看一个数据key是不是在某个SSTable里面。当filter表示不在，肯定是不在；但是说在，可能不在。就是说可能假绿的</li>
-<li>可以配置<code>bloom_filter_fp_chance</code>来降低假绿，但是会占更多内存</li>
+<li>为了绕过上述机制，攻击者需要使签名来匹配数据，为了做到这点，他需要拥有<code>Digicert</code>的私钥（最初为example.com签发并签署了证书），所以攻击者此时会失败，因为他可以创建的唯一签名来自他的私钥，我们的浏览器并不会信任这一点。浏览器的证书存储区也不会有攻击者的公钥，并且在发生此类攻击时会显示证书异常，如下所示。</li>
 </ul>
-<h4 id="index-files"><a class="header-anchor" href="#index-files"></a>Index Files</h4>
-<h3 id="gossip-protocal"><a class="header-anchor" href="#gossip-protocal"></a>Gossip Protocal</h3>
-<h3 id="limit"><a class="header-anchor" href="#limit"></a>Limit</h3>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Certificate/certificate_not_safe.png" alt></p>
+<h2 id="root-ca-和-中间ca"><a class="header-anchor" href="#root-ca-和-中间ca"></a>Root CA 和 中间CA</h2>
+<p><code>CA</code>的一堆看得想吐啊。😦</p>
+<h3 id="root-ca"><a class="header-anchor" href="#root-ca"></a>Root CA</h3>
 <ul>
-<li>Cassandra根据primary key来读取数据，这个key就是存在keyCache里面的内容。然后会读取一片数据。</li>
-<li>读取时候可以指定limit值，这样会读取有限的内容，而不是一大片。</li>
+<li>参考链接
+<ul>
+<li><a href="https://support.dnsimple.com/articles/what-is-certificate-authority/" target="_blank" rel="noopener">什么是CA</a></li>
+<li><a href="https://support.dnsimple.com/articles/what-is-ssl-root-certificate/" target="_blank" rel="noopener">什么是Root CA</a></li>
 </ul>
-<h3 id="参考文档"><a class="header-anchor" href="#参考文档"></a>参考文档</h3>
+</li>
+<li>有两种解释，一个是被信任的机构，另一个是这个机构颁发出来的证书</li>
+<li>比如<code>Digicert</code>就是一个<code>root CA</code></li>
+</ul>
+<h3 id="中间ca"><a class="header-anchor" href="#中间ca"></a>中间CA</h3>
 <ul>
-<li>非常详尽清晰的一篇文档：<a href="https://www.oschina.net/question/12_11855" target="_blank" rel="noopener">Cassandra数据结构和写入读取</a></li>
-<li><a href="https://docs.datastax.com/en/archived/cassandra/3.0/cassandra/dml/dmlAboutReads.html" target="_blank" rel="noopener">官方文档读流程</a></li>
+<li>简单地说，将鸡蛋放在一个篮子里面是很危险的， <code>CA</code>也是一样，如果所有的证书都由<code>root CA</code>签发，那么<code>root CA</code>的工作量繁重，而且一旦<code>root CA</code>被攻击了，后果实在不可想象</li>
+<li>于是出现了中间的<code>CA</code>服务器，也就是被根<code>CA</code>服务器信任的中间服务器</li>
+<li><em><code>intermediate CA</code>是<code>Root CA</code>信任的证书颁发机构。 <code>example.com</code>的证书将由<code>intermediate CA</code>颁发，<code>intermediate CA</code>还将具有将由<code>Root CA</code>签名的证书，并且只有<code>Root CA</code>的详细信息会被存储在浏览器的证书库中。</em></li>
+<li>在浏览器里面能看到证书的详细信息。比如以下的这个证书。G2就是一个中间CA。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Certificate/certificate_detail.png" alt></p>
+<h3 id="证书签名算法"><a class="header-anchor" href="#证书签名算法"></a>证书签名算法</h3>
+<ul>
+<li>在证书将数据的<code>hash值</code>用自己的私钥进行加密的时候可以选择不同的加密算法.</li>
+<li><code>RSA解密加密</code>和<code>RSA签名</code>算法应该有一些差异，这里暂时并不深究。看下图中可以看到，这边签名算法用的是<code>sha256RSA</code>。<code>sha256</code>是哈希算法。</li>
+<li>需要知道的是，签名是通过使用<code>intermediate CA</code>的私钥来完成的。并且签名验证由浏览器使用相应的公钥完成的。</li>
+<li>数据长度超过其密钥长度，<code>RSA</code>无法加密数据。假设我们使用<code>2048</code>位密钥进行加密，那么证书数据不应超过<code>2048</code>位，也就是<code>255</code>个字节，这并不总是可行的，因为证书包含很多信息。因此，在加密之前，在证书上应用哈希函数（哈希函数又称为散列算法），该函数生成指定长度的唯一随机字符串。下图中就是<code>sha256</code>.</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Certificate/certificate_algorithm.png" alt></p>
+<h3 id="证书校验"><a class="header-anchor" href="#证书校验"></a>证书校验</h3>
+<ul>
+<li>浏览器是有根CA的公钥的，所以浏览器会先用根CA的公钥来验证中间CA的证书</li>
+<li>然后就可以信任中间CA的公钥，再用这个公钥来解服务器的证书</li>
+<li>然后得到服务器，比如百度的公钥</li>
 </ul>
 
       
@@ -410,8 +412,8 @@ Cassandra的是读数据慢，写数据快。</p>
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/hexo_blog/2019/01/18/Java-GC-机制-CMS-G1/" rel="next" title="Java GC 机制 CMS & G1">
-                <i class="fa fa-chevron-left"></i> Java GC 机制 CMS & G1
+              <a href="/hexo_blog/2019/11/15/Maven-Dependency/" rel="next" title="Maven Dependency">
+                <i class="fa fa-chevron-left"></i> Maven Dependency
               </a>
             
           </div>
@@ -419,10 +421,6 @@ Cassandra的是读数据慢，写数据快。</p>
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/hexo_blog/2019/01/21/Cassandra数据结构/" rel="prev" title="Cassandra数据结构">
-                Cassandra数据结构 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -552,7 +550,7 @@ Cassandra的是读数据慢，写数据快。</p>
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#cassandra读数据过程"><span class="nav-number">1.</span> <span class="nav-text">Cassandra读数据过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#大致的读流程"><span class="nav-number">1.1.</span> <span class="nav-text">大致的读流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#caches"><span class="nav-number">1.2.</span> <span class="nav-text">Caches</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#keycache"><span class="nav-number">1.2.1.</span> <span class="nav-text">keyCache</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rowcache"><span class="nav-number">1.2.2.</span> <span class="nav-text">rowCache</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#counter-cache"><span class="nav-number">1.2.3.</span> <span class="nav-text">counter cache</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bloom-filters"><span class="nav-number">1.2.4.</span> <span class="nav-text">bloom filters</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#index-files"><span class="nav-number">1.2.5.</span> <span class="nav-text">Index Files</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gossip-protocal"><span class="nav-number">1.3.</span> <span class="nav-text">Gossip Protocal</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#limit"><span class="nav-number">1.4.</span> <span class="nav-text">Limit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文档"><span class="nav-number">1.5.</span> <span class="nav-text">参考文档</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为啥需要证书"><span class="nav-number">2.</span> <span class="nav-text">为啥需要证书</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#证书的使用过程"><span class="nav-number">3.</span> <span class="nav-text">证书的使用过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#root-ca-和-中间ca"><span class="nav-number">4.</span> <span class="nav-text">Root CA 和 中间CA</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#root-ca"><span class="nav-number">4.1.</span> <span class="nav-text">Root CA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#中间ca"><span class="nav-number">4.2.</span> <span class="nav-text">中间CA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#证书签名算法"><span class="nav-number">4.3.</span> <span class="nav-text">证书签名算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#证书校验"><span class="nav-number">4.4.</span> <span class="nav-text">证书校验</span></a></li></ol></li></ol></div>
             
 
           </div>
