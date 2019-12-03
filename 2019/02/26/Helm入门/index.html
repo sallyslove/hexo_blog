@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="跬步">
 <meta property="og:description" content="Helm Helm入门篇。感觉有点类似maven，总归有这样一个管理工具。其实是想看Ingress的，可是不看Helm，yaml看不懂呀。只好滚回来看Helm。 写了一阵之后再看看，会发现有些看不明白的地方。果然，我写博客的风格和上学年代记笔记的风格一样，喜欢简略而不够详尽啊。这是说好多年没有变化和进步嘛 😂 Helm是什么  Helm是在Kubernetes中安装部署容器的一个工具。 Helm">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-10-15T06:30:27.649Z">
+<meta property="og:updated_time" content="2019-11-27T02:52:02.966Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Helm入门">
 <meta name="twitter:description" content="Helm Helm入门篇。感觉有点类似maven，总归有这样一个管理工具。其实是想看Ingress的，可是不看Helm，yaml看不懂呀。只好滚回来看Helm。 写了一阵之后再看看，会发现有些看不明白的地方。果然，我写博客的风格和上学年代记笔记的风格一样，喜欢简略而不够详尽啊。这是说好多年没有变化和进步嘛 😂 Helm是什么  Helm是在Kubernetes中安装部署容器的一个工具。 Helm">
@@ -332,12 +332,12 @@
 
       
         <h2 id="helm"><a class="header-anchor" href="#helm"></a>Helm</h2>
-<p><code>Helm</code>入门篇。感觉有点类似<code>maven</code>，总归有这样一个管理工具。其实是想看<code>Ingress</code>的，可是不看<code>Helm</code>，yaml看不懂呀。只好滚回来看Helm。</p>
+<p><code>Helm</code>入门篇。感觉有点类似<code>maven</code>，总归有这样一个管理工具。其实是想看<code>Ingress</code>的，可是不看<code>Helm</code>，<code>yaml</code>看不懂呀。只好滚回来看<code>Helm</code>。</p>
 <p>写了一阵之后再看看，会发现有些看不明白的地方。果然，我写博客的风格和上学年代记笔记的风格一样，喜欢简略而不够详尽啊。这是说好多年没有变化和进步嘛 😂</p>
 <h3 id="helm是什么"><a class="header-anchor" href="#helm是什么"></a>Helm是什么</h3>
 <ul>
 <li><code>Helm</code>是在Kubernetes中安装部署容器的一个工具。</li>
-<li><em>Helm is a tool for managing Kubernetes charts.</em> 所以Charts可能是K8s的一个概念。中文的博客不一定对。也不一定，可能就是Helm引入的一个概念。</li>
+<li><em>Helm is a tool for managing Kubernetes charts.</em></li>
 <li><code>Helm</code>由<code>Helm</code>客户端、<code>Tiller</code>服务器端和<code>Chart</code>仓库所组成
 <ul>
 <li><code>Helm</code>客户端： 客户端交互</li>
@@ -353,37 +353,30 @@
 </ul>
 <h3 id="常用的helm命令"><a class="header-anchor" href="#常用的helm命令"></a>常用的helm命令</h3>
 <ul>
-<li>
-<p><code>helm status &lt;namespace&gt;</code> 查看<code>Helm</code>的状态</p>
-</li>
-<li>
-<p><code>helm install</code>: 实际将helm里面的内容安装到当前的k8s上面。比如我创了一个<code>configMap.yaml</code>的<code>templete</code>，那么就会安装上去。</p>
+<li><code>helm status &lt;namespace&gt;</code> 查看<code>Helm</code>的状态</li>
+<li><code>helm install</code>: 实际将<code>helm</code>里面的内容安装到当前的<code>k8s</code>上面。比如我创了一个<code>configMap.yaml</code>的<code>templete</code>，那么就会安装上去。
 <ul>
-<li>
-<p>如果只是想看看template的rending，那么使用命令<code>helm install ./mychart --debug --dry-run</code></p>
-</li>
-<li>
-<p>如果想传值进去，可以使用<code>-f</code> 命令，比如<code>helm install -f myvals.yaml ./mychart</code>。这样传的值，可以用<code>.Value</code>来访问</p>
-</li>
-<li>
-<p>单独传值是<code>--set foo=bar</code>，<code>--set</code>比文件的级别高，可以覆盖文件里面的值</p>
-</li>
-<li>
-<p><code>helm install stable/drupal --set image=my-registry/drupal:0.1.0 --set livenessProbe.exec.command=[cat,docroot/CHANGELOG.txt] --set livenessProbe.httpGet=null</code> 这条命令里面将<code>livenessProbe.httpGet</code>删除掉了。</p>
-<pre><code>$ helm install ./mychart
- NAME:   guiding-ocelot
- LAST DEPLOYED: Mon Aug 19 17:23:00 2019
- NAMESPACE: gear-1
- STATUS: DEPLOYED
-
- RESOURCES:
- ==&gt; v1/ConfigMap
- NAME               DATA  AGE
- mychart-configmap  1     0s
-</code></pre>
-</li>
+<li>如果只是想看看<code>template</code>的<code>rending</code>，那么使用命令<code>helm install ./mychart --debug --dry-run</code></li>
+<li>如果想传值进去，可以使用<code>-f</code> 命令，比如<code>helm install -f myvals.yaml ./mychart</code>。这样传的值，可以用<code>.Value</code>来访问</li>
+<li>单独传值是<code>--set foo=bar</code>，<code>--set</code>比文件的级别高，可以覆盖文件里面的值</li>
+<li>以下命令里面将<code>livenessProbe.httpGet</code>删除掉了。</li>
 </ul>
 </li>
+</ul>
+<pre><code>helm install stable/drupal --set image=my-registry/drupal:0.1.0 --set livenessProbe.exec.command=[cat,docroot/CHANGELOG.txt] --set livenessProbe.httpGet=null
+
+$ helm install ./mychart
+  NAME:   guiding-ocelot
+  LAST DEPLOYED: Mon Aug 19 17:23:00 2019
+  NAMESPACE: gear-1
+  STATUS: DEPLOYED
+
+  RESOURCES:
+      ==&gt; v1/ConfigMap
+      NAME               DATA  AGE
+      mychart-configmap  1     0s
+</code></pre>
+<ul>
 <li>
 <p><code>helm get manifest &lt;release name&gt;</code>: 比如上面的这个<code>guiding-ocelot</code></p>
 <pre><code> $ helm get manifest guiding-ocelot
@@ -400,6 +393,10 @@
 </li>
 <li>
 <p><code>helm init</code>:安装tiller服务器端</p>
+<ul>
+<li>在工作中碰到一个问题，在做<code>helm init</code>的时候没有带上<code>--client-only</code>选项，结果将服务器端的<code>Tiller</code>给更新了。</li>
+<li>话说我在博客上面这样写了啊。其实客户端也是更新的</li>
+</ul>
 </li>
 <li>
 <p><code>helm delete --purge &lt;release name&gt;</code></p>
@@ -466,6 +463,9 @@ data:
 </li>
 <li>
 <p><code>Values</code>里面的其实是从<code>values.yaml</code>里面来的</p>
+</li>
+<li>
+<p><code>Template</code>: 包含当前正在执行的<code>template</code>的信息</p>
 </li>
 <li>
 <p><code>Chart</code> 里面的就是<code>chart.yaml</code>来的。比如</p>

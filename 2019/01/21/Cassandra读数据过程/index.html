@@ -79,18 +79,19 @@
 
 
 
-<meta name="description" content="Cassandra读数据过程 数据库读数据过程必须知道。 大致的读流程   官方读流程图片   Check the memtable Check row cache, if enabled Checks Bloom filter Checks partition key cache, if enabled Goes directly to the compression offset map if">
+<meta name="description" content="Cassandra读数据过程 数据库读数据过程必须知道。 大致的读流程   官方读流程图片    Check the memtable   Check row cache, if enabled   Checks Bloom filter   Checks partition key cache, if enabled   Goes directly to the compression offs">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Cassandra读数据过程">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/01/21/Cassandra读数据过程/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="Cassandra读数据过程 数据库读数据过程必须知道。 大致的读流程   官方读流程图片   Check the memtable Check row cache, if enabled Checks Bloom filter Checks partition key cache, if enabled Goes directly to the compression offset map if">
+<meta property="og:description" content="Cassandra读数据过程 数据库读数据过程必须知道。 大致的读流程   官方读流程图片    Check the memtable   Check row cache, if enabled   Checks Bloom filter   Checks partition key cache, if enabled   Goes directly to the compression offs">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://docs.datastax.com/en/archived/cassandra/3.0/cassandra/images/dml_caching-reads_12.png">
-<meta property="og:updated_time" content="2019-07-18T03:17:57.765Z">
+<meta property="og:image" content="https://sallyslove.github.io/hexo_blog/2019/01/21/Cassandra读数据过程/%5Chexo_blog%5Cimages%5Cpasted-4.png">
+<meta property="og:updated_time" content="2019-12-03T08:19:06.677Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Cassandra读数据过程">
-<meta name="twitter:description" content="Cassandra读数据过程 数据库读数据过程必须知道。 大致的读流程   官方读流程图片   Check the memtable Check row cache, if enabled Checks Bloom filter Checks partition key cache, if enabled Goes directly to the compression offset map if">
+<meta name="twitter:description" content="Cassandra读数据过程 数据库读数据过程必须知道。 大致的读流程   官方读流程图片    Check the memtable   Check row cache, if enabled   Checks Bloom filter   Checks partition key cache, if enabled   Goes directly to the compression offs">
 <meta name="twitter:image" content="https://docs.datastax.com/en/archived/cassandra/3.0/cassandra/images/dml_caching-reads_12.png">
 
 
@@ -341,28 +342,63 @@
 <p>官方读流程图片</p>
 </blockquote>
 <ul>
-<li>Check the memtable</li>
-<li>Check row cache, if enabled</li>
-<li>Checks Bloom filter</li>
-<li>Checks partition key cache, if enabled</li>
-<li>Goes directly to the compression offset map if a partition key is found in the partition key cache, or checks the partition summary if not<br>
-If the partition summary is checked, then the partition index is accessed</li>
-<li>Locates the data on disk using the compression offset map</li>
-<li>Fetches the data from the SSTable on disk<br>
-<strong><em><code>partition summary</code>是什么东西?记得之前看的时候说就是一个例子呀</em></strong></li>
+<li>
+<p>Check the memtable</p>
+</li>
+<li>
+<p>Check row cache, if enabled</p>
+</li>
+<li>
+<p>Checks Bloom filter</p>
+</li>
+<li>
+<p>Checks partition key cache, if enabled</p>
+</li>
+<li>
+<p>Goes directly to the compression offset map if a partition key is found in the partition key cache, or checks the partition summary if not<br>
+If the partition summary is checked, then the partition index is accessed</p>
+</li>
+<li>
+<p>Locates the data on disk using the compression offset map</p>
+</li>
+<li>
+<p>Fetches the data from the SSTable on disk</p>
+</li>
+<li>
+<p>在存贮数据的时候，<code>Cassandra</code>会讲同样的数据存储很多份，这个在写的时候已经提及过。</p>
+</li>
+<li>
+<p>在读的时候读几个节点同样是由复制因子和<code>consistency level</code>策略决定的。也就是说写几个，读几个。</p>
+</li>
 </ul>
 <h3 id="caches"><a class="header-anchor" href="#caches"></a>Caches</h3>
 <p>这篇也作为<code>KeyCache</code>和<code>RowCache</code>学习的blog.<br>
 <code>RowCache</code>缓存的是数据，而<code>KeyCache</code>缓存的是在<code>SSTable</code>文件中的位置。<br>
-Cassandra的是读数据慢，写数据快。</p>
+<code>Cassandra</code>读数据慢，写数据快。</p>
 <p>以下几种<code>cache</code>都是针对<code>SSTable</code>来说的</p>
+<p>参考链接：</p>
+<ul>
+<li><a href="https://stackoverflow.com/questions/25079311/difference-between-cassandra-row-caching-and-partition-key-caching" target="_blank" rel="noopener">row cache 和 key cache</a></li>
+</ul>
 <h4 id="keycache"><a class="header-anchor" href="#keycache"></a>keyCache</h4>
 <ul>
-<li>key cache：stores a map of partition keys to row index entries。感觉和Index.db里面的内容有点相似。什么时候要把内存dump下来看看</li>
+<li>key cache：stores a map of partition keys to row index entries。stores a cache of the partition index in off-heap memory</li>
+<li><em>partition key cache, caches the partition index for an SSTable</em></li>
+<li>也在<code>off-heap</code>里面</li>
+<li><code>key_cache_size_in_mb</code>： <em>set the maximum size of the key cache for all tables in a database.</em></li>
 </ul>
+<p><img src="%5Chexo_blog%5Cimages%5Cpasted-4.png" alt="upload successful"></p>
 <h4 id="rowcache"><a class="header-anchor" href="#rowcache"></a>rowCache</h4>
 <ul>
-<li>row cache： caches frequently accessed rows to speed up access to those rows.</li>
+<li><em>caches frequently accessed rows to speed up access to those rows.</em></li>
+<li>不是默认开的，<em>In Cassandra 2.2 and later, it is stored in fully off-heap memory using a new implementation that relieves garbage collection pressure in the JVM.</em> 在2.2之后，会将这些行存进非栈的内存里面，使得系统不需要进行<code>GC</code></li>
+<li>当存在内存中的行被更新之后，这一行会被删除，直到再次读取</li>
+<li>同样，当一个<code>partition</code>被更新了，这个<code>partition</code>会被从内存里面删除</li>
+<li>参数：
+<ul>
+<li><code>rows_per_partition</code>：<em>set the number of rows the database must cache in a partition.This attribute has three values: ALL, NONE, and N.</em></li>
+</ul>
+</li>
 </ul>
 <h4 id="counter-cache"><a class="header-anchor" href="#counter-cache"></a>counter cache</h4>
 <ul>
@@ -370,9 +406,19 @@ Cassandra的是读数据慢，写数据快。</p>
 </ul>
 <h4 id="bloom-filters"><a class="header-anchor" href="#bloom-filters"></a>bloom filters</h4>
 <ul>
-<li><code>Bloom Filters</code> 就是在写ssTable时候同时写的filter.db文件。但是实际是读的时候用的一个机制</li>
-<li>读的时候会用这个机制来看一个数据key是不是在某个SSTable里面。当filter表示不在，肯定是不在；但是说在，可能不在。就是说可能假绿的</li>
+<li><code>Bloom Filters</code> 就是在写<code>ssTable</code>时候同时写的<code>filter.db</code>文件。但是实际是读的时候用的一个机制</li>
+<li>读的时候会用这个机制来看一个数据key是不是在某个<code>SSTable</code>里面。当filter表示不在，肯定是不在；但是说在，可能不在。就是说可能假绿的。也会给出一个概率值，某个<code>partition</code>在不在这个<code>SSTable</code>里面</li>
+<li>假绿的概率是万分之一</li>
 <li>可以配置<code>bloom_filter_fp_chance</code>来降低假绿，但是会占更多内存</li>
+<li><code>Bloom Filters</code> 也是存储在<code>off-heap</code> memory里面的。并且是每张<code>SSTable</code>都有一个的</li>
+<li><em>A Bloom filter can establish that a SSTable does not contain certain partition data.</em></li>
+<li>参考链接：
+<ul>
+<li><a href="https://blog.csdn.net/u010900754/article/details/78307808" target="_blank" rel="noopener">bloom 过滤器</a></li>
+<li><a href="https://blog.csdn.net/jiaomeng/article/details/1495500" target="_blank" rel="noopener">算法原理</a></li>
+<li><a href="https://blog.csdn.net/nangongyanya/article/details/54089568" target="_blank" rel="noopener">Cassandra Bloom 过滤器</a></li>
+</ul>
+</li>
 </ul>
 <h4 id="index-files"><a class="header-anchor" href="#index-files"></a>Index Files</h4>
 <h3 id="gossip-protocal"><a class="header-anchor" href="#gossip-protocal"></a>Gossip Protocal</h3>

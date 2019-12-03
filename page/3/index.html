@@ -339,10 +339,23 @@
 <p>这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。</p>
 <h3 id="deployment"><a class="header-anchor" href="#deployment"></a>deployment</h3>
 <ul>
-<li>这几者的关系比较复杂。还需要进一步去看。目前先记录一下：deployment是实际的deploy，然后pod是根据replica里面的设定来起的。所以，如果将deployment删除掉，那么相应的pod和replica set都会没有</li>
+<li>这几者的关系比较复杂。还需要进一步去看。目前先记录一下：<code>deployment</code>是实际的<code>deploy</code>，然后<code>pod</code>是根据<code>replica</code>里面的设定来起的。所以，如果将<code>deployment</code>删除掉，那么相应的<code>pod</code>和<code>replica set</code>都会没有</li>
+</ul>
+<h4 id="deployment-spec详解"><a class="header-anchor" href="#deployment-spec详解"></a>deployment spec详解</h4>
+<p>网上基本搜索不到这方面的信息。应该是yaml文件里面的各个字段太过相似了。</p>
+<ul>
+<li><code>spec</code>详解：
+<ul>
+<li><code>metadata</code>：元数据，包含名字，标签和产品声明。元数据就是说基础信息，白描</li>
+</ul>
+</li>
+</ul>
+<h4 id="deployment参考链接"><a class="header-anchor" href="#deployment参考链接"></a>deployment参考链接</h4>
+<ul>
+<li><a href="http://www.ruanyifeng.com/blog/2007/03/metadata.html" target="_blank" rel="noopener">元数据参考链接</a></li>
 </ul>
 <h3 id="pod"><a class="header-anchor" href="#pod"></a>Pod</h3>
-<p>pod实在是K8s里面很重要的一个概念，也是很宽泛的一个概念。很多都可以是一个pod。</p>
+<p><code>pod</code>实在是<code>K8s</code>里面很重要的一个概念，也是很宽泛的一个概念。很多都可以是一个<code>pod</code>。</p>
 <ul>
 <li>All containers described as Pods.包括replication cotronller， service， deployment。<br>
 <strong>不知道是不是所有的service类型都会被当做是pod，这一点有待确认</strong></li>
@@ -590,12 +603,12 @@ kube-system    Active    15d
         
           
             <h2 id="helm"><a class="header-anchor" href="#helm"></a>Helm</h2>
-<p><code>Helm</code>入门篇。感觉有点类似<code>maven</code>，总归有这样一个管理工具。其实是想看<code>Ingress</code>的，可是不看<code>Helm</code>，yaml看不懂呀。只好滚回来看Helm。</p>
+<p><code>Helm</code>入门篇。感觉有点类似<code>maven</code>，总归有这样一个管理工具。其实是想看<code>Ingress</code>的，可是不看<code>Helm</code>，<code>yaml</code>看不懂呀。只好滚回来看<code>Helm</code>。</p>
 <p>写了一阵之后再看看，会发现有些看不明白的地方。果然，我写博客的风格和上学年代记笔记的风格一样，喜欢简略而不够详尽啊。这是说好多年没有变化和进步嘛 😂</p>
 <h3 id="helm是什么"><a class="header-anchor" href="#helm是什么"></a>Helm是什么</h3>
 <ul>
 <li><code>Helm</code>是在Kubernetes中安装部署容器的一个工具。</li>
-<li><em>Helm is a tool for managing Kubernetes charts.</em> 所以Charts可能是K8s的一个概念。中文的博客不一定对。也不一定，可能就是Helm引入的一个概念。</li>
+<li><em>Helm is a tool for managing Kubernetes charts.</em></li>
 <li><code>Helm</code>由<code>Helm</code>客户端、<code>Tiller</code>服务器端和<code>Chart</code>仓库所组成
 <ul>
 <li><code>Helm</code>客户端： 客户端交互</li>
@@ -611,37 +624,30 @@ kube-system    Active    15d
 </ul>
 <h3 id="常用的helm命令"><a class="header-anchor" href="#常用的helm命令"></a>常用的helm命令</h3>
 <ul>
-<li>
-<p><code>helm status &lt;namespace&gt;</code> 查看<code>Helm</code>的状态</p>
-</li>
-<li>
-<p><code>helm install</code>: 实际将helm里面的内容安装到当前的k8s上面。比如我创了一个<code>configMap.yaml</code>的<code>templete</code>，那么就会安装上去。</p>
+<li><code>helm status &lt;namespace&gt;</code> 查看<code>Helm</code>的状态</li>
+<li><code>helm install</code>: 实际将<code>helm</code>里面的内容安装到当前的<code>k8s</code>上面。比如我创了一个<code>configMap.yaml</code>的<code>templete</code>，那么就会安装上去。
 <ul>
-<li>
-<p>如果只是想看看template的rending，那么使用命令<code>helm install ./mychart --debug --dry-run</code></p>
-</li>
-<li>
-<p>如果想传值进去，可以使用<code>-f</code> 命令，比如<code>helm install -f myvals.yaml ./mychart</code>。这样传的值，可以用<code>.Value</code>来访问</p>
-</li>
-<li>
-<p>单独传值是<code>--set foo=bar</code>，<code>--set</code>比文件的级别高，可以覆盖文件里面的值</p>
-</li>
-<li>
-<p><code>helm install stable/drupal --set image=my-registry/drupal:0.1.0 --set livenessProbe.exec.command=[cat,docroot/CHANGELOG.txt] --set livenessProbe.httpGet=null</code> 这条命令里面将<code>livenessProbe.httpGet</code>删除掉了。</p>
-<pre><code>$ helm install ./mychart
- NAME:   guiding-ocelot
- LAST DEPLOYED: Mon Aug 19 17:23:00 2019
- NAMESPACE: gear-1
- STATUS: DEPLOYED
-
- RESOURCES:
- ==&gt; v1/ConfigMap
- NAME               DATA  AGE
- mychart-configmap  1     0s
-</code></pre>
-</li>
+<li>如果只是想看看<code>template</code>的<code>rending</code>，那么使用命令<code>helm install ./mychart --debug --dry-run</code></li>
+<li>如果想传值进去，可以使用<code>-f</code> 命令，比如<code>helm install -f myvals.yaml ./mychart</code>。这样传的值，可以用<code>.Value</code>来访问</li>
+<li>单独传值是<code>--set foo=bar</code>，<code>--set</code>比文件的级别高，可以覆盖文件里面的值</li>
+<li>以下命令里面将<code>livenessProbe.httpGet</code>删除掉了。</li>
 </ul>
 </li>
+</ul>
+<pre><code>helm install stable/drupal --set image=my-registry/drupal:0.1.0 --set livenessProbe.exec.command=[cat,docroot/CHANGELOG.txt] --set livenessProbe.httpGet=null
+
+$ helm install ./mychart
+  NAME:   guiding-ocelot
+  LAST DEPLOYED: Mon Aug 19 17:23:00 2019
+  NAMESPACE: gear-1
+  STATUS: DEPLOYED
+
+  RESOURCES:
+      ==&gt; v1/ConfigMap
+      NAME               DATA  AGE
+      mychart-configmap  1     0s
+</code></pre>
+<ul>
 <li>
 <p><code>helm get manifest &lt;release name&gt;</code>: 比如上面的这个<code>guiding-ocelot</code></p>
 <pre><code> $ helm get manifest guiding-ocelot
@@ -658,6 +664,10 @@ kube-system    Active    15d
 </li>
 <li>
 <p><code>helm init</code>:安装tiller服务器端</p>
+<ul>
+<li>在工作中碰到一个问题，在做<code>helm init</code>的时候没有带上<code>--client-only</code>选项，结果将服务器端的<code>Tiller</code>给更新了。</li>
+<li>话说我在博客上面这样写了啊。其实客户端也是更新的</li>
+</ul>
 </li>
 <li>
 <p><code>helm delete --purge &lt;release name&gt;</code></p>
@@ -724,6 +734,9 @@ data:
 </li>
 <li>
 <p><code>Values</code>里面的其实是从<code>values.yaml</code>里面来的</p>
+</li>
+<li>
+<p><code>Template</code>: 包含当前正在执行的<code>template</code>的信息</p>
 </li>
 <li>
 <p><code>Chart</code> 里面的就是<code>chart.yaml</code>来的。比如</p>
@@ -2335,6 +2348,7 @@ You perform several optimizations in the physical data modeling stage, including
 <ul>
 <li><a href="https://blog.csdn.net/aesop_wubo/article/details/20289837" target="_blank" rel="noopener">数据模型</a></li>
 <li><a href="http://www.cnblogs.com/gpcuster/archive/2010/03/12/1684072.html" target="_blank" rel="noopener">大话Cassandra数据模型</a></li>
+<li><a href="https://stackoverflow.com/questions/24949676/difference-between-partition-key-composite-key-and-clustering-key-in-cassandra" target="_blank" rel="noopener">primary key partition key and clustering key</a></li>
 </ul>
 
           
@@ -2485,28 +2499,63 @@ You perform several optimizations in the physical data modeling stage, including
 <p>官方读流程图片</p>
 </blockquote>
 <ul>
-<li>Check the memtable</li>
-<li>Check row cache, if enabled</li>
-<li>Checks Bloom filter</li>
-<li>Checks partition key cache, if enabled</li>
-<li>Goes directly to the compression offset map if a partition key is found in the partition key cache, or checks the partition summary if not<br>
-If the partition summary is checked, then the partition index is accessed</li>
-<li>Locates the data on disk using the compression offset map</li>
-<li>Fetches the data from the SSTable on disk<br>
-<strong><em><code>partition summary</code>是什么东西?记得之前看的时候说就是一个例子呀</em></strong></li>
+<li>
+<p>Check the memtable</p>
+</li>
+<li>
+<p>Check row cache, if enabled</p>
+</li>
+<li>
+<p>Checks Bloom filter</p>
+</li>
+<li>
+<p>Checks partition key cache, if enabled</p>
+</li>
+<li>
+<p>Goes directly to the compression offset map if a partition key is found in the partition key cache, or checks the partition summary if not<br>
+If the partition summary is checked, then the partition index is accessed</p>
+</li>
+<li>
+<p>Locates the data on disk using the compression offset map</p>
+</li>
+<li>
+<p>Fetches the data from the SSTable on disk</p>
+</li>
+<li>
+<p>在存贮数据的时候，<code>Cassandra</code>会讲同样的数据存储很多份，这个在写的时候已经提及过。</p>
+</li>
+<li>
+<p>在读的时候读几个节点同样是由复制因子和<code>consistency level</code>策略决定的。也就是说写几个，读几个。</p>
+</li>
 </ul>
 <h3 id="caches"><a class="header-anchor" href="#caches"></a>Caches</h3>
 <p>这篇也作为<code>KeyCache</code>和<code>RowCache</code>学习的blog.<br>
 <code>RowCache</code>缓存的是数据，而<code>KeyCache</code>缓存的是在<code>SSTable</code>文件中的位置。<br>
-Cassandra的是读数据慢，写数据快。</p>
+<code>Cassandra</code>读数据慢，写数据快。</p>
 <p>以下几种<code>cache</code>都是针对<code>SSTable</code>来说的</p>
+<p>参考链接：</p>
+<ul>
+<li><a href="https://stackoverflow.com/questions/25079311/difference-between-cassandra-row-caching-and-partition-key-caching" target="_blank" rel="noopener">row cache 和 key cache</a></li>
+</ul>
 <h4 id="keycache"><a class="header-anchor" href="#keycache"></a>keyCache</h4>
 <ul>
-<li>key cache：stores a map of partition keys to row index entries。感觉和Index.db里面的内容有点相似。什么时候要把内存dump下来看看</li>
+<li>key cache：stores a map of partition keys to row index entries。stores a cache of the partition index in off-heap memory</li>
+<li><em>partition key cache, caches the partition index for an SSTable</em></li>
+<li>也在<code>off-heap</code>里面</li>
+<li><code>key_cache_size_in_mb</code>： <em>set the maximum size of the key cache for all tables in a database.</em></li>
 </ul>
+<p><img src="%5Chexo_blog%5Cimages%5Cpasted-4.png" alt="upload successful"></p>
 <h4 id="rowcache"><a class="header-anchor" href="#rowcache"></a>rowCache</h4>
 <ul>
-<li>row cache： caches frequently accessed rows to speed up access to those rows.</li>
+<li><em>caches frequently accessed rows to speed up access to those rows.</em></li>
+<li>不是默认开的，<em>In Cassandra 2.2 and later, it is stored in fully off-heap memory using a new implementation that relieves garbage collection pressure in the JVM.</em> 在2.2之后，会将这些行存进非栈的内存里面，使得系统不需要进行<code>GC</code></li>
+<li>当存在内存中的行被更新之后，这一行会被删除，直到再次读取</li>
+<li>同样，当一个<code>partition</code>被更新了，这个<code>partition</code>会被从内存里面删除</li>
+<li>参数：
+<ul>
+<li><code>rows_per_partition</code>：<em>set the number of rows the database must cache in a partition.This attribute has three values: ALL, NONE, and N.</em></li>
+</ul>
+</li>
 </ul>
 <h4 id="counter-cache"><a class="header-anchor" href="#counter-cache"></a>counter cache</h4>
 <ul>
@@ -2514,9 +2563,19 @@ Cassandra的是读数据慢，写数据快。</p>
 </ul>
 <h4 id="bloom-filters"><a class="header-anchor" href="#bloom-filters"></a>bloom filters</h4>
 <ul>
-<li><code>Bloom Filters</code> 就是在写ssTable时候同时写的filter.db文件。但是实际是读的时候用的一个机制</li>
-<li>读的时候会用这个机制来看一个数据key是不是在某个SSTable里面。当filter表示不在，肯定是不在；但是说在，可能不在。就是说可能假绿的</li>
+<li><code>Bloom Filters</code> 就是在写<code>ssTable</code>时候同时写的<code>filter.db</code>文件。但是实际是读的时候用的一个机制</li>
+<li>读的时候会用这个机制来看一个数据key是不是在某个<code>SSTable</code>里面。当filter表示不在，肯定是不在；但是说在，可能不在。就是说可能假绿的。也会给出一个概率值，某个<code>partition</code>在不在这个<code>SSTable</code>里面</li>
+<li>假绿的概率是万分之一</li>
 <li>可以配置<code>bloom_filter_fp_chance</code>来降低假绿，但是会占更多内存</li>
+<li><code>Bloom Filters</code> 也是存储在<code>off-heap</code> memory里面的。并且是每张<code>SSTable</code>都有一个的</li>
+<li><em>A Bloom filter can establish that a SSTable does not contain certain partition data.</em></li>
+<li>参考链接：
+<ul>
+<li><a href="https://blog.csdn.net/u010900754/article/details/78307808" target="_blank" rel="noopener">bloom 过滤器</a></li>
+<li><a href="https://blog.csdn.net/jiaomeng/article/details/1495500" target="_blank" rel="noopener">算法原理</a></li>
+<li><a href="https://blog.csdn.net/nangongyanya/article/details/54089568" target="_blank" rel="noopener">Cassandra Bloom 过滤器</a></li>
+</ul>
+</li>
 </ul>
 <h4 id="index-files"><a class="header-anchor" href="#index-files"></a>Index Files</h4>
 <h3 id="gossip-protocal"><a class="header-anchor" href="#gossip-protocal"></a>Gossip Protocal</h3>

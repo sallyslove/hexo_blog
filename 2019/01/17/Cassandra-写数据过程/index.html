@@ -88,7 +88,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image012-large.jpg">
 <meta property="og:image" content="https://www.ibm.com/developerworks/cn/opensource/os-cn-cassandraxu2/image010-large.jpg">
-<meta property="og:updated_time" content="2019-07-22T03:15:35.728Z">
+<meta property="og:updated_time" content="2019-12-02T03:14:25.758Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Cassandra 写数据过程">
 <meta name="twitter:description" content="Cassandra 写流程 大致流程 到把数据写到磁盘中分为以下几个步骤：  先找到应该往哪几个节点写 写log到commit log 写数据到memtable 从memtable中flush数据 将数据存储在SSTables中的磁盘中   客户端写一条数据必须指定 Keyspace、ColumnFamily、Key、Column Name 和 Value，还可以指定 Timestamp，以及数据">
@@ -470,6 +470,12 @@ commit log大小配置是per-node来配置的，所有的table share这个配置
 <blockquote>
 <p>引用自第二篇参考链接</p>
 </blockquote>
+<h4 id="sstable特性"><a class="header-anchor" href="#sstable特性"></a>SSTable特性</h4>
+<ul>
+<li>不可修改</li>
+<li>Cassandra在写SSTable的时候是batch操作，因为每次都是对应的Memtable满的时候才写的，不太会有峰值，这样保证写入的效率</li>
+</ul>
+<h4 id="sstable数据存储"><a class="header-anchor" href="#sstable数据存储"></a>SSTable数据存储</h4>
 <ul>
 <li>SSTable是<code>Sorted String Table</code></li>
 <li>SSTable分为data、index、filter三个文件写到磁盘上面，其实还有好几个其他文件:<br>
@@ -547,7 +553,7 @@ commit log大小配置是per-node来配置的，所有的table share这个配置
 <li>
 <blockquote>
 <p>To flush the data, Cassandra sorts memtables by token and then writes the data to disk sequentially.<br>
-Cassandra在将数据写到disk的时候，同时会将memtables按照token排序。___这个token是不是就是key算出来的那个token？但是table怎么按照token排序呢，应该说的是table里面的数据吧 ___</p>
+Cassandra在将数据写到disk的时候，同时会将memtables按照token排序。_这个token是不是就是key算出来的那个token？但是table怎么按照token排序呢，应该说的是table里面的数据吧 _</p>
 </blockquote>
 </li>
 <li>
@@ -747,7 +753,7 @@ partition index是在这里才算出来的。那么之前就都是token。___ Me
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#cassandra-写流程"><span class="nav-number">1.</span> <span class="nav-text">Cassandra 写流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#大致流程"><span class="nav-number">1.1.</span> <span class="nav-text">大致流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#replica-factor"><span class="nav-number">1.2.</span> <span class="nav-text">Replica Factor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#eventual-consistency"><span class="nav-number">1.3.</span> <span class="nav-text">Eventual Consistency</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#commit-log"><span class="nav-number">1.4.</span> <span class="nav-text">commit log</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#memtable"><span class="nav-number">1.5.</span> <span class="nav-text">MemTable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sstable"><span class="nav-number">1.6.</span> <span class="nav-text">SSTable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从memtables到sstable"><span class="nav-number">1.7.</span> <span class="nav-text">从memTables到SSTable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文档"><span class="nav-number">1.8.</span> <span class="nav-text">参考文档</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#cassandra-写流程"><span class="nav-number">1.</span> <span class="nav-text">Cassandra 写流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#大致流程"><span class="nav-number">1.1.</span> <span class="nav-text">大致流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#replica-factor"><span class="nav-number">1.2.</span> <span class="nav-text">Replica Factor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#eventual-consistency"><span class="nav-number">1.3.</span> <span class="nav-text">Eventual Consistency</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#commit-log"><span class="nav-number">1.4.</span> <span class="nav-text">commit log</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#memtable"><span class="nav-number">1.5.</span> <span class="nav-text">MemTable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sstable"><span class="nav-number">1.6.</span> <span class="nav-text">SSTable</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#sstable特性"><span class="nav-number">1.6.1.</span> <span class="nav-text">SSTable特性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#sstable数据存储"><span class="nav-number">1.6.2.</span> <span class="nav-text">SSTable数据存储</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从memtables到sstable"><span class="nav-number">1.7.</span> <span class="nav-text">从memTables到SSTable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文档"><span class="nav-number">1.8.</span> <span class="nav-text">参考文档</span></a></li></ol></li></ol></div>
             
 
           </div>

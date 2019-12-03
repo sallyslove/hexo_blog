@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="K8s概念 这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。 deployment  这几者的关系比较复杂。还需要进一步去看。目前先记录一下：deployment是实际的deploy，然后pod是根据replica里面的设定来起的。所以，如果将deployment删除掉，那么相应的pod和replica set都会没有  Pod pod实在是K8s里面很重要的一个概">
+<meta name="description" content="K8s概念 这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。 deployment  这几者的关系比较复杂。还需要进一步去看。目前先记录一下：deployment是实际的deploy，然后pod是根据replica里面的设定来起的。所以，如果将deployment删除掉，那么相应的pod和replica set都会没有  deployment spec详解 网上基本">
 <meta property="og:type" content="article">
 <meta property="og:title" content="K8s概念理解">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/02/27/K8s概念理解/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="K8s概念 这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。 deployment  这几者的关系比较复杂。还需要进一步去看。目前先记录一下：deployment是实际的deploy，然后pod是根据replica里面的设定来起的。所以，如果将deployment删除掉，那么相应的pod和replica set都会没有  Pod pod实在是K8s里面很重要的一个概">
+<meta property="og:description" content="K8s概念 这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。 deployment  这几者的关系比较复杂。还需要进一步去看。目前先记录一下：deployment是实际的deploy，然后pod是根据replica里面的设定来起的。所以，如果将deployment删除掉，那么相应的pod和replica set都会没有  deployment spec详解 网上基本">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-10-15T06:58:53.130Z">
+<meta property="og:updated_time" content="2019-12-02T07:34:51.299Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="K8s概念理解">
-<meta name="twitter:description" content="K8s概念 这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。 deployment  这几者的关系比较复杂。还需要进一步去看。目前先记录一下：deployment是实际的deploy，然后pod是根据replica里面的设定来起的。所以，如果将deployment删除掉，那么相应的pod和replica set都会没有  Pod pod实在是K8s里面很重要的一个概">
+<meta name="twitter:description" content="K8s概念 这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。 deployment  这几者的关系比较复杂。还需要进一步去看。目前先记录一下：deployment是实际的deploy，然后pod是根据replica里面的设定来起的。所以，如果将deployment删除掉，那么相应的pod和replica set都会没有  deployment spec详解 网上基本">
 
 
 
@@ -335,10 +335,23 @@
 <p>这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。</p>
 <h3 id="deployment"><a class="header-anchor" href="#deployment"></a>deployment</h3>
 <ul>
-<li>这几者的关系比较复杂。还需要进一步去看。目前先记录一下：deployment是实际的deploy，然后pod是根据replica里面的设定来起的。所以，如果将deployment删除掉，那么相应的pod和replica set都会没有</li>
+<li>这几者的关系比较复杂。还需要进一步去看。目前先记录一下：<code>deployment</code>是实际的<code>deploy</code>，然后<code>pod</code>是根据<code>replica</code>里面的设定来起的。所以，如果将<code>deployment</code>删除掉，那么相应的<code>pod</code>和<code>replica set</code>都会没有</li>
+</ul>
+<h4 id="deployment-spec详解"><a class="header-anchor" href="#deployment-spec详解"></a>deployment spec详解</h4>
+<p>网上基本搜索不到这方面的信息。应该是yaml文件里面的各个字段太过相似了。</p>
+<ul>
+<li><code>spec</code>详解：
+<ul>
+<li><code>metadata</code>：元数据，包含名字，标签和产品声明。元数据就是说基础信息，白描</li>
+</ul>
+</li>
+</ul>
+<h4 id="deployment参考链接"><a class="header-anchor" href="#deployment参考链接"></a>deployment参考链接</h4>
+<ul>
+<li><a href="http://www.ruanyifeng.com/blog/2007/03/metadata.html" target="_blank" rel="noopener">元数据参考链接</a></li>
 </ul>
 <h3 id="pod"><a class="header-anchor" href="#pod"></a>Pod</h3>
-<p>pod实在是K8s里面很重要的一个概念，也是很宽泛的一个概念。很多都可以是一个pod。</p>
+<p><code>pod</code>实在是<code>K8s</code>里面很重要的一个概念，也是很宽泛的一个概念。很多都可以是一个<code>pod</code>。</p>
 <ul>
 <li>All containers described as Pods.包括replication cotronller， service， deployment。<br>
 <strong>不知道是不是所有的service类型都会被当做是pod，这一点有待确认</strong></li>
@@ -610,7 +623,7 @@ kube-system    Active    15d
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s概念"><span class="nav-number">1.</span> <span class="nav-text">K8s概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#deployment"><span class="nav-number">1.1.</span> <span class="nav-text">deployment</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pod"><span class="nav-number">1.2.</span> <span class="nav-text">Pod</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#services"><span class="nav-number">1.3.</span> <span class="nav-text">Services</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#configmap"><span class="nav-number">1.4.</span> <span class="nav-text">configmap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#secrets"><span class="nav-number">1.5.</span> <span class="nav-text">secrets</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#persistentvolumnclumns"><span class="nav-number">1.6.</span> <span class="nav-text">PersistentVolumnClumns</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#namespace"><span class="nav-number">1.7.</span> <span class="nav-text">namespace</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#replication-controller"><span class="nav-number">1.8.</span> <span class="nav-text">replication controller</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ingress"><span class="nav-number">1.9.</span> <span class="nav-text">Ingress</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s概念"><span class="nav-number">1.</span> <span class="nav-text">K8s概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#deployment"><span class="nav-number">1.1.</span> <span class="nav-text">deployment</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#deployment-spec详解"><span class="nav-number">1.1.1.</span> <span class="nav-text">deployment spec详解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#deployment参考链接"><span class="nav-number">1.1.2.</span> <span class="nav-text">deployment参考链接</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pod"><span class="nav-number">1.2.</span> <span class="nav-text">Pod</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#services"><span class="nav-number">1.3.</span> <span class="nav-text">Services</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#configmap"><span class="nav-number">1.4.</span> <span class="nav-text">configmap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#secrets"><span class="nav-number">1.5.</span> <span class="nav-text">secrets</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#persistentvolumnclumns"><span class="nav-number">1.6.</span> <span class="nav-text">PersistentVolumnClumns</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#namespace"><span class="nav-number">1.7.</span> <span class="nav-text">namespace</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#replication-controller"><span class="nav-number">1.8.</span> <span class="nav-text">replication controller</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ingress"><span class="nav-number">1.9.</span> <span class="nav-text">Ingress</span></a></li></ol></li></ol></div>
             
 
           </div>

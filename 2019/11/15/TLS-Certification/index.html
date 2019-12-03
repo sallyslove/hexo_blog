@@ -79,21 +79,23 @@
 
 
 
-<meta name="description" content="新开一篇吧，证书的内容也不少啊。 参考链接  SSL/TLS for dummies part 3 – Understanding Certificate Authority  为啥需要证书  我们知道在TLS传输中需要使用不对称加密算法，在其中有公钥，私钥。公钥用来给客户端给自己发消息，私钥用来解密收到的消息。 但是以下场景中即使是不对称加密也是不安全的：  小明用浏览器往百度发了个消息，然后百">
+<meta name="description" content="参考链接  SSL/TLS for dummies part 3 – Understanding Certificate Authority HTTPS 精读之 TLS 证书校验 https SSL主流数字证书都有哪些格式？ Java Secure Socket Extension  为啥需要证书  我们知道在TLS传输中需要使用不对称加密算法，在其中有公钥，私钥。公钥用来给客户端给自己发消息，私">
 <meta property="og:type" content="article">
 <meta property="og:title" content="TLS - Certification">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/11/15/TLS-Certification/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="新开一篇吧，证书的内容也不少啊。 参考链接  SSL/TLS for dummies part 3 – Understanding Certificate Authority  为啥需要证书  我们知道在TLS传输中需要使用不对称加密算法，在其中有公钥，私钥。公钥用来给客户端给自己发消息，私钥用来解密收到的消息。 但是以下场景中即使是不对称加密也是不安全的：  小明用浏览器往百度发了个消息，然后百">
+<meta property="og:description" content="参考链接  SSL/TLS for dummies part 3 – Understanding Certificate Authority HTTPS 精读之 TLS 证书校验 https SSL主流数字证书都有哪些格式？ Java Secure Socket Extension  为啥需要证书  我们知道在TLS传输中需要使用不对称加密算法，在其中有公钥，私钥。公钥用来给客户端给自己发消息，私">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Certificate/Certificate.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Certificate/certificate_not_safe.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Certificate/certificate_detail.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Certificate/certificate_algorithm.png">
-<meta property="og:updated_time" content="2019-11-20T06:06:01.203Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Certificate/certificate_detail_content.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Certificate/DN_explaination.jpg">
+<meta property="og:updated_time" content="2019-11-21T05:40:30.107Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="TLS - Certification">
-<meta name="twitter:description" content="新开一篇吧，证书的内容也不少啊。 参考链接  SSL/TLS for dummies part 3 – Understanding Certificate Authority  为啥需要证书  我们知道在TLS传输中需要使用不对称加密算法，在其中有公钥，私钥。公钥用来给客户端给自己发消息，私钥用来解密收到的消息。 但是以下场景中即使是不对称加密也是不安全的：  小明用浏览器往百度发了个消息，然后百">
+<meta name="twitter:description" content="参考链接  SSL/TLS for dummies part 3 – Understanding Certificate Authority HTTPS 精读之 TLS 证书校验 https SSL主流数字证书都有哪些格式？ Java Secure Socket Extension  为啥需要证书  我们知道在TLS传输中需要使用不对称加密算法，在其中有公钥，私钥。公钥用来给客户端给自己发消息，私">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Certificate/Certificate.png">
 
 
@@ -287,6 +289,28 @@
           </span>
 
           
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/security/" itemprop="url" rel="index">
+                    <span itemprop="name">security</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -314,10 +338,12 @@
       
 
       
-        <p>新开一篇吧，证书的内容也不少啊。</p>
-<h2 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h2>
+        <h2 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h2>
 <ul>
 <li><a href="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Certificate/certificate_detail.png" target="_blank" rel="noopener">SSL/TLS for dummies part 3 – Understanding Certificate Authority</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/30655259" target="_blank" rel="noopener">HTTPS 精读之 TLS 证书校验</a></li>
+<li><a href="https://www.cnblogs.com/lhj588/p/6069873.html" target="_blank" rel="noopener">https SSL主流数字证书都有哪些格式？</a></li>
+<li><a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/jsse/JSSERefGuide.html" target="_blank" rel="noopener">Java Secure Socket Extension</a></li>
 </ul>
 <h2 id="为啥需要证书"><a class="header-anchor" href="#为啥需要证书"></a>为啥需要证书</h2>
 <ul>
@@ -335,7 +361,7 @@
 </ul>
 <h2 id="证书的使用过程"><a class="header-anchor" href="#证书的使用过程"></a>证书的使用过程</h2>
 <ol>
-<li>首先是百度作为一个服务器，向<code>CA</code>申请签名证书。这里用<code>Digicert</code>作为CA</li>
+<li>首先是百度作为一个服务器，向<code>CA</code>申请签名证书。这里用<code>Digicert</code>作为<code>CA</code>。<code>github</code>就是<code>Digicert</code>做的根认证 😃</li>
 <li>那么<code>CA</code>会为百度创建一个证书，里面包含一些信息，比如例如服务器名称，服务器的公钥等。</li>
 <li><code>Digicert</code>将创建数据（这里的数据，其实就是证书）的哈希值，并使用自己的私钥对其进行加密</li>
 <li>浏览器和操作系统自带<code>Digicert</code>等权威机构的公钥。</li>
@@ -384,9 +410,83 @@
 <p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Certificate/certificate_algorithm.png" alt></p>
 <h3 id="证书校验"><a class="header-anchor" href="#证书校验"></a>证书校验</h3>
 <ul>
-<li>浏览器是有根CA的公钥的，所以浏览器会先用根CA的公钥来验证中间CA的证书</li>
-<li>然后就可以信任中间CA的公钥，再用这个公钥来解服务器的证书</li>
+<li>浏览器是有根<code>CA</code>的公钥的，所以浏览器会先用根<code>CA</code>的公钥来验证中间<code>CA</code>的证书</li>
+<li>然后就可以信任中间<code>CA</code>的公钥，再用这个公钥来解服务器的证书</li>
 <li>然后得到服务器，比如百度的公钥</li>
+</ul>
+<h3 id="证书格式"><a class="header-anchor" href="#证书格式"></a>证书格式</h3>
+<ul>
+<li>证书的规范是<code>X.509</code>，有好几个版本。起码到<code>v3</code>,应该也是目前比较常用的一个版本。证书的内容遵循<code>asn.1</code>格式。😂 居然是<code>asn.1</code>的，久违的一个规范了。</li>
+<li>最常见的两个工具是<code>Java</code>的<code>Keytool</code>和<code>openssl</code></li>
+<li><code>Java</code>的<code>keytool</code>生成的证书格式是<code>JKS</code>格式的证书</li>
+<li><code>openssl</code>生成<code>PEM、KEY、CRT</code>格式的证书</li>
+<li>还有一些其他格式的证书，比如IBM和微软，都有自己的工具生成的自带证书
+<ul>
+<li><code>*.DER *.CER Certificate</code> : 这样的证书文件是二进制格式，只含有证书信息，不包含私钥。</li>
+<li><code>*.CRT</code>: 这样的文件可以是二进制格式，也可以是文本格式，一般均为文本格式，功能与<code>*.DER/*.CER</code>相同。</li>
+<li><code>*.PEM Privacy Enhanced Mail</code>: 一般是文本格式，可以放证书或私钥，或者两者都包含。 <code>*.PEM</code>如果只包含私钥，那一般用<code>*.KEY</code>代替。</li>
+<li><code>*.PFX *.P12 Personal Information Exchange</code>是二进制格式，同时含证书和私钥，一般有密码保护</li>
+<li><strong>这个博客是不是说得不对啊，证书里面哪里来的私钥，应该都是公钥才对吧</strong></li>
+</ul>
+</li>
+<li><code>—–BEGIN CERTIFICATE—–</code> 用这个开头的，代表这个是证书</li>
+<li><code>—–BEGIN RSA PRIVATE KEY—–</code> 这个开头的，说明是一个私钥。</li>
+</ul>
+<h4 id="证书的详细内容"><a class="header-anchor" href="#证书的详细内容"></a>证书的详细内容</h4>
+<ul>
+<li>以下是证书规范。看名字能明白其中包含：
+<ul>
+<li>证书规范的版本信息，比如<code>v3</code></li>
+<li>证书序列号，证书序列号在一个<code>CA</code>机构内是唯一的，但不是全局唯一</li>
+<li>证书签名算法，这个是上面已经看过了。</li>
+<li>证书签发者，是一组<code>DN distributed name</code>，在用<code>openssl</code>等工具输出证书信息的时候，能看到这一栏。</li>
+<li>证书有效期</li>
+<li>证书里面包含的服务器的名称， 也是一个<code>DN</code>。</li>
+<li>证书中包含的服务器的公钥</li>
+<li>其他扩展信息：比如证书所携带的域名信息<code>SAN</code></li>
+<li>签名：最后是证书签名，这个在上面已经讲过，是有证书服务器使用自己的私钥对数据进行的签名，使用证书内指定的签名算法。格式如下：</li>
+</ul>
+</li>
+</ul>
+<pre><code>   Signature = RSA(sha256(Data), IssuerPrivateKey)
+</code></pre>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Certificate/certificate_detail_content.png" alt="证书的详细信息"></p>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Certificate/DN_explaination.jpg" alt="DN详解"></p>
+<h4 id="证书查看和格式转换"><a class="header-anchor" href="#证书查看和格式转换"></a>证书查看和格式转换</h4>
+<ul>
+<li>各个证书的格式之间是可以相互转换的。</li>
+<li>以下命令，将<code>JKS</code>格式转换成为<code>PFX</code>格式。事实上，用这条命令可以实现<code>JKS</code>和<code>PFX</code>的相互转换，换一下目标格式和源格式即可。</li>
+</ul>
+<pre><code>keytool -importkeystore -srckeystore D:\server.jks -destkeystore D:\server.pfx -srcstoretype JKS -deststoretype PKCS12
+</code></pre>
+<h2 id="java中的实现"><a class="header-anchor" href="#java中的实现"></a>Java中的实现</h2>
+<ul>
+<li>我们在工作中碰到了错误:</li>
+</ul>
+<pre><code>javax.net.ssl.SSLHandshakeException: java.security.cert.CertificateException: No subject alternative names present
+</code></pre>
+<ul>
+<li>
+<p>这个错误在现在看来就比较清楚了，是客户端在校验服务器端的证书，并且对证书里面的扩展字段<code>SAN</code>有要求，但是服务器端的证书里面并没有带这个扩展字段，就错了。</p>
+</li>
+<li>
+<p>这部分代码应该在<code>JSSE Java Secure Socket Extension</code>里面。<br>
+没有unit test，很难跟代码。先将报错信息记录在这里。报错信息如下：</p>
+<pre><code> javax.net.ssl.SSLHandshakeException:  
+ java.security.cert.CertificateException: No subject alternative names present
+ at sun.security.ssl.Alerts.getSSLException(Alerts.java:192)
+ at sun.security.ssl.SSLSocketImpl.fatal(SSLSocketImpl.java:1964)
+ at sun.security.ssl.Handshaker.fatalSE(Handshaker.java:328)
+ at sun.security.ssl.Handshaker.fatalSE(Handshaker.java:322)
+ at sun.security.ssl.ClientHandshaker.serverCertificate(ClientHandshaker.java:1614)
+ at sun.security.ssl.ClientHandshaker.processMessage(ClientHandshaker.java:216)
+ at sun.security.ssl.Handshaker.processLoop(Handshaker.java:1052)
+ at sun.security.ssl.Handshaker.process_record(Handshaker.java:987)
+ at sun.security.ssl.SSLSocketImpl.readRecord(SSLSocketImpl.java:1072)
+ at sun.security.ssl.SSLSocketImpl.performInitialHandshake(SSLSocketImpl.java:1385)
+ at sun.security.ssl.SSLSocketImpl.startHandshake(SSLSocketImpl.java:1413)
+ at sun.security.ssl.SSLSocketImpl.startHandshake(SSLSocketImpl.java:1397)</code></pre>
+</li>
 </ul>
 
       
@@ -550,7 +650,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为啥需要证书"><span class="nav-number">2.</span> <span class="nav-text">为啥需要证书</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#证书的使用过程"><span class="nav-number">3.</span> <span class="nav-text">证书的使用过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#root-ca-和-中间ca"><span class="nav-number">4.</span> <span class="nav-text">Root CA 和 中间CA</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#root-ca"><span class="nav-number">4.1.</span> <span class="nav-text">Root CA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#中间ca"><span class="nav-number">4.2.</span> <span class="nav-text">中间CA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#证书签名算法"><span class="nav-number">4.3.</span> <span class="nav-text">证书签名算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#证书校验"><span class="nav-number">4.4.</span> <span class="nav-text">证书校验</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为啥需要证书"><span class="nav-number">2.</span> <span class="nav-text">为啥需要证书</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#证书的使用过程"><span class="nav-number">3.</span> <span class="nav-text">证书的使用过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#root-ca-和-中间ca"><span class="nav-number">4.</span> <span class="nav-text">Root CA 和 中间CA</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#root-ca"><span class="nav-number">4.1.</span> <span class="nav-text">Root CA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#中间ca"><span class="nav-number">4.2.</span> <span class="nav-text">中间CA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#证书签名算法"><span class="nav-number">4.3.</span> <span class="nav-text">证书签名算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#证书校验"><span class="nav-number">4.4.</span> <span class="nav-text">证书校验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#证书格式"><span class="nav-number">4.5.</span> <span class="nav-text">证书格式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#证书的详细内容"><span class="nav-number">4.5.1.</span> <span class="nav-text">证书的详细内容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#证书查看和格式转换"><span class="nav-number">4.5.2.</span> <span class="nav-text">证书查看和格式转换</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#java中的实现"><span class="nav-number">5.</span> <span class="nav-text">Java中的实现</span></a></li></ol></div>
             
 
           </div>

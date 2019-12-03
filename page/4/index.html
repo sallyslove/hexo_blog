@@ -638,6 +638,12 @@ commit log大小配置是per-node来配置的，所有的table share这个配置
 <blockquote>
 <p>引用自第二篇参考链接</p>
 </blockquote>
+<h4 id="sstable特性"><a class="header-anchor" href="#sstable特性"></a>SSTable特性</h4>
+<ul>
+<li>不可修改</li>
+<li>Cassandra在写SSTable的时候是batch操作，因为每次都是对应的Memtable满的时候才写的，不太会有峰值，这样保证写入的效率</li>
+</ul>
+<h4 id="sstable数据存储"><a class="header-anchor" href="#sstable数据存储"></a>SSTable数据存储</h4>
 <ul>
 <li>SSTable是<code>Sorted String Table</code></li>
 <li>SSTable分为data、index、filter三个文件写到磁盘上面，其实还有好几个其他文件:<br>
@@ -715,7 +721,7 @@ commit log大小配置是per-node来配置的，所有的table share这个配置
 <li>
 <blockquote>
 <p>To flush the data, Cassandra sorts memtables by token and then writes the data to disk sequentially.<br>
-Cassandra在将数据写到disk的时候，同时会将memtables按照token排序。___这个token是不是就是key算出来的那个token？但是table怎么按照token排序呢，应该说的是table里面的数据吧 ___</p>
+Cassandra在将数据写到disk的时候，同时会将memtables按照token排序。_这个token是不是就是key算出来的那个token？但是table怎么按照token排序呢，应该说的是table里面的数据吧 _</p>
 </blockquote>
 </li>
 <li>

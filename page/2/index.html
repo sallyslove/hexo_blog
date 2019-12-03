@@ -807,14 +807,14 @@ Interrupt:5 Base address:0x8c00
             <h3 id="compacting-sstable-data"><a class="header-anchor" href="#compacting-sstable-data"></a>Compacting SSTable Data</h3>
 <h4 id="why-do-we-need-compaction"><a class="header-anchor" href="#why-do-we-need-compaction"></a>Why Do We Need Compaction</h4>
 <ul>
-<li>cassandra并不会删除数据。当需要update一个数据的时候，也不是在SSTable里面进行覆盖，而是会插入一个新的数据，带上新的version。</li>
-<li>这样做的话，cassandra写入数据会非常快，因为不需要查询，但是弊端就是会有越来越多的数据。</li>
-<li>这个时候就需要进行compaction。</li>
+<li><code>cassandra</code>并不会删除数据。当需要<code>update</code>一个数据的时候，也不是在<code>SSTable</code>里面进行覆盖，而是会插入一个新的数据，带上新的<code>version</code>。</li>
+<li>这样做的话，<code>cassandra</code>写入数据会非常快，因为不需要查询，但是弊端就是会有越来越多的数据。</li>
+<li>这个时候就需要进行<code>compaction</code>。</li>
 </ul>
 <h4 id="what-is-compaction"><a class="header-anchor" href="#what-is-compaction"></a>What Is Compaction</h4>
 <ul>
-<li>To keep the multiple versions of the SSTables from overwhelming it, the database merges SSTables on a regular basis to get rid of the older versions of the data。 cassandra会在一个基础之上对旧的版本的数据进行合并，这个就是compaction</li>
-<li>cassandra默认会进行很多次小的compaction</li>
+<li>To keep the multiple versions of the SSTables from overwhelming it, the database merges SSTables on a regular basis to get rid of the older versions of the data。 <code>cassandra</code>会在一个基础之上对旧的版本的数据进行合并，这个就是<code>compaction</code></li>
+<li><code>cassandra</code>默认会进行很多次小的<code>compaction</code></li>
 </ul>
 <h4 id="campaction细节"><a class="header-anchor" href="#campaction细节"></a>Campaction细节</h4>
 <ul>
