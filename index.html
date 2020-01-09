@@ -242,6 +242,168 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2020/01/09/Linux-Command/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2020/01/09/Linux-Command/" itemprop="url">Linux Command</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-09T09:43:08+08:00">
+                2020-01-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>工作多年，<code>Linux</code>命令是时不时要用到的。每次都是百度之（虽然不是真的用的百度:P），记录在这里，省得每次还得去找</p>
+<h2 id="awk"><a class="header-anchor" href="#awk"></a>AWK</h2>
+<h3 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h3>
+<p>-<a href="https://www.cnblogs.com/ggjucheng/archive/2013/01/13/2858470.html" target="_blank" rel="noopener">linux awk命令详解</a></p>
+<ul>
+<li><a href="https://www.cnblogs.com/dakewei/p/9848176.html" target="_blank" rel="noopener">使用awk分割字符串并且获取分割后的最后一个字符串</a></li>
+</ul>
+<h3 id="实例"><a class="header-anchor" href="#实例"></a>实例</h3>
+<p><code>awk</code> 其实是读入一行，进行查找，再进行操作。可以集合<code>SED</code>和<code>GREP</code>的作用。下面用例子来说明问题</p>
+<ul>
+<li><code>awk -F'-' '{print $1}'</code>
+<ul>
+<li>用<code>-</code>做分隔符，然后将<code>-</code>分隔之后的第一列数据输出出来。</li>
+<li>如果有版本，比如<code>2.0.1-SNAPSHOT</code>,这个语句就可以得到`2.0.``</li>
+</ul>
+</li>
+<li><code>echo &quot;you-me-he&quot; |awk -F '[-]' '{print $NF}'</code>
+<ul>
+<li>这条命令是用<code>-</code>分隔之后，打印分隔后的最后一个字符，所以输出<code>he</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="sed"><a class="header-anchor" href="#sed"></a>SED</h2>
+<h3 id="实例-v2"><a class="header-anchor" href="#实例-v2"></a>实例</h3>
+<h2 id="截取字符串的方法"><a class="header-anchor" href="#截取字符串的方法"></a>截取字符串的方法</h2>
+<h3 id="参考链接-v2"><a class="header-anchor" href="#参考链接-v2"></a>参考链接</h3>
+<p>-<a href="https://www.jb51.net/article/56563.htm" target="_blank" rel="noopener">Shell脚本8种字符串截取方法总结</a></p>
+<h3 id="实例-v3"><a class="header-anchor" href="#实例-v3"></a>实例</h3>
+<ul>
+<li><code>var=http://www.aaa.com/123.htm</code></li>
+<li><code>echo ${var#*//}</code>
+<ul>
+<li><code>#</code> 号是运算符，<code>*//</code> 表示从左边开始删除第一个 <code>//</code> 号及左边的所有字符</li>
+<li>所以这样的话会将<code>http://</code>都给删除掉</li>
+</ul>
+</li>
+<li><code>echo ${var##*/}</code>
+<ul>
+<li><code>##</code>是运算符指最后一个，<code>*/</code>表示<code>/</code>和<code>/</code>左边的所有字符。所以一个<code>#</code>是第一个，两个是最后一个。</li>
+<li>这句话会删除最后一个<code>/</code>以及左边的字符， 结果只留下了<code>123.htm</code></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/11/15/TLS-Certification/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2423,185 +2585,6 @@ jti (JWT ID)：编号
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/07/26/Java-Remote-Debug/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/07/26/Java-Remote-Debug/" itemprop="url">Java Remote Debug</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-26T10:51:48+08:00">
-                2019-07-26
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>作为Java程序员，不会remote debug，是不现实的。实际上，几年前也用过。但是悲催的是，再次要用的时候就搞不清了。<br>
-现在还是k8s平台，端口映射就更复杂一点。三两下一绕就更不清楚了。所以还是先把remote debug搞清楚。<br>
-再去绕端口号。</p>
-<h3 id="什么是remote-debug"><a class="header-anchor" href="#什么是remote-debug"></a>什么是remote debug</h3>
-<p>服务端程序运行在一台远程服务器上，我们可以在本地服务端的代码（前提是本地的代码必须和远程服务器运行的代码一致）中设置断点，每当有请求到远程服务器时时能够在本地知道远程服务端的此时的内部状态。</p>
-<h3 id="怎么做remote-debug"><a class="header-anchor" href="#怎么做remote-debug"></a>怎么做remote debug</h3>
-<h4 id="使用特定jvm参数运行服务端代码"><a class="header-anchor" href="#使用特定jvm参数运行服务端代码"></a>使用特定JVM参数运行服务端代码</h4>
-<ul>
-<li>不是说打包的时候，而是运行jar包的时候，java -jar带上需要的参数
-<ul>
-<li><code>address</code>是进行通信需要的端口。那么服务器端运行的程序会在这个端口上面开一个<code>socket</code></li>
-<li><code>socket</code>比较好理解的，通信方式</li>
-<li>所以之前进行debug mode的时候，肯定要改一下产品端module运行时候的JVM参数的</li>
-</ul>
-</li>
-</ul>
-<pre><code>-Xdebug -Xrunjdwp:transport=dt_socket,suspend=n,server=y,address=${debug_port}
-</code></pre>
-<ul>
-<li>参考链接：
-<ul>
-<li><a href="https://www.cnblogs.com/wy2325/p/5600232.html" target="_blank" rel="noopener">IntelliJ远程调试教程</a></li>
-</ul>
-</li>
-</ul>
-<h4 id="在ide里面进行设置-本地连接远程服务器debug端口"><a class="header-anchor" href="#在ide里面进行设置-本地连接远程服务器debug端口"></a>在IDE里面进行设置，本地连接远程服务器debug端口</h4>
-<ul>
-<li>
-<p>参考链接里面的设置方法，其实就配远程服务器的地址和debug 端口</p>
-</li>
-<li>
-<p>还需要点击一下debug，让本地attach上去。</p>
-</li>
-</ul>
-<h4 id="调试代码"><a class="header-anchor" href="#调试代码"></a>调试代码</h4>
-<ul>
-<li>这时候就可以进行remote debug了。打好断点，然后往服务器发送请求就可以了</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2652,7 +2635,7 @@ jti (JWT ID)：编号
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-count">37</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2702,7 +2685,7 @@ jti (JWT ID)：编号
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

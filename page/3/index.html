@@ -242,6 +242,235 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/03/04/TLS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/03/04/TLS/" itemprop="url">SSL/TLS相关知识-算法</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-04T14:50:11+08:00">
+                2019-03-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/security/" itemprop="url" rel="index">
+                    <span itemprop="name">security</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h2>
+<ul>
+<li><a href="https://xz.aliyun.com/t/2526" target="_blank" rel="noopener">SSL/TLS协议详解(上)：密码套件，哈希，加密，密钥交换算法</a>
+<ul>
+<li>英文版: <a href="https://www.wst.space/ssl-part1-ciphersuite-hashing-encryption/" target="_blank" rel="noopener">SSL/TLS for dummies part 1 : Ciphersuite, Hashing,Encryption</a></li>
+</ul>
+</li>
+<li><a href="https://xz.aliyun.com/t/2530" target="_blank" rel="noopener">SSL/TLS协议详解(中)——证书颁发机构</a></li>
+<li><a href="https://xz.aliyun.com/t/2531" target="_blank" rel="noopener">SSL/TLS协议详解(下)——TLS握手协议</a></li>
+<li>以上是一个系列，真的是详解，非常详尽。</li>
+</ul>
+<h2 id="算法"><a class="header-anchor" href="#算法"></a>算法</h2>
+<ul>
+<li>这边主要是参考了上面参考链接里面的第一篇，总的来说，应该了解一下这些</li>
+</ul>
+<h3 id="哈希算法"><a class="header-anchor" href="#哈希算法"></a>哈希算法</h3>
+<ul>
+<li>哈希算法生成的数据格式被称为散列，散列不是一个可逆的过程。<br>
+而之前说过，<code>Base64</code>只是编码，顾名思义，编码只要知道规则，是可以解码的，没有安全性可言。所以编码算法和加密算法不是一回事来着。</li>
+<li>所以讲密码哈希一下，是没法看出来原始密码是什么的。</li>
+<li>这边可以扩展，进一步研究的是，如果进行攻击的话，称为字典攻击，就是猜密码，将常用的，可能出现的密码都哈希算法一下，去对比。</li>
+<li>哈希算法有很多种，比如<code>MD5</code>是一种，虽然之前说就是提取摘要的。<code>SHA-512</code>是另一种。</li>
+</ul>
+<h3 id="加密算法"><a class="header-anchor" href="#加密算法"></a>加密算法</h3>
+<ul>
+<li><em>Encryption lies in between hashing and encoding</em> 这句没看明白</li>
+<li>加密算法可以分为对称加密和非对称加密两种</li>
+</ul>
+<h4 id="对称加密"><a class="header-anchor" href="#对称加密"></a>对称加密</h4>
+<ul>
+<li>主要来自参考链接一， 对称加密的话，文章中用一个例子来讲解：“移位”。比如有数字&quot;123&quot;，对其进行加密，都增大3，成为“456”，就是对称加密了。</li>
+<li>其中的数字3就是<code>Encryption key (symmetric key)</code>。对称加密的时候，知道<code>key</code>的话，就可以进行解密了。</li>
+<li><em>Anyone who knows the encryption key and can apply the reverse of Caesar’s algorithm and retrieve the original Plaintext.</em> 凯撒算法就是上面这种意味式的加密算法。</li>
+<li>有此可知，在<code>TLS</code>中使用简单的对称加密不是很安全的。毕竟知道<code>Encryption key</code>就可以进行解密了。<br>
+对称加密一代代发展，现在也有比较复杂的算法，比如<code>Triple Data Encryption Algorithm</code>，后面可以再进一步研究。AES（高级加密标准）和3DES（三重数据加密算法）的复杂算法也是有的</li>
+<li>从过程可以知道，<code>key</code>是非常关键的。但是由于是对称加密解密，双方必须都知道约定的值，那么第一步就是传递<code>key</code>，而这个时候是没法加密的。所以就出现了不对称加密。<em>So we need a secure mechanism to exchange the keys without an attacker actually seeing it. There comes the role of Asymmetric Key Encryption.</em></li>
+<li>在<code>TLS</code>中，传输和接收数据的时候，可以使用对称加密算法。事实上，很可能大部分都是使用的对称加密。不对称加密涉及双密钥架构并且密钥长度通常很大，因此加密-解密开销非常高。与对称密钥加密相比，它需要更多的时间和<code>CPU</code>占有率。</li>
+</ul>
+<h4 id="不对称加密"><a class="header-anchor" href="#不对称加密"></a>不对称加密</h4>
+<ul>
+<li>1976年，Whitfield Diffie和Martin Hellman首次提出了非对称加密的概念，该算法被称为<code>Diffie-Hellman</code>密钥交换。然后在1978年，麻省理工学院的Ron Rivest，Adi Shamir和Leonard Adleman发表了<code>RSA</code>算法。</li>
+<li>不对称加密的简单解释就是：用不同的<code>key</code>来进行加密和解密。</li>
+<li>非对称加密也称为公钥基础结构，又称<code>PKI public key ixxx</code></li>
+<li>不对称加密通常用于在刚开始传输对称加密的<code>key</code>的时候</li>
+<li>公钥用来给对方使用，比如A想给B发消息，那么A需要使用B的公钥来加密自己的消息。<br>
+所以公钥是可以与任何想与你通信的人共享的，一般来说，在公钥中会指定使用何种加密算法。 <em>如果密钥对是使用RSA算法生成的，那么它们应该在加密数据时使用相同的算法。</em></li>
+<li>私钥用来解密收到的消息。比如A收到了一条消息，那么A应当使用自己的私钥来解密收到的消息</li>
+<li>非对称加密算法除了<code>RSA</code>、<code>Diffie-Hellman密钥交换</code>、<code>ECDH（Elliptic Curve Diffie-Hellman）</code>、<code>SRP（安全远程密码）</code>以及由TLS 1.2支持密钥交换算法<code>PSK（Pre Shared Key）</code>。总之，也是有一大堆的</li>
+</ul>
+<h5 id="rsa算法细节"><a class="header-anchor" href="#rsa算法细节"></a>RSA算法细节</h5>
+<ul>
+<li>所以<code>RSA</code>算法有几个比较重要的组成，私钥，公钥，加密算法和解密算法</li>
+<li>那么一个严肃的问题就是，不同的钥匙进行计算的消息，怎么能够解开呢？接下来就是数学课的时间了。
+<ul>
+<li>参考链接：
+<ul>
+<li><a href="https://blog.csdn.net/dbs1215/article/details/48953589" target="_blank" rel="noopener">带你彻底理解RSA算法原理</a></li>
+<li><a href="https://www.zhihu.com/question/25038691" target="_blank" rel="noopener">RSA 算法的加密原理是什么,知乎问答</a></li>
+</ul>
+</li>
+<li>互质数： 只有一个公因子为1的数。比如6和9，都有公因子为3，那么就不是互质数；而7和9只有公因子为1，就是互质数。</li>
+<li>欧拉函数：<code>φ(n)</code>。 小于或等于n的正整数中与n互质的数的数目。</li>
+<li>三个横线的奇怪等号是恒等于。</li>
+<li>生成公钥：随机选取两个质数<code>p1、p2</code>，<code>n=p1*p2</code>，再随机选取一个整数<code>e</code>，<code>e</code>与<code>φ(n)</code>互质。公钥就是<code>(e, n)</code>。</li>
+<li>根据欧拉函数定理，<code>φ(n) = (p1-1)*(p2-1)</code></li>
+<li>费马定理：若p是素数，a与p互素，则<code>a^(p-1）≡1 （mod p）</code> 没看懂这个费马定理</li>
+<li>加密算法：假设<code>m</code>为需要加密的信息，那么<code>(m^e) mod n</code>就加密好了，生成加密后的信息<code>c</code></li>
+<li>解密算法： 解密算法其实和加密算法的公式是一模一样的，只是这里的<code>m</code>和<code>e</code>换成<code>c</code>和<code>d</code>，成为<code>(c^d) mod n</code>。相当于采用公式都是<code>(x^y) mod n</code>，所以其实使用的公式是一样的</li>
+<li>那么这里的<code>(d, n)</code>就被成为私钥。那么如何得到<code>d</code>呢？烧脑的数学就来了。果然数学系才有前途啊 😂 实在是颇为烧脑啊。</li>
+<li>各个参考链接中均有实际的例子，我这里就不再烧脑来看了</li>
+<li>参考链接：
+<ul>
+<li><a href="https://blog.csdn.net/qq_38313548/article/details/85387466" target="_blank" rel="noopener">如何获得d</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<pre><code>(c^d) mod n = ((m^e)mod n)^d mod n = (m^ed) mod n = m
+(m^φ(n)) mod n≡1 又 1^k≡1, 所以(m^k*φ(n)) mod n≡1 ，所以(m^(k*φ(n)+1)) mod n≡m
+结合以上两条，ed=k*φ(n)+1 , d=(k*φ(n)+1)/e
+</code></pre>
+<h5 id="dh和rsa的区别"><a class="header-anchor" href="#dh和rsa的区别"></a>DH和RSA的区别</h5>
+<ul>
+<li>有一本书，叫做“图解密码技术”，</li>
+<li><code>RSA</code>利用最大公约数（互质）来求出公钥和私钥。<code>DH密钥协商</code>则是利用生成元来得到共享密钥。</li>
+<li>在第一篇参考链接中有<code>DH</code>算法的详细数学过程，暂时略过，这些需要数学基础啊。</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/02/27/K8s概念理解/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -374,9 +603,31 @@
 </li>
 </ul>
 <h3 id="configmap"><a class="header-anchor" href="#configmap"></a>configmap</h3>
+<h4 id="configmap的作用"><a class="header-anchor" href="#configmap的作用"></a>configmap的作用</h4>
 <ul>
 <li><em>In Kubernetes, a ConfigMap is simply a container for storing configuration data. Other things, like pods, can access the data in a ConfigMap.</em></li>
 </ul>
+<h4 id="创建configmap"><a class="header-anchor" href="#创建configmap"></a>创建configmap</h4>
+<ul>
+<li>
+<p>可以通过命令行创建<code>kubectl create configmap</code>,当然也可以用<code>yaml</code>文件的方式创建。</p>
+</li>
+<li>
+<p>以下的例子里面是直接给出了一个键值对，事实上，可以从文件<code>--from-file</code>或者目录来创建</p>
+<pre><code>$ kubectl create configmap special-config --from-literal=special.how=very
+configmap &quot;special-config&quot; created
+$ kubectl get configmap special-config -o go-template='{{.data}}'
+map[special.how:very]
+</code></pre>
+</li>
+<li>
+<p>参考链接：</p>
+<ul>
+<li><a href="https://www.jianshu.com/p/b1d516f02ecd" target="_blank" rel="noopener">k8s – ConfigMap</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="pod调用configmap"><a class="header-anchor" href="#pod调用configmap"></a>POD调用configmap</h4>
 <h3 id="secrets"><a class="header-anchor" href="#secrets"></a>secrets</h3>
 <h3 id="persistentvolumnclumns"><a class="header-anchor" href="#persistentvolumnclumns"></a>PersistentVolumnClumns</h3>
 <ul>
@@ -437,27 +688,56 @@ kube-system    Active    15d
 </ul>
 <h3 id="ingress"><a class="header-anchor" href="#ingress"></a>Ingress</h3>
 <ul>
-<li>Ingress：An Ingress enables inbound connections to the cluster, allowing external traffic to reach the correct Pod.前一句没看懂。</li>
-<li>Ingress enables externally-reachable urls, load balance traffic, terminate SSL, offer name based virtual hosting for a Kubernetes cluster.</li>
-<li>通常情况下，service和pod的IP仅可在集群内部访问。集群外部的请求需要通过负载均衡转发到service在Node上暴露的NodePort上，然后再由kube-proxy将其转发给相关的Pod。而Ingress就是为进入集群的请求提供路由规则的集合</li>
-<li>Ingress.yaml里面的信息不可能完全列这里，有以下一些元素和类型:
-<ul>
-<li>Kind: namespace 从这边看ingress的实质是namespace？</li>
-<li>Kind：secret  type：Opaque，里面的数据看起来是证书形式 The default server secret is a self-signed certificate for other Nginx example SSL connections and is required by the Nginx Default Example.</li>
-<li>Kind：ServiceAccount: The ServiceAccount defines the account with a set of permissions on how to access the cluster to access the defined Ingress Rules.</li>
-<li>Kind：ConfigMap</li>
-<li>现在看来，上面这一段有点误解。因为当时是学习k8s的在线training，我想这个Ingress.yaml只不过是部署一个元素。真正起作用的是ingress-rules.yaml文件。这个才是如何生成一个ingress。</li>
-</ul>
-</li>
-<li>还有个ingress-rules的yaml文件。里面的内容如下：
-<ul>
-<li>Kind: Ingress 这个rule就是rule，哪个endPoint进哪个deployment</li>
-<li>每个Ingress都需要配置rules，目前Kubernetes仅支持http规则。所以最关键的就是rule</li>
-</ul>
-</li>
+<li><em>Ingress enables externally-reachable urls, load balance traffic, terminate SSL, offer name based virtual hosting for a Kubernetes cluster.</em></li>
+<li>通常情况下，<code>service</code>和<code>pod</code>的<code>IP</code>仅可在集群内部访问。集群外部的请求需要通过负载均衡转发到<code>service</code>在<code>Node</code>上暴露的<code>NodePort</code>上，然后再由<code>kube-proxy</code>将其转发给相关的<code>Pod</code>。而<code>Ingress</code>就是为进入集群的请求提供路由规则的集合</li>
+<li>用<code>NodePort</code>来暴露服务的时候， <code>IP</code>可能会漂移，并且，如果服务太多的话，会有混乱，为此引入了<code>ingress</code>，使用<code>hostname</code>来避免这个问题。</li>
+<li>可以认为<code>Ingress</code>包含两个组件：<code>ingress controller</code>和<code>ingress</code></li>
 <li>参考链接：
 <ul>
 <li><a href="https://www.kubernetes.org.cn/ingress" target="_blank" rel="noopener">官方文档 名词解释：Ingress</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="ingress-controller"><a class="header-anchor" href="#ingress-controller"></a>Ingress Controller</h4>
+<ul>
+<li>
+<p><code>ingress controller</code>目前主要有两种：基于<code>nginx</code>服务的<code>ingress controller</code>和基于<code>traefik</code>的<code>ingress controller</code>。</p>
+<ul>
+<li><code>traefik</code>的<code>ingress controller</code>，目前支持<code>http</code>和<code>https</code>协议。</li>
+<li>而<code>nginx</code>可以支持<code>TCP</code>负载,但是目前<code>k8s</code>仅仅支持<code>HTTP</code>和<code>HTTPS</code></li>
+<li>我们产品里面目前使用的也是<code>nginx</code>。</li>
+</ul>
+</li>
+<li>
+<p><code>ingress controller</code>会将新加入的<code>Ingress</code>转化成<code>Nginx</code>的配置文件并使之生效</p>
+</li>
+<li>
+<p>通常会单独安装在一个<code>namespace</code>里面，比如<code>nginx-inigress</code>里面。</p>
+</li>
+<li>
+<p>配套会有一些部署，解释如下：</p>
+<ul>
+<li><code>Deployment</code>:<code>default-http-backend</code>,对应有同名的<code>service</code>.如果外界访问的域名不存在的话，则默认转发到<code>default-http-backend</code>这个<code>service</code>，会返回404</li>
+</ul>
+</li>
+<li>
+<p>参考链接：</p>
+<ul>
+<li><a href="https://www.jianshu.com/p/feeea0bbd73e" target="_blank" rel="noopener">从零开始搭建K8s</a></li>
+<li><a href="https://www.ilanni.com/?p=14501" target="_blank" rel="noopener">k8s安装与配置ingress(一)</a>: 文档写得真心不错，格式实在太烂了，看得眼睛疼</li>
+</ul>
+</li>
+</ul>
+<h4 id="ingress-yaml-file"><a class="header-anchor" href="#ingress-yaml-file"></a>Ingress YAML FILE</h4>
+<ul>
+<li><code>Ingress.yaml</code>里面的信息不可能完全列这里，有以下一些元素和类型</li>
+</ul>
+<h4 id="ingress-rule"><a class="header-anchor" href="#ingress-rule"></a>Ingress Rule</h4>
+<ul>
+<li>还有个<code>ingress-rules</code>的yaml文件。里面的内容如下：
+<ul>
+<li><code>Kind</code>: <code>Ingress</code> 这个<code>rule</code>规则，哪个<code>endPoint</code>进哪个<code>deployment</code></li>
+<li>每个<code>Ingress</code>都需要配置<code>rules</code>，目前<code>Kubernetes</code>仅支持<code>http</code>规则。所以最关键的就是<code>rule</code></li>
 </ul>
 </li>
 </ul>
@@ -2385,245 +2665,6 @@ You perform several optimizations in the physical data modeling stage, including
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/01/21/Cassandra读数据过程/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/01/21/Cassandra读数据过程/" itemprop="url">Cassandra读数据过程</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-21T15:35:32+08:00">
-                2019-01-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/cassandra/" itemprop="url" rel="index">
-                    <span itemprop="name">cassandra</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="cassandra读数据过程"><a class="header-anchor" href="#cassandra读数据过程"></a>Cassandra读数据过程</h2>
-<p>数据库读数据过程必须知道。</p>
-<h3 id="大致的读流程"><a class="header-anchor" href="#大致的读流程"></a>大致的读流程</h3>
-<p><img src="https://docs.datastax.com/en/archived/cassandra/3.0/cassandra/images/dml_caching-reads_12.png" alt="官方读流程图片"></p>
-<blockquote>
-<p>官方读流程图片</p>
-</blockquote>
-<ul>
-<li>
-<p>Check the memtable</p>
-</li>
-<li>
-<p>Check row cache, if enabled</p>
-</li>
-<li>
-<p>Checks Bloom filter</p>
-</li>
-<li>
-<p>Checks partition key cache, if enabled</p>
-</li>
-<li>
-<p>Goes directly to the compression offset map if a partition key is found in the partition key cache, or checks the partition summary if not<br>
-If the partition summary is checked, then the partition index is accessed</p>
-</li>
-<li>
-<p>Locates the data on disk using the compression offset map</p>
-</li>
-<li>
-<p>Fetches the data from the SSTable on disk</p>
-</li>
-<li>
-<p>在存贮数据的时候，<code>Cassandra</code>会讲同样的数据存储很多份，这个在写的时候已经提及过。</p>
-</li>
-<li>
-<p>在读的时候读几个节点同样是由复制因子和<code>consistency level</code>策略决定的。也就是说写几个，读几个。</p>
-</li>
-</ul>
-<h3 id="caches"><a class="header-anchor" href="#caches"></a>Caches</h3>
-<p>这篇也作为<code>KeyCache</code>和<code>RowCache</code>学习的blog.<br>
-<code>RowCache</code>缓存的是数据，而<code>KeyCache</code>缓存的是在<code>SSTable</code>文件中的位置。<br>
-<code>Cassandra</code>读数据慢，写数据快。</p>
-<p>以下几种<code>cache</code>都是针对<code>SSTable</code>来说的</p>
-<p>参考链接：</p>
-<ul>
-<li><a href="https://stackoverflow.com/questions/25079311/difference-between-cassandra-row-caching-and-partition-key-caching" target="_blank" rel="noopener">row cache 和 key cache</a></li>
-</ul>
-<h4 id="keycache"><a class="header-anchor" href="#keycache"></a>keyCache</h4>
-<ul>
-<li>key cache：stores a map of partition keys to row index entries。stores a cache of the partition index in off-heap memory</li>
-<li><em>partition key cache, caches the partition index for an SSTable</em></li>
-<li>也在<code>off-heap</code>里面</li>
-<li><code>key_cache_size_in_mb</code>： <em>set the maximum size of the key cache for all tables in a database.</em></li>
-</ul>
-<p><img src="%5Chexo_blog%5Cimages%5Cpasted-4.png" alt="upload successful"></p>
-<h4 id="rowcache"><a class="header-anchor" href="#rowcache"></a>rowCache</h4>
-<ul>
-<li><em>caches frequently accessed rows to speed up access to those rows.</em></li>
-<li>不是默认开的，<em>In Cassandra 2.2 and later, it is stored in fully off-heap memory using a new implementation that relieves garbage collection pressure in the JVM.</em> 在2.2之后，会将这些行存进非栈的内存里面，使得系统不需要进行<code>GC</code></li>
-<li>当存在内存中的行被更新之后，这一行会被删除，直到再次读取</li>
-<li>同样，当一个<code>partition</code>被更新了，这个<code>partition</code>会被从内存里面删除</li>
-<li>参数：
-<ul>
-<li><code>rows_per_partition</code>：<em>set the number of rows the database must cache in a partition.This attribute has three values: ALL, NONE, and N.</em></li>
-</ul>
-</li>
-</ul>
-<h4 id="counter-cache"><a class="header-anchor" href="#counter-cache"></a>counter cache</h4>
-<ul>
-<li>A counter cache improves performance for the counters that you’ll need to access frequently. 好像没怎么听说过counter的概念。这个cache也是第一次看到有。</li>
-</ul>
-<h4 id="bloom-filters"><a class="header-anchor" href="#bloom-filters"></a>bloom filters</h4>
-<ul>
-<li><code>Bloom Filters</code> 就是在写<code>ssTable</code>时候同时写的<code>filter.db</code>文件。但是实际是读的时候用的一个机制</li>
-<li>读的时候会用这个机制来看一个数据key是不是在某个<code>SSTable</code>里面。当filter表示不在，肯定是不在；但是说在，可能不在。就是说可能假绿的。也会给出一个概率值，某个<code>partition</code>在不在这个<code>SSTable</code>里面</li>
-<li>假绿的概率是万分之一</li>
-<li>可以配置<code>bloom_filter_fp_chance</code>来降低假绿，但是会占更多内存</li>
-<li><code>Bloom Filters</code> 也是存储在<code>off-heap</code> memory里面的。并且是每张<code>SSTable</code>都有一个的</li>
-<li><em>A Bloom filter can establish that a SSTable does not contain certain partition data.</em></li>
-<li>参考链接：
-<ul>
-<li><a href="https://blog.csdn.net/u010900754/article/details/78307808" target="_blank" rel="noopener">bloom 过滤器</a></li>
-<li><a href="https://blog.csdn.net/jiaomeng/article/details/1495500" target="_blank" rel="noopener">算法原理</a></li>
-<li><a href="https://blog.csdn.net/nangongyanya/article/details/54089568" target="_blank" rel="noopener">Cassandra Bloom 过滤器</a></li>
-</ul>
-</li>
-</ul>
-<h4 id="index-files"><a class="header-anchor" href="#index-files"></a>Index Files</h4>
-<h3 id="gossip-protocal"><a class="header-anchor" href="#gossip-protocal"></a>Gossip Protocal</h3>
-<h3 id="limit"><a class="header-anchor" href="#limit"></a>Limit</h3>
-<ul>
-<li>Cassandra根据primary key来读取数据，这个key就是存在keyCache里面的内容。然后会读取一片数据。</li>
-<li>读取时候可以指定limit值，这样会读取有限的内容，而不是一大片。</li>
-</ul>
-<h3 id="参考文档"><a class="header-anchor" href="#参考文档"></a>参考文档</h3>
-<ul>
-<li>非常详尽清晰的一篇文档：<a href="https://www.oschina.net/question/12_11855" target="_blank" rel="noopener">Cassandra数据结构和写入读取</a></li>
-<li><a href="https://docs.datastax.com/en/archived/cassandra/3.0/cassandra/dml/dmlAboutReads.html" target="_blank" rel="noopener">官方文档读流程</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2674,7 +2715,7 @@ If the partition summary is checked, then the partition index is accessed</p>
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-count">37</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2724,7 +2765,7 @@ If the partition summary is checked, then the partition index is accessed</p>
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

@@ -242,6 +242,185 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/07/26/Java-Remote-Debug/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/07/26/Java-Remote-Debug/" itemprop="url">Java Remote Debug</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-26T10:51:48+08:00">
+                2019-07-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>作为Java程序员，不会remote debug，是不现实的。实际上，几年前也用过。但是悲催的是，再次要用的时候就搞不清了。<br>
+现在还是k8s平台，端口映射就更复杂一点。三两下一绕就更不清楚了。所以还是先把remote debug搞清楚。<br>
+再去绕端口号。</p>
+<h3 id="什么是remote-debug"><a class="header-anchor" href="#什么是remote-debug"></a>什么是remote debug</h3>
+<p>服务端程序运行在一台远程服务器上，我们可以在本地服务端的代码（前提是本地的代码必须和远程服务器运行的代码一致）中设置断点，每当有请求到远程服务器时时能够在本地知道远程服务端的此时的内部状态。</p>
+<h3 id="怎么做remote-debug"><a class="header-anchor" href="#怎么做remote-debug"></a>怎么做remote debug</h3>
+<h4 id="使用特定jvm参数运行服务端代码"><a class="header-anchor" href="#使用特定jvm参数运行服务端代码"></a>使用特定JVM参数运行服务端代码</h4>
+<ul>
+<li>不是说打包的时候，而是运行jar包的时候，java -jar带上需要的参数
+<ul>
+<li><code>address</code>是进行通信需要的端口。那么服务器端运行的程序会在这个端口上面开一个<code>socket</code></li>
+<li><code>socket</code>比较好理解的，通信方式</li>
+<li>所以之前进行debug mode的时候，肯定要改一下产品端module运行时候的JVM参数的</li>
+</ul>
+</li>
+</ul>
+<pre><code>-Xdebug -Xrunjdwp:transport=dt_socket,suspend=n,server=y,address=${debug_port}
+</code></pre>
+<ul>
+<li>参考链接：
+<ul>
+<li><a href="https://www.cnblogs.com/wy2325/p/5600232.html" target="_blank" rel="noopener">IntelliJ远程调试教程</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="在ide里面进行设置-本地连接远程服务器debug端口"><a class="header-anchor" href="#在ide里面进行设置-本地连接远程服务器debug端口"></a>在IDE里面进行设置，本地连接远程服务器debug端口</h4>
+<ul>
+<li>
+<p>参考链接里面的设置方法，其实就配远程服务器的地址和debug 端口</p>
+</li>
+<li>
+<p>还需要点击一下debug，让本地attach上去。</p>
+</li>
+</ul>
+<h4 id="调试代码"><a class="header-anchor" href="#调试代码"></a>调试代码</h4>
+<ul>
+<li>这时候就可以进行remote debug了。打好断点，然后往服务器发送请求就可以了</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/07/19/ifconfig命令和网络基础/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -804,30 +983,60 @@ Interrupt:5 Base address:0x8c00
       
         
           
-            <h3 id="compacting-sstable-data"><a class="header-anchor" href="#compacting-sstable-data"></a>Compacting SSTable Data</h3>
-<h4 id="why-do-we-need-compaction"><a class="header-anchor" href="#why-do-we-need-compaction"></a>Why Do We Need Compaction</h4>
+            <h2 id="compacting-sstable-data"><a class="header-anchor" href="#compacting-sstable-data"></a>Compacting SSTable Data</h2>
+<p><img src="https://docs.datastax.com/en/cassandra/3.0/cassandra/images/dml_compaction.png" alt="官网压缩数据图片"></p>
+<h3 id="为什么需要compaction"><a class="header-anchor" href="#为什么需要compaction"></a>为什么需要Compaction</h3>
 <ul>
 <li><code>cassandra</code>并不会删除数据。当需要<code>update</code>一个数据的时候，也不是在<code>SSTable</code>里面进行覆盖，而是会插入一个新的数据，带上新的<code>version</code>。</li>
 <li>这样做的话，<code>cassandra</code>写入数据会非常快，因为不需要查询，但是弊端就是会有越来越多的数据。</li>
 <li>这个时候就需要进行<code>compaction</code>。</li>
 </ul>
-<h4 id="what-is-compaction"><a class="header-anchor" href="#what-is-compaction"></a>What Is Compaction</h4>
+<h3 id="什么是compaction"><a class="header-anchor" href="#什么是compaction"></a>什么是Compaction</h3>
 <ul>
 <li>To keep the multiple versions of the SSTables from overwhelming it, the database merges SSTables on a regular basis to get rid of the older versions of the data。 <code>cassandra</code>会在一个基础之上对旧的版本的数据进行合并，这个就是<code>compaction</code></li>
 <li><code>cassandra</code>默认会进行很多次小的<code>compaction</code></li>
+<li>会合并同一行的，不同版本的数据。不同版本带着不同的timestamp</li>
 </ul>
-<h4 id="campaction细节"><a class="header-anchor" href="#campaction细节"></a>Campaction细节</h4>
+<h3 id="campaction细节"><a class="header-anchor" href="#campaction细节"></a>Campaction细节</h3>
 <ul>
 <li>在compaction期间，cassandra会合并key和column，同时会将过期的墓碑删除，还会生成一个新的index？ <strong><em>这个index是什么东西啊</em></strong></li>
-<li>合并之后会生成一个新的SSTable。<strong><em>回头要试一下</em></strong></li>
+<li>合并之后会生成一个新的SSTable。而不需要的数据版本和行就会留在旧的SSTable里面，当正在执行的读操作结束之后，就可以删除掉。</li>
 <li>compaction期间的资源耗用会上升，但是compaction结束之后应该会释放空间，因为它合并了SSTable</li>
 <li>旧的被合并的table会被加上deletion标签，并且在数据库重启或者在使用reference counting mechanism的时候。<strong><em>这个reference counting mechanism是什么啊</em></strong></li>
 <li>compaction的算法是可以配置的，默认的是<code>size-tiered compaction</code>。这个算法会合并大小相近的table，生成大table</li>
 </ul>
-<h4 id="compaction对读数据的影响"><a class="header-anchor" href="#compaction对读数据的影响"></a>Compaction对读数据的影响</h4>
+<h3 id="compaction对读数据的影响"><a class="header-anchor" href="#compaction对读数据的影响"></a>Compaction对读数据的影响</h3>
 <ul>
 <li>compaction是per-node的，所以某个数据在node1上面的旧版本可能删除了。但是在node2上面还有。</li>
 <li>这样读的时候会进行一个合并，并且返回最后一个写的version。这个原则是<code>last-write-win</code></li>
+<li>Cassandra can read data directly from the new SSTable even before it finishes writing, instead of waiting for the entire compaction process to finish.</li>
+</ul>
+<h3 id="compaction-策略"><a class="header-anchor" href="#compaction-策略"></a>Compaction 策略</h3>
+<ul>
+<li>不同的策略决定了如何来选择SSTable以及压缩后的行如何插入到新的表格中</li>
+</ul>
+<h4 id="sizetieredcompactionstrategy-stcs"><a class="header-anchor" href="#sizetieredcompactionstrategy-stcs"></a>SizeTieredCompactionStrategy (STCS)</h4>
+<ul>
+<li>当有4个大小相近的SSTable的时候就开始合并</li>
+<li>将这些大小相近的SSTable合并成一个，当有4个更大的table的时候，再合并成更大的SSTable</li>
+<li>所以会有很多大小不同的SSTable同时存在</li>
+<li>这样的策略对于写比较有利，但是可能会降低读的效率。</li>
+<li>不同版本的同一行会可能分布在不同的SSTable里面。并且不利于删除旧数据</li>
+</ul>
+<h4 id="leveledcompactionstrategy-lcs"><a class="header-anchor" href="#leveledcompactionstrategy-lcs"></a>LeveledCompactionStrategy (LCS)</h4>
+<ul>
+<li>读比较频繁的更推荐这个算法</li>
+<li><em>The SSTables in levels greater than L1 are merged into SSTables with a size greater than or equal to sstable_size_in_mb (default: 160 MB).</em> 这一段没看明白啊</li>
+<li>是分level的。一开始的叫Level0. 然后</li>
+<li><em>Each level is 10X the size of the last level, so level L1 has 10X as many SSTables as L0, and level L2 has 100X as many</em>  每个level比上一个level大10倍</li>
+<li><em>In fact, 90% of all reads can be satisfied from one SSTable.</em></li>
+<li>需要的磁盘空间更小，并且会将删除的数据扔掉，但是会进行得更为频繁，所以需要的I/O比较多</li>
+</ul>
+<h4 id="timewindowcompactionstrategy-twcs"><a class="header-anchor" href="#timewindowcompactionstrategy-twcs"></a>TimeWindowCompactionStrategy (TWCS)</h4>
+<ul>
+<li>这个算法挺有意思的，而且简单好懂。就是说在一段时间内，比如一个小时内，使用STCS算法，然后在时间点上，一个小时结束的时候，把这个小时内的都压成一个大的。</li>
+<li>第二个小时开始的时候，重新算起，上一个小时压出来的大表就放那里不动了。</li>
+<li></li>
 </ul>
 
           
@@ -2106,235 +2315,6 @@ public class ThreadPoolExecutor extends AbstractExecutorService
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/03/04/TLS/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/03/04/TLS/" itemprop="url">SSL/TLS相关知识-算法</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-04T14:50:11+08:00">
-                2019-03-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/security/" itemprop="url" rel="index">
-                    <span itemprop="name">security</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h2>
-<ul>
-<li><a href="https://xz.aliyun.com/t/2526" target="_blank" rel="noopener">SSL/TLS协议详解(上)：密码套件，哈希，加密，密钥交换算法</a>
-<ul>
-<li>英文版: <a href="https://www.wst.space/ssl-part1-ciphersuite-hashing-encryption/" target="_blank" rel="noopener">SSL/TLS for dummies part 1 : Ciphersuite, Hashing,Encryption</a></li>
-</ul>
-</li>
-<li><a href="https://xz.aliyun.com/t/2530" target="_blank" rel="noopener">SSL/TLS协议详解(中)——证书颁发机构</a></li>
-<li><a href="https://xz.aliyun.com/t/2531" target="_blank" rel="noopener">SSL/TLS协议详解(下)——TLS握手协议</a></li>
-<li>以上是一个系列，真的是详解，非常详尽。</li>
-</ul>
-<h2 id="算法"><a class="header-anchor" href="#算法"></a>算法</h2>
-<ul>
-<li>这边主要是参考了上面参考链接里面的第一篇，总的来说，应该了解一下这些</li>
-</ul>
-<h3 id="哈希算法"><a class="header-anchor" href="#哈希算法"></a>哈希算法</h3>
-<ul>
-<li>哈希算法生成的数据格式被称为散列，散列不是一个可逆的过程。<br>
-而之前说过，<code>Base64</code>只是编码，顾名思义，编码只要知道规则，是可以解码的，没有安全性可言。所以编码算法和加密算法不是一回事来着。</li>
-<li>所以讲密码哈希一下，是没法看出来原始密码是什么的。</li>
-<li>这边可以扩展，进一步研究的是，如果进行攻击的话，称为字典攻击，就是猜密码，将常用的，可能出现的密码都哈希算法一下，去对比。</li>
-<li>哈希算法有很多种，比如<code>MD5</code>是一种，虽然之前说就是提取摘要的。<code>SHA-512</code>是另一种。</li>
-</ul>
-<h3 id="加密算法"><a class="header-anchor" href="#加密算法"></a>加密算法</h3>
-<ul>
-<li><em>Encryption lies in between hashing and encoding</em> 这句没看明白</li>
-<li>加密算法可以分为对称加密和非对称加密两种</li>
-</ul>
-<h4 id="对称加密"><a class="header-anchor" href="#对称加密"></a>对称加密</h4>
-<ul>
-<li>主要来自参考链接一， 对称加密的话，文章中用一个例子来讲解：“移位”。比如有数字&quot;123&quot;，对其进行加密，都增大3，成为“456”，就是对称加密了。</li>
-<li>其中的数字3就是<code>Encryption key (symmetric key)</code>。对称加密的时候，知道<code>key</code>的话，就可以进行解密了。</li>
-<li><em>Anyone who knows the encryption key and can apply the reverse of Caesar’s algorithm and retrieve the original Plaintext.</em> 凯撒算法就是上面这种意味式的加密算法。</li>
-<li>有此可知，在<code>TLS</code>中使用简单的对称加密不是很安全的。毕竟知道<code>Encryption key</code>就可以进行解密了。<br>
-对称加密一代代发展，现在也有比较复杂的算法，比如<code>Triple Data Encryption Algorithm</code>，后面可以再进一步研究。AES（高级加密标准）和3DES（三重数据加密算法）的复杂算法也是有的</li>
-<li>从过程可以知道，<code>key</code>是非常关键的。但是由于是对称加密解密，双方必须都知道约定的值，那么第一步就是传递<code>key</code>，而这个时候是没法加密的。所以就出现了不对称加密。<em>So we need a secure mechanism to exchange the keys without an attacker actually seeing it. There comes the role of Asymmetric Key Encryption.</em></li>
-<li>在<code>TLS</code>中，传输和接收数据的时候，可以使用对称加密算法。事实上，很可能大部分都是使用的对称加密。不对称加密涉及双密钥架构并且密钥长度通常很大，因此加密-解密开销非常高。与对称密钥加密相比，它需要更多的时间和<code>CPU</code>占有率。</li>
-</ul>
-<h4 id="不对称加密"><a class="header-anchor" href="#不对称加密"></a>不对称加密</h4>
-<ul>
-<li>1976年，Whitfield Diffie和Martin Hellman首次提出了非对称加密的概念，该算法被称为<code>Diffie-Hellman</code>密钥交换。然后在1978年，麻省理工学院的Ron Rivest，Adi Shamir和Leonard Adleman发表了<code>RSA</code>算法。</li>
-<li>不对称加密的简单解释就是：用不同的<code>key</code>来进行加密和解密。</li>
-<li>非对称加密也称为公钥基础结构，又称<code>PKI public key ixxx</code></li>
-<li>不对称加密通常用于在刚开始传输对称加密的<code>key</code>的时候</li>
-<li>公钥用来给对方使用，比如A想给B发消息，那么A需要使用B的公钥来加密自己的消息。<br>
-所以公钥是可以与任何想与你通信的人共享的，一般来说，在公钥中会指定使用何种加密算法。 <em>如果密钥对是使用RSA算法生成的，那么它们应该在加密数据时使用相同的算法。</em></li>
-<li>私钥用来解密收到的消息。比如A收到了一条消息，那么A应当使用自己的私钥来解密收到的消息</li>
-<li>非对称加密算法除了<code>RSA</code>、<code>Diffie-Hellman密钥交换</code>、<code>ECDH（Elliptic Curve Diffie-Hellman）</code>、<code>SRP（安全远程密码）</code>以及由TLS 1.2支持密钥交换算法<code>PSK（Pre Shared Key）</code>。总之，也是有一大堆的</li>
-</ul>
-<h5 id="rsa算法细节"><a class="header-anchor" href="#rsa算法细节"></a>RSA算法细节</h5>
-<ul>
-<li>所以<code>RSA</code>算法有几个比较重要的组成，私钥，公钥，加密算法和解密算法</li>
-<li>那么一个严肃的问题就是，不同的钥匙进行计算的消息，怎么能够解开呢？接下来就是数学课的时间了。
-<ul>
-<li>参考链接：
-<ul>
-<li><a href="https://blog.csdn.net/dbs1215/article/details/48953589" target="_blank" rel="noopener">带你彻底理解RSA算法原理</a></li>
-<li><a href="https://www.zhihu.com/question/25038691" target="_blank" rel="noopener">RSA 算法的加密原理是什么,知乎问答</a></li>
-</ul>
-</li>
-<li>互质数： 只有一个公因子为1的数。比如6和9，都有公因子为3，那么就不是互质数；而7和9只有公因子为1，就是互质数。</li>
-<li>欧拉函数：<code>φ(n)</code>。 小于或等于n的正整数中与n互质的数的数目。</li>
-<li>三个横线的奇怪等号是恒等于。</li>
-<li>生成公钥：随机选取两个质数<code>p1、p2</code>，<code>n=p1*p2</code>，再随机选取一个整数<code>e</code>，<code>e</code>与<code>φ(n)</code>互质。公钥就是<code>(e, n)</code>。</li>
-<li>根据欧拉函数定理，<code>φ(n) = (p1-1)*(p2-1)</code></li>
-<li>费马定理：若p是素数，a与p互素，则<code>a^(p-1）≡1 （mod p）</code> 没看懂这个费马定理</li>
-<li>加密算法：假设<code>m</code>为需要加密的信息，那么<code>(m^e) mod n</code>就加密好了，生成加密后的信息<code>c</code></li>
-<li>解密算法： 解密算法其实和加密算法的公式是一模一样的，只是这里的<code>m</code>和<code>e</code>换成<code>c</code>和<code>d</code>，成为<code>(c^d) mod n</code>。相当于采用公式都是<code>(x^y) mod n</code>，所以其实使用的公式是一样的</li>
-<li>那么这里的<code>(d, n)</code>就被成为私钥。那么如何得到<code>d</code>呢？烧脑的数学就来了。果然数学系才有前途啊 😂 实在是颇为烧脑啊。</li>
-<li>各个参考链接中均有实际的例子，我这里就不再烧脑来看了</li>
-<li>参考链接：
-<ul>
-<li><a href="https://blog.csdn.net/qq_38313548/article/details/85387466" target="_blank" rel="noopener">如何获得d</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<pre><code>(c^d) mod n = ((m^e)mod n)^d mod n = (m^ed) mod n = m
-(m^φ(n)) mod n≡1 又 1^k≡1, 所以(m^k*φ(n)) mod n≡1 ，所以(m^(k*φ(n)+1)) mod n≡m
-结合以上两条，ed=k*φ(n)+1 , d=(k*φ(n)+1)/e
-</code></pre>
-<h5 id="dh和rsa的区别"><a class="header-anchor" href="#dh和rsa的区别"></a>DH和RSA的区别</h5>
-<ul>
-<li>有一本书，叫做“图解密码技术”，</li>
-<li><code>RSA</code>利用最大公约数（互质）来求出公钥和私钥。<code>DH密钥协商</code>则是利用生成元来得到共享密钥。</li>
-<li>在第一篇参考链接中有<code>DH</code>算法的详细数学过程，暂时略过，这些需要数学基础啊。</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2385,7 +2365,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-count">37</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2435,7 +2415,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

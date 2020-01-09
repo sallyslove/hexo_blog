@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="跬步">
 <meta property="og:description" content="K8s概念 这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。 deployment  这几者的关系比较复杂。还需要进一步去看。目前先记录一下：deployment是实际的deploy，然后pod是根据replica里面的设定来起的。所以，如果将deployment删除掉，那么相应的pod和replica set都会没有  deployment spec详解 网上基本">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-12-02T07:34:51.299Z">
+<meta property="og:updated_time" content="2019-12-10T08:13:54.686Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="K8s概念理解">
 <meta name="twitter:description" content="K8s概念 这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。 deployment  这几者的关系比较复杂。还需要进一步去看。目前先记录一下：deployment是实际的deploy，然后pod是根据replica里面的设定来起的。所以，如果将deployment删除掉，那么相应的pod和replica set都会没有  deployment spec详解 网上基本">
@@ -370,9 +370,31 @@
 </li>
 </ul>
 <h3 id="configmap"><a class="header-anchor" href="#configmap"></a>configmap</h3>
+<h4 id="configmap的作用"><a class="header-anchor" href="#configmap的作用"></a>configmap的作用</h4>
 <ul>
 <li><em>In Kubernetes, a ConfigMap is simply a container for storing configuration data. Other things, like pods, can access the data in a ConfigMap.</em></li>
 </ul>
+<h4 id="创建configmap"><a class="header-anchor" href="#创建configmap"></a>创建configmap</h4>
+<ul>
+<li>
+<p>可以通过命令行创建<code>kubectl create configmap</code>,当然也可以用<code>yaml</code>文件的方式创建。</p>
+</li>
+<li>
+<p>以下的例子里面是直接给出了一个键值对，事实上，可以从文件<code>--from-file</code>或者目录来创建</p>
+<pre><code>$ kubectl create configmap special-config --from-literal=special.how=very
+configmap &quot;special-config&quot; created
+$ kubectl get configmap special-config -o go-template='{{.data}}'
+map[special.how:very]
+</code></pre>
+</li>
+<li>
+<p>参考链接：</p>
+<ul>
+<li><a href="https://www.jianshu.com/p/b1d516f02ecd" target="_blank" rel="noopener">k8s – ConfigMap</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="pod调用configmap"><a class="header-anchor" href="#pod调用configmap"></a>POD调用configmap</h4>
 <h3 id="secrets"><a class="header-anchor" href="#secrets"></a>secrets</h3>
 <h3 id="persistentvolumnclumns"><a class="header-anchor" href="#persistentvolumnclumns"></a>PersistentVolumnClumns</h3>
 <ul>
@@ -433,27 +455,56 @@ kube-system    Active    15d
 </ul>
 <h3 id="ingress"><a class="header-anchor" href="#ingress"></a>Ingress</h3>
 <ul>
-<li>Ingress：An Ingress enables inbound connections to the cluster, allowing external traffic to reach the correct Pod.前一句没看懂。</li>
-<li>Ingress enables externally-reachable urls, load balance traffic, terminate SSL, offer name based virtual hosting for a Kubernetes cluster.</li>
-<li>通常情况下，service和pod的IP仅可在集群内部访问。集群外部的请求需要通过负载均衡转发到service在Node上暴露的NodePort上，然后再由kube-proxy将其转发给相关的Pod。而Ingress就是为进入集群的请求提供路由规则的集合</li>
-<li>Ingress.yaml里面的信息不可能完全列这里，有以下一些元素和类型:
-<ul>
-<li>Kind: namespace 从这边看ingress的实质是namespace？</li>
-<li>Kind：secret  type：Opaque，里面的数据看起来是证书形式 The default server secret is a self-signed certificate for other Nginx example SSL connections and is required by the Nginx Default Example.</li>
-<li>Kind：ServiceAccount: The ServiceAccount defines the account with a set of permissions on how to access the cluster to access the defined Ingress Rules.</li>
-<li>Kind：ConfigMap</li>
-<li>现在看来，上面这一段有点误解。因为当时是学习k8s的在线training，我想这个Ingress.yaml只不过是部署一个元素。真正起作用的是ingress-rules.yaml文件。这个才是如何生成一个ingress。</li>
-</ul>
-</li>
-<li>还有个ingress-rules的yaml文件。里面的内容如下：
-<ul>
-<li>Kind: Ingress 这个rule就是rule，哪个endPoint进哪个deployment</li>
-<li>每个Ingress都需要配置rules，目前Kubernetes仅支持http规则。所以最关键的就是rule</li>
-</ul>
-</li>
+<li><em>Ingress enables externally-reachable urls, load balance traffic, terminate SSL, offer name based virtual hosting for a Kubernetes cluster.</em></li>
+<li>通常情况下，<code>service</code>和<code>pod</code>的<code>IP</code>仅可在集群内部访问。集群外部的请求需要通过负载均衡转发到<code>service</code>在<code>Node</code>上暴露的<code>NodePort</code>上，然后再由<code>kube-proxy</code>将其转发给相关的<code>Pod</code>。而<code>Ingress</code>就是为进入集群的请求提供路由规则的集合</li>
+<li>用<code>NodePort</code>来暴露服务的时候， <code>IP</code>可能会漂移，并且，如果服务太多的话，会有混乱，为此引入了<code>ingress</code>，使用<code>hostname</code>来避免这个问题。</li>
+<li>可以认为<code>Ingress</code>包含两个组件：<code>ingress controller</code>和<code>ingress</code></li>
 <li>参考链接：
 <ul>
 <li><a href="https://www.kubernetes.org.cn/ingress" target="_blank" rel="noopener">官方文档 名词解释：Ingress</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="ingress-controller"><a class="header-anchor" href="#ingress-controller"></a>Ingress Controller</h4>
+<ul>
+<li>
+<p><code>ingress controller</code>目前主要有两种：基于<code>nginx</code>服务的<code>ingress controller</code>和基于<code>traefik</code>的<code>ingress controller</code>。</p>
+<ul>
+<li><code>traefik</code>的<code>ingress controller</code>，目前支持<code>http</code>和<code>https</code>协议。</li>
+<li>而<code>nginx</code>可以支持<code>TCP</code>负载,但是目前<code>k8s</code>仅仅支持<code>HTTP</code>和<code>HTTPS</code></li>
+<li>我们产品里面目前使用的也是<code>nginx</code>。</li>
+</ul>
+</li>
+<li>
+<p><code>ingress controller</code>会将新加入的<code>Ingress</code>转化成<code>Nginx</code>的配置文件并使之生效</p>
+</li>
+<li>
+<p>通常会单独安装在一个<code>namespace</code>里面，比如<code>nginx-inigress</code>里面。</p>
+</li>
+<li>
+<p>配套会有一些部署，解释如下：</p>
+<ul>
+<li><code>Deployment</code>:<code>default-http-backend</code>,对应有同名的<code>service</code>.如果外界访问的域名不存在的话，则默认转发到<code>default-http-backend</code>这个<code>service</code>，会返回404</li>
+</ul>
+</li>
+<li>
+<p>参考链接：</p>
+<ul>
+<li><a href="https://www.jianshu.com/p/feeea0bbd73e" target="_blank" rel="noopener">从零开始搭建K8s</a></li>
+<li><a href="https://www.ilanni.com/?p=14501" target="_blank" rel="noopener">k8s安装与配置ingress(一)</a>: 文档写得真心不错，格式实在太烂了，看得眼睛疼</li>
+</ul>
+</li>
+</ul>
+<h4 id="ingress-yaml-file"><a class="header-anchor" href="#ingress-yaml-file"></a>Ingress YAML FILE</h4>
+<ul>
+<li><code>Ingress.yaml</code>里面的信息不可能完全列这里，有以下一些元素和类型</li>
+</ul>
+<h4 id="ingress-rule"><a class="header-anchor" href="#ingress-rule"></a>Ingress Rule</h4>
+<ul>
+<li>还有个<code>ingress-rules</code>的yaml文件。里面的内容如下：
+<ul>
+<li><code>Kind</code>: <code>Ingress</code> 这个<code>rule</code>规则，哪个<code>endPoint</code>进哪个<code>deployment</code></li>
+<li>每个<code>Ingress</code>都需要配置<code>rules</code>，目前<code>Kubernetes</code>仅支持<code>http</code>规则。所以最关键的就是<code>rule</code></li>
 </ul>
 </li>
 </ul>
@@ -577,7 +628,7 @@ kube-system    Active    15d
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-count">37</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -623,7 +674,7 @@ kube-system    Active    15d
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s概念"><span class="nav-number">1.</span> <span class="nav-text">K8s概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#deployment"><span class="nav-number">1.1.</span> <span class="nav-text">deployment</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#deployment-spec详解"><span class="nav-number">1.1.1.</span> <span class="nav-text">deployment spec详解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#deployment参考链接"><span class="nav-number">1.1.2.</span> <span class="nav-text">deployment参考链接</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pod"><span class="nav-number">1.2.</span> <span class="nav-text">Pod</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#services"><span class="nav-number">1.3.</span> <span class="nav-text">Services</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#configmap"><span class="nav-number">1.4.</span> <span class="nav-text">configmap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#secrets"><span class="nav-number">1.5.</span> <span class="nav-text">secrets</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#persistentvolumnclumns"><span class="nav-number">1.6.</span> <span class="nav-text">PersistentVolumnClumns</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#namespace"><span class="nav-number">1.7.</span> <span class="nav-text">namespace</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#replication-controller"><span class="nav-number">1.8.</span> <span class="nav-text">replication controller</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ingress"><span class="nav-number">1.9.</span> <span class="nav-text">Ingress</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s概念"><span class="nav-number">1.</span> <span class="nav-text">K8s概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#deployment"><span class="nav-number">1.1.</span> <span class="nav-text">deployment</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#deployment-spec详解"><span class="nav-number">1.1.1.</span> <span class="nav-text">deployment spec详解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#deployment参考链接"><span class="nav-number">1.1.2.</span> <span class="nav-text">deployment参考链接</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pod"><span class="nav-number">1.2.</span> <span class="nav-text">Pod</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#services"><span class="nav-number">1.3.</span> <span class="nav-text">Services</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#configmap"><span class="nav-number">1.4.</span> <span class="nav-text">configmap</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#configmap的作用"><span class="nav-number">1.4.1.</span> <span class="nav-text">configmap的作用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#创建configmap"><span class="nav-number">1.4.2.</span> <span class="nav-text">创建configmap</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pod调用configmap"><span class="nav-number">1.4.3.</span> <span class="nav-text">POD调用configmap</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#secrets"><span class="nav-number">1.5.</span> <span class="nav-text">secrets</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#persistentvolumnclumns"><span class="nav-number">1.6.</span> <span class="nav-text">PersistentVolumnClumns</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#namespace"><span class="nav-number">1.7.</span> <span class="nav-text">namespace</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#replication-controller"><span class="nav-number">1.8.</span> <span class="nav-text">replication controller</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ingress"><span class="nav-number">1.9.</span> <span class="nav-text">Ingress</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ingress-controller"><span class="nav-number">1.9.1.</span> <span class="nav-text">Ingress Controller</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ingress-yaml-file"><span class="nav-number">1.9.2.</span> <span class="nav-text">Ingress YAML FILE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ingress-rule"><span class="nav-number">1.9.3.</span> <span class="nav-text">Ingress Rule</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
@@ -643,7 +694,7 @@ kube-system    Active    15d
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
