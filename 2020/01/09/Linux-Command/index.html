@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="跬步">
 <meta property="og:description" content="工作多年，Linux命令是时不时要用到的。每次都是百度之（虽然不是真的用的百度:P），记录在这里，省得每次还得去找 AWK 参考链接 -linux awk命令详解  使用awk分割字符串并且获取分割后的最后一个字符串  实例 awk 其实是读入一行，进行查找，再进行操作。可以集合SED和GREP的作用。下面用例子来说明问题  awk -F&apos;-&apos; &apos;{print $1}&apos;  用-做分隔符，然后将-分">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-01-09T03:28:25.179Z">
+<meta property="og:updated_time" content="2020-01-15T08:11:43.179Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux Command">
 <meta name="twitter:description" content="工作多年，Linux命令是时不时要用到的。每次都是百度之（虽然不是真的用的百度:P），记录在这里，省得每次还得去找 AWK 参考链接 -linux awk命令详解  使用awk分割字符串并且获取分割后的最后一个字符串  实例 awk 其实是读入一行，进行查找，再进行操作。可以集合SED和GREP的作用。下面用例子来说明问题  awk -F&apos;-&apos; &apos;{print $1}&apos;  用-做分隔符，然后将-分">
@@ -352,6 +352,45 @@
 </ul>
 </li>
 </ul>
+<h2 id="判断文件"><a class="header-anchor" href="#判断文件"></a>判断文件</h2>
+<h3 id="参考链接-v3"><a class="header-anchor" href="#参考链接-v3"></a>参考链接</h3>
+<ul>
+<li><a href="https://www.cnblogs.com/37yan/p/6962563.html" target="_blank" rel="noopener">shell判断文件存在</a></li>
+</ul>
+<h3 id="实例-v4"><a class="header-anchor" href="#实例-v4"></a>实例</h3>
+<ul>
+<li>
+<p>判断文件存在与否</p>
+<p>if [ ! -f “/data/filename” ];then<br>
+echo &quot;文件不存在&quot;<br>
+else<br>
+rm -f /data/filename<br>
+fi</p>
+</li>
+<li>
+<p>判断目录存在与否：将<code>-f</code>换成<code>-d</code></p>
+</li>
+</ul>
+<pre><code>if [ -d &quot;/data/&quot; ];then
+echo &quot;文件夹存在&quot;
+else
+echo &quot;文件夹不存在&quot;
+fi
+</code></pre>
+<h2 id="字符串操作"><a class="header-anchor" href="#字符串操作"></a>字符串操作</h2>
+<h3 id="字符串连接"><a class="header-anchor" href="#字符串连接"></a>字符串连接</h3>
+<ul>
+<li>直接写在一起就可以了</li>
+</ul>
+<h2 id="生成随机密码"><a class="header-anchor" href="#生成随机密码"></a>生成随机密码</h2>
+<h3 id="参考链接-v4"><a class="header-anchor" href="#参考链接-v4"></a>参考链接</h3>
+<ul>
+<li><a href="https://www.cnblogs.com/EasonJim/p/9041957.html" target="_blank" rel="noopener">Linux下生成随机密码</a></li>
+</ul>
+<h3 id="实例-v5"><a class="header-anchor" href="#实例-v5"></a>实例</h3>
+<ul>
+<li><code>date +%s |sha256sum |base64 |head -c 32 ;echo</code> 这样的话说是根据当前时间来算的。所以安全性其实很高啊</li>
+</ul>
 
       
     </div>
@@ -514,7 +553,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#awk"><span class="nav-number">1.</span> <span class="nav-text">AWK</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参考链接"><span class="nav-number">1.1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实例"><span class="nav-number">1.2.</span> <span class="nav-text">实例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sed"><span class="nav-number">2.</span> <span class="nav-text">SED</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实例-v2"><span class="nav-number">2.1.</span> <span class="nav-text">实例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#截取字符串的方法"><span class="nav-number">3.</span> <span class="nav-text">截取字符串的方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参考链接-v2"><span class="nav-number">3.1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实例-v3"><span class="nav-number">3.2.</span> <span class="nav-text">实例</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#awk"><span class="nav-number">1.</span> <span class="nav-text">AWK</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参考链接"><span class="nav-number">1.1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实例"><span class="nav-number">1.2.</span> <span class="nav-text">实例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sed"><span class="nav-number">2.</span> <span class="nav-text">SED</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实例-v2"><span class="nav-number">2.1.</span> <span class="nav-text">实例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#截取字符串的方法"><span class="nav-number">3.</span> <span class="nav-text">截取字符串的方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参考链接-v2"><span class="nav-number">3.1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实例-v3"><span class="nav-number">3.2.</span> <span class="nav-text">实例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#判断文件"><span class="nav-number">4.</span> <span class="nav-text">判断文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参考链接-v3"><span class="nav-number">4.1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实例-v4"><span class="nav-number">4.2.</span> <span class="nav-text">实例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字符串操作"><span class="nav-number">5.</span> <span class="nav-text">字符串操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#字符串连接"><span class="nav-number">5.1.</span> <span class="nav-text">字符串连接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生成随机密码"><span class="nav-number">6.</span> <span class="nav-text">生成随机密码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参考链接-v4"><span class="nav-number">6.1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实例-v5"><span class="nav-number">6.2.</span> <span class="nav-text">实例</span></a></li></ol></li></ol></div>
             
 
           </div>

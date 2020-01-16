@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="常用docker命令 这篇记录一下常用的docker命令，我怕我会忘啊  -_-# 这篇博客写得好随意的感觉啊  docker run -d / -it / -v / -p /–name/-l  -d: background; -v: 磁盘映射 ；-p：端口映射; -l: label   docker build -t （build-directory） dockerfile build dock">
+<meta name="description" content="Docker相关的信息都记录在这里 参考链接  Dockerfile RUN，CMD，ENTRYPOINT命令区别  常用docker命令 这篇记录一下 Docker 相关的知识，我怕我会忘啊 😅  docker run -d / -it / -v / -p /--name/-l  -d: background; -v: 磁盘映射 ；-p：端口映射; -l: label   docker bui">
 <meta property="og:type" content="article">
-<meta property="og:title" content="常用Docker命令记录">
+<meta property="og:title" content="Docker">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/02/14/常用Docker命令记录/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="常用docker命令 这篇记录一下常用的docker命令，我怕我会忘啊  -_-# 这篇博客写得好随意的感觉啊  docker run -d / -it / -v / -p /–name/-l  -d: background; -v: 磁盘映射 ；-p：端口映射; -l: label   docker build -t （build-directory） dockerfile build dock">
+<meta property="og:description" content="Docker相关的信息都记录在这里 参考链接  Dockerfile RUN，CMD，ENTRYPOINT命令区别  常用docker命令 这篇记录一下 Docker 相关的知识，我怕我会忘啊 😅  docker run -d / -it / -v / -p /--name/-l  -d: background; -v: 磁盘映射 ；-p：端口映射; -l: label   docker bui">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-02-15T05:38:53.107Z">
+<meta property="og:updated_time" content="2020-01-13T09:19:07.630Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="常用Docker命令记录">
-<meta name="twitter:description" content="常用docker命令 这篇记录一下常用的docker命令，我怕我会忘啊  -_-# 这篇博客写得好随意的感觉啊  docker run -d / -it / -v / -p /–name/-l  -d: background; -v: 磁盘映射 ；-p：端口映射; -l: label   docker build -t （build-directory） dockerfile build dock">
+<meta name="twitter:title" content="Docker">
+<meta name="twitter:description" content="Docker相关的信息都记录在这里 参考链接  Dockerfile RUN，CMD，ENTRYPOINT命令区别  常用docker命令 这篇记录一下 Docker 相关的知识，我怕我会忘啊 😅  docker run -d / -it / -v / -p /--name/-l  -d: background; -v: 磁盘映射 ；-p：端口映射; -l: label   docker bui">
 
 
 
@@ -125,7 +125,7 @@
 
 
 
-  <title>常用Docker命令记录 | 跬步</title>
+  <title>Docker | 跬步</title>
   
 
 
@@ -259,7 +259,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">常用Docker命令记录</h1>
+          <h1 class="post-title" itemprop="name headline">Docker</h1>
         
 
         <div class="post-meta">
@@ -331,19 +331,23 @@
       
 
       
-        <h2 id="常用docker命令"><a class="header-anchor" href="#常用docker命令"></a>常用docker命令</h2>
-<p>这篇记录一下常用的docker命令，我怕我会忘啊  -_-#<br>
-这篇博客写得好随意的感觉啊</p>
+        <p><code>Docker</code>相关的信息都记录在这里</p>
+<h2 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h2>
 <ul>
-<li><code>docker run</code> -d / -it / -v / -p /–name/-l
+<li><a href="https://www.jianshu.com/p/f0a0f6a43907" target="_blank" rel="noopener">Dockerfile RUN，CMD，ENTRYPOINT命令区别</a></li>
+</ul>
+<h2 id="常用docker命令"><a class="header-anchor" href="#常用docker命令"></a>常用docker命令</h2>
+<p>这篇记录一下 <code>Docker</code> 相关的知识，我怕我会忘啊 😅</p>
 <ul>
-<li>-d: background; -v: 磁盘映射 ；-p：端口映射; -l: label</li>
+<li><code>docker run -d / -it / -v / -p /--name/-l</code>
+<ul>
+<li><code>-d</code>: background; <code>-v</code>: 磁盘映射 ；<code>-p</code>：端口映射; <code>-l</code>: label</li>
 </ul>
 </li>
 <li><code>docker build -t （build-directory） dockerfile</code> build docker image
 <ul>
-<li>-t 指定编译出来的image的名字。可以带上版本。比如：firstImage:v1</li>
-<li>-f 指定dockerfile的名字</li>
+<li><code>-t</code> 指定编译出来的image的名字。可以带上版本。比如：firstImage:v1</li>
+<li><code>-f</code> 指定dockerfile的名字</li>
 </ul>
 </li>
 <li><code>docker inspect</code>看一个image的信息或者container的信息
@@ -352,13 +356,46 @@
 <li>These labels will remain even if the image has been untagged. When an image is untagged, it will have the name <none></none></li>
 </ul>
 </li>
-<li>Label就是中文含义一样的标签，key-value的形式，比如user=lynn，这样子。除了user，还会有version啊
+<li><code>docker exec</code></li>
+</ul>
+<h2 id="docker的概念"><a class="header-anchor" href="#docker的概念"></a>Docker的概念</h2>
+<ul>
+<li><code>Label</code>就是中文含义一样的标签，<code>key-value</code>的形式，比如user=lynn，这样子。除了user，还会有version啊
 <ul>
 <li>LABEL vendor=Katacoda \ com.katacoda.version=0.0.5 \ com.katacoda.build-date=2016-07-01T10:47:29Z \ com.katacoda.course=Docker</li>
 <li>container, image, demon都可以有label，在查看时候都可以用上</li>
 </ul>
 </li>
 <li>参考链接：<a href="https://www.katacoda.com/courses/docker/2" target="_blank" rel="noopener">karacoda docker在线课程</a></li>
+</ul>
+<h2 id="dockerfile"><a class="header-anchor" href="#dockerfile"></a>Dockerfile</h2>
+<h3 id="cmd-run"><a class="header-anchor" href="#cmd-run"></a>CMD &amp; RUN</h3>
+<ul>
+<li><code>CMD</code> 和 <code>RUN</code>都可以执行命令，两者的区别如下：
+<ul>
+<li><code>RUN</code>会生成新的镜像层，所以通常用来安装软件</li>
+<li><code>CMD</code>则是在镜像部署完之后执行的命令</li>
+</ul>
+</li>
+<li>如果在启动命令的时候带上命令的话，那么<code>CMD</code>的命令会被覆盖掉
+<ul>
+<li><code>docker run -it [image] /bin/bash</code>比如，执行了这句，那么即使有既定的<code>CMD</code>，也会不执行了。</li>
+<li>所以可以利用这一点，为镜像设置默认启动命令，然后在实际启动时候替换。比如，<code>CMD echo &quot;hello world&quot;</code>, 可以在实际中启动改为<code>hello new world</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="endpoint"><a class="header-anchor" href="#endpoint"></a>Endpoint</h3>
+<ul>
+<li><code>endPoint</code>是执行的起点，比如<code>bash</code>, <code>mysql</code>这些。
+<ul>
+<li>一个例子可以为<code>ENTRYPOINT [&quot;/bin/echo&quot;]</code>，<code>CMD &quot;world&quot;</code>。那么启动的时候会执行<code>echo world</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="maven-docker-plugin"><a class="header-anchor" href="#maven-docker-plugin"></a>Maven Docker Plugin</h2>
+<ul>
+<li><code>maven</code>有好几个支持<code>Docker</code>的<code>plugin</code></li>
+<li><code>io.fabric8:docker-maven-plugin</code> 就是其中的一个</li>
 </ul>
 
       
@@ -526,7 +563,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#常用docker命令"><span class="nav-number">1.</span> <span class="nav-text">常用docker命令</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用docker命令"><span class="nav-number">2.</span> <span class="nav-text">常用docker命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker的概念"><span class="nav-number">3.</span> <span class="nav-text">Docker的概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dockerfile"><span class="nav-number">4.</span> <span class="nav-text">Dockerfile</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#cmd-run"><span class="nav-number">4.1.</span> <span class="nav-text">CMD &amp; RUN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#endpoint"><span class="nav-number">4.2.</span> <span class="nav-text">Endpoint</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#maven-docker-plugin"><span class="nav-number">5.</span> <span class="nav-text">Maven Docker Plugin</span></a></li></ol></div>
             
 
           </div>
