@@ -81,14 +81,14 @@
 
 <meta name="description" content="TLS和OAuth  does-an-oauth-2-client-really-need-tls： 我自己有点搞不清楚这些的关系，这边有一个解释很是清晰，看了就明白了  3.1.2.1.  Endpoint Request Confidentiality If a redirection request will result in the transmission of an authoriz">
 <meta property="og:type" content="article">
-<meta property="og:title" content="TLS相关知识">
+<meta property="og:title" content="TLS - Operation">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/11/08/TLS相关知识/index.html">
 <meta property="og:site_name" content="跬步">
 <meta property="og:description" content="TLS和OAuth  does-an-oauth-2-client-really-need-tls： 我自己有点搞不清楚这些的关系，这边有一个解释很是清晰，看了就明白了  3.1.2.1.  Endpoint Request Confidentiality If a redirection request will result in the transmission of an authoriz">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-11-20T06:31:24.734Z">
+<meta property="og:updated_time" content="2020-01-16T06:06:39.690Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="TLS相关知识">
+<meta name="twitter:title" content="TLS - Operation">
 <meta name="twitter:description" content="TLS和OAuth  does-an-oauth-2-client-really-need-tls： 我自己有点搞不清楚这些的关系，这边有一个解释很是清晰，看了就明白了  3.1.2.1.  Endpoint Request Confidentiality If a redirection request will result in the transmission of an authoriz">
 
 
@@ -125,7 +125,7 @@
 
 
 
-  <title>TLS相关知识 | 跬步</title>
+  <title>TLS - Operation | 跬步</title>
   
 
 
@@ -259,7 +259,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">TLS相关知识</h1>
+          <h1 class="post-title" itemprop="name headline">TLS - Operation</h1>
         
 
         <div class="post-meta">
@@ -372,17 +372,36 @@
 <li><code>truststore</code>中保存的是一些可信任的证书，主要是<code>java</code>在代码中访问某个<code>https</code>的时候对被访问者进行认证的，以确保其实可信任的。一般为公钥<br>
 <code>truststore</code>里面存储的是服务器的信任密钥存储库，存<code>CA</code>公钥，也会有人在里面存储客户端的证书集合。</li>
 <li>应该在不同的协议中都有可能碰到，不仅仅是<code>HTTPS</code>，在网上搜索过程中有<code>LDAP</code>也用到的。</li>
-<li>参考链接
-<ol>
-<li><a href="https://www.cnblogs.com/gsls200808/p/4500246.html" target="_blank" rel="noopener">KeyStore和TrustStore</a></li>
-</ol>
-</li>
 </ul>
 <h3 id="keytool"><a class="header-anchor" href="#keytool"></a>Keytool</h3>
+<ul>
+<li><code>keytool</code>是<code>java</code>默认带的工具。通常生成<code>.jks</code>格式的文件。称为<code>keystore</code></li>
+<li><code>keystore</code>文件里面可以带<code>key-pair</code>，也可以是证书</li>
+<li>以下命令是生成一个名为<code>keystore.jks</code>的<code>keystore</code>,并将证书<code>jetty.crt</code>导入到这个文件里面。同时指定了密码，并且在过程中不需要屏幕交互。<code>-trustcacerts</code>的含义是信任该证书</li>
+</ul>
+<pre><code>/opt/jdk/jre/bin/keytool -import -trustcacerts -file jetty.crt -keystore keystore.jks -alias jetty  -storepass changeit -noprompt
+</code></pre>
+<ul>
+<li>
+<p>这条命令可以将上一条命令中导入的证书打印输出进行检验</p>
+<p>/opt/jdk/jre/bin/keytool -list -v -keystore keystore.jks</p>
+</li>
+</ul>
 <h3 id="openssl"><a class="header-anchor" href="#openssl"></a>openssl</h3>
+<h3 id="jetty-tls-configuration"><a class="header-anchor" href="#jetty-tls-configuration"></a>Jetty TLS Configuration</h3>
+<ul>
+<li><code>keystore</code> 里面存储的是<code>key-pair</code>和<code>certificate</code></li>
+<li>对于<code>Jetty</code>来说，<code>jetty.xml</code>只支持<code>keystore</code>，而不支持<code>*.crt</code>的格式</li>
+<li>项目中碰到了只提供<code>*.crt</code>文件的情况，那么需要自己产生<code>keystore</code>，再将证书导入</li>
+</ul>
 <h2 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h2>
 <ul>
+<li><a href="https://www.cnblogs.com/gsls200808/p/4500246.html" target="_blank" rel="noopener">KeyStore和TrustStore</a></li>
 <li><a href="https://xz.aliyun.com/t/2530" target="_blank" rel="noopener">TLS 协议详解</a></li>
+<li><a href="https://stackoverflow.com/questions/19236628/jetty-9-setting-up-the-most-basic-ssl-https" target="_blank" rel="noopener">jetty-9-setting-up-the-most-basic-ssl-https</a></li>
+<li><a href="https://wiki.eclipse.org/Jetty/Howto/Configure_SSL#Loading_Keys_and_Certificates_via_PKCS12" target="_blank" rel="noopener">Jetty/Howto/Configure SSL</a></li>
+<li><a href="https://knowledge.digicert.com/solution/SO15252.html" target="_blank" rel="noopener">Import a certificate into a Jetty Java HTTP Servlet Web Server</a></li>
+<li><a href="https://www.eclipse.org/jetty/documentation/current/configuring-ssl.html#loading-keys-and-certificates" target="_blank" rel="noopener">loading-keys-and-certificates</a></li>
 </ul>
 
       
@@ -504,7 +523,7 @@
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-count">38</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -550,7 +569,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#tls和oauth"><span class="nav-number">1.</span> <span class="nav-text">TLS和OAuth</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tls版本"><span class="nav-number">2.</span> <span class="nav-text">TLS版本</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#如何发现我的浏览器使用的tls版本"><span class="nav-number">2.1.</span> <span class="nav-text">如何发现我的浏览器使用的TLS版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何测试tls连接"><span class="nav-number">2.2.</span> <span class="nav-text">如何测试TLS连接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tls双向握手"><span class="nav-number">3.</span> <span class="nav-text">TLS双向握手</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#keystore和truststore"><span class="nav-number">3.1.</span> <span class="nav-text">KeyStore和TrustStore</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#keytool"><span class="nav-number">3.2.</span> <span class="nav-text">Keytool</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#openssl"><span class="nav-number">3.3.</span> <span class="nav-text">openssl</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#tls和oauth"><span class="nav-number">1.</span> <span class="nav-text">TLS和OAuth</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tls版本"><span class="nav-number">2.</span> <span class="nav-text">TLS版本</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#如何发现我的浏览器使用的tls版本"><span class="nav-number">2.1.</span> <span class="nav-text">如何发现我的浏览器使用的TLS版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何测试tls连接"><span class="nav-number">2.2.</span> <span class="nav-text">如何测试TLS连接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tls双向握手"><span class="nav-number">3.</span> <span class="nav-text">TLS双向握手</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#keystore和truststore"><span class="nav-number">3.1.</span> <span class="nav-text">KeyStore和TrustStore</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#keytool"><span class="nav-number">3.2.</span> <span class="nav-text">Keytool</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#openssl"><span class="nav-number">3.3.</span> <span class="nav-text">openssl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jetty-tls-configuration"><span class="nav-number">3.4.</span> <span class="nav-text">Jetty TLS Configuration</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
 
           </div>

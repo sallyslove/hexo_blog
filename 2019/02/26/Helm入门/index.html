@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="Helm Helm入门篇。感觉有点类似maven，总归有这样一个管理工具。其实是想看Ingress的，可是不看Helm，yaml看不懂呀。只好滚回来看Helm。 写了一阵之后再看看，会发现有些看不明白的地方。果然，我写博客的风格和上学年代记笔记的风格一样，喜欢简略而不够详尽啊。这是说好多年没有变化和进步嘛 😂 Helm是什么  Helm是在Kubernetes中安装部署容器的一个工具。 Helm">
+<meta name="description" content="Helm Helm入门篇。感觉有点类似maven，总归有这样一个管理工具。 写了一阵之后再看看，会发现有些看不明白的地方。果然，我写博客的风格和上学年代记笔记的风格一样，喜欢简略而不够详尽啊。这是说好多年没有变化和进步嘛 😂 Helm版本  在工作中发现，Helm发展很快。但是也从侧面说明现在问题很多。 我们自己产品里面还是1.x的版本，实际已经发展到3.x了。 而从文档来看，Helm从1.x到">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Helm入门">
+<meta property="og:title" content="Helm">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/02/26/Helm入门/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="Helm Helm入门篇。感觉有点类似maven，总归有这样一个管理工具。其实是想看Ingress的，可是不看Helm，yaml看不懂呀。只好滚回来看Helm。 写了一阵之后再看看，会发现有些看不明白的地方。果然，我写博客的风格和上学年代记笔记的风格一样，喜欢简略而不够详尽啊。这是说好多年没有变化和进步嘛 😂 Helm是什么  Helm是在Kubernetes中安装部署容器的一个工具。 Helm">
+<meta property="og:description" content="Helm Helm入门篇。感觉有点类似maven，总归有这样一个管理工具。 写了一阵之后再看看，会发现有些看不明白的地方。果然，我写博客的风格和上学年代记笔记的风格一样，喜欢简略而不够详尽啊。这是说好多年没有变化和进步嘛 😂 Helm版本  在工作中发现，Helm发展很快。但是也从侧面说明现在问题很多。 我们自己产品里面还是1.x的版本，实际已经发展到3.x了。 而从文档来看，Helm从1.x到">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-11-27T02:52:02.966Z">
+<meta property="og:updated_time" content="2020-01-22T02:50:45.606Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Helm入门">
-<meta name="twitter:description" content="Helm Helm入门篇。感觉有点类似maven，总归有这样一个管理工具。其实是想看Ingress的，可是不看Helm，yaml看不懂呀。只好滚回来看Helm。 写了一阵之后再看看，会发现有些看不明白的地方。果然，我写博客的风格和上学年代记笔记的风格一样，喜欢简略而不够详尽啊。这是说好多年没有变化和进步嘛 😂 Helm是什么  Helm是在Kubernetes中安装部署容器的一个工具。 Helm">
+<meta name="twitter:title" content="Helm">
+<meta name="twitter:description" content="Helm Helm入门篇。感觉有点类似maven，总归有这样一个管理工具。 写了一阵之后再看看，会发现有些看不明白的地方。果然，我写博客的风格和上学年代记笔记的风格一样，喜欢简略而不够详尽啊。这是说好多年没有变化和进步嘛 😂 Helm版本  在工作中发现，Helm发展很快。但是也从侧面说明现在问题很多。 我们自己产品里面还是1.x的版本，实际已经发展到3.x了。 而从文档来看，Helm从1.x到">
 
 
 
@@ -125,7 +125,7 @@
 
 
 
-  <title>Helm入门 | 跬步</title>
+  <title>Helm | 跬步</title>
   
 
 
@@ -259,7 +259,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Helm入门</h1>
+          <h1 class="post-title" itemprop="name headline">Helm</h1>
         
 
         <div class="post-meta">
@@ -332,8 +332,17 @@
 
       
         <h2 id="helm"><a class="header-anchor" href="#helm"></a>Helm</h2>
-<p><code>Helm</code>入门篇。感觉有点类似<code>maven</code>，总归有这样一个管理工具。其实是想看<code>Ingress</code>的，可是不看<code>Helm</code>，<code>yaml</code>看不懂呀。只好滚回来看<code>Helm</code>。</p>
+<p><code>Helm</code>入门篇。感觉有点类似<code>maven</code>，总归有这样一个管理工具。</p>
 <p>写了一阵之后再看看，会发现有些看不明白的地方。果然，我写博客的风格和上学年代记笔记的风格一样，喜欢简略而不够详尽啊。这是说好多年没有变化和进步嘛 😂</p>
+<h3 id="helm版本"><a class="header-anchor" href="#helm版本"></a>Helm版本</h3>
+<ul>
+<li>在工作中发现，<code>Helm</code>发展很快。但是也从侧面说明现在问题很多。</li>
+<li>我们自己产品里面还是<code>1.x</code>的版本，实际已经发展到<code>3.x</code>了。</li>
+<li>而从文档来看，<code>Helm</code>从<code>1.x</code>到<code>3.x</code>变化还是挺大的。甚至<code>Tiller</code>都被移除了!</li>
+<li>目前的一个问题是，不同的版本支持的功能有一定差异，目前发现的有：<br>
+1、有的<code>yaml</code>文件在比较高的<code>Helm</code>版本里面反而校验不过。应该是校验的规则加强了<br>
+2、<code>--set-file</code>在<code>2.10.0</code>之前并不支持</li>
+</ul>
 <h3 id="helm是什么"><a class="header-anchor" href="#helm是什么"></a>Helm是什么</h3>
 <ul>
 <li><code>Helm</code>是在Kubernetes中安装部署容器的一个工具。</li>
@@ -359,7 +368,7 @@
 <li>如果只是想看看<code>template</code>的<code>rending</code>，那么使用命令<code>helm install ./mychart --debug --dry-run</code></li>
 <li>如果想传值进去，可以使用<code>-f</code> 命令，比如<code>helm install -f myvals.yaml ./mychart</code>。这样传的值，可以用<code>.Value</code>来访问</li>
 <li>单独传值是<code>--set foo=bar</code>，<code>--set</code>比文件的级别高，可以覆盖文件里面的值</li>
-<li>以下命令里面将<code>livenessProbe.httpGet</code>删除掉了。</li>
+<li>以下命令里面将<code>livenessProbe.httpGet</code>删除掉了。但是参考上一章的<code>Helm</code>版本的描述，这个功能也是在较高的版本里面才实现。</li>
 </ul>
 </li>
 </ul>
@@ -424,6 +433,31 @@ $ helm install ./mychart
 </li>
 </ul>
 <h3 id="helm-chart"><a class="header-anchor" href="#helm-chart"></a>Helm Chart</h3>
+<h4 id="helm-chart-dependency-management"><a class="header-anchor" href="#helm-chart-dependency-management"></a>Helm Chart Dependency Management</h4>
+<ul>
+<li><code>3.x</code>的时候，<code>Chart</code>依赖关键由<code>requirements.yaml</code>和<code>requirements.lock</code>挪到了<code>chart.yaml</code>和<code>chart.lock</code>里面去了。但是还是会兼容<code>1.x</code>的<code>requirements.yaml</code>和<code>requirements.lock</code></li>
+<li>不论<code>Helm2</code>还是<code>Helm3</code>都可以使用<code>tag</code>或者<code>condition</code>来劲依赖的控制管理</li>
+</ul>
+<pre><code>condition: somechart.enabled
+tags:
+  - webaccelerator
+</code></pre>
+<ul>
+<li>不论是<code>tag</code>还是<code>condition</code>，都需要在<code>values.yaml</code>里面定义。<code>tag</code>必须是<code>global</code>下面的一层。自己为顶层的意思。</li>
+<li>区别在于，<code>tag</code>可以用于很多<code>subchart</code>，如果设为<code>true</code>，那么被这个标签标示的<code>subchart</code>都会被装上。而<code>condition</code>应该是只有第一个会有效。但是这点需要验证一下。<em>Only the first valid path found in the list is evaluated and if no paths exist then the condition has no effect.</em></li>
+<li>在我们产品里面的<code>Helm1.x</code>里面，这个功能有一个致命的问题，就是当<code>Helm Upgrade</code>之后就会失效。
+<ul>
+<li>第一次<code>helm upgrade</code>时候将<code>somechart.enabled</code>改为了<code>true</code>，也顺利地将<code>subchart</code>加到了同一个release里面。</li>
+<li>使用<code>helm upgrade</code>修改其他参数，在第一步中被安装上的<code>subchart</code>又丢了。即使这个时候<code>somechart.enabled</code>参数在<code>helm get values</code>里面仍旧维持着<code>true</code></li>
+<li>在网上也看到一些类似的问题：
+<ul>
+<li><a href="https://github.com/helm/helm/issues/3796" target="_blank" rel="noopener">condition problem</a></li>
+<li><a href="https://github.com/helm/helm/issues/6313" target="_blank" rel="noopener">helm upgrade issue</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 <h3 id="helm-template"><a class="header-anchor" href="#helm-template"></a>Helm Template</h3>
 <ul>
 <li>参考以上，默认生成一套chart的时候会生成template目录。
@@ -727,6 +761,7 @@ __需要的一点是，名字中有下划线的<code>template</code>是不会被
 <li><a href="https://github.com/helm/helm" target="_blank" rel="noopener">Helm GitHub页面</a></li>
 <li><a href="https://helm.sh/docs/using_helm/#quickstart-guide" target="_blank" rel="noopener">Helm使用文档</a></li>
 <li><a href="https://helm.sh/docs/chart_template_guide/" target="_blank" rel="noopener">Helm官方文档</a></li>
+<li><a href="https://v2.helm.sh/docs/charts/#managing-dependencies-with-requirements-yaml" target="_blank" rel="noopener">Helm2官方文档</a></li>
 </ul>
 
       
@@ -848,7 +883,7 @@ __需要的一点是，名字中有下划线的<code>template</code>是不会被
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-count">38</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -894,7 +929,7 @@ __需要的一点是，名字中有下划线的<code>template</code>是不会被
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#helm"><span class="nav-number">1.</span> <span class="nav-text">Helm</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#helm是什么"><span class="nav-number">1.1.</span> <span class="nav-text">Helm是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常用的helm命令"><span class="nav-number">1.2.</span> <span class="nav-text">常用的helm命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#helm-chart"><span class="nav-number">1.3.</span> <span class="nav-text">Helm Chart</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#helm-template"><span class="nav-number">1.4.</span> <span class="nav-text">Helm Template</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#template-values"><span class="nav-number">1.4.1.</span> <span class="nav-text">Template Values</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#template-functions"><span class="nav-number">1.4.2.</span> <span class="nav-text">Template Functions</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#常用函数"><span class="nav-number">1.4.2.1.</span> <span class="nav-text">常用函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#函数控制和操作运算符"><span class="nav-number">1.4.2.2.</span> <span class="nav-text">函数控制和操作运算符</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#function-if-else"><span class="nav-number">1.4.2.2.1.</span> <span class="nav-text">Function if/else</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#function-range"><span class="nav-number">1.4.2.2.2.</span> <span class="nav-text">Function Range</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#function-with"><span class="nav-number">1.4.2.2.3.</span> <span class="nav-text">Function with</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#空格和空行"><span class="nav-number">1.4.2.3.</span> <span class="nav-text">空格和空行</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#变量"><span class="nav-number">1.4.3.</span> <span class="nav-text">变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#已命名的template"><span class="nav-number">1.4.4.</span> <span class="nav-text">已命名的Template</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#define"><span class="nav-number">1.4.4.1.</span> <span class="nav-text">define</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#template和include"><span class="nav-number">1.4.4.2.</span> <span class="nav-text">template和include</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#引用文件"><span class="nav-number">1.4.5.</span> <span class="nav-text">引用文件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文档"><span class="nav-number">1.5.</span> <span class="nav-text">参考文档</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#helm"><span class="nav-number">1.</span> <span class="nav-text">Helm</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#helm版本"><span class="nav-number">1.1.</span> <span class="nav-text">Helm版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#helm是什么"><span class="nav-number">1.2.</span> <span class="nav-text">Helm是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常用的helm命令"><span class="nav-number">1.3.</span> <span class="nav-text">常用的helm命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#helm-chart"><span class="nav-number">1.4.</span> <span class="nav-text">Helm Chart</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#helm-chart-dependency-management"><span class="nav-number">1.4.1.</span> <span class="nav-text">Helm Chart Dependency Management</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#helm-template"><span class="nav-number">1.5.</span> <span class="nav-text">Helm Template</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#template-values"><span class="nav-number">1.5.1.</span> <span class="nav-text">Template Values</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#template-functions"><span class="nav-number">1.5.2.</span> <span class="nav-text">Template Functions</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#常用函数"><span class="nav-number">1.5.2.1.</span> <span class="nav-text">常用函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#函数控制和操作运算符"><span class="nav-number">1.5.2.2.</span> <span class="nav-text">函数控制和操作运算符</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#function-if-else"><span class="nav-number">1.5.2.2.1.</span> <span class="nav-text">Function if/else</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#function-range"><span class="nav-number">1.5.2.2.2.</span> <span class="nav-text">Function Range</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#function-with"><span class="nav-number">1.5.2.2.3.</span> <span class="nav-text">Function with</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#空格和空行"><span class="nav-number">1.5.2.3.</span> <span class="nav-text">空格和空行</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#变量"><span class="nav-number">1.5.3.</span> <span class="nav-text">变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#已命名的template"><span class="nav-number">1.5.4.</span> <span class="nav-text">已命名的Template</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#define"><span class="nav-number">1.5.4.1.</span> <span class="nav-text">define</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#template和include"><span class="nav-number">1.5.4.2.</span> <span class="nav-text">template和include</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#引用文件"><span class="nav-number">1.5.5.</span> <span class="nav-text">引用文件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文档"><span class="nav-number">1.6.</span> <span class="nav-text">参考文档</span></a></li></ol></li></ol></div>
             
 
           </div>

@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="常用k8s命令 这篇记录一下常用的k8s命令，我怕我会忘啊  -_-# 没错，这是docker那篇的姐妹篇哦。棒棒哒:P  kubectl cluster-info kubectl get nodes kubectl run first-deployment --image=katacoda/docker-http-server --port=80  这样就有一个pod啦。在get pods co">
+<meta name="description" content="常用k8s命令 这篇记录一下常用的k8s命令，我怕我会忘啊  -_-# 没错，这是docker那篇的姐妹篇哦。棒棒哒:P   kubectl cluster-info   kubectl get nodes：用下面这条命令可以打出node的具体信息 kubectl get nodes -o wide    kubectl run first-deployment --image=katacoda/">
 <meta property="og:type" content="article">
 <meta property="og:title" content="常用k8s命令记录">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/02/15/常用k8s命令记录/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="常用k8s命令 这篇记录一下常用的k8s命令，我怕我会忘啊  -_-# 没错，这是docker那篇的姐妹篇哦。棒棒哒:P  kubectl cluster-info kubectl get nodes kubectl run first-deployment --image=katacoda/docker-http-server --port=80  这样就有一个pod啦。在get pods co">
+<meta property="og:description" content="常用k8s命令 这篇记录一下常用的k8s命令，我怕我会忘啊  -_-# 没错，这是docker那篇的姐妹篇哦。棒棒哒:P   kubectl cluster-info   kubectl get nodes：用下面这条命令可以打出node的具体信息 kubectl get nodes -o wide    kubectl run first-deployment --image=katacoda/">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://user-images.githubusercontent.com/5803001/34945022-c57b369a-fa3c-11e7-85e7-83f716d10705.png">
-<meta property="og:updated_time" content="2019-10-21T01:53:26.763Z">
+<meta property="og:updated_time" content="2020-01-17T08:08:32.562Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="常用k8s命令记录">
-<meta name="twitter:description" content="常用k8s命令 这篇记录一下常用的k8s命令，我怕我会忘啊  -_-# 没错，这是docker那篇的姐妹篇哦。棒棒哒:P  kubectl cluster-info kubectl get nodes kubectl run first-deployment --image=katacoda/docker-http-server --port=80  这样就有一个pod啦。在get pods co">
+<meta name="twitter:description" content="常用k8s命令 这篇记录一下常用的k8s命令，我怕我会忘啊  -_-# 没错，这是docker那篇的姐妹篇哦。棒棒哒:P   kubectl cluster-info   kubectl get nodes：用下面这条命令可以打出node的具体信息 kubectl get nodes -o wide    kubectl run first-deployment --image=katacoda/">
 <meta name="twitter:image" content="https://user-images.githubusercontent.com/5803001/34945022-c57b369a-fa3c-11e7-85e7-83f716d10705.png">
 
 
@@ -337,9 +337,16 @@
 <p>这篇记录一下常用的k8s命令，我怕我会忘啊  -_-#<br>
 没错，这是docker那篇的姐妹篇哦。棒棒哒:P</p>
 <ul>
-<li><code>kubectl cluster-info</code></li>
-<li><code>kubectl get nodes</code></li>
-<li><code>kubectl run first-deployment --image=katacoda/docker-http-server --port=80</code>
+<li>
+<p><code>kubectl cluster-info</code></p>
+</li>
+<li>
+<p><code>kubectl get nodes</code>：用下面这条命令可以打出node的具体信息</p>
+<pre><code>kubectl get nodes -o wide
+</code></pre>
+</li>
+<li>
+<p><code>kubectl run first-deployment --image=katacoda/docker-http-server --port=80</code></p>
 <ul>
 <li>这样就有一个pod啦。在get pods command里面能看到一个pod</li>
 <li><code>-port</code>仍旧是内部的端口</li>
@@ -352,18 +359,23 @@
 <li><code>--replicas</code>： 复制因子</li>
 </ul>
 </li>
-<li><code>kubectl get pods</code>
+<li>
+<p><code>kubectl get pods</code></p>
 <ul>
 <li>所以get pods的话，会把replication cotronller， service， deployment都给打印出来</li>
 </ul>
 </li>
-<li><code>kubectl get rc</code>
+<li>
+<p><code>kubectl get rc</code></p>
 <ul>
 <li>将replication controller打印出来。</li>
 </ul>
 </li>
-<li><code>kubectl get services</code></li>
-<li><code>kubectl get deployments</code>
+<li>
+<p><code>kubectl get services</code></p>
+</li>
+<li>
+<p><code>kubectl get deployments</code></p>
 <ul>
 <li>感受一下这两个的区别</li>
 </ul>
@@ -548,7 +560,7 @@
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-count">38</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

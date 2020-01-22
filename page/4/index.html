@@ -242,6 +242,268 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/01/21/Cassandra数据结构/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/01/21/Cassandra数据结构/" itemprop="url">Cassandra数据结构</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-21T15:35:56+08:00">
+                2019-01-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/cassandra/" itemprop="url" rel="index">
+                    <span itemprop="name">cassandra</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="cassandra-数据结构"><a class="header-anchor" href="#cassandra-数据结构"></a>Cassandra 数据结构</h2>
+<p>必须了解Cassandra的数据结构。本身并不是多么复杂，而且有足够多的文档，所以简单写一下。</p>
+<h3 id="keyspace"><a class="header-anchor" href="#keyspace"></a>KeySpace</h3>
+<ul>
+<li>好像没啥需要解释的。</li>
+<li>在论文里面看到说namespace的另一个作用是可以做数据重复。</li>
+</ul>
+<h3 id="column"><a class="header-anchor" href="#column"></a>Column</h3>
+<ul>
+<li>Column是Cassandra中最小的数据单元，它是一个三元的数据类型，包含name,value,timestamp.</li>
+<li>name是必须的，value不是必须的，timestamp经常可以忽略不计，如下图<br>
+<img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_column.png" alt="引用自第一篇参考链接"></li>
+</ul>
+<blockquote>
+<p>引用自csdn</p>
+</blockquote>
+<h3 id="super-column"><a class="header-anchor" href="#super-column"></a>Super Column</h3>
+<ul>
+<li>可以将SuperColumn想象成Column的数组，它包含一个name以及一系列Column.</li>
+<li>SuperColumn本身不包含timestamp属性。使用SuperColumn有一个限制，要读取其中一个子列的值，必须把所有子列都反序列化，且不能在子列中建索引<br>
+<img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_super_column.png" alt></li>
+</ul>
+<blockquote>
+<p>引用自csdn</p>
+</blockquote>
+<ul>
+<li>
+<p>参考链接里面有以下的例子</p>
+<pre><code> {   // 这是一个SuperColumn
+     name: &quot;info&quot;,
+     // 包含一系列的Columns
+     value: {
+        street: {name: &quot;street&quot;, value: &quot;1234 x street&quot;, timestamp: 123456789},
+        city: {name: &quot;city&quot;, value: &quot;san francisco&quot;, timestamp: 123456789},
+        zip: {name: &quot;zip&quot;, value: &quot;94107&quot;, timestamp: 123456789},
+  }
+}
+</code></pre>
+</li>
+</ul>
+<h3 id="columnfamily"><a class="header-anchor" href="#columnfamily"></a>ColumnFamily</h3>
+<ul>
+<li>
+<p><code>columnFamily</code>相当于数据库中的表</p>
+</li>
+<li>
+<p>每一行有一个<code>row</code>的名字，然后每一行里面是一个个的<code>column</code>，也可以是<code>super column</code></p>
+</li>
+<li>
+<p><code>ColumnFamily</code>是一个包含了许多<code>Row</code>的结构，每一个<code>Row</code>都包含有client提供的Key以及和该Key关联的一系列Column。</p>
+</li>
+<li>
+<p>每一行里面的<code>column</code>的名字可以是不变的。也可以是可变的。静态和动态column</p>
+</li>
+<li>
+<p>需要注意的是，数据写入的时候已经经过排序了。就是说一行的所有<code>column</code>，会根据它的名字来进行排序。</p>
+</li>
+<li>
+<p>第二个参考链接里面的例子：</p>
+</li>
+</ul>
+<pre><code>   UserProfile = { // 这是一个ColumnFamily
+        phatduckk: {   // 这是对应ColumnFamily的key
+            // 这是Key下对应的Column
+            username: &quot;gpcuster&quot;,
+            email: &quot;gpcuster@gmail.com&quot;,
+            phone: &quot;6666&quot;
+        }, // 第一个row结束
+        ieure: {   // 这是ColumnFamily的另一个key
+          //这是另一个Key对应的column
+          username: &quot;pengguo&quot;,
+          email: &quot;pengguo@live.com&quot;,
+          phone: &quot;888&quot;
+        }
+</code></pre>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_column_family.png" alt></p>
+<blockquote>
+<p>引用自第一篇参考链接文档</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_storage_picture.png" alt></p>
+<blockquote>
+<p>引用自第二篇参考链接文档</p>
+</blockquote>
+<h3 id="对应到表的定义里面"><a class="header-anchor" href="#对应到表的定义里面"></a>对应到表的定义里面</h3>
+<p>目前对于表结构的理解是这样的，可能后面有更正：</p>
+<ul>
+<li>如果用<code>desc tables</code>去查看一张表。那么可以看到primaryKey字样，类似<code>PRIMARY KEY ()</code>，还有<code>CLUSTERING ORDER</code> 字样</li>
+<li><strong><em>那么这个primary key就是对应数据模型里面的row的名字。也就是super column的名字。只不过这个名字是几个primaryKey联合起来组成的。？</em></strong></li>
+<li><code>primaryKey</code>可以用来查询数据。<code>primary key</code>分为两个部分<code>partition key</code>和<code>clustering key</code>， 前者组合起来决定一个数据的存储在哪个<code>node</code>上面, 后者会用来排序。而 <code>CLUSTERING ORDER</code>决定排序时候使用的参数的顺序</li>
+<li>查询是时候必须给出所有的<code>partition key</code>，之前有过<code>ALLOW FILTERING</code>的字段来容忍缺失<code>partition key</code>，现在没有这个功能了。</li>
+</ul>
+<p>如下：</p>
+<pre><code>PRIMARY KEY ((race_year, race_name), rank)
+</code></pre>
+<p>这里的<code>race_year</code>和<code>race_name</code>就是组合的<code>partition key</code>,而<code>rank</code>就是<code>a clustering column</code>，用来排序的</p>
+<ul>
+<li>也可能看到<code>CLUSTERING ORDER BY</code>的字样里面，有<code>ASC</code>，代表升序排序，可以指定为<code>DESC</code>降序排序</li>
+<li>在3.0的版本之前，还可能看到<code>COMPACT STORAGE</code>，现在已经没有啦，所以也就不写了。</li>
+</ul>
+<h3 id="data-moduling"><a class="header-anchor" href="#data-moduling"></a>data moduling</h3>
+<ul>
+<li>最近看了一些关于建模的文章。文章里面一些反复强调的事如下：
+<ul>
+<li><code>cassandra</code>不同于其他数据库的是，它写的成本低，读的成本高。</li>
+<li>基于这一点，必须在一开始先考虑<code>query</code>的需求，然后数据可以<code>duplicated</code>。而在关系数据库建模时候，完全是不一样的。</li>
+<li>基于<code>cassandra</code>的写和存储的方式，需要读取的数据应该放在同一个<code>partition</code>里面。</li>
+<li>文章里面的这句话说明了<code>partition</code>的定义和重要性：</li>
+</ul>
+<blockquote>
+<p>a set of rows that share a partition key is called a partition<br>
+Cassandra is a partitioned row store with tunable consistency.<br>
+You perform several optimizations in the physical data modeling stage, including the specifying of partition sizes and ordering.</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="参考文档"><a class="header-anchor" href="#参考文档"></a>参考文档</h3>
+<ul>
+<li><a href="https://blog.csdn.net/aesop_wubo/article/details/20289837" target="_blank" rel="noopener">数据模型</a></li>
+<li><a href="http://www.cnblogs.com/gpcuster/archive/2010/03/12/1684072.html" target="_blank" rel="noopener">大话Cassandra数据模型</a></li>
+<li><a href="https://stackoverflow.com/questions/24949676/difference-between-partition-key-composite-key-and-clustering-key-in-cassandra" target="_blank" rel="noopener">primary key partition key and clustering key</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/01/21/Cassandra读数据过程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1881,7 +2143,7 @@ saved_caches_directory几个参数前面不能空格</p>
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-count">38</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

@@ -242,6 +242,247 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/03/11/Java多线程数据类型/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/03/11/Java多线程数据类型/" itemprop="url">Java多线程数据类型</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-11T10:22:53+08:00">
+                2019-03-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>这篇记录改成专门记录和多线程相关的数据类型</p>
+<h3 id="executors"><a class="header-anchor" href="#executors"></a>Executors</h3>
+<p>这个<code>Executors</code>没有继承或者实现任何其他类。就是说，他嘎嘣自己一个。实际上是一个工具类啊，更确切地说，像一个工厂类。主要功能是返回各种<code>ExecutorService</code>。<br>
+其实就是<code>new</code>出各种<code>ThreadPoolExecutor</code>。如下：</p>
+<pre><code>public static ExecutorService newSingleThreadExecutor() {
+    return new FinalizableDelegatedExecutorService
+        (new ThreadPoolExecutor(1, 1,
+                                0L, TimeUnit.MILLISECONDS,
+                      new LinkedBlockingQueue&lt;Runnable&gt;()));
+}
+</code></pre>
+<h3 id="executorservice"><a class="header-anchor" href="#executorservice"></a>ExecutorService</h3>
+<h4 id="概览"><a class="header-anchor" href="#概览"></a>概览</h4>
+<pre><code>public interface ExecutorService extends Executor
+</code></pre>
+<ul>
+<li>所以首先来说，这是一个接口</li>
+<li>Executor接口很简单，只有一个execute方法。ExecutorService除了这一个方法，还增加了一些方法，增加的方法包括：<code>awaitTerminate</code>，<code>invokeAll</code>，<code>invokeAny</code>，<code>shutdown</code>，<code>shutdownNow</code>，<code>submit</code>等。</li>
+<li><a href="https://www.cnblogs.com/Steven0805/p/6393443.html" target="_blank" rel="noopener">Java线程池ExecutorService</a></li>
+</ul>
+<h4 id="几种常用线程池的具体实现"><a class="header-anchor" href="#几种常用线程池的具体实现"></a>几种常用线程池的具体实现</h4>
+<ul>
+<li>然后有意思的来了：</li>
+<li>Java通过Executors class提供了好几种线程池，这就是我们常用的几种了。</li>
+<li><code>newFixedThreadPool</code>：就是说这个玩意，限定好了最大数目，核心数目，然后本质是一个<code>LinkedBlockingQueue</code>套了<code>runnable</code></li>
+</ul>
+<pre><code> public static ExecutorService newFixedThreadPool(int nThreads) {
+    return new ThreadPoolExecutor(nThreads, nThreads,
+                                  0L, TimeUnit.MILLISECONDS,
+                                  new LinkedBlockingQueue&lt;Runnable&gt;());
+</code></pre>
+<ul>
+<li><code>newCachedThreadPool</code>：</li>
+</ul>
+<pre><code>   public static ExecutorService newCachedThreadPool() {
+    return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
+                                  60L, TimeUnit.SECONDS,
+                                  new SynchronousQueue&lt;Runnable&gt;());    }
+</code></pre>
+<ul>
+<li>还有<code>newScheduledThreadPool</code>和<code>newSingleThreadExecutor</code></li>
+</ul>
+<h4 id="一些要点"><a class="header-anchor" href="#一些要点"></a>一些要点</h4>
+<ul>
+<li><code>submit</code>与<code>execute</code>的区别：
+<ul>
+<li>submit接受runnable和callable  有返回值。</li>
+<li>execute接受runnable 无返回值</li>
+<li>submit方便Exception处理</li>
+</ul>
+</li>
+<li>Runnable与Callable区别
+<ul>
+<li>runnable接口实现的没有返回值的并发编程。</li>
+<li>callable实现的存在返回值的并发编程。使用Future获取返回值。</li>
+</ul>
+</li>
+</ul>
+<h3 id="threadpoolexecutor"><a class="header-anchor" href="#threadpoolexecutor"></a>ThreadPoolExecutor</h3>
+<pre><code>public abstract class AbstractExecutorService implements ExecutorService
+public class ThreadPoolExecutor extends AbstractExecutorService    
+</code></pre>
+<ul>
+<li>从上面可以看出来，ThreadPoolExecutor也是一种Executor，继承自AbstractExecutorService，自然也实现了ExecutorService.</li>
+<li><a href="https://www.cnblogs.com/zedosu/p/6665306.html" target="_blank" rel="noopener">ThreadPoolExecutor使用详解</a></li>
+</ul>
+<h4 id="threadpoolexecutor-shutdown"><a class="header-anchor" href="#threadpoolexecutor-shutdown"></a>ThreadPoolExecutor shutdown</h4>
+<p>ThreadPoolExecutor 有三个shutdown方法： <code>shutdown</code>、<code>shutdownNow</code>、<code>awaitTermination</code></p>
+<ul>
+<li>
+<p><code>shutdown</code>： 停止接收外部submit的任务；内部正在跑的任务和队列里等待的任务，会执行完。其实graceful shutdown的感觉啊</p>
+</li>
+<li>
+<p><code>shutdownNow</code>： 停止接收外部提交的任务；忽略队列里等待的任务；尝试将正在跑的任务interrupt中断；返回未执行的任务列表。强制中断。线程会收到InterupptedException.</p>
+<ul>
+<li>需要注意的是这个方法仅仅是尝试中断线程，它通过的是调用interrupt方法，这种方法的作用有限，如果线程中没有sleep 、wait、Condition、定时锁等应用, interrupt()方法是无法中断当前的线程的。</li>
+</ul>
+</li>
+<li>
+<p><code>awaitTermination</code>：只是加了一个wait时间的限制</p>
+<ul>
+<li>很多博客的里面，这个函数会返回boolean的返回值。就是说<code>awaitTermination</code>一般和<code>shutdown</code>搭配使用，<code>awaitTermination</code>来监控线程有没有结束好。结束了返回<code>true</code>，没结束返回<code>false</code></li>
+<li>这个函数还会抛出InterupptedException，但是看代码没太明白什么状况下会抛这个<code>exception</code>。但是是这个函数本身被interrupt了。</li>
+<li>有一点不太明白，线程处于阻塞状态，处于阻塞状态时候，还会接收消息？只是不处理？</li>
+<li>在实际工作中解决bug碰到了这组函数。事实上就是要三个一起用的。<code>awaitTermination</code>只会返回一个状态，并不会做任何的事情。所以在这个函数返回false的时候应该要调用<code>shutdownNow</code>方法来进一步中断线程</li>
+</ul>
+</li>
+<li>
+<p>参考链接</p>
+<ul>
+<li><a href="https://blog.csdn.net/u012168222/article/details/52790400" target="_blank" rel="noopener">shutdown 方法</a></li>
+<li><a href="https://blog.csdn.net/zaozi/article/details/38854561#commentBox" target="_blank" rel="noopener">ExecutorService的正确关闭方法</a>： 这篇文章比喻得很清楚，只是不知道正确与否</li>
+</ul>
+</li>
+<li>
+<ul>
+<li><a href="https://blog.csdn.net/liwenxia626/article/details/80754886" target="_blank" rel="noopener">csdn的另一篇博客</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/03/04/TLS/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -261,7 +502,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/hexo_blog/2019/03/04/TLS/" itemprop="url">SSL/TLS相关知识-算法</a></h1>
+                <a class="post-title-link" href="/hexo_blog/2019/03/04/TLS/" itemprop="url">TLS - Algorithm</a></h1>
         
 
         <div class="post-meta">
@@ -808,7 +1049,7 @@ kube-system    Active    15d
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/hexo_blog/2019/02/26/Helm入门/" itemprop="url">Helm入门</a></h1>
+                <a class="post-title-link" href="/hexo_blog/2019/02/26/Helm入门/" itemprop="url">Helm</a></h1>
         
 
         <div class="post-meta">
@@ -883,8 +1124,17 @@ kube-system    Active    15d
         
           
             <h2 id="helm"><a class="header-anchor" href="#helm"></a>Helm</h2>
-<p><code>Helm</code>入门篇。感觉有点类似<code>maven</code>，总归有这样一个管理工具。其实是想看<code>Ingress</code>的，可是不看<code>Helm</code>，<code>yaml</code>看不懂呀。只好滚回来看<code>Helm</code>。</p>
+<p><code>Helm</code>入门篇。感觉有点类似<code>maven</code>，总归有这样一个管理工具。</p>
 <p>写了一阵之后再看看，会发现有些看不明白的地方。果然，我写博客的风格和上学年代记笔记的风格一样，喜欢简略而不够详尽啊。这是说好多年没有变化和进步嘛 😂</p>
+<h3 id="helm版本"><a class="header-anchor" href="#helm版本"></a>Helm版本</h3>
+<ul>
+<li>在工作中发现，<code>Helm</code>发展很快。但是也从侧面说明现在问题很多。</li>
+<li>我们自己产品里面还是<code>1.x</code>的版本，实际已经发展到<code>3.x</code>了。</li>
+<li>而从文档来看，<code>Helm</code>从<code>1.x</code>到<code>3.x</code>变化还是挺大的。甚至<code>Tiller</code>都被移除了!</li>
+<li>目前的一个问题是，不同的版本支持的功能有一定差异，目前发现的有：<br>
+1、有的<code>yaml</code>文件在比较高的<code>Helm</code>版本里面反而校验不过。应该是校验的规则加强了<br>
+2、<code>--set-file</code>在<code>2.10.0</code>之前并不支持</li>
+</ul>
 <h3 id="helm是什么"><a class="header-anchor" href="#helm是什么"></a>Helm是什么</h3>
 <ul>
 <li><code>Helm</code>是在Kubernetes中安装部署容器的一个工具。</li>
@@ -910,7 +1160,7 @@ kube-system    Active    15d
 <li>如果只是想看看<code>template</code>的<code>rending</code>，那么使用命令<code>helm install ./mychart --debug --dry-run</code></li>
 <li>如果想传值进去，可以使用<code>-f</code> 命令，比如<code>helm install -f myvals.yaml ./mychart</code>。这样传的值，可以用<code>.Value</code>来访问</li>
 <li>单独传值是<code>--set foo=bar</code>，<code>--set</code>比文件的级别高，可以覆盖文件里面的值</li>
-<li>以下命令里面将<code>livenessProbe.httpGet</code>删除掉了。</li>
+<li>以下命令里面将<code>livenessProbe.httpGet</code>删除掉了。但是参考上一章的<code>Helm</code>版本的描述，这个功能也是在较高的版本里面才实现。</li>
 </ul>
 </li>
 </ul>
@@ -975,6 +1225,31 @@ $ helm install ./mychart
 </li>
 </ul>
 <h3 id="helm-chart"><a class="header-anchor" href="#helm-chart"></a>Helm Chart</h3>
+<h4 id="helm-chart-dependency-management"><a class="header-anchor" href="#helm-chart-dependency-management"></a>Helm Chart Dependency Management</h4>
+<ul>
+<li><code>3.x</code>的时候，<code>Chart</code>依赖关键由<code>requirements.yaml</code>和<code>requirements.lock</code>挪到了<code>chart.yaml</code>和<code>chart.lock</code>里面去了。但是还是会兼容<code>1.x</code>的<code>requirements.yaml</code>和<code>requirements.lock</code></li>
+<li>不论<code>Helm2</code>还是<code>Helm3</code>都可以使用<code>tag</code>或者<code>condition</code>来劲依赖的控制管理</li>
+</ul>
+<pre><code>condition: somechart.enabled
+tags:
+  - webaccelerator
+</code></pre>
+<ul>
+<li>不论是<code>tag</code>还是<code>condition</code>，都需要在<code>values.yaml</code>里面定义。<code>tag</code>必须是<code>global</code>下面的一层。自己为顶层的意思。</li>
+<li>区别在于，<code>tag</code>可以用于很多<code>subchart</code>，如果设为<code>true</code>，那么被这个标签标示的<code>subchart</code>都会被装上。而<code>condition</code>应该是只有第一个会有效。但是这点需要验证一下。<em>Only the first valid path found in the list is evaluated and if no paths exist then the condition has no effect.</em></li>
+<li>在我们产品里面的<code>Helm1.x</code>里面，这个功能有一个致命的问题，就是当<code>Helm Upgrade</code>之后就会失效。
+<ul>
+<li>第一次<code>helm upgrade</code>时候将<code>somechart.enabled</code>改为了<code>true</code>，也顺利地将<code>subchart</code>加到了同一个release里面。</li>
+<li>使用<code>helm upgrade</code>修改其他参数，在第一步中被安装上的<code>subchart</code>又丢了。即使这个时候<code>somechart.enabled</code>参数在<code>helm get values</code>里面仍旧维持着<code>true</code></li>
+<li>在网上也看到一些类似的问题：
+<ul>
+<li><a href="https://github.com/helm/helm/issues/3796" target="_blank" rel="noopener">condition problem</a></li>
+<li><a href="https://github.com/helm/helm/issues/6313" target="_blank" rel="noopener">helm upgrade issue</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 <h3 id="helm-template"><a class="header-anchor" href="#helm-template"></a>Helm Template</h3>
 <ul>
 <li>参考以上，默认生成一套chart的时候会生成template目录。
@@ -1278,6 +1553,7 @@ __需要的一点是，名字中有下划线的<code>template</code>是不会被
 <li><a href="https://github.com/helm/helm" target="_blank" rel="noopener">Helm GitHub页面</a></li>
 <li><a href="https://helm.sh/docs/using_helm/#quickstart-guide" target="_blank" rel="noopener">Helm使用文档</a></li>
 <li><a href="https://helm.sh/docs/chart_template_guide/" target="_blank" rel="noopener">Helm官方文档</a></li>
+<li><a href="https://v2.helm.sh/docs/charts/#managing-dependencies-with-requirements-yaml" target="_blank" rel="noopener">Helm2官方文档</a></li>
 </ul>
 
           
@@ -1801,9 +2077,16 @@ not very sure here. It seems that connector and context are different. I think t
 <p>这篇记录一下常用的k8s命令，我怕我会忘啊  -_-#<br>
 没错，这是docker那篇的姐妹篇哦。棒棒哒:P</p>
 <ul>
-<li><code>kubectl cluster-info</code></li>
-<li><code>kubectl get nodes</code></li>
-<li><code>kubectl run first-deployment --image=katacoda/docker-http-server --port=80</code>
+<li>
+<p><code>kubectl cluster-info</code></p>
+</li>
+<li>
+<p><code>kubectl get nodes</code>：用下面这条命令可以打出node的具体信息</p>
+<pre><code>kubectl get nodes -o wide
+</code></pre>
+</li>
+<li>
+<p><code>kubectl run first-deployment --image=katacoda/docker-http-server --port=80</code></p>
 <ul>
 <li>这样就有一个pod啦。在get pods command里面能看到一个pod</li>
 <li><code>-port</code>仍旧是内部的端口</li>
@@ -1816,18 +2099,23 @@ not very sure here. It seems that connector and context are different. I think t
 <li><code>--replicas</code>： 复制因子</li>
 </ul>
 </li>
-<li><code>kubectl get pods</code>
+<li>
+<p><code>kubectl get pods</code></p>
 <ul>
 <li>所以get pods的话，会把replication cotronller， service， deployment都给打印出来</li>
 </ul>
 </li>
-<li><code>kubectl get rc</code>
+<li>
+<p><code>kubectl get rc</code></p>
 <ul>
 <li>将replication controller打印出来。</li>
 </ul>
 </li>
-<li><code>kubectl get services</code></li>
-<li><code>kubectl get deployments</code>
+<li>
+<p><code>kubectl get services</code></p>
+</li>
+<li>
+<p><code>kubectl get deployments</code></p>
 <ul>
 <li>感受一下这两个的区别</li>
 </ul>
@@ -2440,268 +2728,6 @@ not very sure here. It seems that connector and context are different. I think t
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/01/21/Cassandra数据结构/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/01/21/Cassandra数据结构/" itemprop="url">Cassandra数据结构</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-21T15:35:56+08:00">
-                2019-01-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/cassandra/" itemprop="url" rel="index">
-                    <span itemprop="name">cassandra</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="cassandra-数据结构"><a class="header-anchor" href="#cassandra-数据结构"></a>Cassandra 数据结构</h2>
-<p>必须了解Cassandra的数据结构。本身并不是多么复杂，而且有足够多的文档，所以简单写一下。</p>
-<h3 id="keyspace"><a class="header-anchor" href="#keyspace"></a>KeySpace</h3>
-<ul>
-<li>好像没啥需要解释的。</li>
-<li>在论文里面看到说namespace的另一个作用是可以做数据重复。</li>
-</ul>
-<h3 id="column"><a class="header-anchor" href="#column"></a>Column</h3>
-<ul>
-<li>Column是Cassandra中最小的数据单元，它是一个三元的数据类型，包含name,value,timestamp.</li>
-<li>name是必须的，value不是必须的，timestamp经常可以忽略不计，如下图<br>
-<img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_column.png" alt="引用自第一篇参考链接"></li>
-</ul>
-<blockquote>
-<p>引用自csdn</p>
-</blockquote>
-<h3 id="super-column"><a class="header-anchor" href="#super-column"></a>Super Column</h3>
-<ul>
-<li>可以将SuperColumn想象成Column的数组，它包含一个name以及一系列Column.</li>
-<li>SuperColumn本身不包含timestamp属性。使用SuperColumn有一个限制，要读取其中一个子列的值，必须把所有子列都反序列化，且不能在子列中建索引<br>
-<img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_super_column.png" alt></li>
-</ul>
-<blockquote>
-<p>引用自csdn</p>
-</blockquote>
-<ul>
-<li>
-<p>参考链接里面有以下的例子</p>
-<pre><code> {   // 这是一个SuperColumn
-     name: &quot;info&quot;,
-     // 包含一系列的Columns
-     value: {
-        street: {name: &quot;street&quot;, value: &quot;1234 x street&quot;, timestamp: 123456789},
-        city: {name: &quot;city&quot;, value: &quot;san francisco&quot;, timestamp: 123456789},
-        zip: {name: &quot;zip&quot;, value: &quot;94107&quot;, timestamp: 123456789},
-  }
-}
-</code></pre>
-</li>
-</ul>
-<h3 id="columnfamily"><a class="header-anchor" href="#columnfamily"></a>ColumnFamily</h3>
-<ul>
-<li>
-<p><code>columnFamily</code>相当于数据库中的表</p>
-</li>
-<li>
-<p>每一行有一个<code>row</code>的名字，然后每一行里面是一个个的<code>column</code>，也可以是<code>super column</code></p>
-</li>
-<li>
-<p><code>ColumnFamily</code>是一个包含了许多<code>Row</code>的结构，每一个<code>Row</code>都包含有client提供的Key以及和该Key关联的一系列Column。</p>
-</li>
-<li>
-<p>每一行里面的<code>column</code>的名字可以是不变的。也可以是可变的。静态和动态column</p>
-</li>
-<li>
-<p>需要注意的是，数据写入的时候已经经过排序了。就是说一行的所有<code>column</code>，会根据它的名字来进行排序。</p>
-</li>
-<li>
-<p>第二个参考链接里面的例子：</p>
-</li>
-</ul>
-<pre><code>   UserProfile = { // 这是一个ColumnFamily
-        phatduckk: {   // 这是对应ColumnFamily的key
-            // 这是Key下对应的Column
-            username: &quot;gpcuster&quot;,
-            email: &quot;gpcuster@gmail.com&quot;,
-            phone: &quot;6666&quot;
-        }, // 第一个row结束
-        ieure: {   // 这是ColumnFamily的另一个key
-          //这是另一个Key对应的column
-          username: &quot;pengguo&quot;,
-          email: &quot;pengguo@live.com&quot;,
-          phone: &quot;888&quot;
-        }
-</code></pre>
-<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_column_family.png" alt></p>
-<blockquote>
-<p>引用自第一篇参考链接文档</p>
-</blockquote>
-<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_storage_picture.png" alt></p>
-<blockquote>
-<p>引用自第二篇参考链接文档</p>
-</blockquote>
-<h3 id="对应到表的定义里面"><a class="header-anchor" href="#对应到表的定义里面"></a>对应到表的定义里面</h3>
-<p>目前对于表结构的理解是这样的，可能后面有更正：</p>
-<ul>
-<li>如果用<code>desc tables</code>去查看一张表。那么可以看到primaryKey字样，类似<code>PRIMARY KEY ()</code>，还有<code>CLUSTERING ORDER</code> 字样</li>
-<li><strong><em>那么这个primary key就是对应数据模型里面的row的名字。也就是super column的名字。只不过这个名字是几个primaryKey联合起来组成的。？</em></strong></li>
-<li><code>primaryKey</code>可以用来查询数据。<code>primary key</code>分为两个部分<code>partition key</code>和<code>clustering key</code>， 前者组合起来决定一个数据的存储在哪个<code>node</code>上面, 后者会用来排序。而 <code>CLUSTERING ORDER</code>决定排序时候使用的参数的顺序</li>
-<li>查询是时候必须给出所有的<code>partition key</code>，之前有过<code>ALLOW FILTERING</code>的字段来容忍缺失<code>partition key</code>，现在没有这个功能了。</li>
-</ul>
-<p>如下：</p>
-<pre><code>PRIMARY KEY ((race_year, race_name), rank)
-</code></pre>
-<p>这里的<code>race_year</code>和<code>race_name</code>就是组合的<code>partition key</code>,而<code>rank</code>就是<code>a clustering column</code>，用来排序的</p>
-<ul>
-<li>也可能看到<code>CLUSTERING ORDER BY</code>的字样里面，有<code>ASC</code>，代表升序排序，可以指定为<code>DESC</code>降序排序</li>
-<li>在3.0的版本之前，还可能看到<code>COMPACT STORAGE</code>，现在已经没有啦，所以也就不写了。</li>
-</ul>
-<h3 id="data-moduling"><a class="header-anchor" href="#data-moduling"></a>data moduling</h3>
-<ul>
-<li>最近看了一些关于建模的文章。文章里面一些反复强调的事如下：
-<ul>
-<li><code>cassandra</code>不同于其他数据库的是，它写的成本低，读的成本高。</li>
-<li>基于这一点，必须在一开始先考虑<code>query</code>的需求，然后数据可以<code>duplicated</code>。而在关系数据库建模时候，完全是不一样的。</li>
-<li>基于<code>cassandra</code>的写和存储的方式，需要读取的数据应该放在同一个<code>partition</code>里面。</li>
-<li>文章里面的这句话说明了<code>partition</code>的定义和重要性：</li>
-</ul>
-<blockquote>
-<p>a set of rows that share a partition key is called a partition<br>
-Cassandra is a partitioned row store with tunable consistency.<br>
-You perform several optimizations in the physical data modeling stage, including the specifying of partition sizes and ordering.</p>
-</blockquote>
-</li>
-</ul>
-<h3 id="参考文档"><a class="header-anchor" href="#参考文档"></a>参考文档</h3>
-<ul>
-<li><a href="https://blog.csdn.net/aesop_wubo/article/details/20289837" target="_blank" rel="noopener">数据模型</a></li>
-<li><a href="http://www.cnblogs.com/gpcuster/archive/2010/03/12/1684072.html" target="_blank" rel="noopener">大话Cassandra数据模型</a></li>
-<li><a href="https://stackoverflow.com/questions/24949676/difference-between-partition-key-composite-key-and-clustering-key-in-cassandra" target="_blank" rel="noopener">primary key partition key and clustering key</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2752,7 +2778,7 @@ You perform several optimizations in the physical data modeling stage, including
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-count">38</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
