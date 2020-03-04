@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="常用k8s命令 这篇记录一下常用的k8s命令，我怕我会忘啊  -_-# 没错，这是docker那篇的姐妹篇哦。棒棒哒:P   kubectl cluster-info   kubectl get nodes：用下面这条命令可以打出node的具体信息 kubectl get nodes -o wide    kubectl run first-deployment --image=katacoda/">
+<meta name="description" content="Ingress  Ingress enables externally-reachable urls, load balance traffic, terminate SSL, offer name based virtual hosting for a Kubernetes cluster. 通常情况下，service和pod的IP仅可在集群内部访问。集群外部的请求需要通过负载均衡转发到serv">
 <meta property="og:type" content="article">
-<meta property="og:title" content="常用k8s命令记录">
-<meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/02/15/常用k8s命令记录/index.html">
+<meta property="og:title" content="K8s Ingress">
+<meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2020/02/11/K8s-Ingress/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="常用k8s命令 这篇记录一下常用的k8s命令，我怕我会忘啊  -_-# 没错，这是docker那篇的姐妹篇哦。棒棒哒:P   kubectl cluster-info   kubectl get nodes：用下面这条命令可以打出node的具体信息 kubectl get nodes -o wide    kubectl run first-deployment --image=katacoda/">
+<meta property="og:description" content="Ingress  Ingress enables externally-reachable urls, load balance traffic, terminate SSL, offer name based virtual hosting for a Kubernetes cluster. 通常情况下，service和pod的IP仅可在集群内部访问。集群外部的请求需要通过负载均衡转发到serv">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-03-04T08:30:05.850Z">
+<meta property="og:updated_time" content="2020-02-13T14:00:14.790Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="常用k8s命令记录">
-<meta name="twitter:description" content="常用k8s命令 这篇记录一下常用的k8s命令，我怕我会忘啊  -_-# 没错，这是docker那篇的姐妹篇哦。棒棒哒:P   kubectl cluster-info   kubectl get nodes：用下面这条命令可以打出node的具体信息 kubectl get nodes -o wide    kubectl run first-deployment --image=katacoda/">
+<meta name="twitter:title" content="K8s Ingress">
+<meta name="twitter:description" content="Ingress  Ingress enables externally-reachable urls, load balance traffic, terminate SSL, offer name based virtual hosting for a Kubernetes cluster. 通常情况下，service和pod的IP仅可在集群内部访问。集群外部的请求需要通过负载均衡转发到serv">
 
 
 
@@ -119,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="https://sallyslove.github.io/hexo_blog/2019/02/15/常用k8s命令记录/">
+  <link rel="canonical" href="https://sallyslove.github.io/hexo_blog/2020/02/11/K8s-Ingress/">
 
 
 
 
 
-  <title>常用k8s命令记录 | 跬步</title>
+  <title>K8s Ingress | 跬步</title>
   
 
 
@@ -242,7 +242,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/02/15/常用k8s命令记录/">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2020/02/11/K8s-Ingress/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Lynn Shen">
@@ -259,7 +259,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">常用k8s命令记录</h1>
+          <h1 class="post-title" itemprop="name headline">K8s Ingress</h1>
         
 
         <div class="post-meta">
@@ -271,8 +271,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-15T14:15:01+08:00">
-                2019-02-15
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-11T10:42:55+08:00">
+                2020-02-11
               </time>
             
 
@@ -281,28 +281,6 @@
             
           </span>
 
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/docker/" itemprop="url" rel="index">
-                    <span itemprop="name">docker</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
           
 
           
@@ -331,94 +309,61 @@
       
 
       
-        <h2 id="常用k8s命令"><a class="header-anchor" href="#常用k8s命令"></a>常用k8s命令</h2>
-<p>这篇记录一下常用的k8s命令，我怕我会忘啊  -_-#<br>
-没错，这是docker那篇的姐妹篇哦。棒棒哒:P</p>
+        <h2 id="ingress"><a class="header-anchor" href="#ingress"></a>Ingress</h2>
 <ul>
-<li>
-<p><code>kubectl cluster-info</code></p>
-</li>
-<li>
-<p><code>kubectl get nodes</code>：用下面这条命令可以打出<code>node</code>的具体信息</p>
-<pre><code>kubectl get nodes -o wide
-</code></pre>
-</li>
-<li>
-<p><code>kubectl run first-deployment --image=katacoda/docker-http-server --port=80</code></p>
+<li><em>Ingress enables externally-reachable urls, load balance traffic, terminate SSL, offer name based virtual hosting for a Kubernetes cluster.</em></li>
+<li>通常情况下，<code>service</code>和<code>pod</code>的<code>IP</code>仅可在集群内部访问。集群外部的请求需要通过负载均衡转发到<code>service</code>在<code>Node</code>上暴露的<code>NodePort</code>上，然后再由<code>kube-proxy</code>将其转发给相关的<code>Pod</code>。而<code>Ingress</code>就是为进入集群的请求提供路由规则的集合</li>
+<li>用<code>NodePort</code>来暴露服务的时候， <code>IP</code>可能会漂移，并且，如果服务太多的话，会有混乱，为此引入了<code>ingress</code>，使用<code>hostname</code>来避免这个问题。</li>
+<li>可以认为<code>Ingress</code>包含两个组件：<code>ingress controller</code>和<code>ingress</code></li>
+<li>参考链接：
 <ul>
-<li><code>-port</code>仍旧是内部的端口</li>
-<li>外部端口可以用<code>--hostport=8001</code>指定， 但是这样做的话， —<em>Under the covers, this exposes the Pod via Docker Port Mapping.</em> As a result, you will not see the service listed using <code>kubectl get svc</code>。目前的理解是，因为是用的<code>docker</code>的方法，所以<code>k8s</code>不知道
-<ul>
-<li>用<code>docker ps</code>命令能看到这个<code>container</code>，然后可以注意到有两个<code>ps</code>进程。其中一个是<code>paused</code>状态，然后我们的端口<code>8001</code>其实开在这个<code>paused</code>的<code>ps</code>上面。</li>
-<li>The ports are exposed on the Pod, not the http container itself. The Pause container is responsible for defining the network for the Pod. Other containers in the pod share the same network namespace. This improves network performance and allow multiple containers to communicate over the same network interface…感觉这段解释很关键啊。这个container的名字是： k8s_POD_“httpexposed”,最后一个字段是我们起的pod的名字</li>
+<li><a href="https://www.kubernetes.org.cn/ingress" target="_blank" rel="noopener">官方文档 名词解释：Ingress</a></li>
 </ul>
 </li>
-<li><code>--replicas</code>： 复制因子</li>
+</ul>
+<h3 id="ingress-controller"><a class="header-anchor" href="#ingress-controller"></a>Ingress Controller</h3>
+<ul>
+<li>
+<p><code>ingress controller</code>目前主要有两种：基于<code>nginx</code>服务的<code>ingress controller</code>和基于<code>traefik</code>的<code>ingress controller</code>。</p>
+<ul>
+<li><code>traefik</code>的<code>ingress controller</code>，目前支持<code>http</code>和<code>https</code>协议。</li>
+<li>而<code>nginx</code>可以支持<code>TCP</code>负载,但是目前<code>k8s</code>仅仅支持<code>HTTP</code>和<code>HTTPS</code></li>
+<li>我们产品里面目前使用的也是<code>nginx</code>。</li>
 </ul>
 </li>
 <li>
-<p><code>kubectl get pods</code></p>
+<p><code>ingress controller</code>会将新加入的<code>Ingress</code>转化成<code>Nginx</code>的配置文件并使之生效</p>
+</li>
+<li>
+<p>通常会单独安装在一个<code>namespace</code>里面，比如<code>nginx-inigress</code>里面。</p>
+</li>
+<li>
+<p>配套会有一些部署，解释如下：</p>
 <ul>
-<li>所以get pods的话，会把replication cotronller， service， deployment都给打印出来</li>
+<li><code>Deployment</code>:<code>default-http-backend</code>,对应有同名的<code>service</code>.如果外界访问的域名不存在的话，则默认转发到<code>default-http-backend</code>这个<code>service</code>，会返回404</li>
 </ul>
 </li>
 <li>
-<p><code>kubectl get rc</code></p>
+<p>参考链接：</p>
 <ul>
-<li>将replication controller打印出来。</li>
-</ul>
-</li>
-<li>
-<p><code>kubectl get services</code></p>
-</li>
-<li>
-<p><code>kubectl get deployments</code></p>
-<ul>
-<li>感受一下这两个的区别</li>
+<li><a href="https://www.jianshu.com/p/feeea0bbd73e" target="_blank" rel="noopener">从零开始搭建K8s</a></li>
+<li><a href="https://www.ilanni.com/?p=14501" target="_blank" rel="noopener">k8s安装与配置ingress(一)</a>: 文档写得真心不错，格式实在太烂了，看得眼睛疼</li>
+<li><a href="https://www.cnblogs.com/justmine/p/8991379.html" target="_blank" rel="noopener">详解k8s组件Ingress边缘路由器并落地到微服务 - kubernetes</a></li>
 </ul>
 </li>
 </ul>
-<pre><code>$ kubectl get pods
-NAME     READY     STATUS    RESTARTS   AGE
-http-7b77c4cd66-74zqx          1/1       Running   0          4s
-http-7b77c4cd66-fhlmx          1/1       Running   0          19m
-http-7b77c4cd66-xrbpf          1/1       Running   0          4s
-httpexposed-5c4cf8b7d8-qprzc   1/1       Running   0          11m
-
-$ kubectl get deployments
-NAME DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-http          3         3         3            3           19m
-httpexposed   1         1         1            1           11m
-</code></pre>
+<h3 id="ingress-yaml-file"><a class="header-anchor" href="#ingress-yaml-file"></a>Ingress YAML FILE</h3>
 <ul>
-<li><code>kubectl describe deployment http</code></li>
-<li><code>kubectl describe svc http</code> 能看到很多信息，包括整个cluster对外的ip，各个node的内部ip之类</li>
-<li><code>kubectl scale --replicas=3 deployment http</code> scale的命令</li>
-<li><code>kubectl create -f deployment.yaml</code> 通过yaml文件创建一个deployment
+<li><code>Ingress.yaml</code>里面的信息不可能完全列这里，有以下一些元素和类型</li>
+</ul>
+<h3 id="ingress-rule"><a class="header-anchor" href="#ingress-rule"></a>Ingress Rule</h3>
 <ul>
-<li><code>kubectl create -f service.yaml</code> 也可以通过<code>yaml</code>文件创建<code>service</code></li>
-<li><code>ymal</code>文件里面的内容还不是非常清楚。参考<a href="https://blog.csdn.net/luanpeng825485697/article/details/83753260" target="_blank" rel="noopener">k8s yaml文件详解</a></li>
+<li>还有个<code>ingress-rules</code>的yaml文件。里面的内容如下：
+<ul>
+<li><code>Kind</code>: <code>Ingress</code> 这个<code>rule</code>规则，哪个<code>endPoint</code>进哪个<code>deployment</code></li>
+<li>每个<code>Ingress</code>都需要配置<code>rules</code>，目前<code>Kubernetes</code>仅支持<code>http</code>规则。所以最关键的就是<code>rule</code></li>
 </ul>
 </li>
-<li><code>kubectl apply -f deployment.yaml</code>如果<code>yaml</code>文件有改动的话，可以用这条命令来update</li>
-</ul>
-<pre><code> $ kubectl apply -f deployment.yaml
-  Warning: kubectl apply should be used on resource created by either kubectl create --save-config or kubectl apply
-  deployment.extensions/webapp1 configured
-</code></pre>
-<ul>
-<li><code>kubectl exec $pod -- /usr/bin/curl -s localhost/unhealthy</code></li>
-<li><code>kubectl get ing</code> 可以用来看Ingress</li>
-<li><code>kubectl create namespace</code>创建namespace</li>
-<li><code>kubectl config set-context $(kubectl config current-context) --namespace=&lt;insert-namespace-name-here&gt;</code></li>
-<li><code>kubectl config get-contexts</code></li>
-<li><code>kubectl get namespaces</code></li>
-<li><code>kubectl delete pvc --all --namespace default</code> 用这个命令来做<code>delete</code>。一堆都行。<code>pvc</code>换成<code>pod</code>，<code>deployments</code>，<code>secret</code>，<code>configmap</code>，<code>service</code>啥的</li>
-</ul>
-<h3 id="参考文档"><a class="header-anchor" href="#参考文档"></a>参考文档</h3>
-<ul>
-<li><a href="http://docs.kubernetes.org.cn/475.html" target="_blank" rel="noopener">k8s中文文档</a></li>
-<li><a href="https://www.katacoda.com/courses/kubernetes/kubectl-run-containers" target="_blank" rel="noopener">codekara的在线课程</a></li>
 </ul>
 
       
@@ -444,8 +389,8 @@ httpexposed   1         1         1            1           11m
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/hexo_blog/2019/02/14/常用Docker命令记录/" rel="next" title="Docker">
-                <i class="fa fa-chevron-left"></i> Docker
+              <a href="/hexo_blog/2020/01/09/Linux-Command/" rel="next" title="Linux Command">
+                <i class="fa fa-chevron-left"></i> Linux Command
               </a>
             
           </div>
@@ -453,10 +398,6 @@ httpexposed   1         1         1            1           11m
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/hexo_blog/2019/02/22/Jetty-Graceful-shutdown/" rel="prev" title="Jetty Graceful shutdown">
-                Jetty Graceful shutdown <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -586,7 +527,7 @@ httpexposed   1         1         1            1           11m
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#常用k8s命令"><span class="nav-number">1.</span> <span class="nav-text">常用k8s命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文档"><span class="nav-number">1.1.</span> <span class="nav-text">参考文档</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ingress"><span class="nav-number">1.</span> <span class="nav-text">Ingress</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ingress-controller"><span class="nav-number">1.1.</span> <span class="nav-text">Ingress Controller</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ingress-yaml-file"><span class="nav-number">1.2.</span> <span class="nav-text">Ingress YAML FILE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ingress-rule"><span class="nav-number">1.3.</span> <span class="nav-text">Ingress Rule</span></a></li></ol></li></ol></div>
             
 
           </div>

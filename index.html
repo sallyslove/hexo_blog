@@ -242,6 +242,181 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2020/02/11/K8s-Ingress/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2020/02/11/K8s-Ingress/" itemprop="url">K8s Ingress</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-11T10:42:55+08:00">
+                2020-02-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="ingress"><a class="header-anchor" href="#ingress"></a>Ingress</h2>
+<ul>
+<li><em>Ingress enables externally-reachable urls, load balance traffic, terminate SSL, offer name based virtual hosting for a Kubernetes cluster.</em></li>
+<li>通常情况下，<code>service</code>和<code>pod</code>的<code>IP</code>仅可在集群内部访问。集群外部的请求需要通过负载均衡转发到<code>service</code>在<code>Node</code>上暴露的<code>NodePort</code>上，然后再由<code>kube-proxy</code>将其转发给相关的<code>Pod</code>。而<code>Ingress</code>就是为进入集群的请求提供路由规则的集合</li>
+<li>用<code>NodePort</code>来暴露服务的时候， <code>IP</code>可能会漂移，并且，如果服务太多的话，会有混乱，为此引入了<code>ingress</code>，使用<code>hostname</code>来避免这个问题。</li>
+<li>可以认为<code>Ingress</code>包含两个组件：<code>ingress controller</code>和<code>ingress</code></li>
+<li>参考链接：
+<ul>
+<li><a href="https://www.kubernetes.org.cn/ingress" target="_blank" rel="noopener">官方文档 名词解释：Ingress</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="ingress-controller"><a class="header-anchor" href="#ingress-controller"></a>Ingress Controller</h3>
+<ul>
+<li>
+<p><code>ingress controller</code>目前主要有两种：基于<code>nginx</code>服务的<code>ingress controller</code>和基于<code>traefik</code>的<code>ingress controller</code>。</p>
+<ul>
+<li><code>traefik</code>的<code>ingress controller</code>，目前支持<code>http</code>和<code>https</code>协议。</li>
+<li>而<code>nginx</code>可以支持<code>TCP</code>负载,但是目前<code>k8s</code>仅仅支持<code>HTTP</code>和<code>HTTPS</code></li>
+<li>我们产品里面目前使用的也是<code>nginx</code>。</li>
+</ul>
+</li>
+<li>
+<p><code>ingress controller</code>会将新加入的<code>Ingress</code>转化成<code>Nginx</code>的配置文件并使之生效</p>
+</li>
+<li>
+<p>通常会单独安装在一个<code>namespace</code>里面，比如<code>nginx-inigress</code>里面。</p>
+</li>
+<li>
+<p>配套会有一些部署，解释如下：</p>
+<ul>
+<li><code>Deployment</code>:<code>default-http-backend</code>,对应有同名的<code>service</code>.如果外界访问的域名不存在的话，则默认转发到<code>default-http-backend</code>这个<code>service</code>，会返回404</li>
+</ul>
+</li>
+<li>
+<p>参考链接：</p>
+<ul>
+<li><a href="https://www.jianshu.com/p/feeea0bbd73e" target="_blank" rel="noopener">从零开始搭建K8s</a></li>
+<li><a href="https://www.ilanni.com/?p=14501" target="_blank" rel="noopener">k8s安装与配置ingress(一)</a>: 文档写得真心不错，格式实在太烂了，看得眼睛疼</li>
+<li><a href="https://www.cnblogs.com/justmine/p/8991379.html" target="_blank" rel="noopener">详解k8s组件Ingress边缘路由器并落地到微服务 - kubernetes</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="ingress-yaml-file"><a class="header-anchor" href="#ingress-yaml-file"></a>Ingress YAML FILE</h3>
+<ul>
+<li><code>Ingress.yaml</code>里面的信息不可能完全列这里，有以下一些元素和类型</li>
+</ul>
+<h3 id="ingress-rule"><a class="header-anchor" href="#ingress-rule"></a>Ingress Rule</h3>
+<ul>
+<li>还有个<code>ingress-rules</code>的yaml文件。里面的内容如下：
+<ul>
+<li><code>Kind</code>: <code>Ingress</code> 这个<code>rule</code>规则，哪个<code>endPoint</code>进哪个<code>deployment</code></li>
+<li>每个<code>Ingress</code>都需要配置<code>rules</code>，目前<code>Kubernetes</code>仅支持<code>http</code>规则。所以最关键的就是<code>rule</code></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2020/01/09/Linux-Command/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -549,6 +724,41 @@ specified. In the default daemon configuration on Windows, the docker client mus
 <li><a href="https://stackoverflow.com/questions/38986057/how-to-set-image-name-in-dockerfile" target="_blank" rel="noopener">how-to-set-image-name-in-dockerfile</a></li>
 </ul>
 </li>
+</ul>
+<h3 id="docker-for-desktop-安装"><a class="header-anchor" href="#docker-for-desktop-安装"></a>docker for desktop 安装</h3>
+<ul>
+<li>安装时候一直提示<code>dockerd</code>文件被<code>windows event log</code>占用了。但是按照各种<code>windows</code>的方法都找不到，最后从<code>gitbash</code>强制删除掉文件再安装就好了。</li>
+</ul>
+<h3 id="docker-for-desktop-如何安装dashboard"><a class="header-anchor" href="#docker-for-desktop-如何安装dashboard"></a>docker for desktop 如何安装Dashboard</h3>
+<ul>
+<li>安装<code>k8s</code>的<code>dashboard</code>：
+<ul>
+<li>使用“docker for desktop“的时候，这个<code>dashboard</code>貌似不是事先装好的。印象不深刻了。需要装一下：</li>
+<li><code>kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml</code></li>
+<li><code>kubectl proxy</code> 再将<code>proxy</code>给弄出来，就可以访问了。</li>
+<li>如下图：<br>
+<img src="https://user-images.githubusercontent.com/5803001/34945022-c57b369a-fa3c-11e7-85e7-83f716d10705.png" alt></li>
+<li>参考链接登录：
+<ul>
+<li><a href="https://segmentfault.com/a/1190000012850396" target="_blank" rel="noopener">config登录方式</a></li>
+<li><a href="https://www.cnblogs.com/guigujun/p/8366530.html" target="_blank" rel="noopener">config登录方式2</a></li>
+<li><a href="https://www.cnblogs.com/jackyfei/p/10180465.html" target="_blank" rel="noopener">token方式登录</a></li>
+</ul>
+</li>
+<li>获取token的命令：<code>kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}')</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="k8s"><a class="header-anchor" href="#k8s"></a>K8S</h2>
+<h3 id="连不上k8s"><a class="header-anchor" href="#连不上k8s"></a>连不上K8S</h3>
+<pre><code>$ kubectl cluster-info
+Kubernetes master is running at ...
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+Unable to connect to the server: x509: certificate signed by unknown authority (possibly because of &quot;crypto/rsa: verification error&quot; while trying to verify candidate authority certificate &quot;kubernetes&quot;)
+</code></pre>
+<ul>
+<li>参考链接：<a href="https://blog.csdn.net/baobaoxiannv/article/details/83818426" target="_blank" rel="noopener">csdn博客一篇</a></li>
+<li>其实就是<code>kube</code>的<code>config</code>文件: <code>~/.kube/config</code> 文件过时了。里面的<code>certification</code>需要更新。从<code>kube server</code>上面把<code>config</code>拿下来替换一些本地的就好了。</li>
 </ul>
 
           
@@ -1352,13 +1562,13 @@ specified. In the default daemon configuration on Windows, the docker client mus
 <li><a href="https://segmentfault.com/a/1190000019376912" target="_blank" rel="noopener">Kubernetes Service详解</a></li>
 </ul>
 <h2 id="为什么需要service"><a class="header-anchor" href="#为什么需要service"></a>为什么需要service</h2>
-<p>按照参考链接2里面的解释，倒是很容易理解。POD可以起很多个，是实体，还一会有一会没的。<br>
-而service是暴露服务的，这么说，应该只有一个service才对吧。瞅着确实如此啊。</p>
+<p>按照参考链接2里面的解释，倒是很容易理解。<code>POD</code>可以起很多个，是实体，还一会有一会没的。<br>
+而<code>service</code>是暴露服务的，这么说，应该只有一个<code>service</code>才对吧。瞅着确实如此啊。</p>
 <h2 id="services"><a class="header-anchor" href="#services"></a>Services</h2>
-<p>service是K8s里面一个非常重要的概念。类型比较多。K8s中文文档里面的名词解释还是比较清楚的，并且给出了为什么需要service，service和pod有什么区别</p>
+<p><code>service</code>是<code>K8s</code>里面一个非常重要的概念。类型比较多。K8s中文文档里面的名词解释还是比较清楚的，并且给出了为什么需要<code>service</code>，<code>service</code>和<code>pod</code>有什么区别</p>
 <ul>
 <li>
-<p>Kubernete Service 是一个定义了一组Pod的策略的抽象，我们也有时候叫做宏观服务。这些被服务标记的Pod都是（一般）通过label Selector决定的（下面我们会讲到我们为什么需要一个没有label selector的服务）</p>
+<p><code>Kubernete Service</code> 是一个定义了一组<code>Pod</code>的策略的抽象，我们也有时候叫做宏观服务。这些被服务标记的<code>Pod</code>都是（一般）通过<code>label Selector</code>决定的（下面我们会讲到我们为什么需要一个没有<code>label selector</code>的服务）</p>
 </li>
 <li>
 <p>A Kubernetes service is a named load balancer that proxies traffic to one or more containers.</p>
@@ -1523,7 +1733,11 @@ eric-act-activation-mml  192.168.15.102:8111,192.168.15.102:8010   1h</p>
 <p><em>该方式把服务暴露在每个Node主机IP的特定端口上,同一个服务在所有Node上端口是相同的，并自动生成相应的路由转发到ClusterIP</em></p>
 <p>所以NodePort的service也是有cluster IP的。</p>
 <h4 id="loadbalancer"><a class="header-anchor" href="#loadbalancer"></a>LoadBalancer</h4>
+<ul>
+<li><code>LoadBalancer</code>是类型为<code>LoadBalancer</code>的<code>Service</code>，它是建立在<code>NodePort Service</code>集群基础上的，k8s会分配给<code>LoadBalancer Service</code>一个内部的<code>虚拟IP</code>，并且暴露<code>NodePort</code>。除此之外，<code>k8s</code>请求底层云平台创建一个负载均衡器，将每个<code>Node</code>作为后端，负载均衡器将转发请求到<code>[NodeIP]:[NodePort]</code></li>
+</ul>
 <h4 id="ingress"><a class="header-anchor" href="#ingress"></a>Ingress</h4>
+<h2 id="iptables"><a class="header-anchor" href="#iptables"></a>Iptables</h2>
 
           
         
@@ -2393,207 +2607,6 @@ jti (JWT ID)：编号
 <li>原文很长，下面的评论也十分之多，实在不算一把头能看完的</li>
 </ul>
 </li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/08/02/Java-Socket中的port/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/08/02/Java-Socket中的port/" itemprop="url">TCP & UDP</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-02T15:42:25+08:00">
-                2019-08-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/protocal/" itemprop="url" rel="index">
-                    <span itemprop="name">protocal</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>工作中碰到DNS的local 端口的问题，就是client段的port，不是DNS server的端口。这个是默认开在53上面的。<br>
-然后就研究了一下，写在这里。</p>
-<h3 id="port-0"><a class="header-anchor" href="#port-0"></a>port 0</h3>
-<ul>
-<li>可用端口是<code>0 ~ 65535</code>。<code>0</code>在这里说啦，是分配一个随机的未被占用的端口。而<code>65535</code> 事实上是会报错的，也是用不了的。</li>
-<li>事实上，确实是可能有race condition存在的。并且很难避免。仔细看了一遍，好像并没有很好的提议。</li>
-<li>Spring里面的<code>SocketUtil</code>的源码可以参考</li>
-<li><code>ServerSocket</code>里面初始化时候其实是有两部的，第二部是bind，如果传0给构造函数，第二部时候才真正是分配的时候。</li>
-<li>参考链接：
-<ul>
-<li><a href="https://blog.csdn.net/qq_36592572/article/details/82323100" target="_blank" rel="noopener">关于端口最大值65535的问题</a></li>
-<li><a href="https://stackoverflow.com/questions/12889702/allowed-port-range-for-tcp" target="_blank" rel="noopener">Allowed Port Range for TCP</a></li>
-<li><a href="https://stackoverflow.com/questions/115500/how-do-you-specify-a-port-range-for-java-sockets" target="_blank" rel="noopener">how-do-you-specify-a-port-range-for-java-sockets</a></li>
-<li><a href="https://stackoverflow.com/questions/2675362/how-to-find-an-available-port" target="_blank" rel="noopener">how-to-find-an-available-port</a>: 这篇链接里面有大量讨论和实现。</li>
-<li><a href="https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/util/SocketUtils.html" target="_blank" rel="noopener">Class SocketUtils</a></li>
-<li><a href="https://stackoverflow.com/questions/51099027/find-free-port-in-java" target="_blank" rel="noopener">find-free-port-in-java</a></li>
-</ul>
-</li>
-</ul>
-<h3 id="tcp-udp"><a class="header-anchor" href="#tcp-udp"></a>TCP &amp; UDP</h3>
-<ul>
-<li>
-<p>参考链接</p>
-<ul>
-<li><a href="https://stackoverflow.com/questions/12737293/how-do-i-resolve-the-java-net-bindexception-address-already-in-use-jvm-bind?rq=1" target="_blank" rel="noopener">how-do-i-resolve-the-java-net-bindexception-address-already-in-use-jvm-bind</a>: 里面有很多如何查找是哪个应用在占用端口的方法</li>
-<li><a href="https://stackoverflow.com/questions/27730330/java-what-is-the-difference-between-serversocket-and-datagramsocket" target="_blank" rel="noopener">java-what-is-the-difference-between-serversocket-and-datagramsocket</a></li>
-<li><a href="https://www.javaworld.com/article/2077322/core-java-sockets-programming-in-java-a-tutorial.html" target="_blank" rel="noopener">Sockets programming in Java</a></li>
-</ul>
-</li>
-<li>
-<p>这回犯一个低级错误。但是也是必然的，毕竟底层网络不够了解。</p>
-</li>
-<li>
-<p>这次犯的错误是这样的，需要发现一个free的port来建立UDP连接，于是就使用了<code>serverSocket</code> 来check 端口，参考以上链接。</p>
-</li>
-<li>
-<p>实际是，<code>TCP</code>和 <code>UDP</code> 需要使用不同的结构。ORZ。可见我的java基础和网络基础都很有点薄弱啊。对<code>socket</code>的理解也着实不灵啊。</p>
-</li>
-<li>
-<p><code>UDP</code> 应当使用<code>DatagramSocket</code>结构来建。</p>
-</li>
-</ul>
-<h4 id="udp"><a class="header-anchor" href="#udp"></a>UDP</h4>
-<ul>
-<li><code>UDP</code>的全称：<code>user datagram protocol</code>。</li>
-<li>each time you send datagrams, you also need to send the local socket descriptor and the receiving socket’s address. As you can tell, additional data must be sent each time a communication is made.</li>
-</ul>
-<h4 id="tcp"><a class="header-anchor" href="#tcp"></a>TCP</h4>
-<ul>
-<li><code>TCP</code>的全称： <code>transfer control protocol</code></li>
-<li>Once two sockets have been connected, they can be used to transmit data in both (or either one of the) directions.</li>
-</ul>
-<h4 id="when-is-udp-when-is-tcp"><a class="header-anchor" href="#when-is-udp-when-is-tcp"></a>When is UDP &amp; when is TCP</h4>
-<ul>
-<li><code>UDP</code>有数据大小限制，每次发的时候都要带上信息，不可靠，但是速度高。</li>
-<li><code>TCP</code>是面向连接的，所有有建立连接时间。<strong><em>UDP也要建连接呀</em></strong> TCP的数据更像流，而不是一个个数据包，没有大小限制，可靠，但是速度慢很多。</li>
-<li>TCP is useful for implementing network services – such as remote login (rlogin, telnet) and file transfer (FTP)</li>
-<li>UDP is often used in implementing client/server applications in distributed systems built over local area networks.</li>
-<li>一出杯具： 杯具的是，作为一个bug 处理，在学习了一堆，并且记录了一堆之后，自我感觉良好的本人还是犯错了。因为，我们的产品里面不仅仅使用了<code>UDP</code>，还使用了<code>TCP</code>。嘿，我给漏掉了。所以，就算协议学会了，明白了，也得清楚，实现不一定按规矩来的。毕竟都是人来做的。</li>
 </ul>
 
           

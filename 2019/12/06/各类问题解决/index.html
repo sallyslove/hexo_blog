@@ -86,10 +86,12 @@
 <meta property="og:site_name" content="跬步">
 <meta property="og:description" content="开个新博客，来记录工作过程中碰到的各种各类的小问题。 Docker docker login  $ docker login XXXXX     Authenticating with existing credentials...     Stored credentials invalid or expired     Error: Cannot perform an interactive">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-01-16T06:14:57.012Z">
+<meta property="og:image" content="https://user-images.githubusercontent.com/5803001/34945022-c57b369a-fa3c-11e7-85e7-83f716d10705.png">
+<meta property="og:updated_time" content="2020-03-04T08:34:08.472Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Minor Problems During Working">
 <meta name="twitter:description" content="开个新博客，来记录工作过程中碰到的各种各类的小问题。 Docker docker login  $ docker login XXXXX     Authenticating with existing credentials...     Stored credentials invalid or expired     Error: Cannot perform an interactive">
+<meta name="twitter:image" content="https://user-images.githubusercontent.com/5803001/34945022-c57b369a-fa3c-11e7-85e7-83f716d10705.png">
 
 
 
@@ -345,6 +347,41 @@ specified. In the default daemon configuration on Windows, the docker client mus
 </ul>
 </li>
 </ul>
+<h3 id="docker-for-desktop-安装"><a class="header-anchor" href="#docker-for-desktop-安装"></a>docker for desktop 安装</h3>
+<ul>
+<li>安装时候一直提示<code>dockerd</code>文件被<code>windows event log</code>占用了。但是按照各种<code>windows</code>的方法都找不到，最后从<code>gitbash</code>强制删除掉文件再安装就好了。</li>
+</ul>
+<h3 id="docker-for-desktop-如何安装dashboard"><a class="header-anchor" href="#docker-for-desktop-如何安装dashboard"></a>docker for desktop 如何安装Dashboard</h3>
+<ul>
+<li>安装<code>k8s</code>的<code>dashboard</code>：
+<ul>
+<li>使用“docker for desktop“的时候，这个<code>dashboard</code>貌似不是事先装好的。印象不深刻了。需要装一下：</li>
+<li><code>kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml</code></li>
+<li><code>kubectl proxy</code> 再将<code>proxy</code>给弄出来，就可以访问了。</li>
+<li>如下图：<br>
+<img src="https://user-images.githubusercontent.com/5803001/34945022-c57b369a-fa3c-11e7-85e7-83f716d10705.png" alt></li>
+<li>参考链接登录：
+<ul>
+<li><a href="https://segmentfault.com/a/1190000012850396" target="_blank" rel="noopener">config登录方式</a></li>
+<li><a href="https://www.cnblogs.com/guigujun/p/8366530.html" target="_blank" rel="noopener">config登录方式2</a></li>
+<li><a href="https://www.cnblogs.com/jackyfei/p/10180465.html" target="_blank" rel="noopener">token方式登录</a></li>
+</ul>
+</li>
+<li>获取token的命令：<code>kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}')</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="k8s"><a class="header-anchor" href="#k8s"></a>K8S</h2>
+<h3 id="连不上k8s"><a class="header-anchor" href="#连不上k8s"></a>连不上K8S</h3>
+<pre><code>$ kubectl cluster-info
+Kubernetes master is running at ...
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+Unable to connect to the server: x509: certificate signed by unknown authority (possibly because of &quot;crypto/rsa: verification error&quot; while trying to verify candidate authority certificate &quot;kubernetes&quot;)
+</code></pre>
+<ul>
+<li>参考链接：<a href="https://blog.csdn.net/baobaoxiannv/article/details/83818426" target="_blank" rel="noopener">csdn博客一篇</a></li>
+<li>其实就是<code>kube</code>的<code>config</code>文件: <code>~/.kube/config</code> 文件过时了。里面的<code>certification</code>需要更新。从<code>kube server</code>上面把<code>config</code>拿下来替换一些本地的就好了。</li>
+</ul>
 
       
     </div>
@@ -511,7 +548,7 @@ specified. In the default daemon configuration on Windows, the docker client mus
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#docker"><span class="nav-number">1.</span> <span class="nav-text">Docker</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-login"><span class="nav-number">1.1.</span> <span class="nav-text">docker login</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-demon"><span class="nav-number">1.2.</span> <span class="nav-text">docker demon</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-image-没有名字"><span class="nav-number">1.3.</span> <span class="nav-text">docker image 没有名字</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#docker"><span class="nav-number">1.</span> <span class="nav-text">Docker</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-login"><span class="nav-number">1.1.</span> <span class="nav-text">docker login</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-demon"><span class="nav-number">1.2.</span> <span class="nav-text">docker demon</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-image-没有名字"><span class="nav-number">1.3.</span> <span class="nav-text">docker image 没有名字</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-for-desktop-安装"><span class="nav-number">1.4.</span> <span class="nav-text">docker for desktop 安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-for-desktop-如何安装dashboard"><span class="nav-number">1.5.</span> <span class="nav-text">docker for desktop 如何安装Dashboard</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s"><span class="nav-number">2.</span> <span class="nav-text">K8S</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#连不上k8s"><span class="nav-number">2.1.</span> <span class="nav-text">连不上K8S</span></a></li></ol></li></ol></div>
             
 
           </div>

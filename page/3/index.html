@@ -835,7 +835,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService
 </ul>
 <h3 id="services"><a class="header-anchor" href="#services"></a>Services</h3>
 <p>service是K8s里面另一个非常重要的概念，而且实在是有点复杂。类型比较多。K8s中文文档里面的名词解释还是比较清楚的，并且给出了为什么需要service，service和pod有什么区别</p>
-<p>挪到另一篇单独的博客里面了。</p>
+<p>挪到另一篇单独的博客里面了：<a href="https://sallyslove.github.io/hexo_blog/2019/10/11/K8s-Service/">K8s_Service</a></p>
 <ul>
 <li>参考链接
 <ul>
@@ -928,59 +928,53 @@ kube-system    Active    15d
 <strong>决定多少个instance可以理解，不同的instance可以使用不同的image吗</strong></li>
 </ul>
 <h3 id="ingress"><a class="header-anchor" href="#ingress"></a>Ingress</h3>
+<p><code>Ingress</code>的内容也已经挪到新的一篇博客里面去了：<a href="https://sallyslove.github.io/hexo_blog/2020/02/11/K8s-Ingress/">K8s-Ingress</a></p>
+<h3 id="daemonset"><a class="header-anchor" href="#daemonset"></a>DaemonSet</h3>
 <ul>
-<li><em>Ingress enables externally-reachable urls, load balance traffic, terminate SSL, offer name based virtual hosting for a Kubernetes cluster.</em></li>
-<li>通常情况下，<code>service</code>和<code>pod</code>的<code>IP</code>仅可在集群内部访问。集群外部的请求需要通过负载均衡转发到<code>service</code>在<code>Node</code>上暴露的<code>NodePort</code>上，然后再由<code>kube-proxy</code>将其转发给相关的<code>Pod</code>。而<code>Ingress</code>就是为进入集群的请求提供路由规则的集合</li>
-<li>用<code>NodePort</code>来暴露服务的时候， <code>IP</code>可能会漂移，并且，如果服务太多的话，会有混乱，为此引入了<code>ingress</code>，使用<code>hostname</code>来避免这个问题。</li>
-<li>可以认为<code>Ingress</code>包含两个组件：<code>ingress controller</code>和<code>ingress</code></li>
-<li>参考链接：
+<li>一个<code>DaemonSet</code>对象能确保其创建的<code>Pod</code>在集群中的每一台（或指定）<code>Node</code>上都运行一个副本。</li>
+<li>在<code>Kubernetes 1.8</code>之后，必须指定<code>.spec.selector</code>来确定这个<code>DaemonSet</code>对象管理的<code>Pod</code>，通常与<code>.spec.template.metadata.labels</code>中定义的<code>Pod</code>的<code>label</code>一致。</li>
+<li>也可以通过指定参数要求<code>DaemonSet</code>将<code>POD</code>建在指定的<code>Node</code>上面，细节看参考链接里面</li>
+</ul>
+<h4 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h4>
 <ul>
-<li><a href="https://www.kubernetes.org.cn/ingress" target="_blank" rel="noopener">官方文档 名词解释：Ingress</a></li>
+<li><a href="https://www.jianshu.com/p/79981db6d4e6" target="_blank" rel="noopener">K8s – DaemonSet</a></li>
 </ul>
-</li>
+<h3 id="custom-resource-definition"><a class="header-anchor" href="#custom-resource-definition"></a>Custom Resource Definition</h3>
+<h4 id="custom-resource"><a class="header-anchor" href="#custom-resource"></a>Custom Resource</h4>
+<ul>
+<li>官方文档解释有点难以理解，<em>A resource is an endpoint in the Kubernetes API that stores a collection of API objects of a certain kind. For example, the built-in pods resource contains a collection of Pod objects.</em> 一个资源就是某种类型的物体的集合的统称。比如<code>pod resource</code>就是自带的资源。</li>
+<li>所以就是说自己定义的类似<code>pod</code>，<code>service</code>之类的资源。</li>
 </ul>
-<h4 id="ingress-controller"><a class="header-anchor" href="#ingress-controller"></a>Ingress Controller</h4>
+<h4 id="crd"><a class="header-anchor" href="#crd"></a>CRD</h4>
 <ul>
 <li>
-<p><code>ingress controller</code>目前主要有两种：基于<code>nginx</code>服务的<code>ingress controller</code>和基于<code>traefik</code>的<code>ingress controller</code>。</p>
-<ul>
-<li><code>traefik</code>的<code>ingress controller</code>，目前支持<code>http</code>和<code>https</code>协议。</li>
-<li>而<code>nginx</code>可以支持<code>TCP</code>负载,但是目前<code>k8s</code>仅仅支持<code>HTTP</code>和<code>HTTPS</code></li>
-<li>我们产品里面目前使用的也是<code>nginx</code>。</li>
-</ul>
+<p>部署一个<code>CRD</code>到集群中，<code>kube-apiserver</code>会帮助你安装好路由和提供自定义资源的一般服务端实现。</p>
 </li>
 <li>
-<p><code>ingress controller</code>会将新加入的<code>Ingress</code>转化成<code>Nginx</code>的配置文件并使之生效</p>
+<p>例子：</p>
+<pre><code>{
+&quot;apiVersion&quot;: &quot;apiextensions.k8s.io/v1beta1&quot;,
+&quot;kind&quot;: &quot;CustomResourceDefinition&quot;,
+...
+&quot;spec&quot;: {
+  # group name to use for REST API: /apis/&lt;group&gt;/&lt;version&gt;
+  &quot;group&quot;: &quot;stable.netease&quot;,
+    ...
+      &quot;kind&quot;: &quot;Task&quot;,
+      # shortNames allow shorter string to match your resource on the CLI
+      &quot;shortNames&quot;: [
+          &quot;task&quot;
+      ]
+  }
+}
+</code></pre>
 </li>
-<li>
-<p>通常会单独安装在一个<code>namespace</code>里面，比如<code>nginx-inigress</code>里面。</p>
-</li>
-<li>
-<p>配套会有一些部署，解释如下：</p>
-<ul>
-<li><code>Deployment</code>:<code>default-http-backend</code>,对应有同名的<code>service</code>.如果外界访问的域名不存在的话，则默认转发到<code>default-http-backend</code>这个<code>service</code>，会返回404</li>
 </ul>
-</li>
-<li>
-<p>参考链接：</p>
+<h4 id="参考链接-v2"><a class="header-anchor" href="#参考链接-v2"></a>参考链接</h4>
 <ul>
-<li><a href="https://www.jianshu.com/p/feeea0bbd73e" target="_blank" rel="noopener">从零开始搭建K8s</a></li>
-<li><a href="https://www.ilanni.com/?p=14501" target="_blank" rel="noopener">k8s安装与配置ingress(一)</a>: 文档写得真心不错，格式实在太烂了，看得眼睛疼</li>
-</ul>
-</li>
-</ul>
-<h4 id="ingress-yaml-file"><a class="header-anchor" href="#ingress-yaml-file"></a>Ingress YAML FILE</h4>
-<ul>
-<li><code>Ingress.yaml</code>里面的信息不可能完全列这里，有以下一些元素和类型</li>
-</ul>
-<h4 id="ingress-rule"><a class="header-anchor" href="#ingress-rule"></a>Ingress Rule</h4>
-<ul>
-<li>还有个<code>ingress-rules</code>的yaml文件。里面的内容如下：
-<ul>
-<li><code>Kind</code>: <code>Ingress</code> 这个<code>rule</code>规则，哪个<code>endPoint</code>进哪个<code>deployment</code></li>
-<li>每个<code>Ingress</code>都需要配置<code>rules</code>，目前<code>Kubernetes</code>仅支持<code>http</code>规则。所以最关键的就是<code>rule</code></li>
-</ul>
-</li>
+<li><a href="https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/#custom-resources" target="_blank" rel="noopener">官方文档Custom Resource</a></li>
+<li><a href="https://sq.163yun.com/blog/article/193062240727805952" target="_blank" rel="noopener">CRD 和 CR定义的例子</a></li>
+<li><a href="https://k2r2bai.com/2019/10/04/ironman2020/day19/" target="_blank" rel="noopener">K8s的架构，CRD所在位置</a></li>
 </ul>
 
           
@@ -2081,18 +2075,17 @@ not very sure here. It seems that connector and context are different. I think t
 <p><code>kubectl cluster-info</code></p>
 </li>
 <li>
-<p><code>kubectl get nodes</code>：用下面这条命令可以打出node的具体信息</p>
+<p><code>kubectl get nodes</code>：用下面这条命令可以打出<code>node</code>的具体信息</p>
 <pre><code>kubectl get nodes -o wide
 </code></pre>
 </li>
 <li>
 <p><code>kubectl run first-deployment --image=katacoda/docker-http-server --port=80</code></p>
 <ul>
-<li>这样就有一个pod啦。在get pods command里面能看到一个pod</li>
 <li><code>-port</code>仍旧是内部的端口</li>
-<li>外部端口可以用<code>--hostport=8001</code>指定， 但是这样做的话， Under the covers, this exposes the Pod via Docker Port Mapping. As a result, you will not see the service listed using <code>kubectl get svc</code>。目前的理解是，因为是用的docker的方法，所以k8s不知道
+<li>外部端口可以用<code>--hostport=8001</code>指定， 但是这样做的话， —<em>Under the covers, this exposes the Pod via Docker Port Mapping.</em> As a result, you will not see the service listed using <code>kubectl get svc</code>。目前的理解是，因为是用的<code>docker</code>的方法，所以<code>k8s</code>不知道
 <ul>
-<li>用docker ps命令能看到这个container，然后可以注意到有两个ps进程。其中一个是paused状态，然后我们的端口8001其实开在这个paused的ps上面。</li>
+<li>用<code>docker ps</code>命令能看到这个<code>container</code>，然后可以注意到有两个<code>ps</code>进程。其中一个是<code>paused</code>状态，然后我们的端口<code>8001</code>其实开在这个<code>paused</code>的<code>ps</code>上面。</li>
 <li>The ports are exposed on the Pod, not the http container itself. The Pause container is responsible for defining the network for the Pod. Other containers in the pod share the same network namespace. This improves network performance and allow multiple containers to communicate over the same network interface…感觉这段解释很关键啊。这个container的名字是： k8s_POD_“httpexposed”,最后一个字段是我们起的pod的名字</li>
 </ul>
 </li>
@@ -2121,16 +2114,17 @@ not very sure here. It seems that connector and context are different. I think t
 </ul>
 </li>
 </ul>
-<pre><code>  $ kubectl get pods
-     NAME                           READY     STATUS    RESTARTS   AGE
-     http-7b77c4cd66-74zqx          1/1       Running   0          4s
-     http-7b77c4cd66-fhlmx          1/1       Running   0          19m
-     http-7b77c4cd66-xrbpf          1/1       Running   0          4s
-     httpexposed-5c4cf8b7d8-qprzc   1/1       Running   0          11m
-  $ kubectl get deployments
-     NAME          DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
-     http          3         3         3            3           19m
-     httpexposed   1         1         1            1           11m
+<pre><code>$ kubectl get pods
+NAME     READY     STATUS    RESTARTS   AGE
+http-7b77c4cd66-74zqx          1/1       Running   0          4s
+http-7b77c4cd66-fhlmx          1/1       Running   0          19m
+http-7b77c4cd66-xrbpf          1/1       Running   0          4s
+httpexposed-5c4cf8b7d8-qprzc   1/1       Running   0          11m
+
+$ kubectl get deployments
+NAME DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+http          3         3         3            3           19m
+httpexposed   1         1         1            1           11m
 </code></pre>
 <ul>
 <li><code>kubectl describe deployment http</code></li>
@@ -2138,14 +2132,14 @@ not very sure here. It seems that connector and context are different. I think t
 <li><code>kubectl scale --replicas=3 deployment http</code> scale的命令</li>
 <li><code>kubectl create -f deployment.yaml</code> 通过yaml文件创建一个deployment
 <ul>
-<li><code>kubectl create -f service.yaml</code> 也可以通过yaml文件创建service</li>
-<li>ymal文件里面的内容还不是非常清楚。参考<a href="https://blog.csdn.net/luanpeng825485697/article/details/83753260" target="_blank" rel="noopener">k8s yaml文件详解</a></li>
+<li><code>kubectl create -f service.yaml</code> 也可以通过<code>yaml</code>文件创建<code>service</code></li>
+<li><code>ymal</code>文件里面的内容还不是非常清楚。参考<a href="https://blog.csdn.net/luanpeng825485697/article/details/83753260" target="_blank" rel="noopener">k8s yaml文件详解</a></li>
 </ul>
 </li>
-<li><code>kubectl apply -f deployment.yaml</code>如果yaml文件有改动的话，可以用这条命令来update</li>
+<li><code>kubectl apply -f deployment.yaml</code>如果<code>yaml</code>文件有改动的话，可以用这条命令来update</li>
 </ul>
 <pre><code> $ kubectl apply -f deployment.yaml
-   Warning: kubectl apply should be used on resource created by either kubectl create --save-config or kubectl apply
+  Warning: kubectl apply should be used on resource created by either kubectl create --save-config or kubectl apply
   deployment.extensions/webapp1 configured
 </code></pre>
 <ul>
@@ -2153,33 +2147,15 @@ not very sure here. It seems that connector and context are different. I think t
 <li><code>kubectl get ing</code> 可以用来看Ingress</li>
 <li><code>kubectl create namespace</code>创建namespace</li>
 <li><code>kubectl config set-context $(kubectl config current-context) --namespace=&lt;insert-namespace-name-here&gt;</code></li>
-<li><code>kubectl config get-contexts</code> 这个context不知道是啥</li>
+<li><code>kubectl config get-contexts</code></li>
 <li><code>kubectl get namespaces</code></li>
-<li><code>kubectl delete pvc --all --namespace default</code> 用这个命令来做delete。一堆都行。pvc换成pod，deployments，secret，configmap，service啥的</li>
-<li>安装k8s的dashboard：
-<ul>
-<li>使用“docker for desktop“的时候，这个dashboard貌似不是事先装好的。印象不深刻了。需要装一下：</li>
-<li><code>kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml</code></li>
-<li><code>kubectl proxy</code> 再将proxy给弄出来，就可以访问了。</li>
-<li>如下图：<br>
-<img src="https://user-images.githubusercontent.com/5803001/34945022-c57b369a-fa3c-11e7-85e7-83f716d10705.png" alt></li>
-<li>参考链接登录：
-<ul>
-<li><a href="https://segmentfault.com/a/1190000012850396" target="_blank" rel="noopener">config登录方式</a></li>
-<li><a href="https://www.cnblogs.com/guigujun/p/8366530.html" target="_blank" rel="noopener">config登录方式2</a></li>
-<li><a href="https://www.cnblogs.com/jackyfei/p/10180465.html" target="_blank" rel="noopener">token方式登录</a></li>
-</ul>
-</li>
-<li>获取token的命令：<code>kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}')</code></li>
-</ul>
-</li>
+<li><code>kubectl delete pvc --all --namespace default</code> 用这个命令来做<code>delete</code>。一堆都行。<code>pvc</code>换成<code>pod</code>，<code>deployments</code>，<code>secret</code>，<code>configmap</code>，<code>service</code>啥的</li>
 </ul>
 <h3 id="参考文档"><a class="header-anchor" href="#参考文档"></a>参考文档</h3>
 <ul>
 <li><a href="http://docs.kubernetes.org.cn/475.html" target="_blank" rel="noopener">k8s中文文档</a></li>
 <li><a href="https://www.katacoda.com/courses/kubernetes/kubectl-run-containers" target="_blank" rel="noopener">codekara的在线课程</a></li>
 </ul>
-<h3 id="主要特性"><a class="header-anchor" href="#主要特性"></a>主要特性</h3>
 
           
         
