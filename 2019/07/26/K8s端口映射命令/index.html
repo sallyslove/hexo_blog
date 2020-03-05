@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="跬步">
 <meta property="og:description" content="K8s的前两篇文档大而乱啊。所以的话，还是小而精更好吧。 接着记录命令，最好相关命令放在一起。  kubectl port-forward   Forward one or more local ports to a pod. This command requires the node to have ‘socat’ installed. socat是什么?   参考链接：  Kubernete">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-16T02:08:53.817Z">
+<meta property="og:updated_time" content="2020-03-05T08:44:38.900Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="K8s常用命令集2">
 <meta name="twitter:description" content="K8s的前两篇文档大而乱啊。所以的话，还是小而精更好吧。 接着记录命令，最好相关命令放在一起。  kubectl port-forward   Forward one or more local ports to a pod. This command requires the node to have ‘socat’ installed. socat是什么?   参考链接：  Kubernete">
@@ -334,7 +334,7 @@
         <p>K8s的前两篇文档大而乱啊。所以的话，还是小而精更好吧。</p>
 <p>接着记录命令，最好相关命令放在一起。</p>
 <ul>
-<li>kubectl port-forward
+<li><code>kubectl port-forward</code>
 <ul>
 <li>
 <p>Forward one or more local ports to a pod. This command requires the node to have ‘socat’ installed. <strong><em>socat是什么?</em></strong></p>
@@ -349,8 +349,8 @@
 <li>
 <p>用例：</p>
 <ul>
-<li>以下命令的含义是：将本地端口8080和8081，映射到k8s服务<code>ok</code>的8080和80端口上面。<code>-n</code>代表的namespace</li>
-<li>默认地址是localhost</li>
+<li>以下命令的含义是：将本地端口<code>8080</code>和<code>8081</code>，映射到<code>k8s</code>服务<code>ok</code>的<code>8080</code>和<code>80</code>端口上面。<code>-n</code>代表的<code>namespace</code></li>
+<li>默认地址是<code>localhost</code></li>
 </ul>
 </li>
 </ul>
@@ -358,6 +358,13 @@
 </ul>
 <pre><code>  kubectl port-forward service/ok 8080:8080 8081:80 -n the-project
 </code></pre>
+<ul>
+<li><code>kubectl edit</code> 命令可以用来修改一个资源。<code>kubectl edit deployment &lt;resource_name&gt; -n &lt;namespace&gt;</code>,需要注意的是修改是暂时的，如果使用<code>helm upgrade</code>命令，那么修改会被覆盖掉
+<ul>
+<li>参考链接： <a href="https://stackoverflow.com/questions/45502729/how-do-i-edit-a-resource-configuration-with-kubectl" target="_blank" rel="noopener">kubectl edit</a></li>
+</ul>
+</li>
+</ul>
 
       
     </div>

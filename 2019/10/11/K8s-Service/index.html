@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="跬步">
 <meta property="og:description" content="Service的概念有点多，内容，单独拎出来做一篇。 参考链接  名词解释 Services Kubernetes Service详解  为什么需要service 按照参考链接2里面的解释，倒是很容易理解。POD可以起很多个，是实体，还一会有一会没的。 而service是暴露服务的，这么说，应该只有一个service才对吧。瞅着确实如此啊。 Services service是K8s里面一个非常重要">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-02-28T06:58:36.421Z">
+<meta property="og:updated_time" content="2020-03-05T14:32:32.981Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="K8s Service">
 <meta name="twitter:description" content="Service的概念有点多，内容，单独拎出来做一篇。 参考链接  名词解释 Services Kubernetes Service详解  为什么需要service 按照参考链接2里面的解释，倒是很容易理解。POD可以起很多个，是实体，还一会有一会没的。 而service是暴露服务的，这么说，应该只有一个service才对吧。瞅着确实如此啊。 Services service是K8s里面一个非常重要">
@@ -451,16 +451,16 @@ spec:
 <h3 id="endpoint"><a class="header-anchor" href="#endpoint"></a>endpoint</h3>
 <ul>
 <li>
-<p>在service创建的时候，kube-proxy组件（每个k8s服务器都会有的组件）会自动创建同名的endpoint对象。</p>
+<p>在service创建的时候，<code>kube-proxy</code>组件（每个k8s服务器都会有的组件）会自动创建同名的<code>endpoint</code>对象。</p>
 </li>
 <li>
-<p>动态地跟踪匹配selector的一组pod当前ip（pod的ip在pod的yaml文件里面可以知道，名字就是podIP）及端口，并生成相应的iptables KUBE-SVC-xxx规则</p>
+<p>动态地跟踪匹配<code>selector</code>的一组<code>pod</code>当前<code>ip</code>（<code>pod</code>的<code>ip</code>在<code>pod</code>的<code>yaml</code>文件里面可以知道，名字就是<code>podIP</code>）及端口，并生成相应的<code>iptables KUBE-SVC-xxx</code>规则</p>
 </li>
 <li>
-<p><code>service</code>是用了endpoint来对pod进行动态的跟踪的。一个pod的IP发生变化的时候，endpoint和KUBE-SVC-XXX规则会相应变化</p>
+<p><code>service</code>是用了<code>endpoint</code>来对pod进行动态的跟踪的。一个<code>pod</code>的IP发生变化的时候，<code>endpoint</code>和<code>KUBE-SVC-XXX</code>规则会相应变化</p>
 </li>
 <li>
-<p><code>endpoint</code>是k8s的另一个对象，生成一个<code>service</code>的时候，会相对应生成一个<code>endpoint</code>.</p>
+<p><code>endpoint</code>是<code>k8s</code>的另一个对象，生成一个<code>service</code>的时候，会相对应生成一个<code>endpoint</code>.</p>
 <p>$ kubectl get ep -n sheild-1 eric-act-activation-mml<br>
 NAME         ENDPOINTS                           AGE<br>
 eric-act-activation-mml  192.168.15.102:8111,192.168.15.102:8010   1h</p>
@@ -469,14 +469,14 @@ eric-act-activation-mml  192.168.15.102:8111,192.168.15.102:8010   1h</p>
 <h3 id="请求代理的三种方式"><a class="header-anchor" href="#请求代理的三种方式"></a>请求代理的三种方式</h3>
 <p>全文参考链接二里面有三种方式。由于网络基础较差，先记录在这里：</p>
 <ul>
-<li>Userspace 模式：这种模式完全依靠<code>kube-proxy</code>来，<em>Userspace模式的代理转发主要依靠kube-proxy实现，工作在用户态。所以，转发效率不高</em></li>
-<li>iptables 模式: 也就是上面稍加解释的方法，是目前的默认模式。</li>
+<li><code>Userspace</code>模式：这种模式完全依靠<code>kube-proxy</code>来，<em><code>Userspace</code>模式的代理转发主要依靠<code>kube-proxy</code>实现，工作在用户态。所以，转发效率不高</em></li>
+<li><code>iptables</code>模式: 也就是上面稍加解释的方法，是目前的默认模式。</li>
 </ul>
 <p><em>与userspace模式最大的不同点在于，kube-proxy只动态地维护iptables，而转发完全靠iptables实现。由于iptables工作在内核态，不用在用户态与内核态切换，所以相比userspace模式更高效也更可靠。但是每个服务都会生成若干条iptables规则，大型集群iptables规则数会非常多，造成性能下降也不易排查问题。</em></p>
 <ul>
-<li>ipvs 模式: 在v1.9版本以后，服务新增了ipvs转发方式.</li>
+<li><code>ipvs</code>模式: 在<code>v1.9</code>版本以后，服务新增了<code>ipvs</code>转发方式.</li>
 </ul>
-<p><em>ipvs同样工作在内核态，而且底层转发是依靠hash表实现，所以性能比iptables还要好的多，同步新规则也比iptables快。同时，负载均衡的方式除了简单rr还有多种选择，所以很适合在大型集群使用。而缺点就是带来了额外的配置维护操作。</em></p>
+<p><em><code>ipvs</code>同样工作在内核态，而且底层转发是依靠<code>hash表</code>实现，所以性能比<code>iptables</code>还要好的多，同步新规则也比<code>iptables</code>快。同时，负载均衡的方式除了简单rr还有多种选择，所以很适合在大型集群使用。而缺点就是带来了额外的配置维护操作。</em></p>
 <h3 id="参考链接-v2"><a class="header-anchor" href="#参考链接-v2"></a>参考链接</h3>
 <ul>
 <li>参考链接：
@@ -500,20 +500,17 @@ eric-act-activation-mml  192.168.15.102:8111,192.168.15.102:8010   1h</p>
 </li>
 </ul>
 <h4 id="nodeport"><a class="header-anchor" href="#nodeport"></a>NodePort</h4>
-<p>nodePort 和 node是一对，首先要理解一下node的概念。这边的node相当于是VM。<br>
-就是这样的，我有一套硬件，然后我在上边搭k8s，k8s会先搭出一堆node来，然后再在这堆node上边建namespace，每个namespace里面再建pod啊之类的。<br>
-所以可以理解成VM，那么这个IP是可以访问到的。<br>
-这样NodePort就容易理解了。</p>
-<p><em>NodePort Service是类型为NodePort的Service， k8s除了会分配给NodePort Service一个内部的虚拟IP，另外会在每一个Node上暴露端口NodePort，外部网络可以通过[NodeIP]:[NodePort]访问到Service。</em></p>
-<p>需要注意的是，NodePort service会在每个node上面注册自己。所以如果一套namespace是搭在好几个node上面的，应该都能访问到</p>
-<p><em>该方式把服务暴露在每个Node主机IP的特定端口上,同一个服务在所有Node上端口是相同的，并自动生成相应的路由转发到ClusterIP</em></p>
-<p>所以NodePort的service也是有cluster IP的。</p>
+<ul>
+<li><code>nodePort</code> 和 <code>node</code>是一对，首先要理解一下<code>node</code>的概念。这边的<code>node</code>相当于是<code>VM</code>。</li>
+<li>就是这样的，我有一套硬件，然后我在上边搭虚拟环境，比如<code>openstack</code>，<code>openstack</code>会先搭出一堆<code>node</code>来，然后再在这堆<code>node</code>上边装<code>k8s</code>,建<code>namespace</code>，每个<code>namespace</code>里面再建<code>pod</code>啊之类的。</li>
+<li>所以可以理解成<code>VM</code>，那么这个<code>IP</code>是可以访问到的。</li>
+<li><em><code>NodePort</code>是类型为<code>NodePort</code>的<code>Service</code>，<code>k8s</code>除了会分配给<code>NodePort</code>一个内部的虚拟<code>IP</code>，另外会在每一个<code>Node</code>上暴露端口<code>NodePort</code>，外部网络可以通过[NodeIP]:[NodePort]访问到服务。</em></li>
+<li>需要注意的是，<code>NodePort</code>会在每个<code>node</code>上面注册自己。所以这个<code>NodeIP</code>可以是<code>cluster</code>的每个<code>node</code>。<em>该方式把服务暴露在每个<code>Node</code>主机<code>IP</code>的特定端口上,同一个服务在所有<code>Node</code>上端口是相同的，并自动生成相应的路由转发到<code>ClusterIP</code></em>。所以<code>NodePort</code>的<code>service</code>也是有<code>cluster IP</code>的。</li>
+</ul>
 <h4 id="loadbalancer"><a class="header-anchor" href="#loadbalancer"></a>LoadBalancer</h4>
 <ul>
-<li><code>LoadBalancer</code>是类型为<code>LoadBalancer</code>的<code>Service</code>，它是建立在<code>NodePort Service</code>集群基础上的，k8s会分配给<code>LoadBalancer Service</code>一个内部的<code>虚拟IP</code>，并且暴露<code>NodePort</code>。除此之外，<code>k8s</code>请求底层云平台创建一个负载均衡器，将每个<code>Node</code>作为后端，负载均衡器将转发请求到<code>[NodeIP]:[NodePort]</code></li>
+<li><code>LoadBalancer</code>是类型为<code>LoadBalancer</code>的<code>Service</code>，它是建立在<code>NodePort Service</code>集群基础上的，<code>k8s</code>会分配给<code>LoadBalancer Service</code>一个内部的<code>虚拟IP</code>，并且暴露<code>NodePort</code>。除此之外，<code>k8s</code>请求底层云平台创建一个负载均衡器，将每个<code>Node</code>作为后端，负载均衡器将转发请求到<code>[NodeIP]:[NodePort]</code></li>
 </ul>
-<h4 id="ingress"><a class="header-anchor" href="#ingress"></a>Ingress</h4>
-<h2 id="iptables"><a class="header-anchor" href="#iptables"></a>Iptables</h2>
 
       
     </div>
@@ -680,7 +677,7 @@ eric-act-activation-mml  192.168.15.102:8111,192.168.15.102:8010   1h</p>
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么需要service"><span class="nav-number">2.</span> <span class="nav-text">为什么需要service</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#services"><span class="nav-number">3.</span> <span class="nav-text">Services</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#暴露service的命令"><span class="nav-number">4.</span> <span class="nav-text">暴露service的命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#yaml文件"><span class="nav-number">4.1.</span> <span class="nav-text">yaml文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#请求转发"><span class="nav-number">5.</span> <span class="nav-text">请求转发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#endpoint"><span class="nav-number">5.1.</span> <span class="nav-text">endpoint</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#请求代理的三种方式"><span class="nav-number">5.2.</span> <span class="nav-text">请求代理的三种方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考链接-v2"><span class="nav-number">5.3.</span> <span class="nav-text">参考链接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务发现"><span class="nav-number">6.</span> <span class="nav-text">服务发现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#内部服务发现"><span class="nav-number">6.1.</span> <span class="nav-text">内部服务发现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#外部服务发现"><span class="nav-number">6.2.</span> <span class="nav-text">外部服务发现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#nodeport"><span class="nav-number">6.2.1.</span> <span class="nav-text">NodePort</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#loadbalancer"><span class="nav-number">6.2.2.</span> <span class="nav-text">LoadBalancer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ingress"><span class="nav-number">6.2.3.</span> <span class="nav-text">Ingress</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#iptables"><span class="nav-number">7.</span> <span class="nav-text">Iptables</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么需要service"><span class="nav-number">2.</span> <span class="nav-text">为什么需要service</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#services"><span class="nav-number">3.</span> <span class="nav-text">Services</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#暴露service的命令"><span class="nav-number">4.</span> <span class="nav-text">暴露service的命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#yaml文件"><span class="nav-number">4.1.</span> <span class="nav-text">yaml文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#请求转发"><span class="nav-number">5.</span> <span class="nav-text">请求转发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#endpoint"><span class="nav-number">5.1.</span> <span class="nav-text">endpoint</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#请求代理的三种方式"><span class="nav-number">5.2.</span> <span class="nav-text">请求代理的三种方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考链接-v2"><span class="nav-number">5.3.</span> <span class="nav-text">参考链接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务发现"><span class="nav-number">6.</span> <span class="nav-text">服务发现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#内部服务发现"><span class="nav-number">6.1.</span> <span class="nav-text">内部服务发现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#外部服务发现"><span class="nav-number">6.2.</span> <span class="nav-text">外部服务发现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#nodeport"><span class="nav-number">6.2.1.</span> <span class="nav-text">NodePort</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#loadbalancer"><span class="nav-number">6.2.2.</span> <span class="nav-text">LoadBalancer</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>

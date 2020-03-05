@@ -637,7 +637,7 @@ fi
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/hexo_blog/2019/12/06/各类问题解决/" itemprop="url">Minor Problems During Working</a></h1>
+                <a class="post-title-link" href="/hexo_blog/2019/12/06/各类问题解决/" itemprop="url">Problems During Working</a></h1>
         
 
         <div class="post-meta">
@@ -759,6 +759,44 @@ Unable to connect to the server: x509: certificate signed by unknown authority (
 <ul>
 <li>参考链接：<a href="https://blog.csdn.net/baobaoxiannv/article/details/83818426" target="_blank" rel="noopener">csdn博客一篇</a></li>
 <li>其实就是<code>kube</code>的<code>config</code>文件: <code>~/.kube/config</code> 文件过时了。里面的<code>certification</code>需要更新。从<code>kube server</code>上面把<code>config</code>拿下来替换一些本地的就好了。</li>
+</ul>
+<h3 id="k8s的nodeport-service出错"><a class="header-anchor" href="#k8s的nodeport-service出错"></a>K8s的NodePort Service出错</h3>
+<h5 id="nodeport-service的nodeport无法访问"><a class="header-anchor" href="#nodeport-service的nodeport无法访问"></a>NodePort Service的NodePort无法访问</h5>
+<ul>
+<li>在工作中碰到一个问题。<code>NodePort</code>的<code>NodePort</code>无法访问，只有我组开发的一个服务有问题，其他服务都是OK的
+<ul>
+<li>内部服务使用<code>clusterIP:internalPort</code>访问没有问题</li>
+<li>外部机器无法访问</li>
+<li>各个机器上面的端口已经完全开好了</li>
+<li>只有本机可以使用<code>NodeIP:NodePort</code>访问到服务,也就是<code>deployment</code>起或者<code>pod</code>起的那台机器可以访问服务</li>
+<li>只有一套环境有问题，另外一套环境没有问题。有问题的环境上面有<code>kube-proxy</code>服务，而另一套并没在<code>kube-system</code>下面找到<code>kube-proxy</code></li>
+</ul>
+</li>
+<li>先说结论，最后发现是由于在我国抵抗疫情期间，国外友人加了<code>NetworkPolicy</code>导致的，需要在服务的<code>deployment</code>里面加上一个标准位，而添加的网络规则会根据这个标准位来放行或者阻拦<code>traffic</code>
+<ul>
+<li>使用<code>kubectl get networkpolicy</code>可以看到设置的网络规则，使用<code>describe</code>命令可以看到详细的信息，如下，所以需要加上这个标志位（在deployment的labels里面。）</li>
+<li>后续需要进一步学习<code>NetworkPolicy</code>相关知识</li>
+</ul>
+</li>
+</ul>
+<pre><code>   Spec:
+	PodSelector:     allowTraffic=true
+</code></pre>
+<ul>
+<li>这边来看解决分析过程。
+<ul>
+<li>由于两套环境上一套是工作的第一反应是两套机器的差异，并且还有一个信息是春节前是工作的，春节后是不工作的。但是由于机器并不是我们自己搭的，只能猜测是环境改变了。</li>
+<li><code>kube-proxy</code> 出问题了，因为所有的<code>clusterIP</code>是好的，那么猜测是中间的转发过程出问题了，于是查询看看同一个<code>node</code>上面的<code>kube-proxy</code>的日志，事实上没有任何错误。这边有几个信息，即使在日志里面看到了端口被占用的日志，也并没有什么意义，在测试中，不停地启停<code>service</code>就可能触发这个日志。</li>
+<li>在排除掉<code>kube-proxy</code>之后，就怀疑是<code>iptables</code>的错误。参考以下链接，确实在<code>iptables</code>出现问题的时候可能发生类似的错误：</li>
+<li>参考链接：<a href="https://stackoverflow.com/questions/46667659/kubernetes-cannot-access-nodeport-from-other-machines" target="_blank" rel="noopener">k8s的nodeport无法从其他机器访问</a></li>
+<li><a href="https://www.myf5.net/post/2343.htm" target="_blank" rel="noopener">NodePort Service的请求未被分发到各个node的排错</a></li>
+<li>于是看了一整天的<code>iptables</code>。由于时间紧迫，并未能看到全貌，后续会新开一篇博客来补。事实上，<code>NodePort</code>服务类型只比<code>ClusterIP</code>类型多两条规则</li>
+<li>而在整个<code>ipTables</code>里面，可以很清晰地看到整个链路，一直转到<code>endpoint</code>上面。尽管里面也有上述两个链接中提到的<code>Docker</code>相关的规则，却不是在<code>filter</code>过滤表里面。而是在<code>NAT</code>转发表里，所以按照链路来看，从<code>NodePort</code>进去的请求最后确实转发到了<code>endpoint</code>，并没有到<code>Docker</code>里面。事实上，我尝试在<code>IpTables</code>里面加上了链接中的路由，并未生效。</li>
+<li>在研究了一天<code>iptables</code>之后，转到了比较生硬一些却可能更有效的办法：</li>
+<li>研究其他服务的代码改动。事实上，肯定是有加入这个标志位的，但是由于和一些类似格式的改动在一起，没看出来</li>
+<li>查询从哪一天开始出现了问题。万幸已经知道2月6号的包有问题，年前是好的，中间并未差几天。在数次装包卸载之后发现了时间点。再比较两个包的差异，发现了这个<code>NetworkPolicy</code>的增加</li>
+</ul>
+</li>
 </ul>
 
           
@@ -1675,16 +1713,16 @@ spec:
 <h3 id="endpoint"><a class="header-anchor" href="#endpoint"></a>endpoint</h3>
 <ul>
 <li>
-<p>在service创建的时候，kube-proxy组件（每个k8s服务器都会有的组件）会自动创建同名的endpoint对象。</p>
+<p>在service创建的时候，<code>kube-proxy</code>组件（每个k8s服务器都会有的组件）会自动创建同名的<code>endpoint</code>对象。</p>
 </li>
 <li>
-<p>动态地跟踪匹配selector的一组pod当前ip（pod的ip在pod的yaml文件里面可以知道，名字就是podIP）及端口，并生成相应的iptables KUBE-SVC-xxx规则</p>
+<p>动态地跟踪匹配<code>selector</code>的一组<code>pod</code>当前<code>ip</code>（<code>pod</code>的<code>ip</code>在<code>pod</code>的<code>yaml</code>文件里面可以知道，名字就是<code>podIP</code>）及端口，并生成相应的<code>iptables KUBE-SVC-xxx</code>规则</p>
 </li>
 <li>
-<p><code>service</code>是用了endpoint来对pod进行动态的跟踪的。一个pod的IP发生变化的时候，endpoint和KUBE-SVC-XXX规则会相应变化</p>
+<p><code>service</code>是用了<code>endpoint</code>来对pod进行动态的跟踪的。一个<code>pod</code>的IP发生变化的时候，<code>endpoint</code>和<code>KUBE-SVC-XXX</code>规则会相应变化</p>
 </li>
 <li>
-<p><code>endpoint</code>是k8s的另一个对象，生成一个<code>service</code>的时候，会相对应生成一个<code>endpoint</code>.</p>
+<p><code>endpoint</code>是<code>k8s</code>的另一个对象，生成一个<code>service</code>的时候，会相对应生成一个<code>endpoint</code>.</p>
 <p>$ kubectl get ep -n sheild-1 eric-act-activation-mml<br>
 NAME         ENDPOINTS                           AGE<br>
 eric-act-activation-mml  192.168.15.102:8111,192.168.15.102:8010   1h</p>
@@ -1693,14 +1731,14 @@ eric-act-activation-mml  192.168.15.102:8111,192.168.15.102:8010   1h</p>
 <h3 id="请求代理的三种方式"><a class="header-anchor" href="#请求代理的三种方式"></a>请求代理的三种方式</h3>
 <p>全文参考链接二里面有三种方式。由于网络基础较差，先记录在这里：</p>
 <ul>
-<li>Userspace 模式：这种模式完全依靠<code>kube-proxy</code>来，<em>Userspace模式的代理转发主要依靠kube-proxy实现，工作在用户态。所以，转发效率不高</em></li>
-<li>iptables 模式: 也就是上面稍加解释的方法，是目前的默认模式。</li>
+<li><code>Userspace</code>模式：这种模式完全依靠<code>kube-proxy</code>来，<em><code>Userspace</code>模式的代理转发主要依靠<code>kube-proxy</code>实现，工作在用户态。所以，转发效率不高</em></li>
+<li><code>iptables</code>模式: 也就是上面稍加解释的方法，是目前的默认模式。</li>
 </ul>
 <p><em>与userspace模式最大的不同点在于，kube-proxy只动态地维护iptables，而转发完全靠iptables实现。由于iptables工作在内核态，不用在用户态与内核态切换，所以相比userspace模式更高效也更可靠。但是每个服务都会生成若干条iptables规则，大型集群iptables规则数会非常多，造成性能下降也不易排查问题。</em></p>
 <ul>
-<li>ipvs 模式: 在v1.9版本以后，服务新增了ipvs转发方式.</li>
+<li><code>ipvs</code>模式: 在<code>v1.9</code>版本以后，服务新增了<code>ipvs</code>转发方式.</li>
 </ul>
-<p><em>ipvs同样工作在内核态，而且底层转发是依靠hash表实现，所以性能比iptables还要好的多，同步新规则也比iptables快。同时，负载均衡的方式除了简单rr还有多种选择，所以很适合在大型集群使用。而缺点就是带来了额外的配置维护操作。</em></p>
+<p><em><code>ipvs</code>同样工作在内核态，而且底层转发是依靠<code>hash表</code>实现，所以性能比<code>iptables</code>还要好的多，同步新规则也比<code>iptables</code>快。同时，负载均衡的方式除了简单rr还有多种选择，所以很适合在大型集群使用。而缺点就是带来了额外的配置维护操作。</em></p>
 <h3 id="参考链接-v2"><a class="header-anchor" href="#参考链接-v2"></a>参考链接</h3>
 <ul>
 <li>参考链接：
@@ -1724,20 +1762,17 @@ eric-act-activation-mml  192.168.15.102:8111,192.168.15.102:8010   1h</p>
 </li>
 </ul>
 <h4 id="nodeport"><a class="header-anchor" href="#nodeport"></a>NodePort</h4>
-<p>nodePort 和 node是一对，首先要理解一下node的概念。这边的node相当于是VM。<br>
-就是这样的，我有一套硬件，然后我在上边搭k8s，k8s会先搭出一堆node来，然后再在这堆node上边建namespace，每个namespace里面再建pod啊之类的。<br>
-所以可以理解成VM，那么这个IP是可以访问到的。<br>
-这样NodePort就容易理解了。</p>
-<p><em>NodePort Service是类型为NodePort的Service， k8s除了会分配给NodePort Service一个内部的虚拟IP，另外会在每一个Node上暴露端口NodePort，外部网络可以通过[NodeIP]:[NodePort]访问到Service。</em></p>
-<p>需要注意的是，NodePort service会在每个node上面注册自己。所以如果一套namespace是搭在好几个node上面的，应该都能访问到</p>
-<p><em>该方式把服务暴露在每个Node主机IP的特定端口上,同一个服务在所有Node上端口是相同的，并自动生成相应的路由转发到ClusterIP</em></p>
-<p>所以NodePort的service也是有cluster IP的。</p>
+<ul>
+<li><code>nodePort</code> 和 <code>node</code>是一对，首先要理解一下<code>node</code>的概念。这边的<code>node</code>相当于是<code>VM</code>。</li>
+<li>就是这样的，我有一套硬件，然后我在上边搭虚拟环境，比如<code>openstack</code>，<code>openstack</code>会先搭出一堆<code>node</code>来，然后再在这堆<code>node</code>上边装<code>k8s</code>,建<code>namespace</code>，每个<code>namespace</code>里面再建<code>pod</code>啊之类的。</li>
+<li>所以可以理解成<code>VM</code>，那么这个<code>IP</code>是可以访问到的。</li>
+<li><em><code>NodePort</code>是类型为<code>NodePort</code>的<code>Service</code>，<code>k8s</code>除了会分配给<code>NodePort</code>一个内部的虚拟<code>IP</code>，另外会在每一个<code>Node</code>上暴露端口<code>NodePort</code>，外部网络可以通过[NodeIP]:[NodePort]访问到服务。</em></li>
+<li>需要注意的是，<code>NodePort</code>会在每个<code>node</code>上面注册自己。所以这个<code>NodeIP</code>可以是<code>cluster</code>的每个<code>node</code>。<em>该方式把服务暴露在每个<code>Node</code>主机<code>IP</code>的特定端口上,同一个服务在所有<code>Node</code>上端口是相同的，并自动生成相应的路由转发到<code>ClusterIP</code></em>。所以<code>NodePort</code>的<code>service</code>也是有<code>cluster IP</code>的。</li>
+</ul>
 <h4 id="loadbalancer"><a class="header-anchor" href="#loadbalancer"></a>LoadBalancer</h4>
 <ul>
-<li><code>LoadBalancer</code>是类型为<code>LoadBalancer</code>的<code>Service</code>，它是建立在<code>NodePort Service</code>集群基础上的，k8s会分配给<code>LoadBalancer Service</code>一个内部的<code>虚拟IP</code>，并且暴露<code>NodePort</code>。除此之外，<code>k8s</code>请求底层云平台创建一个负载均衡器，将每个<code>Node</code>作为后端，负载均衡器将转发请求到<code>[NodeIP]:[NodePort]</code></li>
+<li><code>LoadBalancer</code>是类型为<code>LoadBalancer</code>的<code>Service</code>，它是建立在<code>NodePort Service</code>集群基础上的，<code>k8s</code>会分配给<code>LoadBalancer Service</code>一个内部的<code>虚拟IP</code>，并且暴露<code>NodePort</code>。除此之外，<code>k8s</code>请求底层云平台创建一个负载均衡器，将每个<code>Node</code>作为后端，负载均衡器将转发请求到<code>[NodeIP]:[NodePort]</code></li>
 </ul>
-<h4 id="ingress"><a class="header-anchor" href="#ingress"></a>Ingress</h4>
-<h2 id="iptables"><a class="header-anchor" href="#iptables"></a>Iptables</h2>
 
           
         
