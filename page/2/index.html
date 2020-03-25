@@ -1359,7 +1359,123 @@ Interrupt:5 Base address:0x8c00
       
         
           
-            <h2 id="compacting-sstable-data"><a class="header-anchor" href="#compacting-sstable-data"></a>Compacting SSTable Data</h2>
+            <h2 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h2>
+<ul>
+<li><a href="https://thelastpickle.com/blog/2016/07/27/about-deletes-and-tombstones.html" target="_blank" rel="noopener">关于Cassandra的删除和墓碑</a></li>
+<li><a href="https://zhaoyanblog.com/archives/966.html" target="_blank" rel="noopener">有上篇文章的翻译</a></li>
+</ul>
+<h2 id="delete-data"><a class="header-anchor" href="#delete-data"></a>Delete Data</h2>
+<ul>
+<li>找了一下博客，发现居然都没有一个章节是关于删除数据的</li>
+<li>事实上，<code>Cassandra</code>里面的删除是一种写操作，会插入墓碑。在上面的参加链接里面详尽描述了这个过程</li>
+<li>可以使用<code>SSTabledump</code>命令来进行查询。<strong><em>但是并没有在我们的环境中找到这个命令</em></strong></li>
+<li>需要注意的是这里讨论的都是删除之后再<code>flush</code>到<code>SSTable</code>里的情况，<code>Memtable</code>里面的数据删除会有所不痛</li>
+<li><code>gc_grace_seconds</code></li>
+</ul>
+<h3 id="删除某一行的某个数据"><a class="header-anchor" href="#删除某一行的某个数据"></a>删除某一行的某个数据</h3>
+<ul>
+<li>
+<p>可以只删除某一行的某一个数据，如下</p>
+</li>
+<li>
+<p>当删除掉某一行的某个数据的时候，使用上面的<code>SSTabledump</code>命令，这一行数据将没有<code>liveness_info</code></p>
+<pre><code>DELETE crates FROM tlp_lab.tombstones WHERE fruit='apple' AND date ='20160617';
+</code></pre>
+</li>
+</ul>
+<p>那么这个数据会显示<code>null</code></p>
+<pre><code>  alain$ echo &quot;SELECT * FROM tlp_lab.tombstones LIMIT 100;&quot; | cqlsh
+  fruit   | date     | crates
+  ---------+----------+-----------------
+  apple | 20160617 |            null
+</code></pre>
+<h3 id="删除一行的数据"><a class="header-anchor" href="#删除一行的数据"></a>删除一行的数据</h3>
+<ul>
+<li>
+<p>删除掉一行之后，这一行的数据的<code>cell</code>也将没有任何数据</p>
+<pre><code>&quot;rows&quot; : [
+{
+  &quot;type&quot; : &quot;row&quot;,
+  &quot;position&quot; : 19,
+  &quot;clustering&quot; : [ &quot;20160617&quot; ],
+  &quot;deletion_info&quot; : { &quot;marked_deleted&quot; : &quot;2016-06-16T19:31:41.142454Z&quot;, &quot;local_delete_time&quot; : &quot;2016-06-16T19:31:41Z&quot; },
+  &quot;cells&quot; : [ ]
+}
+
+&quot;rows&quot; : [
+{
+  &quot;type&quot; : &quot;row&quot;,
+  &quot;position&quot; : 125,
+  &quot;clustering&quot; : [ &quot;20160616&quot; ],
+  &quot;liveness_info&quot; : { &quot;tstamp&quot; : &quot;2016-06-16T18:52:41.903751Z&quot;, &quot;ttl&quot; : 2592000, &quot;expires_at&quot; : &quot;2016-07-16T18:52:41Z&quot;, &quot;expired&quot; : false },
+  &quot;cells&quot; : [
+    { &quot;name&quot; : &quot;crates&quot;, &quot;deletion_info&quot; : { &quot;marked_deleted&quot; : &quot;2016-06-16T18:52:41.903750Z&quot;, &quot;local_delete_time&quot; : &quot;2016-06-16T18:52:41Z&quot; } },
+    { &quot;name&quot; : &quot;crates&quot;, &quot;path&quot; : [ &quot;6&quot; ], &quot;value&quot; : &quot;&quot; },
+    { &quot;name&quot; : &quot;crates&quot;, &quot;path&quot; : [ &quot;7&quot; ], &quot;value&quot; : &quot;&quot; },
+    { &quot;name&quot; : &quot;crates&quot;, &quot;path&quot; : [ &quot;8&quot; ], &quot;value&quot; : &quot;&quot; }
+  ]
+}
+</code></pre>
+</li>
+</ul>
+<h3 id="删除一个范围内的数据"><a class="header-anchor" href="#删除一个范围内的数据"></a>删除一个范围内的数据</h3>
+<ul>
+<li>
+<p>这个含义就是，比如下面的命令，这样可以一次性删除好几行数据</p>
+<pre><code>DELETE FROM tlp_lab.tombstones WHERE fruit='apple' AND date &gt; '20160615';
+</code></pre>
+</li>
+<li>
+<p>那么存下来的数据会变为，<code>type</code>变化了</p>
+<pre><code>&quot;rows&quot; : [
+    {
+      &quot;type&quot; : &quot;range_tombstone_bound&quot;,
+      &quot;start&quot; : {
+        &quot;type&quot; : &quot;exclusive&quot;,
+        &quot;clustering&quot; : [ &quot;20160615&quot; ],
+        &quot;deletion_info&quot; : { &quot;marked_deleted&quot; : &quot;2016-06-16T19:53:21.133300Z&quot;, &quot;local_delete_time&quot; : &quot;2016-06-16T19:53:21Z&quot; }
+      }
+    },
+    {
+      &quot;type&quot; : &quot;range_tombstone_bound&quot;,
+      &quot;end&quot; : {
+        &quot;type&quot; : &quot;inclusive&quot;,
+        &quot;deletion_info&quot; : { &quot;marked_deleted&quot; : &quot;2016-06-16T19:53:21.133300Z&quot;, &quot;local_delete_time&quot; : &quot;2016-06-16T19:53:21Z&quot; }
+      }
+</code></pre>
+</li>
+</ul>
+<h3 id="删除一个partition的数据"><a class="header-anchor" href="#删除一个partition的数据"></a>删除一个partition的数据</h3>
+<ul>
+<li>
+<p>命令如下：</p>
+<pre><code>DELETE FROM tlp_lab.tombstones WHERE fruit='pickles';
+</code></pre>
+<p>会在<code>partition</code>的地方加入<code>deletion_info</code>，而通常情况下只有<code>key</code>和<code>position</code></p>
+<pre><code>{
+  &quot;partition&quot; : {
+    &quot;key&quot; : [ &quot;pickles&quot; ],
+    &quot;position&quot; : 0,
+    &quot;deletion_info&quot; : { &quot;marked_deleted&quot; : &quot;2016-06-17T09:38:52.550841Z&quot;, &quot;local_delete_time&quot; : &quot;2016-06-17T09:38:52Z&quot; }
+}
+  
+&quot;partition&quot; : {
+   &quot;key&quot; : [ &quot;apple&quot; ],
+   &quot;position&quot; : 0
+},  
+</code></pre>
+</li>
+</ul>
+<h4 id="集合数据"><a class="header-anchor" href="#集合数据"></a>集合数据</h4>
+<ul>
+<li>需要额外注意的一点是，如果使用集合数据，比如<code>list</code>，那么在更新的时候，会有一个潜在的删除操作。会将旧的数据删除，这一点非常恼人，需要注意</li>
+</ul>
+<h4 id="gc-grace-seconds参数"><a class="header-anchor" href="#gc-grace-seconds参数"></a>gc_grace_seconds参数</h4>
+<ul>
+<li><code>gc_grace_seconds</code>参数的默认值为10天，这个参数的意思就是这个数据被删除之后，相应的tombstone也不会立刻在compaction中被移除</li>
+<li>这个值的目的是为了保证删除的一致性。以防有的node上面删除失败，出现幽灵数据。</li>
+</ul>
+<h2 id="compacting-sstable-data"><a class="header-anchor" href="#compacting-sstable-data"></a>Compacting SSTable Data</h2>
 <p><img src="https://docs.datastax.com/en/cassandra/3.0/cassandra/images/dml_compaction.png" alt="官网压缩数据图片"></p>
 <h3 id="为什么需要compaction"><a class="header-anchor" href="#为什么需要compaction"></a>为什么需要Compaction</h3>
 <ul>
@@ -1375,29 +1491,29 @@ Interrupt:5 Base address:0x8c00
 </ul>
 <h3 id="campaction细节"><a class="header-anchor" href="#campaction细节"></a>Campaction细节</h3>
 <ul>
-<li>在compaction期间，cassandra会合并key和column，同时会将过期的墓碑删除，还会生成一个新的index？ <strong><em>这个index是什么东西啊</em></strong></li>
-<li>合并之后会生成一个新的SSTable。而不需要的数据版本和行就会留在旧的SSTable里面，当正在执行的读操作结束之后，就可以删除掉。</li>
-<li>compaction期间的资源耗用会上升，但是compaction结束之后应该会释放空间，因为它合并了SSTable</li>
-<li>旧的被合并的table会被加上deletion标签，并且在数据库重启或者在使用reference counting mechanism的时候。<strong><em>这个reference counting mechanism是什么啊</em></strong></li>
-<li>compaction的算法是可以配置的，默认的是<code>size-tiered compaction</code>。这个算法会合并大小相近的table，生成大table</li>
+<li>在<code>compaction</code>期间，<code>cassandra</code>会合并<code>key</code>和<code>column</code>，同时会将过期的墓碑删除，还会生成一个新的<code>index</code>？ <strong><em>这个index是什么东西啊</em></strong></li>
+<li>合并之后会生成一个新的<code>SSTable</code>。而不需要的数据版本和行就会留在旧的<code>SSTable</code>里面，当正在执行的读操作结束之后，就可以删除掉。</li>
+<li><code>compaction</code>期间的资源耗用会上升，但是<code>compaction</code>结束之后应该会释放空间，因为它合并了<code>SSTable</code></li>
+<li>旧的被合并的<code>table</code>会被加上<code>deletion</code>标签，并且在数据库重启或者在使用<code>reference counting mechanism</code>的时候。<strong><em>这个<code>reference counting mechanism</code>是什么啊</em></strong></li>
+<li><code>compaction</code>的算法是可以配置的，默认的是<code>size-tiered compaction</code>。这个算法会合并大小相近的table，生成大table</li>
 </ul>
 <h3 id="compaction对读数据的影响"><a class="header-anchor" href="#compaction对读数据的影响"></a>Compaction对读数据的影响</h3>
 <ul>
-<li>compaction是per-node的，所以某个数据在node1上面的旧版本可能删除了。但是在node2上面还有。</li>
-<li>这样读的时候会进行一个合并，并且返回最后一个写的version。这个原则是<code>last-write-win</code></li>
+<li><code>compaction</code>是<code>per-node</code>的，所以某个数据在<code>node1</code>上面的旧版本可能删除了。但是在<code>node2</code>上面还有。</li>
+<li>这样读的时候会进行一个合并，并且返回最后一个写的<code>version</code>。这个原则是<code>last-write-win</code></li>
 <li>Cassandra can read data directly from the new SSTable even before it finishes writing, instead of waiting for the entire compaction process to finish.</li>
 </ul>
 <h3 id="compaction-策略"><a class="header-anchor" href="#compaction-策略"></a>Compaction 策略</h3>
 <ul>
-<li>不同的策略决定了如何来选择SSTable以及压缩后的行如何插入到新的表格中</li>
+<li>不同的策略决定了如何来选择<code>SSTable</code>以及压缩后的行如何插入到新的表格中</li>
 </ul>
 <h4 id="sizetieredcompactionstrategy-stcs"><a class="header-anchor" href="#sizetieredcompactionstrategy-stcs"></a>SizeTieredCompactionStrategy (STCS)</h4>
 <ul>
-<li>当有4个大小相近的SSTable的时候就开始合并</li>
-<li>将这些大小相近的SSTable合并成一个，当有4个更大的table的时候，再合并成更大的SSTable</li>
-<li>所以会有很多大小不同的SSTable同时存在</li>
+<li>当有4个大小相近的<code>STable</code>的时候就开始合并</li>
+<li>将这些大小相近的<code>SSTable</code>合并成一个，当有4个更大的table的时候，再合并成更大的<code>SSTable</code></li>
+<li>所以会有很多大小不同的<code>SSTable</code>同时存在</li>
 <li>这样的策略对于写比较有利，但是可能会降低读的效率。</li>
-<li>不同版本的同一行会可能分布在不同的SSTable里面。并且不利于删除旧数据</li>
+<li>不同版本的同一行会可能分布在不同的<code>SSTable</code>里面。并且不利于删除旧数据</li>
 </ul>
 <h4 id="leveledcompactionstrategy-lcs"><a class="header-anchor" href="#leveledcompactionstrategy-lcs"></a>LeveledCompactionStrategy (LCS)</h4>
 <ul>
@@ -1412,7 +1528,21 @@ Interrupt:5 Base address:0x8c00
 <ul>
 <li>这个算法挺有意思的，而且简单好懂。就是说在一段时间内，比如一个小时内，使用STCS算法，然后在时间点上，一个小时结束的时候，把这个小时内的都压成一个大的。</li>
 <li>第二个小时开始的时候，重新算起，上一个小时压出来的大表就放那里不动了。</li>
-<li></li>
+</ul>
+<h3 id="ttl"><a class="header-anchor" href="#ttl"></a>TTL</h3>
+<h4 id="ttl被提出的背景"><a class="header-anchor" href="#ttl被提出的背景"></a>TTL被提出的背景</h4>
+<ul>
+<li>这是在处理产品的一个问题的时候被提出的，该问题就是，由于某个统计功能一直在写数据，然后每隔一个月左右会删除数据。</li>
+<li>表格以<code>date</code>作为<code>partition key</code>，所以即使数据被删除了也没法之间<code>truncate</code>表，只能依赖<code>Cassandra</code>的<code>compaction</code>。</li>
+<li>最后越来越占磁盘。使用的策略是默认的<code>STCS</code>。然后就有大佬提了<code>TTL</code></li>
+<li>我原本在考虑加<code>crontab job</code>，但是其实没有意义，因为<code>Cassandra</code>提供的其实就是类似功能。</li>
+</ul>
+<h4 id="什么是ttl-time-to-live"><a class="header-anchor" href="#什么是ttl-time-to-live"></a>什么是TTL(time-to-live)</h4>
+<ul>
+<li><em>TTL: allows to specify an optional Time To Live (in seconds) for the inserted values. If set, the inserted values are automatically removed from the database after the specified time. Note that the TTL concerns the inserted values, not the column themselves. This means that any subsequent update of the column will also reset the TTL (to whatever TTL is specified in that update). By default, values never expire. A TTL of 0 or a negative one is equivalent to no TTL.</em></li>
+<li>其实Cassandra里面TTL的概念到处都是。但是通常说的TTL是指参数<code>default_time_to_live</code>，也就是说到了这个时间点，Cassandra会自动将数据删除掉。</li>
+<li>默认值为0，也就是Cassandra会认为这个数据一致有效</li>
+<li>这个参数在<code>desc tables</code>里面可以看到，但是我们产品里面其实在代码里面进行了覆盖。java代码里面弄了个系统参数，在插入数据的时候代入了这个参数</li>
 </ul>
 
           
