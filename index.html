@@ -690,6 +690,35 @@ fi
         
           
             <p>开个新博客，来记录工作过程中碰到的各种各类的小问题。</p>
+<h2 id="env"><a class="header-anchor" href="#env"></a>ENV</h2>
+<p>这个章节主要是包括编译啊，版本控制啊，IDE啊之类的小问题</p>
+<h3 id="ij"><a class="header-anchor" href="#ij"></a>IJ</h3>
+<h4 id="command-too-long-error"><a class="header-anchor" href="#command-too-long-error"></a>command too long error</h4>
+<ul>
+<li>
+<p>今天尝试跑Junit，结果IJ报错，说我命令行太长：</p>
+<pre><code>Error running 'xxxxxxx': Command line is too long. Shorten command line for xxxxxxx or also for JUnit default configuration.
+</code></pre>
+</li>
+<li>
+<p>解决方法是在Run…的配置里面，有一个<code>shorten command line</code>选项，选成<code>classpath file</code>，这样就可以了。</p>
+</li>
+<li>
+<p>参考链接：</p>
+<ul>
+<li><a href="https://blog.jetbrains.com/idea/2017/10/intellij-idea-2017-3-eap-configurable-command-line-shortener-and-more/" target="_blank" rel="noopener">configurable-command-line-shortener</a></li>
+<li><a href="https://stackoverflow.com/questions/47926382/how-to-configure-shorten-command-line-method-for-whole-project-in-intellij/47927544" target="_blank" rel="noopener">how-to-configure-shorten-command-line</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="cassandra"><a class="header-anchor" href="#cassandra"></a>Cassandra</h2>
+<h3 id="cassandra-was-never-started"><a class="header-anchor" href="#cassandra-was-never-started"></a>Cassandra was never started</h3>
+<ul>
+<li>
+<pre><code>2020-03-26 10:39:08,280+0100 [vent Dispatcher] WARN  [com.datastax.driver.core.CodecRegistry] Ignoring codec InstantCodec [timestamp &lt;-&gt; java.time.Instant] because it collides with previously registered codec InstantCodec [timestamp &lt;-&gt; java.time.Instant]
+</code></pre>
+</li>
+</ul>
 <h2 id="docker"><a class="header-anchor" href="#docker"></a>Docker</h2>
 <h3 id="docker-login"><a class="header-anchor" href="#docker-login"></a>docker login</h3>
 <pre><code> $ docker login XXXXX
@@ -797,6 +826,135 @@ Unable to connect to the server: x509: certificate signed by unknown authority (
 <li>查询从哪一天开始出现了问题。万幸已经知道2月6号的包有问题，年前是好的，中间并未差几天。在数次装包卸载之后发现了时间点。再比较两个包的差异，发现了这个<code>NetworkPolicy</code>的增加</li>
 </ul>
 </li>
+</ul>
+<h3 id="pod不断重启"><a class="header-anchor" href="#pod不断重启"></a>POD不断重启</h3>
+<ul>
+<li>仍旧是上一个问题相同的项目出的问题，这个项目怎么这么难呢 😦</li>
+<li>由于这个项目是架构在<code>OSGI</code>上面的，进入<code>OSGI</code>发现有一个<code>AKKA</code>相关的<code>bundle</code>的状态不对，不是<code>ACTIVE</code>，而是<code>RESOLVED</code>，第一反应就是我在前一周做的改动不对。因为在前一天我进行了<code>IPV6</code>的改动，但是并不工作。</li>
+<li>于是回滚掉<code>IPV6</code>的改动，回滚掉再之前的<code>AKKA service</code>相关的改动，然并卵，这时候也已经周五晚上12点了。只能作罢</li>
+</ul>
+<h4 id="为何没能够更早的发现问题"><a class="header-anchor" href="#为何没能够更早的发现问题"></a>为何没能够更早的发现问题</h4>
+<ul>
+<li><code>POD</code>并不是起不来，然后一直重启，而是在起来一段时间，大约10来分钟的时候会重启，所以一直没有被发现。这点是一个改变，后续需要注意。</li>
+<li>测试方法的问题，我们在测试的时候因为只是功能发布之后的回归测试，仅仅测试了端口是不是通。这样很快，但是也就测不到问题了。</li>
+</ul>
+<h4 id="周末调试"><a class="header-anchor" href="#周末调试"></a>周末调试</h4>
+<ul>
+<li>周末的时候和上一次调试不一样的是，上来就选择了各种装包和对比，最后发现3月9号的包是OK的，而12号的就挂了</li>
+<li>在这之间，最大的改动是<code>Cassandra</code>改动，这个改动直接导致了10号11号的包都是坏的。</li>
+<li>然后再一次，我们这个项目又被国外友人给漏掉了</li>
+<li>但是奇特的是，按照对比之后，我们应该连不上<code>Cassandra</code>了才对，但是实际上，整个<code>pod</code>起来的时候，<code>OSGI</code>的服务会最先检查数据库安装，并未报错，所以这点很是奇特。在解决问题后发现，应该是创了不同的<code>user</code>，<code>super user</code>仍旧是存在的。所以连接并未报错，但是实际的服务却不对了</li>
+<li>对比包无效之后，回到最初的问题上面，为什么<code>POD</code>会自动重启</li>
+</ul>
+<h4 id="k8s-pod重启"><a class="header-anchor" href="#k8s-pod重启"></a>K8S POD重启</h4>
+<ul>
+<li>
+<p>这里有一个命令： <code>kubectl get events</code>,使用这个命令可以看到<code>POD</code>的事务：</p>
+<pre><code>$ kubectl get events
+LAST SEEN   TYPE   REASON  OBJECT      MESSAGE
+&lt;unknown&gt;   Normal    Scheduled                         pod/xxxxxxx Successfully assigned &lt;namespace&gt;/xxxxxx to node-10-41-82-7
+</code></pre>
+</li>
+<li>
+<p>这样可以清晰看到<code>pod</code>由于连不上<code>AKKA</code>服务的<code>2929</code>端口而重启，也就是<code>liveness</code>条件不满足了，所以<code>K8S</code>就欢快地把<code>POD</code>杀掉了。</p>
+</li>
+</ul>
+<h4 id="分析"><a class="header-anchor" href="#分析"></a>分析</h4>
+<ul>
+<li>
+<p>问题有二，<code>2929</code>端口起不来，<code>OSGI bundle</code>起不来，也可能最后都是<code>Cassandra</code>导致的。在解决之后，事实证明后一个问题确实是，前一个并不是。</p>
+</li>
+<li>
+<p>而且两者都和<code>AKKA</code>服务相关，但是<code>AKKA</code>和<code>Cassandra</code>有个毛线相关性。</p>
+</li>
+<li>
+<p>还有个坑爹的是，打开<code>DEBUG</code>级别的日志，可以看到除了<code>AKKA</code>相关的<code>bundle</code>之外，几乎所有的<code>bundle</code>都在报以下的错误。这个错误在<code>bundle</code>之间调用服务时候的就会出现。</p>
+</li>
+<li>
+<p>由于<code>AKKA</code>的<code>bundle</code>是最后一个，在启动时候会check其他所有<code>bundle</code>的状态，所以这家伙就挂了。将<code>check</code>去掉就起来了。所以看起来，这个<code>bundle</code>起不来，更多的是和以下的<code>OSGI</code>错误相关，而不是和<code>AKKA</code>有关联</p>
+</li>
+<li>
+<p>但是在从上回的<code>network Policy</code>问题以来，只有一滴滴helm chart的改动。java代码压根没动过。依赖也没改过。</p>
+</li>
+<li>
+<p><code>OSGI</code>你报什么错啊，吐血了我！</p>
+<pre><code> org.osgi.framework.ServiceException: org.apache.felix.scr.impl.manager.SingleComponentManager.getService() returned a null service object
+at org.eclipse.osgi.internal.serviceregistry.ServiceUse.getService(ServiceUse.java:163) [org.eclipse.osgi-3.8.2.v20130124-134944.jar:na]
+at org.eclipse.osgi.internal.serviceregistry.ServiceRegistrationImpl.getService(ServiceRegistrationImpl.java:468) [org.eclipse.osgi-3.8.2.v20130124-134944.jar:na]
+at org.eclipse.osgi.internal.serviceregistry.ServiceRegistry.getService(ServiceRegistry.java:467) [org.eclipse.osgi-3.8.2.v20130124-134944.jar:na]
+at org.eclipse.osgi.framework.internal.core.BundleContextImpl.getService(BundleContextImpl.java:594) [org.eclipse.osgi-3.8.2.v20130124-134944.jar:na]
+at org.apache.felix.scr.impl.helper.BindMethod.getServiceObject(BindMethod.java:572) [na:na]
+at org.apache.felix.scr.impl.manager.DependencyManager.getServiceObject(DependencyManager.java:2012) [na:na]
+at org.apache.felix.scr.impl.manager.DependencyManager$SingleDynamicCustomizer.prebind(DependencyManager.java:852) [na:na]
+at org.apache.felix.scr.impl.manager.DependencyManager.prebind(DependencyManager.java:1439) [na:na]
+at org.apache.felix.scr.impl.manager.AbstractComponentManager.collectDependencies(AbstractComponentManager.java:1119) [na:na]
+at org.apache.felix.scr.impl.manager.SingleComponentManager.getServiceInternal(SingleComponentManager.java:807) [na:na]
+at org.apache.felix.scr.impl.manager.SingleComponentManager.getService(SingleComponentManager.java:777) [na:na]
+at org.eclipse.osgi.internal.serviceregistry.ServiceUse$1.run(ServiceUse.java:141) [org.eclipse.osgi-3.8.2.v20130124-134944.jar:na]
+at java.security.AccessController.doPrivileged(Native Method) [na:1.8.0_212]
+at org.eclipse.osgi.internal.serviceregistry.ServiceUse.getService(ServiceUse.java:139) [org.eclipse.osgi-3.8.2.v20130124-134944.jar:na]
+at org.eclipse.osgi.internal.serviceregistry.ServiceRegistrationImpl.getService(ServiceRegistrationImpl.java:468) [org.eclipse.osgi-3.8.2.v20130124-134944.jar:na]
+at org.eclipse.osgi.internal.serviceregistry.ServiceRegistry.getService(ServiceRegistry.java:467) [org.eclipse.osgi-3.8.2.v20130124-134944.jar:na]
+at org.eclipse.osgi.framework.internal.core.BundleContextImpl.getService(BundleContextImpl.java:594) [org.eclipse.osgi-3.8.2.v20130124-134944.jar:na]
+at org.apache.felix.scr.impl.helper.BindMethod.getServiceObject(BindMethod.java:572) [na:na]
+at org.apache.felix.scr.impl.manager.DependencyManager.getServiceObject(DependencyManager.java:2012) [na:na]
+at org.apache.felix.scr.impl.manager.DependencyManager$SingleDynamicCustomizer.prebind(DependencyManager.java:852) [na:na]
+at org.apache.felix.scr.impl.manager.DependencyManager.prebind(DependencyManager.java:1439) [na:na]
+at org.apache.felix.scr.impl.manager.AbstractComponentManager.collectDependencies(AbstractComponentManager.java:1119) [na:na]
+at org.apache.felix.scr.impl.manager.SingleComponentManager.getServiceInternal(SingleComponentManager.java:807) [na:na]
+at org.apache.felix.scr.impl.manager.SingleComponentManager.getService(SingleComponentManager.java:777) [na:na]
+at org.eclipse.osgi.internal.serviceregistry.ServiceUse$1.run(ServiceUse.java:141) [org.eclipse.osgi-3.8.2.v20130124-134944.jar:na]
+at java.security.AccessController.doPrivileged(Native Method) [na:1.8.0_212]
+at org.eclipse.osgi.internal.serviceregistry.ServiceUse.getService(ServiceUse.java:139) [org.eclipse.osgi-3.8.2.v20130124-134944.jar:na]
+at org.eclipse.osgi.internal.serviceregistry.ServiceRegistrationImpl.getService(ServiceRegistrationImpl.java:468) [org.eclipse.osgi-3.8.2.v20130124-134944.jar:na]
+at org.eclipse.osgi.internal.serviceregistry.ServiceRegistry.getService(ServiceRegistry.java:467) [org.eclipse.osgi-3.8.2.v20130124-134944.jar:na]
+at org.eclipse.osgi.framework.internal.core.BundleContextImpl.getService(BundleContextImpl.java:594) [org.eclipse.osgi-3.8.2.v20130124-134944.jar:na]
+at org.apache.felix.scr.impl.helper.BindMethod.getServiceObject(BindMethod.java:572) [na:na]
+at org.apache.felix.scr.impl.manager.DependencyManager.getServiceObject(DependencyManager.java:2012) [na:na]
+at org.apache.felix.scr.impl.manager.DependencyManager$SingleDynamicCustomizer.prebind(DependencyManager.java:852) [na:na]
+at org.apache.felix.scr.impl.manager.DependencyManager.prebind(DependencyManager.java:1439) [na:na]
+at org.apache.felix.scr.impl.manager.AbstractComponentManager.collectDependencies(AbstractComponentManager.java:1119) [na:na]
+at org.apache.felix.scr.impl.manager.SingleComponentManager.getServiceInternal(SingleComponentManager.java:807) [na:na]
+at org.apache.felix.scr.impl.manager.AbstractComponentManager.activateInternal(AbstractComponentManager.java:850) [na:na]
+at org.apache.felix.scr.impl.manager.AbstractComponentManager.enable(AbstractComponentManager.java:419) [na:na]
+at org.apache.felix.scr.impl.config.ConfigurableComponentHolder.enableComponents(ConfigurableComponentHolder.java:376) [na:na]
+at org.apache.felix.scr.impl.BundleComponentActivator.initialize(BundleComponentActivator.java:172) [na:na]
+at org.apache.felix.scr.impl.BundleComponentActivator.&lt;init&gt;(BundleComponentActivator.java:120) [na:na]
+at org.apache.felix.scr.impl.Activator.loadComponents(Activator.java:258) [na:na]
+at org.apache.felix.scr.impl.Activator.access$000(Activator.java:45) [na:na]
+at org.apache.felix.scr.impl.Activator$ScrExtension.start(Activator.java:185) [na:na]
+at org.apache.felix.utils.extender.AbstractExtender.createExtension(AbstractExtender.java:259) [na:na]
+at org.apache.felix.utils.extender.AbstractExtender.modifiedBundle(AbstractExtender.java:232) [na:na]
+at org.osgi.util.tracker.BundleTracker$Tracked.customizerModified(BundleTracker.java:479) [karaf-org.osgi.core.jar:na]
+at org.osgi.util.tracker.BundleTracker$Tracked.customizerModified(BundleTracker.java:414) [karaf-org.osgi.core.jar:na]
+at org.osgi.util.tracker.AbstractTracked.track(AbstractTracked.java:232) [karaf-org.osgi.core.jar:na]
+at org.osgi.util.tracker.BundleTracker$Tracked.bundleChanged(BundleTracker.java:443) [karaf-org.osgi.core.jar:na]
+at org.eclipse.osgi.framework.internal.core.BundleContextImpl.dispatchEvent(BundleContextImpl.java:847) [org.eclipse.osgi-3.8.2.v20130124-134944.jar:na]
+at org.eclipse.osgi.framework.eventmgr.EventManager.dispatchEvent(EventManager.java:230) [org.eclipse.osgi-3.8.2.v20130124-134944.jar:na]
+at org.eclipse.osgi.framework.eventmgr.ListenerQueue.dispatchEventSynchronous(ListenerQueue.java:148) [org.eclipse.osgi-3.8.2.v20130124-134944.jar:na]
+at org.eclipse.osgi.framework.internal.core.Framework.publishBundleEventPrivileged(Framework.java:1568) [org.eclipse.osgi-3.8.2.v20130124-134944.jar:na]
+at org.eclipse.osgi.framework.internal.core.Framework.publishBundleEvent(Framework.java:1504) [org.eclipse.osgi-3.8.2.v20130124-134944.jar:na]
+at org.eclipse.osgi.framework.internal.core.Framework.publishBundleEvent(Framework.java:1499) [org.eclipse.osgi-3.8.2.v20130124-134944.jar:na]
+at org.eclipse.osgi.framework.internal.core.BundleHost.startWorker(BundleHost.java:391) [org.eclipse.osgi-3.8.2.v20130124-134944.jar:na]
+at org.eclipse.osgi.framework.internal.core.AbstractBundle.resume(AbstractBundle.java:390) [org.eclipse.osgi-3.8.2.v20130124-134944.jar:na]
+at org.eclipse.osgi.framework.internal.core.Framework.resumeBundle(Framework.java:1176) [org.eclipse.osgi-3.8.2.v20130124-134944.jar:na]
+at org.eclipse.osgi.framework.internal.core.StartLevelManager.resumeBundles(StartLevelManager.java:559) [org.eclipse.osgi-3.8.2.v20130124-134944.jar:na]
+at org.eclipse.osgi.framework.internal.core.StartLevelManager.resumeBundles(StartLevelManager.java:544) [org.eclipse.osgi-3.8.2.v20130124-134944.jar:na]
+at org.eclipse.osgi.framework.internal.core.StartLevelManager.incFWSL(StartLevelManager.java:457) [org.eclipse.osgi-3.8.2.v20130124-134944.jar:na]
+at org.eclipse.osgi.framework.internal.core.StartLevelManager.doSetStartLevel(StartLevelManager.java:243) [org.eclipse.osgi-3.8.2.v20130124-134944.jar:na]
+at org.eclipse.osgi.framework.internal.core.StartLevelManager.dispatchEvent(StartLevelManager.java:438) [org.eclipse.osgi-3.8.2.v20130124-134944.jar:na]
+at org.eclipse.osgi.framework.internal.core.StartLevelManager.dispatchEvent(StartLevelManager.java:1) [org.eclipse.osgi-3.8.2.v20130124-134944.jar:na]
+at org.eclipse.osgi.framework.eventmgr.EventManager.dispatchEvent(EventManager.java:230) [org.eclipse.osgi-3.8.2.v20130124-134944.jar:na]
+at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager.java:340) [org.eclipse.osgi-3.8.2.v20130124-134944.jar:na]
+</code></pre>
+</li>
+</ul>
+<h4 id="进展"><a class="header-anchor" href="#进展"></a>进展</h4>
+<ul>
+<li>在做了<code>workaround</code>： 替换<code>liveness</code>的端口，这样<code>pod</code>不会在不断重启；将<code>bundle</code>的<code>check</code>去掉，这样<code>bundle</code>看着都<code>active</code>了。之后，开始重新<code>debug</code></li>
+<li><code>OSGI</code>的错误在打开<code>apache</code>的<code>debug log</code>之后仍旧无从下手，这个错误在3月9号的包中也是没有的，只能回到对比包的老路上面来。</li>
+<li>那么第一个仍旧是<code>Cassandra</code>的改动。这回在将这个改动加上之后，<code>OSGI</code>的错误没有了。然鹅，为什么数据库的改动会影响到<code>OSGI</code>的状态，并不知道。这个问题只能到此为止啦。</li>
+<li>所以使用<code>karaf</code>仍旧是很<code>heavy</code>的，在最新的版本中已经将之移除了。</li>
 </ul>
 
           
