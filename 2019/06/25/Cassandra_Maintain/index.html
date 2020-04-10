@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="参考链接  关于Cassandra的删除和墓碑 有上篇文章的翻译  Delete Data  找了一下博客，发现居然都没有一个章节是关于删除数据的 事实上，Cassandra里面的删除是一种写操作，会插入墓碑。在上面的参加链接里面详尽描述了这个过程 可以使用SSTabledump命令来进行查询。但是并没有在我们的环境中找到这个命令 需要注意的是这里讨论的都是删除之后再flush到SSTable里的">
+<meta name="description" content="参考链接  关于Cassandra的删除和墓碑 最新官方文档，非常清楚 有上篇文章的翻译 Cassandra 的压缩策略STCS，LCS 和 DTCS  Delete Data  找了一下博客，发现居然都没有一个章节是关于删除数据的 事实上，Cassandra里面的删除是一种写操作，会插入墓碑。在上面的参加链接里面详尽描述了这个过程 可以使用SSTabledump命令来进行查询。但是并没有在我们的">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Cassandra的数据维护">
-<meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/06/25/Cassandra的数据维护/index.html">
+<meta property="og:title" content="Cassandra Maintain">
+<meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/06/25/Cassandra_Maintain/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="参考链接  关于Cassandra的删除和墓碑 有上篇文章的翻译  Delete Data  找了一下博客，发现居然都没有一个章节是关于删除数据的 事实上，Cassandra里面的删除是一种写操作，会插入墓碑。在上面的参加链接里面详尽描述了这个过程 可以使用SSTabledump命令来进行查询。但是并没有在我们的环境中找到这个命令 需要注意的是这里讨论的都是删除之后再flush到SSTable里的">
+<meta property="og:description" content="参考链接  关于Cassandra的删除和墓碑 最新官方文档，非常清楚 有上篇文章的翻译 Cassandra 的压缩策略STCS，LCS 和 DTCS  Delete Data  找了一下博客，发现居然都没有一个章节是关于删除数据的 事实上，Cassandra里面的删除是一种写操作，会插入墓碑。在上面的参加链接里面详尽描述了这个过程 可以使用SSTabledump命令来进行查询。但是并没有在我们的">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://docs.datastax.com/en/cassandra/3.0/cassandra/images/dml_compaction.png">
-<meta property="og:updated_time" content="2020-03-24T09:25:12.888Z">
+<meta property="og:updated_time" content="2020-04-10T06:05:22.188Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Cassandra的数据维护">
-<meta name="twitter:description" content="参考链接  关于Cassandra的删除和墓碑 有上篇文章的翻译  Delete Data  找了一下博客，发现居然都没有一个章节是关于删除数据的 事实上，Cassandra里面的删除是一种写操作，会插入墓碑。在上面的参加链接里面详尽描述了这个过程 可以使用SSTabledump命令来进行查询。但是并没有在我们的环境中找到这个命令 需要注意的是这里讨论的都是删除之后再flush到SSTable里的">
+<meta name="twitter:title" content="Cassandra Maintain">
+<meta name="twitter:description" content="参考链接  关于Cassandra的删除和墓碑 最新官方文档，非常清楚 有上篇文章的翻译 Cassandra 的压缩策略STCS，LCS 和 DTCS  Delete Data  找了一下博客，发现居然都没有一个章节是关于删除数据的 事实上，Cassandra里面的删除是一种写操作，会插入墓碑。在上面的参加链接里面详尽描述了这个过程 可以使用SSTabledump命令来进行查询。但是并没有在我们的">
 <meta name="twitter:image" content="https://docs.datastax.com/en/cassandra/3.0/cassandra/images/dml_compaction.png">
 
 
@@ -121,13 +121,13 @@
 
 
 
-  <link rel="canonical" href="https://sallyslove.github.io/hexo_blog/2019/06/25/Cassandra的数据维护/">
+  <link rel="canonical" href="https://sallyslove.github.io/hexo_blog/2019/06/25/Cassandra_Maintain/">
 
 
 
 
 
-  <title>Cassandra的数据维护 | 跬步</title>
+  <title>Cassandra Maintain | 跬步</title>
   
 
 
@@ -244,7 +244,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/06/25/Cassandra的数据维护/">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/06/25/Cassandra_Maintain/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Lynn Shen">
@@ -261,7 +261,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Cassandra的数据维护</h1>
+          <h1 class="post-title" itemprop="name headline">Cassandra Maintain</h1>
         
 
         <div class="post-meta">
@@ -336,7 +336,9 @@
         <h2 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h2>
 <ul>
 <li><a href="https://thelastpickle.com/blog/2016/07/27/about-deletes-and-tombstones.html" target="_blank" rel="noopener">关于Cassandra的删除和墓碑</a></li>
+<li><a href="http://cassandra.apache.org/doc/latest/operating/compaction.html#defragmentation" target="_blank" rel="noopener">最新官方文档，非常清楚</a></li>
 <li><a href="https://zhaoyanblog.com/archives/966.html" target="_blank" rel="noopener">有上篇文章的翻译</a></li>
+<li><a href="https://www.cnblogs.com/didda/p/4728588.html" target="_blank" rel="noopener">Cassandra 的压缩策略STCS，LCS 和 DTCS</a></li>
 </ul>
 <h2 id="delete-data"><a class="header-anchor" href="#delete-data"></a>Delete Data</h2>
 <ul>
@@ -344,7 +346,7 @@
 <li>事实上，<code>Cassandra</code>里面的删除是一种写操作，会插入墓碑。在上面的参加链接里面详尽描述了这个过程</li>
 <li>可以使用<code>SSTabledump</code>命令来进行查询。<strong><em>但是并没有在我们的环境中找到这个命令</em></strong></li>
 <li>需要注意的是这里讨论的都是删除之后再<code>flush</code>到<code>SSTable</code>里的情况，<code>Memtable</code>里面的数据删除会有所不痛</li>
-<li><code>gc_grace_seconds</code></li>
+<li><code>gc_grace_seconds</code>：在删除数据之后会保存一段时间的墓碑，以此来保证数据同步。</li>
 </ul>
 <h3 id="删除某一行的某个数据"><a class="header-anchor" href="#删除某一行的某个数据"></a>删除某一行的某个数据</h3>
 <ul>
@@ -440,14 +442,23 @@
 </code></pre>
 </li>
 </ul>
-<h4 id="集合数据"><a class="header-anchor" href="#集合数据"></a>集合数据</h4>
+<h3 id="集合数据"><a class="header-anchor" href="#集合数据"></a>集合数据</h3>
 <ul>
 <li>需要额外注意的一点是，如果使用集合数据，比如<code>list</code>，那么在更新的时候，会有一个潜在的删除操作。会将旧的数据删除，这一点非常恼人，需要注意</li>
 </ul>
-<h4 id="gc-grace-seconds参数"><a class="header-anchor" href="#gc-grace-seconds参数"></a>gc_grace_seconds参数</h4>
+<h3 id="gc-grace-seconds参数"><a class="header-anchor" href="#gc-grace-seconds参数"></a>gc_grace_seconds参数</h3>
 <ul>
-<li><code>gc_grace_seconds</code>参数的默认值为10天，这个参数的意思就是这个数据被删除之后，相应的tombstone也不会立刻在compaction中被移除</li>
-<li>这个值的目的是为了保证删除的一致性。以防有的node上面删除失败，出现幽灵数据。</li>
+<li><code>gc_grace_seconds</code>参数的默认值为10天，这个参数的意思就是这个数据被删除之后，相应的<code>tombstone</code>也不会立刻在<code>compaction</code>中被移除</li>
+<li>这个值的目的是为了保证删除的一致性。以防有的节点上面删除失败，出现幽灵数据。在维护操作章节中有进一步的解释。假设有删除失败，然后客户做了<code>repair</code>操作，那么这个数据会被复制到已经删除的节点上面。那么就错了。相反，如果是插墓碑，即使有节点没插上，<code>repair</code>的时候也只会复制个墓碑过去。这也就是为什么需要需要维持一阵墓碑</li>
+</ul>
+<h2 id="维护操作"><a class="header-anchor" href="#维护操作"></a>维护操作</h2>
+<ul>
+<li><code>minor compaction</code>: 这个就是<code>C#</code>自己做的压缩</li>
+<li><code>major compaction</code>: 这个就是手动的用<code>nodetool</code>做的，会对所有的当前<code>node</code>上面的<code>SSTable</code>进行压缩</li>
+<li><code>user defined compaction</code>： 客户自定义的，对部分<code>SSTable</code>进行压缩。用户可以只针对一张表来做压缩，Cassandra会对数据进行校验，使用<code>unchecked_tombstone_compaction</code> 参数可以跳过这个校验过程</li>
+<li><code>Scrub</code>: 这个操作会尝试修复<code>SSTable</code>，所以这个动作有可能会删除有效但是已经坏掉的数据，如果这个发生，得用<code>repair</code>来修复</li>
+<li>在以下的参考链接里面还有一些奇特的维护操作，暂时没学习</li>
+<li><a href="http://cassandra.apache.org/doc/latest/operating/compaction.html" target="_blank" rel="noopener">维护操作和压缩</a></li>
 </ul>
 <h2 id="compacting-sstable-data"><a class="header-anchor" href="#compacting-sstable-data"></a>Compacting SSTable Data</h2>
 <p><img src="https://docs.datastax.com/en/cassandra/3.0/cassandra/images/dml_compaction.png" alt="官网压缩数据图片"></p>
@@ -460,10 +471,38 @@
 <h3 id="什么是compaction"><a class="header-anchor" href="#什么是compaction"></a>什么是Compaction</h3>
 <ul>
 <li>To keep the multiple versions of the SSTables from overwhelming it, the database merges SSTables on a regular basis to get rid of the older versions of the data。 <code>cassandra</code>会在一个基础之上对旧的版本的数据进行合并，这个就是<code>compaction</code></li>
-<li><code>cassandra</code>默认会进行很多次小的<code>compaction</code></li>
-<li>会合并同一行的，不同版本的数据。不同版本带着不同的timestamp</li>
+<li><code>cassandra</code>默认会进行很多次小的<code>compaction</code>。在有新生成<code>SStable</code>的时候，或者默认5分钟会进行一次检查，需不需要进行<code>minor compaction</code></li>
+<li>会合并同一行的，不同版本的数据。不同版本带着不同的<code>timestamp</code></li>
 </ul>
-<h3 id="campaction细节"><a class="header-anchor" href="#campaction细节"></a>Campaction细节</h3>
+<h3 id="什么情况下墓碑会在compaction中被移除"><a class="header-anchor" href="#什么情况下墓碑会在compaction中被移除"></a>什么情况下墓碑会在Compaction中被移除</h3>
+<ul>
+<li>这也是来自上篇参考文档的。这篇文档比较清楚</li>
+<li>事实上有好几个要求：
+<ul>
+<li><code>gc_grace_seconds</code> 已经过了，这点已经在上面解释过了</li>
+<li>_If partition X contains the tombstone, the sstable containing the partition plus all sstables containing data older than the tombstone containing X must be included in the same compaction. We don’t need to care if the partition is in an sstable if we can guarantee that all data in that sstable is newer than the tombstone. If the tombstone is older than the data it cannot shadow that data._这句话实在太拗口了，含义就是说墓碑得是最老的一个，否则删除不掉？</li>
+<li><code>only_purge_repaired_tombstones</code> 这还有一个参数，如果不是repair过程中的墓碑就不删除。这个参数估计很少用吧</li>
+<li>还有一个特殊情况，就是整个<code>SSTable</code>里面都是墓碑，这种情况在以时间序列的表并且使用了<code>TTL</code>之后很容易出现。如果没有被整表删除，那么就像上一个bullet里面讲的，说明其他表里面有更老的数据。有一个工具<code>sstableexpiredblockers</code>可以进行查询。还有一个参数可以使用<code>unsafe_aggressive_sstable_expiration</code>，在使用时间压缩策略时候，这个参数可以保证删除这种表</li>
+</ul>
+</li>
+</ul>
+<h3 id="compaction的参数和命令"><a class="header-anchor" href="#compaction的参数和命令"></a>compaction的参数和命令</h3>
+<ul>
+<li>在上篇链接中有，列一部分：
+<ul>
+<li><code>log_all</code>: 可以记录压缩的日志</li>
+<li><a href="http://cassandra.apache.org/doc/latest/operating/compaction.html" target="_blank" rel="noopener">维护操作和压缩</a></li>
+</ul>
+</li>
+<li>命令在上面的链接中也有，这边也列一部分：
+<ul>
+<li><code>compactionstats</code>: 状态</li>
+<li><code>compactionhistory</code>: 历史</li>
+</ul>
+</li>
+<li>如果是在一个正在运行的系统中改变表的参数，可以使用<code>ALTER TABLE</code>命令来进行</li>
+</ul>
+<h3 id="其他一些campaction细节"><a class="header-anchor" href="#其他一些campaction细节"></a>其他一些Campaction细节</h3>
 <ul>
 <li>在<code>compaction</code>期间，<code>cassandra</code>会合并<code>key</code>和<code>column</code>，同时会将过期的墓碑删除，还会生成一个新的<code>index</code>？ <strong><em>这个index是什么东西啊</em></strong></li>
 <li>合并之后会生成一个新的<code>SSTable</code>。而不需要的数据版本和行就会留在旧的<code>SSTable</code>里面，当正在执行的读操作结束之后，就可以删除掉。</li>
@@ -480,43 +519,153 @@
 <h3 id="compaction-策略"><a class="header-anchor" href="#compaction-策略"></a>Compaction 策略</h3>
 <ul>
 <li>不同的策略决定了如何来选择<code>SSTable</code>以及压缩后的行如何插入到新的表格中</li>
+<li>我在压缩策略的道路上越走越远了啊。😂</li>
 </ul>
 <h4 id="sizetieredcompactionstrategy-stcs"><a class="header-anchor" href="#sizetieredcompactionstrategy-stcs"></a>SizeTieredCompactionStrategy (STCS)</h4>
+<h5 id="工作流程"><a class="header-anchor" href="#工作流程"></a>工作流程</h5>
 <ul>
-<li>当有4个大小相近的<code>STable</code>的时候就开始合并</li>
-<li>将这些大小相近的<code>SSTable</code>合并成一个，当有4个更大的table的时候，再合并成更大的<code>SSTable</code></li>
+<li>当有4个大小相近的<code>STable</code>的时候就开始合并，所以并不是完全相同大小的</li>
+<li>将这些大小相近的<code>SSTable</code>合并成一个，当有4个更大的<code>table</code>的时候，再合并成更大的<code>SSTable</code></li>
 <li>所以会有很多大小不同的<code>SSTable</code>同时存在</li>
-<li>这样的策略对于写比较有利，但是可能会降低读的效率。</li>
-<li>不同版本的同一行会可能分布在不同的<code>SSTable</code>里面。并且不利于删除旧数据</li>
+</ul>
+<h4 id="参数"><a class="header-anchor" href="#参数"></a>参数</h4>
+<h5 id="优缺点"><a class="header-anchor" href="#优缺点"></a>优缺点</h5>
+<ul>
+<li>优势：写密集的工作良好。</li>
+<li>逆势：
+<ul>
+<li>可能降低读的效率。因为策略不保证同一行的数据被限制在有限的数据文件里面，这样在读取的时候会需要读取更多的数据文件。</li>
+<li>可能长期保持旧数据；不同版本的同一行会可能分布在不同的<code>SSTable</code>里面。并且不利于删除旧数据</li>
+<li>需要的内存和磁盘都会随着时间增加。磁盘在下面的问题章节中可以看到；而内存也是显而易见的，当<code>SSTable</code>的大小达到一定级别，一次压缩需要的内存会很大。因为需要<code>load SSTable</code>到内存里面</li>
+</ul>
+</li>
+</ul>
+<h5 id="问题"><a class="header-anchor" href="#问题"></a>问题</h5>
+<ul>
+<li>
+<p>在实际的工作中碰到了缺点中的问题，系统在工作3个月的时候能够在一个节点上面占用靠13G的磁盘量。</p>
+</li>
+<li>
+<p>观察下来，其实策略是在正常工作的。里面明显能够看到大小不同的data文件。</p>
+</li>
+<li>
+<p>现在客户的需求是不手动操作来解决占用磁盘的问题。总的来说，貌似不现实，毕竟多数建议是关闭自动SSTable压缩，改用手动在空闲期间进行压缩</p>
+<pre><code>total 13G
+ 115M Jan 24  2019 la-2421-big-Data.db
+ 101M Jan 24  2019 la-2443-big-Data.db
+ 453K Jan 24  2019 la-2447-big-Data.db
+ 124M Feb  3 14:47 lb-5276-big-Data.db
+ 216M Feb  3 14:54 lb-5280-big-Data.db
+ 235M Feb  3 14:54 lb-5281-big-Data.db
+ 680M Feb  4 11:24 lb-5294-big-Data.db
+ 781M Feb  4 11:36 lb-5295-big-Data.db
+ 2.8G Feb  4 11:54 lb-5296-big-Data.db
+ 3.3G Feb  4 12:52 lb-5298-big-Data.db
+ 3.5G Feb  4 12:54 lb-5297-big-Data.db
+</code></pre>
+</li>
 </ul>
 <h4 id="leveledcompactionstrategy-lcs"><a class="header-anchor" href="#leveledcompactionstrategy-lcs"></a>LeveledCompactionStrategy (LCS)</h4>
+<h5 id="工作流程-v2"><a class="header-anchor" href="#工作流程-v2"></a>工作流程</h5>
 <ul>
-<li>读比较频繁的更推荐这个算法</li>
-<li><em>The SSTables in levels greater than L1 are merged into SSTables with a size greater than or equal to sstable_size_in_mb (default: 160 MB).</em> 这一段没看明白啊</li>
-<li>是分level的。一开始的叫Level0. 然后</li>
-<li><em>Each level is 10X the size of the last level, so level L1 has 10X as many SSTables as L0, and level L2 has 100X as many</em>  每个level比上一个level大10倍</li>
-<li><em>In fact, 90% of all reads can be satisfied from one SSTable.</em></li>
-<li>需要的磁盘空间更小，并且会将删除的数据扔掉，但是会进行得更为频繁，所以需要的I/O比较多</li>
+<li>
+<p>LCS的工作流程是最不清晰的了。网上各类文章，有说L1的数据文件数量是L0的10倍的，有说整体大小的。我一口血都要喷显示器上面了,不带这么不严谨的好嘛 😦</p>
+</li>
+<li>
+<p>看代码其实最清楚了。应该是大小，不是数量：</p>
+</li>
+<li>
+<p>以下代码里面，maxSSTableSizeInBytes= 160M * 1024<em>1024，所以L0最大是160M</em>4</p>
+</li>
+<li>
+<p>代码在<code>org.apache.cassandra.db.compaction.LeveledCompactionStrategy</code></p>
+<pre><code>public static long maxBytesForLevel(int level, int levelFanoutSize, long maxSSTableSizeInBytes) {
+  if (level == 0) {
+      return 4L * maxSSTableSizeInBytes;
+  } else {
+      double bytes = Math.pow((double)levelFanoutSize, (double)level) * (double)maxSSTableSizeInBytes; 
+  }
+}
+</code></pre>
+</li>
+<li>
+<p><code>LCS</code>一大特点是会尽量保证在同一个层级里面，同一<code>partition key</code>的数据在同一张<code>SSTable</code>表里面。当然<code>L0</code>没法保证，因为这一层级是<code>flush</code>来的</p>
+</li>
+<li>
+<p>为了做到这一点，<code>LCS</code>在进行一次压缩的时候会包括上一级中也有这个<code>partition key</code>的数据，所以这个策略要读表啊。比如在<code>L1</code>级数据大于上限需要压缩的时候，<code>L2</code>级中包含相同<code>key</code>的表也要被一起合并，但是欣慰的是，应该也只有一张表。毕竟每一级都是这么干的。-</p>
+</li>
+<li>
+<p>我们在<code>Cassandra</code>中可以设定进行并行的压缩，那么在<code>LCS</code>策略中需要保证同一个<code>parititon key</code>的数据只在一个压缩线程中，不能有交叉重叠</p>
+</li>
+<li>
+<p>所以，压缩<code>L0</code>层级的时候，会带上所有<code>L1</code>的表一起压缩。如果<code>L0</code>很多，那么没法一次压缩做完所有<code>L0</code>的表格</p>
+</li>
+<li>
+<p>压缩时候优先考虑最高级别的。所有<code>L0</code>是最后考虑的一个层级</p>
+</li>
+<li>
+<p><code>LCS</code>有可能触发<code>major compaction</code>，这点需要进一步考察。</p>
+</li>
+<li>
+<p>如果<code>L0</code>级别的表超过32个，会进行<code>STCS</code></p>
+</li>
+</ul>
+<h5 id="相关参数"><a class="header-anchor" href="#相关参数"></a>相关参数</h5>
+<ul>
+<li><code>sstable_size_in_mb</code>: 就是上面代码里面那个<code>maxSSTableSizeInBytes</code>，第一层级的大小</li>
+<li><code>fanout_size</code>： 各个层级之间的差异，上面代码里面的<code>levelFanoutSize</code></li>
+</ul>
+<h5 id="优缺点-v2"><a class="header-anchor" href="#优缺点-v2"></a>优缺点</h5>
+<ul>
+<li>优点：
+<ul>
+<li>读比较频繁的更推荐这个算法。其实写的应该也可以。目前这应该是应用最广泛的压缩算法了。</li>
+<li>容易预测内存需求大小</li>
+<li>更容易删除旧数据</li>
+<li>需要的磁盘空间更小</li>
+</ul>
+</li>
+<li>缺点：
+<ul>
+<li>进行得更为频繁，所以需要的I/O比较多</li>
+</ul>
+</li>
 </ul>
 <h4 id="timewindowcompactionstrategy-twcs"><a class="header-anchor" href="#timewindowcompactionstrategy-twcs"></a>TimeWindowCompactionStrategy (TWCS)</h4>
 <ul>
-<li>这个算法挺有意思的，而且简单好懂。就是说在一段时间内，比如一个小时内，使用STCS算法，然后在时间点上，一个小时结束的时候，把这个小时内的都压成一个大的。</li>
+<li>接上文碰到的问题，刚刚好出问题的表的<code>partition key</code>是日期，所以研究得最多的就是这个策略了。而时间策略是唯一一个可以彻底删除过期的表的策略。当然，要结合下面的<code>TTL</code>一起用。</li>
+<li>需要注意的一点是：<code>TCWS</code>是从<code>Cassandra 3.0.8</code>才被引入的。而我们产品仍旧停留在<code>2.2.8</code>上，这也是为什么最后没法采用这个解决方案</li>
+</ul>
+<h5 id="工作原理"><a class="header-anchor" href="#工作原理"></a>工作原理</h5>
+<ul>
+<li>这个算法挺有意思的，而且简单好懂。就是说在一段时间内，比如一个小时内，使用<code>STCS</code>算法，然后在时间点上，一个小时结束的时候，把这个小时内的都压成一个大的数据文件。</li>
 <li>第二个小时开始的时候，重新算起，上一个小时压出来的大表就放那里不动了。</li>
+</ul>
+<h5 id="相关参数-v2"><a class="header-anchor" href="#相关参数-v2"></a>相关参数</h5>
+<ul>
+<li><code>compaction_window_unit</code>:MINUTES, HOURS, or DAYS</li>
+<li><code>compaction_window_size</code>:默认为1</li>
+<li><code>unsafe_aggressive_sstable_expiration</code>: 这个参数很有意思，就是说当一个表里面都是墓碑的时候，直接把表删除掉。这个参数是一个全局参数，是在启动<code>JVM</code>的时候设置的。因为是有风险的，有可能造成幽灵数据。同时，设置这个参数会覆盖掉<code>unchecked_tombstone_compaction</code>.</li>
+</ul>
+<h5 id="参考链接-v2"><a class="header-anchor" href="#参考链接-v2"></a>参考链接</h5>
+<ul>
+<li><a href="https://thelastpickle.com/blog/2016/12/08/TWCS-part1.html" target="_blank" rel="noopener">TWCS-part1</a></li>
+<li><a href="https://thelastpickle.com/blog/2017/01/10/twcs-part2.html" target="_blank" rel="noopener">TWCS-part2</a></li>
 </ul>
 <h3 id="ttl"><a class="header-anchor" href="#ttl"></a>TTL</h3>
 <h4 id="ttl被提出的背景"><a class="header-anchor" href="#ttl被提出的背景"></a>TTL被提出的背景</h4>
 <ul>
 <li>这是在处理产品的一个问题的时候被提出的，该问题就是，由于某个统计功能一直在写数据，然后每隔一个月左右会删除数据。</li>
-<li>表格以<code>date</code>作为<code>partition key</code>，所以即使数据被删除了也没法之间<code>truncate</code>表，只能依赖<code>Cassandra</code>的<code>compaction</code>。</li>
+<li>表格以<code>date</code>作为<code>partition key</code>，所有数据在一个表里面，所以即使数据被删除了也没法直接<code>truncate</code>表，只能依赖<code>Cassandra</code>的<code>compaction</code>。</li>
 <li>最后越来越占磁盘。使用的策略是默认的<code>STCS</code>。然后就有大佬提了<code>TTL</code></li>
 <li>我原本在考虑加<code>crontab job</code>，但是其实没有意义，因为<code>Cassandra</code>提供的其实就是类似功能。</li>
 </ul>
 <h4 id="什么是ttl-time-to-live"><a class="header-anchor" href="#什么是ttl-time-to-live"></a>什么是TTL(time-to-live)</h4>
 <ul>
 <li><em>TTL: allows to specify an optional Time To Live (in seconds) for the inserted values. If set, the inserted values are automatically removed from the database after the specified time. Note that the TTL concerns the inserted values, not the column themselves. This means that any subsequent update of the column will also reset the TTL (to whatever TTL is specified in that update). By default, values never expire. A TTL of 0 or a negative one is equivalent to no TTL.</em></li>
-<li>其实Cassandra里面TTL的概念到处都是。但是通常说的TTL是指参数<code>default_time_to_live</code>，也就是说到了这个时间点，Cassandra会自动将数据删除掉。</li>
-<li>默认值为0，也就是Cassandra会认为这个数据一致有效</li>
-<li>这个参数在<code>desc tables</code>里面可以看到，但是我们产品里面其实在代码里面进行了覆盖。java代码里面弄了个系统参数，在插入数据的时候代入了这个参数</li>
+<li>其实<code>Cassandra</code>里面<code>TTL</code>的概念到处都是。但是通常说的<code>TTL</code>是指参数<code>default_time_to_live</code>，也就是说到了这个时间点，<code>Cassandra</code>会自动将数据删除掉。</li>
+<li>默认值为0，也就是<code>Cassandra</code>会认为这个数据一直有效</li>
+<li>这个参数在<code>desc tables</code>里面可以看到，但是我们产品的异步模块里面其实在代码里面进行了覆盖。<code>java</code>代码里面弄了个系统参数，在插入数据的时候代入了这个参数</li>
 </ul>
 
       
@@ -684,7 +833,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#delete-data"><span class="nav-number">2.</span> <span class="nav-text">Delete Data</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#删除某一行的某个数据"><span class="nav-number">2.1.</span> <span class="nav-text">删除某一行的某个数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除一行的数据"><span class="nav-number">2.2.</span> <span class="nav-text">删除一行的数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除一个范围内的数据"><span class="nav-number">2.3.</span> <span class="nav-text">删除一个范围内的数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除一个partition的数据"><span class="nav-number">2.4.</span> <span class="nav-text">删除一个partition的数据</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#集合数据"><span class="nav-number">2.4.1.</span> <span class="nav-text">集合数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gc-grace-seconds参数"><span class="nav-number">2.4.2.</span> <span class="nav-text">gc_grace_seconds参数</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#compacting-sstable-data"><span class="nav-number">3.</span> <span class="nav-text">Compacting SSTable Data</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么需要compaction"><span class="nav-number">3.1.</span> <span class="nav-text">为什么需要Compaction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是compaction"><span class="nav-number">3.2.</span> <span class="nav-text">什么是Compaction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#campaction细节"><span class="nav-number">3.3.</span> <span class="nav-text">Campaction细节</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#compaction对读数据的影响"><span class="nav-number">3.4.</span> <span class="nav-text">Compaction对读数据的影响</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#compaction-策略"><span class="nav-number">3.5.</span> <span class="nav-text">Compaction 策略</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#sizetieredcompactionstrategy-stcs"><span class="nav-number">3.5.1.</span> <span class="nav-text">SizeTieredCompactionStrategy (STCS)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#leveledcompactionstrategy-lcs"><span class="nav-number">3.5.2.</span> <span class="nav-text">LeveledCompactionStrategy (LCS)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#timewindowcompactionstrategy-twcs"><span class="nav-number">3.5.3.</span> <span class="nav-text">TimeWindowCompactionStrategy (TWCS)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ttl"><span class="nav-number">3.6.</span> <span class="nav-text">TTL</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ttl被提出的背景"><span class="nav-number">3.6.1.</span> <span class="nav-text">TTL被提出的背景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#什么是ttl-time-to-live"><span class="nav-number">3.6.2.</span> <span class="nav-text">什么是TTL(time-to-live)</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#delete-data"><span class="nav-number">2.</span> <span class="nav-text">Delete Data</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#删除某一行的某个数据"><span class="nav-number">2.1.</span> <span class="nav-text">删除某一行的某个数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除一行的数据"><span class="nav-number">2.2.</span> <span class="nav-text">删除一行的数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除一个范围内的数据"><span class="nav-number">2.3.</span> <span class="nav-text">删除一个范围内的数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除一个partition的数据"><span class="nav-number">2.4.</span> <span class="nav-text">删除一个partition的数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#集合数据"><span class="nav-number">2.5.</span> <span class="nav-text">集合数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gc-grace-seconds参数"><span class="nav-number">2.6.</span> <span class="nav-text">gc_grace_seconds参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#维护操作"><span class="nav-number">3.</span> <span class="nav-text">维护操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#compacting-sstable-data"><span class="nav-number">4.</span> <span class="nav-text">Compacting SSTable Data</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么需要compaction"><span class="nav-number">4.1.</span> <span class="nav-text">为什么需要Compaction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是compaction"><span class="nav-number">4.2.</span> <span class="nav-text">什么是Compaction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么情况下墓碑会在compaction中被移除"><span class="nav-number">4.3.</span> <span class="nav-text">什么情况下墓碑会在Compaction中被移除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#compaction的参数和命令"><span class="nav-number">4.4.</span> <span class="nav-text">compaction的参数和命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他一些campaction细节"><span class="nav-number">4.5.</span> <span class="nav-text">其他一些Campaction细节</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#compaction对读数据的影响"><span class="nav-number">4.6.</span> <span class="nav-text">Compaction对读数据的影响</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#compaction-策略"><span class="nav-number">4.7.</span> <span class="nav-text">Compaction 策略</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#sizetieredcompactionstrategy-stcs"><span class="nav-number">4.7.1.</span> <span class="nav-text">SizeTieredCompactionStrategy (STCS)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#工作流程"><span class="nav-number">4.7.1.1.</span> <span class="nav-text">工作流程</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参数"><span class="nav-number">4.7.2.</span> <span class="nav-text">参数</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#优缺点"><span class="nav-number">4.7.2.1.</span> <span class="nav-text">优缺点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#问题"><span class="nav-number">4.7.2.2.</span> <span class="nav-text">问题</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#leveledcompactionstrategy-lcs"><span class="nav-number">4.7.3.</span> <span class="nav-text">LeveledCompactionStrategy (LCS)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#工作流程-v2"><span class="nav-number">4.7.3.1.</span> <span class="nav-text">工作流程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#相关参数"><span class="nav-number">4.7.3.2.</span> <span class="nav-text">相关参数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#优缺点-v2"><span class="nav-number">4.7.3.3.</span> <span class="nav-text">优缺点</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#timewindowcompactionstrategy-twcs"><span class="nav-number">4.7.4.</span> <span class="nav-text">TimeWindowCompactionStrategy (TWCS)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#工作原理"><span class="nav-number">4.7.4.1.</span> <span class="nav-text">工作原理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#相关参数-v2"><span class="nav-number">4.7.4.2.</span> <span class="nav-text">相关参数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#参考链接-v2"><span class="nav-number">4.7.4.3.</span> <span class="nav-text">参考链接</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ttl"><span class="nav-number">4.8.</span> <span class="nav-text">TTL</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ttl被提出的背景"><span class="nav-number">4.8.1.</span> <span class="nav-text">TTL被提出的背景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#什么是ttl-time-to-live"><span class="nav-number">4.8.2.</span> <span class="nav-text">什么是TTL(time-to-live)</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>

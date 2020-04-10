@@ -87,7 +87,7 @@
 <meta property="og:description" content="开个新博客，来记录工作过程中碰到的各种各类的小问题。 ENV 这个章节主要是包括编译啊，版本控制啊，IDE啊之类的小问题 IJ command too long error   今天尝试跑Junit，结果IJ报错，说我命令行太长： Error running &apos;xxxxxxx&apos;: Command line is too long. Shorten command line for xxxxxxx">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://user-images.githubusercontent.com/5803001/34945022-c57b369a-fa3c-11e7-85e7-83f716d10705.png">
-<meta property="og:updated_time" content="2020-03-30T03:26:36.223Z">
+<meta property="og:updated_time" content="2020-04-09T09:30:00.899Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Problems During Working">
 <meta name="twitter:description" content="开个新博客，来记录工作过程中碰到的各种各类的小问题。 ENV 这个章节主要是包括编译啊，版本控制啊，IDE啊之类的小问题 IJ command too long error   今天尝试跑Junit，结果IJ报错，说我命令行太长： Error running &apos;xxxxxxx&apos;: Command line is too long. Shorten command line for xxxxxxx">
@@ -333,12 +333,30 @@
 </ul>
 </li>
 </ul>
+<h4 id="scalac-output-path-same"><a class="header-anchor" href="#scalac-output-path-same"></a>scalac: Output path same</h4>
+<ul>
+<li>编译<code>scala</code>项目的时候报的错误。意思是输出路径一样。改一下<code>module</code>的输出路径就可以了。奇怪的是，为啥会一样啊。</li>
+<li><a href="https://stackoverflow.com/questions/18920334/output-path-is-shared-between-the-same-module-error/21418406#21418406" target="_blank" rel="noopener">output-path-is-shared</a></li>
+</ul>
+<h3 id="git"><a class="header-anchor" href="#git"></a>GIT</h3>
+<h4 id="filename-too-long-error"><a class="header-anchor" href="#filename-too-long-error"></a>filename too long error</h4>
+<ul>
+<li>改一下<code>GIT</code>的配置就可以了</li>
+<li><code>git config --system core.longpaths true</code></li>
+<li><a href="https://ourcodeworld.com/articles/read/109/how-to-solve-filename-too-long-error-in-git-powershell-and-github-application-for-windows" target="_blank" rel="noopener">how-to-solve-filename-too-long-error</a></li>
+</ul>
 <h2 id="cassandra"><a class="header-anchor" href="#cassandra"></a>Cassandra</h2>
 <h3 id="cassandra-was-never-started"><a class="header-anchor" href="#cassandra-was-never-started"></a>Cassandra was never started</h3>
 <ul>
+<li>这个问题是在解决POD不断重启的问题的过程中遇到的。</li>
+<li>问题的根源其实就是Cassandra的版本被替换了，用户和密码也换掉了</li>
+<li>参考链接：
+<ul>
 <li>
-<pre><code>2020-03-26 10:39:08,280+0100 [vent Dispatcher] WARN  [com.datastax.driver.core.CodecRegistry] Ignoring codec InstantCodec [timestamp &lt;-&gt; java.time.Instant] because it collides with previously registered codec InstantCodec [timestamp &lt;-&gt; java.time.Instant]
-</code></pre>
+<p><a href="https://docs.datastax.com/en/developer/java-driver/3.1/manual/custom_codecs/extras/" target="_blank" rel="noopener">time codecs</a></p>
+<p>2020-03-26 10:39:08,280+0100 [vent Dispatcher] WARN  [com.datastax.driver.core.CodecRegistry] Ignoring codec InstantCodec [timestamp &lt;-&gt; java.time.Instant] because it collides with previously registered codec InstantCodec [timestamp &lt;-&gt; java.time.Instant]</p>
+</li>
+</ul>
 </li>
 </ul>
 <h2 id="docker"><a class="header-anchor" href="#docker"></a>Docker</h2>
@@ -480,6 +498,9 @@ LAST SEEN   TYPE   REASON  OBJECT      MESSAGE
 <li>
 <p>这样可以清晰看到<code>pod</code>由于连不上<code>AKKA</code>服务的<code>2929</code>端口而重启，也就是<code>liveness</code>条件不满足了，所以<code>K8S</code>就欢快地把<code>POD</code>杀掉了。</p>
 </li>
+<li>
+<p>然后还有一个有用的命令是<code>kubectl logs -p &lt;podName&gt;</code>这条命令可以帮助我们看到被杀的前一个pod的日志，毕竟我们看的当时，前一个pod可能已经被干掉了</p>
+</li>
 </ul>
 <h4 id="分析"><a class="header-anchor" href="#分析"></a>分析</h4>
 <ul>
@@ -577,6 +598,15 @@ at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager
 <li><code>OSGI</code>的错误在打开<code>apache</code>的<code>debug log</code>之后仍旧无从下手，这个错误在3月9号的包中也是没有的，只能回到对比包的老路上面来。</li>
 <li>那么第一个仍旧是<code>Cassandra</code>的改动。这回在将这个改动加上之后，<code>OSGI</code>的错误没有了。然鹅，为什么数据库的改动会影响到<code>OSGI</code>的状态，并不知道。这个问题只能到此为止啦。</li>
 <li>所以使用<code>karaf</code>仍旧是很<code>heavy</code>的，在最新的版本中已经将之移除了。</li>
+</ul>
+<h4 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h4>
+<ul>
+<li>在问题的解决过程中，查询了很多，有一些比较有用的链接如下：
+<ul>
+<li><a href="https://zhuanlan.zhihu.com/p/51455551" target="_blank" rel="noopener">k8s为何杀死我的Pod</a></li>
+<li><a href="https://blog.csdn.net/yzh_1346983557/article/details/89216494?depth_1-utm_source=distribute.pc_relevant.none-task&amp;utm_source=distribute.pc_relevant.none-task" target="_blank" rel="noopener">CPU分配过少导致POD重启</a></li>
+</ul>
+</li>
 </ul>
 
       
@@ -744,7 +774,7 @@ at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#env"><span class="nav-number">1.</span> <span class="nav-text">ENV</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ij"><span class="nav-number">1.1.</span> <span class="nav-text">IJ</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#command-too-long-error"><span class="nav-number">1.1.1.</span> <span class="nav-text">command too long error</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cassandra"><span class="nav-number">2.</span> <span class="nav-text">Cassandra</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#cassandra-was-never-started"><span class="nav-number">2.1.</span> <span class="nav-text">Cassandra was never started</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker"><span class="nav-number">3.</span> <span class="nav-text">Docker</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-login"><span class="nav-number">3.1.</span> <span class="nav-text">docker login</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-demon"><span class="nav-number">3.2.</span> <span class="nav-text">docker demon</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-image-没有名字"><span class="nav-number">3.3.</span> <span class="nav-text">docker image 没有名字</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-for-desktop-安装"><span class="nav-number">3.4.</span> <span class="nav-text">docker for desktop 安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-for-desktop-如何安装dashboard"><span class="nav-number">3.5.</span> <span class="nav-text">docker for desktop 如何安装Dashboard</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s"><span class="nav-number">4.</span> <span class="nav-text">K8S</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#连不上k8s"><span class="nav-number">4.1.</span> <span class="nav-text">连不上K8S</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#k8s的nodeport-service出错"><span class="nav-number">4.2.</span> <span class="nav-text">K8s的NodePort Service出错</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#nodeport-service的nodeport无法访问"><span class="nav-number">4.2.0.1.</span> <span class="nav-text">NodePort Service的NodePort无法访问</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pod不断重启"><span class="nav-number">4.3.</span> <span class="nav-text">POD不断重启</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#为何没能够更早的发现问题"><span class="nav-number">4.3.1.</span> <span class="nav-text">为何没能够更早的发现问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#周末调试"><span class="nav-number">4.3.2.</span> <span class="nav-text">周末调试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#k8s-pod重启"><span class="nav-number">4.3.3.</span> <span class="nav-text">K8S POD重启</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分析"><span class="nav-number">4.3.4.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#进展"><span class="nav-number">4.3.5.</span> <span class="nav-text">进展</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#env"><span class="nav-number">1.</span> <span class="nav-text">ENV</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ij"><span class="nav-number">1.1.</span> <span class="nav-text">IJ</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#command-too-long-error"><span class="nav-number">1.1.1.</span> <span class="nav-text">command too long error</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#scalac-output-path-same"><span class="nav-number">1.1.2.</span> <span class="nav-text">scalac: Output path same</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#git"><span class="nav-number">1.2.</span> <span class="nav-text">GIT</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#filename-too-long-error"><span class="nav-number">1.2.1.</span> <span class="nav-text">filename too long error</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cassandra"><span class="nav-number">2.</span> <span class="nav-text">Cassandra</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#cassandra-was-never-started"><span class="nav-number">2.1.</span> <span class="nav-text">Cassandra was never started</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker"><span class="nav-number">3.</span> <span class="nav-text">Docker</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-login"><span class="nav-number">3.1.</span> <span class="nav-text">docker login</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-demon"><span class="nav-number">3.2.</span> <span class="nav-text">docker demon</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-image-没有名字"><span class="nav-number">3.3.</span> <span class="nav-text">docker image 没有名字</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-for-desktop-安装"><span class="nav-number">3.4.</span> <span class="nav-text">docker for desktop 安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-for-desktop-如何安装dashboard"><span class="nav-number">3.5.</span> <span class="nav-text">docker for desktop 如何安装Dashboard</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s"><span class="nav-number">4.</span> <span class="nav-text">K8S</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#连不上k8s"><span class="nav-number">4.1.</span> <span class="nav-text">连不上K8S</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#k8s的nodeport-service出错"><span class="nav-number">4.2.</span> <span class="nav-text">K8s的NodePort Service出错</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#nodeport-service的nodeport无法访问"><span class="nav-number">4.2.0.1.</span> <span class="nav-text">NodePort Service的NodePort无法访问</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pod不断重启"><span class="nav-number">4.3.</span> <span class="nav-text">POD不断重启</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#为何没能够更早的发现问题"><span class="nav-number">4.3.1.</span> <span class="nav-text">为何没能够更早的发现问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#周末调试"><span class="nav-number">4.3.2.</span> <span class="nav-text">周末调试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#k8s-pod重启"><span class="nav-number">4.3.3.</span> <span class="nav-text">K8S POD重启</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分析"><span class="nav-number">4.3.4.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#进展"><span class="nav-number">4.3.5.</span> <span class="nav-text">进展</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考链接"><span class="nav-number">4.3.6.</span> <span class="nav-text">参考链接</span></a></li></ol></li></ol></div>
             
 
           </div>
