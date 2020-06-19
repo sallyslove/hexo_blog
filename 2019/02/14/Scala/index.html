@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="Scala Scala概念快速解释 Scala有很多特有的概念。如果要看懂代码就得大致明白含义，这篇博客就是快速解释一下，其中可能会有不够准确的地方，就是不求甚解，只求迅速读懂scala代码了. 隔了一段时间又开始看scala的代码，结果发现这篇博客写得太不声情并茂了。scala还是比较复杂的。这么简单写几句不太成，得给一点例子才行。 object 看了几篇博客，解释都不够清晰的感觉，还是stac">
+<meta name="description" content="Scala Scala概念快速解释  Scala有很多特有的概念。如果要看懂代码就得大致明白含义，这篇博客就是快速解释一下，其中可能会有不够准确的地方，就是不求甚解，只求迅速读懂scala代码了. 隔了一段时间又开始看scala的代码，结果发现这篇博客写得太不声情并茂了。scala还是比较复杂的。这么简单写几句不太成，得给一点例子才行。  &amp;lt;-   for 循环里面用的，看下面这个例子就比较">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Scala">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/02/14/Scala/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="Scala Scala概念快速解释 Scala有很多特有的概念。如果要看懂代码就得大致明白含义，这篇博客就是快速解释一下，其中可能会有不够准确的地方，就是不求甚解，只求迅速读懂scala代码了. 隔了一段时间又开始看scala的代码，结果发现这篇博客写得太不声情并茂了。scala还是比较复杂的。这么简单写几句不太成，得给一点例子才行。 object 看了几篇博客，解释都不够清晰的感觉，还是stac">
+<meta property="og:description" content="Scala Scala概念快速解释  Scala有很多特有的概念。如果要看懂代码就得大致明白含义，这篇博客就是快速解释一下，其中可能会有不够准确的地方，就是不求甚解，只求迅速读懂scala代码了. 隔了一段时间又开始看scala的代码，结果发现这篇博客写得太不声情并茂了。scala还是比较复杂的。这么简单写几句不太成，得给一点例子才行。  &amp;lt;-   for 循环里面用的，看下面这个例子就比较">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-04-10T02:23:13.501Z">
+<meta property="og:updated_time" content="2020-06-17T09:22:56.942Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Scala">
-<meta name="twitter:description" content="Scala Scala概念快速解释 Scala有很多特有的概念。如果要看懂代码就得大致明白含义，这篇博客就是快速解释一下，其中可能会有不够准确的地方，就是不求甚解，只求迅速读懂scala代码了. 隔了一段时间又开始看scala的代码，结果发现这篇博客写得太不声情并茂了。scala还是比较复杂的。这么简单写几句不太成，得给一点例子才行。 object 看了几篇博客，解释都不够清晰的感觉，还是stac">
+<meta name="twitter:description" content="Scala Scala概念快速解释  Scala有很多特有的概念。如果要看懂代码就得大致明白含义，这篇博客就是快速解释一下，其中可能会有不够准确的地方，就是不求甚解，只求迅速读懂scala代码了. 隔了一段时间又开始看scala的代码，结果发现这篇博客写得太不声情并茂了。scala还是比较复杂的。这么简单写几句不太成，得给一点例子才行。  &amp;lt;-   for 循环里面用的，看下面这个例子就比较">
 
 
 
@@ -333,8 +333,33 @@
       
         <h2 id="scala"><a class="header-anchor" href="#scala"></a>Scala</h2>
 <h3 id="scala概念快速解释"><a class="header-anchor" href="#scala概念快速解释"></a>Scala概念快速解释</h3>
-<p>Scala有很多特有的概念。如果要看懂代码就得大致明白含义，这篇博客就是快速解释一下，其中可能会有不够准确的地方，就是不求甚解，只求迅速读懂scala代码了.<br>
-隔了一段时间又开始看scala的代码，结果发现这篇博客写得太不声情并茂了。scala还是比较复杂的。这么简单写几句不太成，得给一点例子才行。</p>
+<ul>
+<li>Scala有很多特有的概念。如果要看懂代码就得大致明白含义，这篇博客就是快速解释一下，其中可能会有不够准确的地方，就是不求甚解，只求迅速读懂scala代码了.</li>
+<li>隔了一段时间又开始看scala的代码，结果发现这篇博客写得太不声情并茂了。scala还是比较复杂的。这么简单写几句不太成，得给一点例子才行。</li>
+</ul>
+<h4 id="none"><a class="header-anchor" href="#none"></a>&lt;-</h4>
+<ul>
+<li>
+<p><code>for</code> 循环里面用的，看下面这个例子就比较清楚：</p>
+<pre><code>for(x &lt;- 1 to 5)  println(i)
+
+for { 
+     x&lt;-1 to 5
+     y&lt;-2 to 6
+   } println (x,y)
+</code></pre>
+</li>
+<li>
+<p>参考链接： <a href="https://stackoverflow.com/questions/31799536/what-is-%E2%86%90-in-scala" target="_blank" rel="noopener">what-is-←-in-scala</a></p>
+</li>
+</ul>
+<h4 id="sealed-class"><a class="header-anchor" href="#sealed-class"></a>sealed class</h4>
+<h4 id="val和var的区别"><a class="header-anchor" href="#val和var的区别"></a>val和var的区别</h4>
+<ul>
+<li><code>val</code>就是常量，只能赋值一次</li>
+<li><code>var</code>变量，可以赋值多次</li>
+<li><a href="https://www.cnblogs.com/IChing/p/7093345.html" target="_blank" rel="noopener">scala基础- val和var的区别</a></li>
+</ul>
 <h4 id="object"><a class="header-anchor" href="#object"></a>object</h4>
 <p>看了几篇博客，解释都不够清晰的感觉，还是<code>stackoverflow</code>上面解释得更清楚</p>
 <ul>
@@ -346,8 +371,7 @@
 </code></pre>
 </li>
 <li>
-<p>参考链接：<br>
--<a href="https://stackoverflow.com/questions/1755345/difference-between-object-and-class-in-scala" target="_blank" rel="noopener">difference-between-object-and-class-in-scala</a></p>
+<p>参考链接：<a href="https://stackoverflow.com/questions/1755345/difference-between-object-and-class-in-scala" target="_blank" rel="noopener">difference-between-object-and-class-in-scala</a></p>
 </li>
 </ul>
 <h3 id="trait"><a class="header-anchor" href="#trait"></a>trait</h3>
@@ -385,6 +409,17 @@
 <p>参考链接：</p>
 <ul>
 <li><a href="https://www.cnblogs.com/rollenholt/p/4118567.html" target="_blank" rel="noopener">详尽解释的博客，博主其他博客也不错</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="asscala"><a class="header-anchor" href="#asscala"></a>asScala</h4>
+<ul>
+<li><code>import scala.collection.JavaConverters._</code></li>
+<li>理解就是将<code>Java</code>的一些结构自动转为<code>Scala</code>的结构</li>
+<li>以下参考里面将<code>ArrayList</code>转成了<code>mutable.Buffer</code>。</li>
+<li>参考链接
+<ul>
+<li><a href="https://blog.csdn.net/guotong1988/article/details/51454281" target="_blank" rel="noopener">asScala</a></li>
 </ul>
 </li>
 </ul>
@@ -558,7 +593,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#scala"><span class="nav-number">1.</span> <span class="nav-text">Scala</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#scala概念快速解释"><span class="nav-number">1.1.</span> <span class="nav-text">Scala概念快速解释</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#object"><span class="nav-number">1.1.1.</span> <span class="nav-text">object</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#trait"><span class="nav-number">1.2.</span> <span class="nav-text">trait</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#case-class"><span class="nav-number">1.2.1.</span> <span class="nav-text">case class</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#implicit"><span class="nav-number">1.2.2.</span> <span class="nav-text">implicit</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#scala-环境"><span class="nav-number">1.3.</span> <span class="nav-text">Scala 环境</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#scala"><span class="nav-number">1.</span> <span class="nav-text">Scala</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#scala概念快速解释"><span class="nav-number">1.1.</span> <span class="nav-text">Scala概念快速解释</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#none"><span class="nav-number">1.1.1.</span> <span class="nav-text">&lt;-</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#sealed-class"><span class="nav-number">1.1.2.</span> <span class="nav-text">sealed class</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#val和var的区别"><span class="nav-number">1.1.3.</span> <span class="nav-text">val和var的区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#object"><span class="nav-number">1.1.4.</span> <span class="nav-text">object</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#trait"><span class="nav-number">1.2.</span> <span class="nav-text">trait</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#case-class"><span class="nav-number">1.2.1.</span> <span class="nav-text">case class</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#implicit"><span class="nav-number">1.2.2.</span> <span class="nav-text">implicit</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#asscala"><span class="nav-number">1.2.3.</span> <span class="nav-text">asScala</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#scala-环境"><span class="nav-number">1.3.</span> <span class="nav-text">Scala 环境</span></a></li></ol></li></ol></div>
             
 
           </div>

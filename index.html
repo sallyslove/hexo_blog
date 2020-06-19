@@ -711,10 +711,22 @@ fi
 </ul>
 </li>
 </ul>
-<h4 id="scalac-output-path-same"><a class="header-anchor" href="#scalac-output-path-same"></a>scalac: Output path same</h4>
+<h4 id="output-path-same"><a class="header-anchor" href="#output-path-same"></a>Output path same</h4>
 <ul>
 <li>编译<code>scala</code>项目的时候报的错误。意思是输出路径一样。改一下<code>module</code>的输出路径就可以了。奇怪的是，为啥会一样啊。</li>
 <li><a href="https://stackoverflow.com/questions/18920334/output-path-is-shared-between-the-same-module-error/21418406#21418406" target="_blank" rel="noopener">output-path-is-shared</a></li>
+</ul>
+<h4 id="sbt工程already-exist"><a class="header-anchor" href="#sbt工程already-exist"></a>SBT工程already exist</h4>
+<ul>
+<li>把一个scala的工程导入，又删除之后， 就再也导不到IJ里面了。</li>
+<li>IJ会报错。解决方法在下面的链接里面。</li>
+<li><a href="https://stackoverflow.com/questions/24937328/intellij-idea-cannot-import-sbt-project" target="_blank" rel="noopener">scala重复导入</a></li>
+</ul>
+<h4 id="skipping-scala-files-without-a-scala-sdk"><a class="header-anchor" href="#skipping-scala-files-without-a-scala-sdk"></a>skipping Scala files without a Scala SDK</h4>
+<ul>
+<li>这个问题是因为没有<code>scala</code>的<code>SDK</code>导致的</li>
+<li><a href="https://stackoverflow.com/questions/34798160/problems-importing-scala-libraries-in-intellij" target="_blank" rel="noopener">没有scala SDK</a></li>
+<li><a href="https://www.jetbrains.com/help/idea/2016.2/adding-frameworks-support.html" target="_blank" rel="noopener">IJ配置framework support</a></li>
 </ul>
 <h3 id="git"><a class="header-anchor" href="#git"></a>GIT</h3>
 <h4 id="filename-too-long-error"><a class="header-anchor" href="#filename-too-long-error"></a>filename too long error</h4>
@@ -722,6 +734,13 @@ fi
 <li>改一下<code>GIT</code>的配置就可以了</li>
 <li><code>git config --system core.longpaths true</code></li>
 <li><a href="https://ourcodeworld.com/articles/read/109/how-to-solve-filename-too-long-error-in-git-powershell-and-github-application-for-windows" target="_blank" rel="noopener">how-to-solve-filename-too-long-error</a></li>
+</ul>
+<h2 id="java"><a class="header-anchor" href="#java"></a>Java</h2>
+<h3 id="mock"><a class="header-anchor" href="#mock"></a>Mock</h3>
+<h4 id="checked-exception-is-invalid-for-this-method"><a class="header-anchor" href="#checked-exception-is-invalid-for-this-method"></a>Checked exception is invalid for this method!</h4>
+<ul>
+<li>用<code>thenThrow</code>时候报了这个错误，这个错误的含义其实是调用的函数并没有抛出模拟的这个函数，所以模拟不起来</li>
+<li>我自己是因为在<code>scala</code>里面外面包了一层</li>
 </ul>
 <h2 id="cassandra"><a class="header-anchor" href="#cassandra"></a>Cassandra</h2>
 <h3 id="cassandra-was-never-started"><a class="header-anchor" href="#cassandra-was-never-started"></a>Cassandra was never started</h3>
