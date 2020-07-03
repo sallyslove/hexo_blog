@@ -2504,13 +2504,19 @@ httpexposed   1         1         1            1           11m
       
         
           
-            <h2 id="scala"><a class="header-anchor" href="#scala"></a>Scala</h2>
-<h3 id="scala概念快速解释"><a class="header-anchor" href="#scala概念快速解释"></a>Scala概念快速解释</h3>
+            <h2 id="scala概念快速解释"><a class="header-anchor" href="#scala概念快速解释"></a>Scala概念快速解释</h2>
 <ul>
 <li>Scala有很多特有的概念。如果要看懂代码就得大致明白含义，这篇博客就是快速解释一下，其中可能会有不够准确的地方，就是不求甚解，只求迅速读懂scala代码了.</li>
 <li>隔了一段时间又开始看scala的代码，结果发现这篇博客写得太不声情并茂了。scala还是比较复杂的。这么简单写几句不太成，得给一点例子才行。</li>
 </ul>
-<h4 id="none"><a class="header-anchor" href="#none"></a>&lt;-</h4>
+<h3 id="enum"><a class="header-anchor" href="#enum"></a>Enum</h3>
+<ul>
+<li>简单来说，并没有枚举这个类型，但是可以继承<code>Enumeration</code>来达到枚举的效果</li>
+<li>通常定义一个<code>object</code>来继承<code>Enumeration</code></li>
+<li>使用<code>Enum</code>，类型都是<code>Enum.Value</code></li>
+<li><a href="http://kubicode.me/2015/06/06/Scala/Enum-in-Scala/" target="_blank" rel="noopener">Scala中的Enum，这篇对比了一下java和scala的枚举</a></li>
+</ul>
+<h3 id="none"><a class="header-anchor" href="#none"></a>&lt;-</h3>
 <ul>
 <li>
 <p><code>for</code> 循环里面用的，看下面这个例子就比较清楚：</p>
@@ -2526,26 +2532,31 @@ for {
 <p>参考链接： <a href="https://stackoverflow.com/questions/31799536/what-is-%E2%86%90-in-scala" target="_blank" rel="noopener">what-is-←-in-scala</a></p>
 </li>
 </ul>
-<h4 id="sealed-class"><a class="header-anchor" href="#sealed-class"></a>sealed class</h4>
-<h4 id="val和var的区别"><a class="header-anchor" href="#val和var的区别"></a>val和var的区别</h4>
+<h3 id="sealed-class"><a class="header-anchor" href="#sealed-class"></a>sealed class</h3>
+<h3 id="val和var的区别"><a class="header-anchor" href="#val和var的区别"></a>val和var的区别</h3>
 <ul>
 <li><code>val</code>就是常量，只能赋值一次</li>
 <li><code>var</code>变量，可以赋值多次</li>
 <li><a href="https://www.cnblogs.com/IChing/p/7093345.html" target="_blank" rel="noopener">scala基础- val和var的区别</a></li>
 </ul>
-<h4 id="object"><a class="header-anchor" href="#object"></a>object</h4>
-<p>看了几篇博客，解释都不够清晰的感觉，还是<code>stackoverflow</code>上面解释得更清楚</p>
+<h3 id="object"><a class="header-anchor" href="#object"></a>object</h3>
+<p>看了几篇博客，解释都不够清晰的感觉，还是<code>stackoverflow</code>上面解释得更清楚.</p>
+<ul>
+<li>有好几种用法：
 <ul>
 <li>
 <p>作为<code>static</code>函数的<code>class</code>文件，这是最常见到的用法：</p>
-<pre><code> object A {
-    def twice(i: Int): Int = 2*i
- }
+<pre><code>object A {
+  def twice(i: Int): Int = 2*i
+}
 </code></pre>
+<p>这样可以直接调用A.twice，没有必要先声明一个A的对象。这种是类似java里面的static函数的</p>
 </li>
-<li>
-<p>参考链接：<a href="https://stackoverflow.com/questions/1755345/difference-between-object-and-class-in-scala" target="_blank" rel="noopener">difference-between-object-and-class-in-scala</a></p>
+</ul>
 </li>
+</ul>
+<ul>
+<li>参考链接：<a href="https://stackoverflow.com/questions/1755345/difference-between-object-and-class-in-scala" target="_blank" rel="noopener">difference-between-object-and-class-in-scala</a></li>
 </ul>
 <h3 id="trait"><a class="header-anchor" href="#trait"></a>trait</h3>
 <ul>
@@ -2554,13 +2565,13 @@ for {
 <li>但是可以使用<code>with</code>关键字多重继承，很好用的感觉哦</li>
 <li><code>scala</code>本身还是有<code>interface</code>关键字的，本身也可以使用<code>with</code>关键字来实现接口</li>
 </ul>
-<h4 id="case-class"><a class="header-anchor" href="#case-class"></a>case class</h4>
+<h3 id="case-class"><a class="header-anchor" href="#case-class"></a>case class</h3>
 <ul>
 <li><a href="https://blog.csdn.net/bluishglc/article/details/50914001" target="_blank" rel="noopener">csdn上的一篇文章</a></li>
 <li>简单来说，case class会默认生成很多东西，比如伴生对象，比如工厂方法，比如toString， copy，构造方法参数同名的属性</li>
 <li>最开心的用法，应该就是不用<code>new</code>出一个对象来。而是可以直接<code>methodName(构造函数参数)</code>这样来获取一个对象。其实是同名的工厂方法</li>
 </ul>
-<h4 id="implicit"><a class="header-anchor" href="#implicit"></a>implicit</h4>
+<h3 id="implicit"><a class="header-anchor" href="#implicit"></a>implicit</h3>
 <ul>
 <li>
 <p>隐式转换。例子如下：</p>
@@ -2585,7 +2596,7 @@ for {
 </ul>
 </li>
 </ul>
-<h4 id="asscala"><a class="header-anchor" href="#asscala"></a>asScala</h4>
+<h3 id="asscala"><a class="header-anchor" href="#asscala"></a>asScala</h3>
 <ul>
 <li><code>import scala.collection.JavaConverters._</code></li>
 <li>理解就是将<code>Java</code>的一些结构自动转为<code>Scala</code>的结构</li>
@@ -2596,7 +2607,19 @@ for {
 </ul>
 </li>
 </ul>
-<h3 id="scala-环境"><a class="header-anchor" href="#scala-环境"></a>Scala 环境</h3>
+<h2 id="scala-code-example"><a class="header-anchor" href="#scala-code-example"></a>Scala Code Example</h2>
+<h3 id="map"><a class="header-anchor" href="#map"></a>Map</h3>
+<h4 id="map-foreach"><a class="header-anchor" href="#map-foreach"></a>Map.foreach</h4>
+<ul>
+<li>
+<p><code>map</code>里面的元素在<code>foreach</code>的用法时候，都是二元组。<code>_1</code>是键值，<code>_2</code>是赋值</p>
+<pre><code>val m1 = Map(3 -&gt; &quot;geeks&quot;, 1 -&gt; &quot;for&quot;, 2 -&gt; &quot;cs&quot;, 6 -&gt; &quot;geeks&quot;) 
+
+val result = m1.foreach(x =&gt; println(&quot;key=&quot; + x._1 + &quot;, value=&quot; + x._2)) 
+</code></pre>
+</li>
+</ul>
+<h2 id="scala-环境"><a class="header-anchor" href="#scala-环境"></a>Scala 环境</h2>
 <ul>
 <li><a href="https://blog.csdn.net/high2011/article/details/76541233" target="_blank" rel="noopener">基本scala环境在IJ里面的搭建</a></li>
 </ul>
