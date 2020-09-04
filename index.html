@@ -1652,6 +1652,13 @@ at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager
 <h3 id="交互流程"><a class="header-anchor" href="#交互流程"></a>交互流程</h3>
 <ul>
 <li>
+<p>双向握手的时候客户端实际会发4次<code>client hello</code>消息，如下图<br>
+<img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/3-times%20handshake.PNG" alt="双向握手流程图"></p>
+</li>
+<li>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/entire_handshake_senario.png" alt="wireshark里面对应的消息流"></p>
+</li>
+<li>
 <p>主要是按照参考链接里面最后一篇来学习的</p>
 </li>
 <li>
@@ -1664,10 +1671,10 @@ at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager
 </code></pre>
 </li>
 <li>
-<p>admin权限打开wireshark，选择对应网卡，然后抓包，就可以看到文章里面的图片上显示的命令了。</p>
+<p><code>admin</code>权限打开<code>wireshark</code>，选择对应网卡，然后抓包，就可以看到文章里面的图片上显示的命令了。</p>
 </li>
 <li>
-<p><em>TLS本身是一层协议并且它的底层叫做记录协议(Record protocol)</em> 这句话不是很理解，记录在什么地方呢</p>
+<p><code>TLS</code>本身是一层协议并且它的底层叫做记录协议(<code>Record protocol</code>)。<code>TLS</code>到底在哪一层，大家理解不一样，但是在<code>TCP</code>和<code>HTTP</code>之间，或者<code>HTTP</code>上比较合适。从<code>dump</code>来看，<code>HTTP</code>链接在TLS握手之前已经是建立好了。</p>
 </li>
 <li>
 <p>记录的格式：</p>
@@ -1681,10 +1688,12 @@ at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager
 </li>
 </ul>
 <h4 id="客户端发送hello报文"><a class="header-anchor" href="#客户端发送hello报文"></a>客户端发送Hello报文</h4>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Client_Hello.png" alt="自己截的发往Github的消息"></p>
 <ul>
-<li>
-<p>我自己截的图见下：</p>
-</li>
+<li>在上面的图片里面我没有<code>follow HTTP Stream</code>，看起来就有点奇怪，客户端Hello都在上面了。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Detail_Info_in_Client_Hello.png" alt="详细的helo报文信息"></p>
+<ul>
 <li>
 <p>在<code>secure socket layers</code>里面能看到具体信息，客户端会先说，我要用这个版本的TLS，我支持这些密码套件</p>
 </li>
@@ -1695,7 +1704,10 @@ at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager
 <p>这个在之前看<code>oauth</code>的时候看到过。服务器会存储<code>sessionId</code>以及其他信息。在<code>sessionId</code>存在的情况下，并不会进行一个完整的交互</p>
 </li>
 <li>
-<p>密码套件里面包括使用的协议，交换秘钥时候的加密算法，证书用的加密算法，还有传输数据时候的加密算法。前两者一般是不对称的，最后一个一般是对称加密算法。</p>
+<p>密码套件里面包括使用的协议，交换秘钥时候的加密算法，证书用的加密算法，还有传输数据时候的加密算法。前两者一般是不对称的，最后一个一般是对称加密算法。还是解释一下：</p>
+<pre><code>Cipher Suite: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 (0xc02b)
+协议_秘钥交换算法_签名验证算法_批量加密算法(AES_128_GCM)_消息验证代码
+</code></pre>
 </li>
 <li>
 <p>在<code>TLS1.2</code>里面还可以使用压缩算法。1.3的版本里面已经去除了。因为压缩是有漏洞可以被攻击</p>
@@ -1705,6 +1717,45 @@ at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager
 </li>
 </ul>
 <h4 id="服务端发送hello报文"><a class="header-anchor" href="#服务端发送hello报文"></a>服务端发送Hello报文</h4>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Server_Hello.png" alt="服务端hello消息"></p>
+<ul>
+<li>这里可以看到<code>TLS</code>里面的记录协议层，还有握手协议层。但是从图片看起来，握手协议在记录协议里面。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Details_Info_Server_Hello.png" alt="服务端hello消息详解"></p>
+<ul>
+<li>上边的两张图片应该都是第二次时候的，明显比第一次连接时候要少交互。服务器端hello的时候就直接开始使用上几次的证书秘钥进行消息验证了。</li>
+<li>服务器端也有随机数，类似的，一共32字节，前面4个字节也是时间，后面的是真正的随机数。</li>
+<li><code>session ticket</code>客户端的章节里面已经阐述了<code>session Id</code>的用处。当大访问客户，互联网用户时候，那么在服务器端存储所有的<code>session</code>信息显然是不合理的。所有引入了这个<code>session ticket</code>，将所有的信息用服务器端的私钥加密之后存贮在客户端。客户端hello消息里面可以看到这个字段，在扩展消息里面</li>
+</ul>
+<h4 id="服务端发送证书和秘钥"><a class="header-anchor" href="#服务端发送证书和秘钥"></a>服务端发送证书和秘钥</h4>
+<ul>
+<li>接下来服务器会将服务器的证书等信息发给客户端：可以看到里面有两条<code>secure layer</code>的消息。第二条<code>secure layer</code>信息里面又有两条记录信息，一条是秘钥交换，一条是hello done的消息</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/server_certificate_key_finished.png" alt="服务器端证书信息概览"></p>
+<ul>
+<li>在详细信息里面，能看到证书和秘钥的信息<br>
+<img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/server_certificate_key_finished_details.png" alt="服务器端证书信息详细"></li>
+</ul>
+<h4 id="客户端发送证书和秘钥"><a class="header-anchor" href="#客户端发送证书和秘钥"></a>客户端发送证书和秘钥</h4>
+<ul>
+<li>
+<p><code>Github</code>使用的是D-H算法，客户端必须获取服务器端的公钥才能计算自己的公钥，算法细节后续在算法博客里面学习。</p>
+</li>
+<li>
+<p>客户端计算出自己的公钥，用服务器端的公钥来加密，然后发给服务器端，服务器端会用自己的私钥来解密。</p>
+</li>
+<li>
+<p>客户证书消息里面里面也有三条记录消息。最后一条是测试数据，在测试数据里面包含以下内容</p>
+<pre><code>verify_data = PRF(master_secret, &quot;client finished&quot;, MD5(handshake_messages) + SHA-1(handshake_messages) )
+</code></pre>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/client_certificate_key_tested_msg.png" alt="客户证书消息"></p>
+<h4 id="服务器端发送finish消息"><a class="header-anchor" href="#服务器端发送finish消息"></a>服务器端发送finish消息</h4>
+<ul>
+<li>服务器端在收到客户端的公钥之后，会发送一条类似的消息，整个握手过程就结束了。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/server_answer_verify_msg.png" alt="服务器端加密验证消息"></p>
 <h2 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h2>
 <ul>
 <li><a href="https://www.cnblogs.com/gsls200808/p/4500246.html" target="_blank" rel="noopener">KeyStore和TrustStore</a></li>
