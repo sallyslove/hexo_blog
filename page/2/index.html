@@ -242,6 +242,255 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/08/13/Micro-Service/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/08/13/Micro-Service/" itemprop="url">Micro Service</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-13T13:41:09+08:00">
+                2019-08-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/docker/" itemprop="url" rel="index">
+                    <span itemprop="name">docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在学习一些<code>micro service</code>相关，记录在这里。<br>
+现在都是说<code>micro service</code>，但是什么是<code>micro service</code>，可能不同的人有不同的定义，但是单纯地只是将软件部署到<code>docker</code>或者<code>k8s</code>上面去，可能并不完全符合<code>micro service</code>，所以学习一下。<br>
+将一些学习到的tips和理念记录下来，最后形成自己的理解。<br>
+学习了一阵，感觉还是不一样的，有一套架构体系的，记录在这里。</p>
+<h3 id="什么是micro-service"><a class="header-anchor" href="#什么是micro-service"></a>什么是micro service</h3>
+<ul>
+<li>只占用需要的内存和处理器处理能力</li>
+<li>如果是处理数据的，假设我们有一个处理inventory data的<code>micro service</code>，那么这个<code>micro service</code>仅仅需要在意inventory data。而不需要考虑其他数据的影响。</li>
+<li><code>micro service</code>不受语言限制，不同语言的<code>micro service</code>仍旧可以联合起来的完成一个solution的</li>
+</ul>
+<h4 id="aws的理解"><a class="header-anchor" href="#aws的理解"></a>AWS的理解</h4>
+<ul>
+<li>
+<p>参考链接：<a href="https://aws.amazon.com/microservices/" target="_blank" rel="noopener">AWS微服务理解</a></p>
+</li>
+<li>
+<p>每个服务都是独立提供服务的模块，可以独立的开发、升级、部署和扩展</p>
+</li>
+<li>
+<p>每个服务不应该和任何其他服务共享代码</p>
+</li>
+<li>
+<p>服务间的任何交互都应该通过<code>API</code>来进行</p>
+</li>
+<li>
+<p>每个服务都是</p>
+</li>
+</ul>
+<h4 id="微软的理解"><a class="header-anchor" href="#微软的理解"></a>微软的理解</h4>
+<ul>
+<li>参考链接：<a href="https://docs.microsoft.com/en-us/azure/architecture/guide/architecture-styles/microservices" target="_blank" rel="noopener">微软文章</a></li>
+</ul>
+<h3 id="micro-service-combination"><a class="header-anchor" href="#micro-service-combination"></a>micro service combination</h3>
+<ul>
+<li><code>micro service</code>本身是一个<code>complete application</code>，它独立完成某个功能，可以有interface或者没有，可以访问数据库，也可以不访问。</li>
+<li>很多<code>micro service</code>联合起来，成为一个solution。</li>
+<li>默认只需要知道对方的<code>endpoint</code>就可以进行通信。其实不一定是<code>http</code>协议的，也有一些其他的很流行的总线方式。</li>
+<li><strong><em>each micro service has to offer an API endpoint! 通常都是REST的endpoint，但是也可以是<code>wisdom endpoint</code></em></strong></li>
+</ul>
+<h3 id="micro-service特点"><a class="header-anchor" href="#micro-service特点"></a>micro service特点</h3>
+<ul>
+<li>增加了scalability。话说这个吧，其实很复杂。看我另外一篇博客。而且未必多加pod，能力就一定上升啊</li>
+<li>从下面杂谈里面的几篇文章里面看起来，大家都认为<code>micro service</code>之后，模块之间基本是完全解耦的，大家都开开心心的全栈式就关心自己的模块，从需求到后期客户维护，完全自主，不用管其他模块。<em>A benefit of microservices is that each team can be responsible for releasing their services independently and without coordination with other teams.</em>
+<ul>
+<li>但是，这怎么可能啊。就我们自己的产品来说，尤其是那些<code>lib</code>库一样的模块，一升级，所有的都得动。没明白。没有明白呀。</li>
+<li>除非所有的小模块都像个产品一样运营。比如提供安全管理功能的模块，剩下调用它的模块按照自己的需求进行升级。</li>
+<li><strong><em>嗯，确实也是有产品这么做的，但是这样就会有很多资源消耗吧。这点在大牛的分享中也提及过，O&amp;M的功能是公用的，但是会占用资源。</em></strong></li>
+<li><strong><em>但是如果大家都用同一份，谈什么微服务哦。那么<code>lib</code>库就不应该占用资源。或者占用资源的就不应该做成<code>lib</code>库？</em></strong></li>
+<li><code>google</code>怎么做的？应该也是有不同的产品吧。</li>
+</ul>
+</li>
+</ul>
+<h4 id="优势"><a class="header-anchor" href="#优势"></a>优势</h4>
+<ul>
+<li>
+<p>改动：一个微小的改动需要很多工作去做，一个微小的改动会影响很多部分，增加一个需要资源的模块，需要增加整个系统的资源，而不是只增加需要增加的部分</p>
+</li>
+<li>
+<p>扩展：基本上就是指<code>load scalability</code>,在monolithich时代，扩展是扩展所有的模块，就是复制出新的一份系统来。而微服务时候，是扩展需要扩展的部分，这点很有优势</p>
+<ul>
+<li>所以从以上两点来说，一个微服务在部署和扩展上面，从业务角度来说，就是service角度来说，应该是独立的。<strong><em>那么反过来成立吗？就是说一个pod或者service，可以独立部署，独立扩展，但是并不能提供独立的服务，那么是不是边界定义得不对呢</em></strong></li>
+<li><em>We define libraries as components that are linked into a program and called using in-memory function calls, while services are out-of-process components who communicate with a mechanism such as a web service request, or remote procedure call.</em></li>
+</ul>
+</li>
+<li>
+<p>方便CI和CD</p>
+</li>
+<li>
+<p>参考链接</p>
+<ul>
+<li><a href="https://martinfowler.com/articles/microservices.html" target="_blank" rel="noopener">Microservices Architecture</a>:</li>
+<li><a href="https://mp.weixin.qq.com/s?__biz=MjM5MjEwNTEzOQ==&amp;mid=401500724&amp;idx=1&amp;sn=4e42fa2ffcd5732ae044fe6a387a1cc3#rd" target="_blank" rel="noopener">上一篇的中文翻译</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="逆势"><a class="header-anchor" href="#逆势"></a>逆势</h4>
+<p>微服务也是会有一些问题和难点的，比如：</p>
+<ul>
+<li>进程间通信会比进程内通信代价大很多，所以应该谨慎设计边界。<em>remote APIs need to be coarser-grained, which is often more awkward to use.</em> 不是很理解这句话</li>
+<li>Consequently the teams are cross-functional, including the full range of skills required for the development: user-experience, database, and project management. 所以嘛，我就说对技术人员的要求越发高了。虽说是team，但是这种team也很不好搭配的好不好。</li>
+<li>并且这种方式，将团队和自己开发的产品绑在了一起。感觉回到了以模块来组织team的年代。实在是有利有弊。还有一个问题，按照现在推荐的，将一部分support的事务归到了技术团队里面，那么有向前延伸吗？话说薪水呢，得涨薪啊</li>
+</ul>
+<h3 id="微服务架构"><a class="header-anchor" href="#微服务架构"></a>微服务架构</h3>
+<p>关于微服务架构的文章真是多如牛毛。一搜一大把。看了陈晧推荐的一篇据说入门级英文文章，确实清晰明了。话说很多中文翻译简直是惨不忍睹啊。真心惨不忍睹！</p>
+<p>看了总觉得有有点心惊啊，从<code>warterful</code>到<code>agile</code>，从<code>monolithic</code>到<code>micro service</code>，对开发人员的要求是越来越高了啊。😦</p>
+<p>还能不能愉快地做开发了啊？<br>
+<em>The microservice approach to division is different, splitting up into services organized around business capability</em></p>
+<p>还得有<code>business capability</code>，话说技术人员理解的<code>business capability</code>正确吗</p>
+<h3 id="杂谈"><a class="header-anchor" href="#杂谈"></a>杂谈</h3>
+<ul>
+<li>
+<p>早上无心工作，摸鱼酱油，看了几篇文章，觉得还不错。 😅 话说<code>InfoQ</code>就是做翻译工作的嘛，咋云计算那边全是翻译啊。</p>
+</li>
+<li>
+<p><a href="https://medium.com/better-programming/how-microservices-architecture-impacted-the-culture-of-software-development-6bba363ecdf1" target="_blank" rel="noopener">How Microservices Architecture Impacted the Culture of Software Development</a>:</p>
+<ul>
+<li>这篇文章的观点很是不错，含义就是说写代码很有趣啊，想干嘛就干嘛，把自己脑子里面的想法实现出来。可是工作以后就郁闷了，全是些模糊的责任，规定好了的框架，规定好了的数据库，规定好了的语言。确实如此，一天天消磨了意志和能力</li>
+<li>现在有了<code>micro service</code>，瞅着大家都挺开心的，有了这个鼓动，似乎乐趣又回来了一点，可以分为很小的<code>repo</code>，可以自行选择各种不同的语言和技术，然后一起做成为一个产品。甚至可以有产品和售后的职责。</li>
+<li>嘛，文章最后还说，这个并不关<code>micro service</code>的关系，所谓的<code>monolithic</code>也应该可以做到。</li>
+</ul>
+</li>
+<li>
+<p><a href="https://medium.com/@steven.lemon182/why-our-team-cancelled-our-move-to-microservices-8fd87898d952" target="_blank" rel="noopener">Why our team cancelled our move to microservices</a></p>
+<ul>
+<li>原文很长，下面的评论也十分之多，实在不算一把头能看完的</li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/08/02/Java-Socket中的port/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -797,7 +1046,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/07/19/ifconfig命令和网络基础/">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/07/19/ifconfig/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Lynn Shen">
@@ -816,7 +1065,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/hexo_blog/2019/07/19/ifconfig命令和网络基础/" itemprop="url">ifconfig命令和网络基础</a></h1>
+                <a class="post-title-link" href="/hexo_blog/2019/07/19/ifconfig/" itemprop="url">ifconfig & some basic concept</a></h1>
         
 
         <div class="post-meta">
@@ -851,8 +1100,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/protocal/" itemprop="url" rel="index">
-                    <span itemprop="name">protocal</span>
+                  <a href="/hexo_blog/categories/network/" itemprop="url" rel="index">
+                    <span itemprop="name">network</span>
                   </a>
                 </span>
 
@@ -890,27 +1139,52 @@
       
         
           
-            <p>ifconfig和ipconfig一样，实在是最常用的命令。然而，只是大概的了解。每次看一下之后，后面又会忘。<br>
-网络的基本概念也是，每次都是看一点，不成系统的感觉。所以把基础网络概念放在这里。</p>
-<h3 id="ifconfig"><a class="header-anchor" href="#ifconfig"></a>ifconfig</h3>
-<p>这个命令是linux的</p>
+            <p><code>ifconfig</code>是最常用的命令。然而，只是大概的了解。每次看一下之后，后面又会忘。<br>
+网络的基本概念也是，每次都是看一点，不成系统的感觉。所以把基础网络概念放在这里。<br>
+前后一年时间，这回大致是明白了。想当年大学时代，我网络学得不错的啊 😇</p>
+<h3 id="网络基础概念"><a class="header-anchor" href="#网络基础概念"></a>网络基础概念</h3>
 <h4 id="物理地址-mac地址"><a class="header-anchor" href="#物理地址-mac地址"></a>物理地址(MAC地址)</h4>
 <ul>
-<li>什么是MAC地址？ MAC地址（Media Access Control Address，介质访问控制），直译为媒体访问控制地址，也称为局域网地址（LAN Address），以太网地址（Ethernet Address）或物理地址（Physical Address），它是一个用来确认网上设备位置的地址。形象地说，MAC地址就如同身份证上的身份证号码，具有全球唯一性。</li>
-<li>MAC地址采用十六进制数表示，共六个字节（48位）。其中，前三个字节是由IEEE的注册管理机构RA负责给不同厂家分配的代码(高位24位），也称为“编制上唯一的标识符”，后三个字节(低位24位)由各厂家自行指派给生产的适配器接口，称为扩展标识符（唯一性）。</li>
-<li>MAC地址用于在网络中唯一标示一个网卡，一台设备若有一或多个网卡，则每个网卡都需要并会有一个唯一的MAC地址。</li>
+<li>什么是<code>MAC地址</code>？ MAC地址（<code>Media Access Control Address</code>，介质访问控制），直译为媒体访问控制地址，也称为局域网地址（<code>LAN Address</code>），以太网地址（<code>Ethernet Address</code>）或物理地址（<code>Physical Address</code>），它是一个用来确认网上设备位置的地址。</li>
+<li>形象地说，<code>MAC地址</code>就如同身份证上的身份证号码，具有全球唯一性。</li>
+<li><code>MAC地址</code>采用十六进制数表示，共六个字节（48位）。其中，前三个字节是由<code>IEEE</code>的注册管理机构<code>RA</code>负责给不同厂家分配的代码(高位24位），也称为“编制上唯一的标识符”，后三个字节(低位24位)由各厂家自行指派给生产的适配器接口，称为扩展标识符（唯一性）。</li>
+<li><code>MAC地址</code>用于在网络中唯一标示一个网卡，一台设备若有一或多个网卡，则每个网卡都需要并会有一个唯一的MAC地址。</li>
 <li>参考链接
 <ul>
 <li><a href="https://zhidao.baidu.com/question/6331169.html" target="_blank" rel="noopener">百度知道的迅速概念</a></li>
+<li><a href="https://www.zhihu.com/question/49335649" target="_blank" rel="noopener">IP地址和MAC地址的区别和联系-这篇的第一个回答非常清晰</a></li>
 <li><a href="https://www.zhihu.com/question/21546408" target="_blank" rel="noopener">有了 IP 地址，为什么还要用 MAC 地址？</a></li>
 </ul>
 </li>
 </ul>
+<h4 id="ip地址"><a class="header-anchor" href="#ip地址"></a>IP地址</h4>
+<ul>
+<li>主要的参考链接仍旧是上面知乎上的一篇。里面的回答非常清晰</li>
+<li>网络上面关于<code>IP</code>地址，<code>MAC</code>地址的解释很多，有说<code>IP</code>是门牌地址，<code>MAC</code>是身份证号，乍一看似乎明白了，但是仍旧不清晰，很多事物的来源是有历史原因的。</li>
+<li>在最早的时候是没有因特网的，只有以太网。当然，最早的是电话网络，物理网线的那个网络。</li>
+<li>以太网是目前常用的局域网的技术，对应于数据链路层。同层的有令牌环(这个我印象深刻啊)，还有<code>ATM</code>技术。在以太网里面，使用的是<code>MAC</code>地址。</li>
+<li>而后来出现了互联网，将各个局域网给连接起来，这时候，<code>MAC</code>地址的局限性就出现了，毕竟设计最初就是局域网用的，不可能让每个交换机记录世界上所有的<code>MAC</code>地址。</li>
+<li>于是互联网中引入了<code>IP</code>地址。<code>IP</code>地址是因特网（因特网协议就是<code>TCP/IP</code>）的概念，而因特网本身设计时候就是以连接多个以太网为目的的，所以因特网并不考虑数据链路层和物理层的内容。</li>
+<li><code>IP</code>地址就是帮着客户在多个以太网中间转发，在以太网内部，就是<code>MAC</code>地址的事情了。</li>
+<li>当然，因特网也可以架构在其他类型的局域网之上，例如令牌环网。</li>
+<li>那么<code>IP</code>是如何找到各个局域网的，会在另一篇博客里面阐述</li>
+</ul>
 <h4 id="子网掩码"><a class="header-anchor" href="#子网掩码"></a>子网掩码</h4>
 <ul>
-<li>子网掩码(subnet mask)又叫网络掩码、地址掩码、子网络遮罩，它是一种用来指明一个IP地址的哪些位标识的是主机所在的子网，以及哪些位标识的是主机的位掩码。子网掩码不能单独存在，它必须结合IP地址一起使用。子网掩码只有一个作用，就是将某个IP地址划分成网络地址和主机地址两部分</li>
-<li>子网掩码是一个32位地址，用于屏蔽IP地址的一部分以区别网络标识和主机标识，并说明该IP地址是在局域网上，还是在远程网上。</li>
-<li>计算稍微有点绕，看知乎上面的比喻比较清楚，举例：
+<li>
+<p>子网掩码(<code>subnet mask</code>)又叫网络掩码、地址掩码、子网络遮罩，它是一种用来指明一个<code>IP地址</code>的哪些位标识的是主机所在的子网，以及哪些位标识的是主机的位掩码。</p>
+</li>
+<li>
+<p>子网掩码不能单独存在，它必须结合IP地址一起使用。</p>
+</li>
+<li>
+<p>子网掩码只有一个作用，就是将某个IP地址划分成网络地址和主机地址两部分</p>
+</li>
+<li>
+<p>子网掩码是一个<code>32</code>位地址，用于屏蔽IP地址的一部分以区别网络标识和主机标识，并说明该IP地址是在局域网上，还是在远程网上。</p>
+</li>
+<li>
+<p>计算稍微有点绕，看知乎上面的比喻比较清楚，举例：</p>
 <ul>
 <li>
 <p>比如我们申请到的网络号为 <code>210.73.a.b</code>，该网络地址为c类IP地址，网络标识为<code>210.73.a</code>，主机标识是<code>b</code>。</p>
@@ -937,7 +1211,9 @@
 </li>
 </ul>
 </li>
-<li>参考链接</li>
+<li>
+<p>参考链接</p>
+</li>
 </ul>
 <ul>
 <li><a href="https://baike.baidu.com/item/%E5%AD%90%E7%BD%91%E6%8E%A9%E7%A0%81" target="_blank" rel="noopener">百度百科的解释</a></li>
@@ -945,8 +1221,11 @@
 </ul>
 <h4 id="广播地址"><a class="header-anchor" href="#广播地址"></a>广播地址</h4>
 <ul>
-<li>Broadcast Address(广播地址)是专门用于同时向网络中所有工作站进行发送的一个地址。在使用TCP/IP 协议的网络中，主机标识段host ID 为全1 的IP 地址为广播地址，广播的分组传送给host ID段所涉及的所有计算机。例如，对于10.1.1.0 （255.255.255.0 ）网段，其广播地址为10.1.1.255 （255 即为2 进制的11111111 ），当发出一个目的地址为10.1.1.255的分组（封包）时，它将被分发给该网段上的所有计算机。</li>
+<li><code>Broadcast Address</code>(广播地址)是专门用于同时向网络中所有工作站进行发送的一个地址。</li>
+<li>在使用<code>TCP/IP</code>协议的网络中，主机标识段<code>host ID</code>为全<code>1</code>的IP 地址为广播地址，广播的分组传送给<code>host ID</code>段所涉及的所有计算机。例如，对于<code>10.1.1.0</code> （<code>255.255.255.0</code> ）网段，其广播地址为<code>10.1.1.255</code> （<code>255</code> 即为二进制的<code>11111111</code>），当发出一个目的地址为<code>10.1.1.255</code>的分组（封包）时，它将被分发给该网段上的所有计算机。</li>
 </ul>
+<h3 id="ifconfig"><a class="header-anchor" href="#ifconfig"></a>ifconfig</h3>
+<p>这个命令是<code>linux</code>的</p>
 <h4 id="ifconfig命令输出详解"><a class="header-anchor" href="#ifconfig命令输出详解"></a>ifconfig命令输出详解</h4>
 <ul>
 <li><code>eth0</code> --&gt; 网卡</li>
@@ -968,7 +1247,7 @@ RX bytes:491238 (479.7 KiB) TX bytes:86286 (84.2 KiB)
 Interrupt:5 Base address:0x8c00
 </code></pre>
 <ul>
-<li>参加链接： 写得非常清楚的博客并不多。
+<li>参加链接
 <ul>
 <li><a href="http://c.biancheng.net/view/797.html" target="_blank" rel="noopener">Linux ifconfig命令：配置网络接口</a></li>
 </ul>
@@ -2341,249 +2620,6 @@ Interrupt:5 Base address:0x8c00
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/04/18/Cassandra Batch/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/04/18/Cassandra Batch/" itemprop="url">Cassandra Batch</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-18T10:17:44+08:00">
-                2019-04-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/cassandra/" itemprop="url" rel="index">
-                    <span itemprop="name">cassandra</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="cassandra-batch"><a class="header-anchor" href="#cassandra-batch"></a>Cassandra Batch</h2>
-<p>最近工作比较忙活，一个月都没写blog喽。工作中碰到了一些与cassandra相关的同步异步，simpleStatement，batchStatement的东西。顺势多研究一下。<br>
-研究发现，这玩意还挺复杂的啊。</p>
-<h3 id="execute-与-executeasync"><a class="header-anchor" href="#execute-与-executeasync"></a>execute 与 executeAsync</h3>
-<ul>
-<li>
-<p>cassandra driver在执行语句时候提供了<code>execute</code>和<code>executeAsync</code> 两个接口</p>
-</li>
-<li>
-<p>对于<code>batch</code>来说，只能调用前者，这个好像不太对。</p>
-</li>
-<li>
-<p>但是进入代码会看到，<code>execute</code>最后调用的也是<code>executeAsync</code></p>
-<pre><code>  public ResultSet execute(Statement statement) {
-         this.checkNotInEventLoop();
-         return this.executeAsync(statement).getUninterruptibly();
-  }
-</code></pre>
-</li>
-<li>
-<p>这个<code>executeAsync</code>接口是在<code>SessionManager</code>里面定义的</p>
-</li>
-<li>
-<p>按照参考链接1里面所述的，从以上代码也可以看出来的<code>execute</code>在于是<code>block</code>的。就是不可打断的。必须得<code>cassandra</code>返回一些数据才能返回。所以它可以保证在<code>invalid request</code>的情况下报错，但是不能保证<code>request</code>就一定执行成功了。</p>
-</li>
-<li>
-<p><code>executeAsync</code>就是非阻塞的，也不能保证这个<code>request</code>一定被执行或者在<code>invalid request</code>的情况下报错</p>
-</li>
-<li>
-<p>参考链接1里面有这么一段话：看起来少量<code>batch</code>，并且是同样<code>partition key</code>的时候，会比较快。</p>
-</li>
-<li>
-<p>我们在产品中的改进在有些场景下面确实性能变好了</p>
-</li>
-</ul>
-<blockquote>
-<p>To further improve throughput, you might want to consider using BatchStatement and submitting requests in batches. This is a good option if you keep your batches small (50-250 is a good number) and if your inserts in a batch all share the same partition key.</p>
-</blockquote>
-<ul>
-<li>参考链接：
-<ol>
-<li><a href="https://stackoverflow.com/questions/34949292/how-cassandra-handle-blocking-execute-statement-in-datastax-java-driver" target="_blank" rel="noopener">How Cassandra handle blocking execute statement in datastax java driver<br>
-</a></li>
-</ol>
-</li>
-</ul>
-<ol start="2">
-<li><a href="http://zqhxuyuan.github.io/2015/11/10/2015-11-10-Cassandra-Client/" target="_blank" rel="noopener">Cassandra Client查询优化</a>: 这篇有点看不明白。但是瞅着还挺好的，先放在这里。</li>
-</ol>
-<h3 id="batchstatement"><a class="header-anchor" href="#batchstatement"></a>BatchStatement</h3>
-<p>严格说来，<code>cassanda</code>里面的<code>batch</code>称为<code>LOGGED batch</code>，而不应该是<code>atomic batch</code>。<code>Cassanda</code>的策略始终是<code>Eventually Consistent</code>。而且由于<code>cassandra</code>里面加一个数据比删除一个数据要方便太多。所以<code>cassandra</code>会记一堆日志啥的，而不是回滚。</p>
-<ul>
-<li><code>cassandra</code>是基于<code>co-ordinator</code>来实现的。<code>batch</code>在<code>co-ordinator</code>开始处理之前就留会写到其他节点去</li>
-<li>如果<code>batch</code>里面的某些失败了，那么是不会回滚的。而是会不断尝试。</li>
-<li><code>LOGGER</code>的<code>batch</code>操作会比<code>unlogged</code>的多做很多事情</li>
-</ul>
-<h4 id="batchstatement-type"><a class="header-anchor" href="#batchstatement-type"></a>BatchStatement.Type</h4>
-<p>这个是<code>BatchStatement class</code>的一个子类</p>
-<ul>
-<li><code>COUNTER</code>: A counter batch. Note that such batch is the only type that can contain counter operations and it can only contain these. 这个解释也太简单了。意思是说可以知道多少个成功了？</li>
-<li><code>LOGGED</code>:
-<ul>
-<li>Cassandra will first write the batch to its distributed batch log to ensure the atomicity of the batch (atomicity meaning that if any statement in the batch succeeds, all will eventually succeed).这个解释也不太懂啊，到底怎么保证的。 ORZ</li>
-<li>默认调用<code>new BatchStatement()</code>就会创一个LOGGED type的Batch-</li>
-</ul>
-</li>
-<li><code>UNLOGGED</code>： A batch that doesn’t use Cassandra’s distributed batch log. Such batch are not guaranteed to be atomic.</li>
-</ul>
-<h4 id="logged-batch的过程"><a class="header-anchor" href="#logged-batch的过程"></a>LOGGED Batch的过程</h4>
-<p><img src="http://3.bp.blogspot.com/-dv9zIC84QD4/VNoNE0YXn8I/AAAAAAAAAX0/b3wtV48fuB0/s1600/Screenshot%2B2015-02-10%2B13.51.56.png" alt></p>
-<blockquote>
-<p>图片来自参考链接2</p>
-</blockquote>
-<ul>
-<li>所以从图片里面看出来，<code>cassandra</code>收到一个<code>batch</code>请求的时候：
-<ul>
-<li>由<code>co-ordinator</code>来处理，也就是种子节点</li>
-<li>会先写<code>batch log</code>，通常写两个<code>node</code>？</li>
-<li>然后再从种子节点写到各个分节点</li>
-</ul>
-</li>
-<li>按照参考链接2里面的描述，<code>performance hit</code>，性能是有可能下降的。因为多做了很多事情，而且是从种子节点分发出去的。</li>
-<li>结论就是：只有在为了保证一致性的情况下，才使用<code>batch</code>，而不是说改善性能</li>
-</ul>
-<h4 id="logged-batch-fail"><a class="header-anchor" href="#logged-batch-fail"></a>LOGGED Batch Fail</h4>
-<ul>
-<li>首先不会回滚</li>
-<li><code>WriteTimeoutException with write type of BATCH_LOG.</code> 说明在写<code>batch log</code>时候挂了。需要手动再发一下。</li>
-<li><code>WriteTimeoutException with the write type of BATCH</code>。 在真正写<code>request</code>的时候出错了。<code>cassandra</code>会不断重复，直至成功。</li>
-<li>有时候会在<code>Cassandra</code>的日志里面看到以下内容。这是说<code>batch</code>的请求超限了。这个参数的默认值是5K，<code>batch_size_warn_threshold_in_kb</code></li>
-</ul>
-<pre><code>WARN  [SharedPool-Worker-2] 2018-05-16 08:33:48,585 BatchStatement.java:287 - Batch of prepared statements for [test, test1] is of size 6419, exceeding specified threshold of 5120 by 1299.
-</code></pre>
-<ul>
-<li><a href="https://stackoverflow.com/questions/50385262/cassandra-batch-prepared-statement-size-warning" target="_blank" rel="noopener">batch size warning</a></li>
-</ul>
-<h3 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h3>
-<ol>
-<li><a href="https://stackoverflow.com/questions/22664129/atomic-batches-in-cassandra" target="_blank" rel="noopener">Atomic Batches in Cassandra</a></li>
-<li><a href="http://christopher-batey.blogspot.com/2015/03/cassandra-anti-pattern-cassandra-logged.html" target="_blank" rel="noopener">Cassandra anti-pattern: Logged batches</a><br>
-3.<a href="https://docs.datastax.com/en/archived/cql/3.3/cql/cql_using/useBatchBadExample.html" target="_blank" rel="noopener">batch的错误使用方式</a></li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2634,7 +2670,7 @@ Interrupt:5 Base address:0x8c00
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-count">39</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2645,7 +2681,7 @@ Interrupt:5 Base address:0x8c00
               
               <div class="site-state-item site-state-categories">
                 <a href="/hexo_blog/categories/index.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>

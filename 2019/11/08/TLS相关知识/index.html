@@ -96,7 +96,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/server_certificate_key_finished_details.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/client_certificate_key_tested_msg.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/server_answer_verify_msg.png">
-<meta property="og:updated_time" content="2020-09-03T02:10:49.319Z">
+<meta property="og:updated_time" content="2020-09-08T08:52:07.915Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="TLS - Operation">
 <meta name="twitter:description" content="TLS和OAuth  does-an-oauth-2-client-really-need-tls： 我自己有点搞不清楚这些的关系，这边有一个解释很是清晰，看了就明白了  3.1.2.1.  Endpoint Request Confidentiality If a redirection request will result in the transmission of an authoriz">
@@ -392,16 +392,21 @@
 </ul>
 <h3 id="keytool"><a class="header-anchor" href="#keytool"></a>Keytool</h3>
 <ul>
-<li><code>keytool</code>是<code>java</code>默认带的工具。通常生成<code>.jks</code>格式的文件。称为<code>keystore</code></li>
-<li><code>keystore</code>文件里面可以带<code>key-pair</code>，也可以是证书</li>
-<li>以下命令是生成一个名为<code>keystore.jks</code>的<code>keystore</code>,并将证书<code>jetty.crt</code>导入到这个文件里面。同时指定了密码，并且在过程中不需要屏幕交互。<code>-trustcacerts</code>的含义是信任该证书</li>
-</ul>
+<li>
+<p><code>keytool</code>是<code>java</code>默认带的工具。通常生成<code>.jks</code>格式的文件。称为<code>keystore</code></p>
+</li>
+<li>
+<p><code>keystore</code>文件里面可以带<code>key-pair</code>，也可以是证书</p>
+</li>
+<li>
+<p>以下命令是生成一个名为<code>keystore.jks</code>的<code>keystore</code>,并将证书<code>jetty.crt</code>导入到这个文件里面。同时指定了密码，并且在过程中不需要屏幕交互。<code>-trustcacerts</code>的含义是信任该证书</p>
 <pre><code>/opt/jdk/jre/bin/keytool -import -trustcacerts -file jetty.crt -keystore keystore.jks -alias jetty  -storepass changeit -noprompt
 </code></pre>
-<ul>
+</li>
 <li>
 <p>这条命令可以将上一条命令中导入的证书打印输出进行检验</p>
-<p>/opt/jdk/jre/bin/keytool -list -v -keystore keystore.jks</p>
+<pre><code>/opt/jdk/jre/bin/keytool -list -v -keystore keystore.jks
+</code></pre>
 </li>
 </ul>
 <h3 id="openssl"><a class="header-anchor" href="#openssl"></a>openssl</h3>
@@ -512,7 +517,17 @@
 <li>服务器端在收到客户端的公钥之后，会发送一条类似的消息，整个握手过程就结束了。</li>
 </ul>
 <p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/server_answer_verify_msg.png" alt="服务器端加密验证消息"></p>
-<h2 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h2>
+<h4 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h4>
+<ul>
+<li>这边的参考链接好多还没有细看，是写这篇博客过程中找到的，后面需要再进一步学习啊</li>
+<li><a href="https://www.jianshu.com/p/a3a25c6627ee" target="_blank" rel="noopener">Https详解+wireshark抓包演示</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/86304211" target="_blank" rel="noopener">HTTPS抓包了解TLS握手流程</a></li>
+<li><a href="https://crypto.stackexchange.com/questions/34754/what-does-the-tls-1-2-client-finished-message-contain/34792" target="_blank" rel="noopener">What does the TLS 1.2 client finished message contain?<br>
+</a></li>
+<li><a href="https://blog.csdn.net/mrpre/category_9270159.html" target="_blank" rel="noopener">SSL/TLS协议详解<br>
+</a></li>
+</ul>
+<h2 id="参考链接-v2"><a class="header-anchor" href="#参考链接-v2"></a>参考链接</h2>
 <ul>
 <li><a href="https://www.cnblogs.com/gsls200808/p/4500246.html" target="_blank" rel="noopener">KeyStore和TrustStore</a></li>
 <li><a href="https://xz.aliyun.com/t/2530" target="_blank" rel="noopener">TLS 协议详解</a></li>
@@ -643,7 +658,7 @@
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-count">39</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -654,7 +669,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/hexo_blog/categories/index.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -689,7 +704,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#tls和oauth"><span class="nav-number">1.</span> <span class="nav-text">TLS和OAuth</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tls版本"><span class="nav-number">2.</span> <span class="nav-text">TLS版本</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#如何发现我的浏览器使用的tls版本"><span class="nav-number">2.1.</span> <span class="nav-text">如何发现我的浏览器使用的TLS版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何测试tls连接"><span class="nav-number">2.2.</span> <span class="nav-text">如何测试TLS连接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tls双向握手"><span class="nav-number">3.</span> <span class="nav-text">TLS双向握手</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#keystore和truststore"><span class="nav-number">3.1.</span> <span class="nav-text">KeyStore和TrustStore</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jetty-tls-configuration"><span class="nav-number">3.2.</span> <span class="nav-text">Jetty TLS Configuration</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#keytool"><span class="nav-number">3.3.</span> <span class="nav-text">Keytool</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#openssl"><span class="nav-number">3.4.</span> <span class="nav-text">openssl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#交互流程"><span class="nav-number">3.5.</span> <span class="nav-text">交互流程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#客户端发送hello报文"><span class="nav-number">3.5.1.</span> <span class="nav-text">客户端发送Hello报文</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#服务端发送hello报文"><span class="nav-number">3.5.2.</span> <span class="nav-text">服务端发送Hello报文</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#服务端发送证书和秘钥"><span class="nav-number">3.5.3.</span> <span class="nav-text">服务端发送证书和秘钥</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#客户端发送证书和秘钥"><span class="nav-number">3.5.4.</span> <span class="nav-text">客户端发送证书和秘钥</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#服务器端发送finish消息"><span class="nav-number">3.5.5.</span> <span class="nav-text">服务器端发送finish消息</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#tls和oauth"><span class="nav-number">1.</span> <span class="nav-text">TLS和OAuth</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tls版本"><span class="nav-number">2.</span> <span class="nav-text">TLS版本</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#如何发现我的浏览器使用的tls版本"><span class="nav-number">2.1.</span> <span class="nav-text">如何发现我的浏览器使用的TLS版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何测试tls连接"><span class="nav-number">2.2.</span> <span class="nav-text">如何测试TLS连接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tls双向握手"><span class="nav-number">3.</span> <span class="nav-text">TLS双向握手</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#keystore和truststore"><span class="nav-number">3.1.</span> <span class="nav-text">KeyStore和TrustStore</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jetty-tls-configuration"><span class="nav-number">3.2.</span> <span class="nav-text">Jetty TLS Configuration</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#keytool"><span class="nav-number">3.3.</span> <span class="nav-text">Keytool</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#openssl"><span class="nav-number">3.4.</span> <span class="nav-text">openssl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#交互流程"><span class="nav-number">3.5.</span> <span class="nav-text">交互流程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#客户端发送hello报文"><span class="nav-number">3.5.1.</span> <span class="nav-text">客户端发送Hello报文</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#服务端发送hello报文"><span class="nav-number">3.5.2.</span> <span class="nav-text">服务端发送Hello报文</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#服务端发送证书和秘钥"><span class="nav-number">3.5.3.</span> <span class="nav-text">服务端发送证书和秘钥</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#客户端发送证书和秘钥"><span class="nav-number">3.5.4.</span> <span class="nav-text">客户端发送证书和秘钥</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#服务器端发送finish消息"><span class="nav-number">3.5.5.</span> <span class="nav-text">服务器端发送finish消息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考链接"><span class="nav-number">3.5.6.</span> <span class="nav-text">参考链接</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接-v2"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
 
           </div>

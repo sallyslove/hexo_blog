@@ -242,6 +242,172 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2020/09/10/protocol-ARP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2020/09/10/protocol-ARP/" itemprop="url">ARP Ipable</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-10T15:50:12+08:00">
+                2020-09-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在另一篇博客里面记录了基础的网络概念，在这篇博客里面记录网络之间如何转发，从<code>IP</code>地址如何找到对应的主机进行通信。</p>
+<h3 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h3>
+<ul>
+<li><a href="https://www.zhihu.com/question/49335649" target="_blank" rel="noopener">IP地址和MAC地址的区别和联系-这篇的第一个回答非常清晰</a></li>
+<li><a href="https://www.zhihu.com/question/22007235" target="_blank" rel="noopener">如何跟小白解释路由器和交换机的区别</a></li>
+<li><a href="https://www.zhihu.com/question/20465477" target="_blank" rel="noopener">路由器和交换机的不同之处有哪些？</a></li>
+</ul>
+<h3 id="概念"><a class="header-anchor" href="#概念"></a>概念</h3>
+<h4 id="网卡"><a class="header-anchor" href="#网卡"></a>网卡</h4>
+<ul>
+<li>真正解释网卡的文章几乎没有啊。看到有说网卡就是网络适配器的。然后一台电脑的<code>MAC地址</code>是在网卡上面的</li>
+</ul>
+<h4 id="集线器"><a class="header-anchor" href="#集线器"></a>集线器</h4>
+<ul>
+<li>集线器也就是<code>HUB</code>，工作在物理层。</li>
+<li>集线器顾名思义，有多个网口，那么就可以有多根网线，连接多个网络设备</li>
+<li>形成一个以集线器为中心，向外发散的网络，最初的网络就诞生啦</li>
+<li>集线器只能对信息进行广播，而不能指定发送方，这是集线器的弊端。</li>
+</ul>
+<h4 id="交换机"><a class="header-anchor" href="#交换机"></a>交换机</h4>
+<ul>
+<li>对比上面集线器，交换机工作是第二层，就是数据链路层</li>
+<li>在集线器上面加上网口和设备的地址（形成了MAC地址表），集线器就进化成为了交换机</li>
+<li>这样，集线器的缺点就被克服了。交换机可以按照地址发到相应的设备，而不是广播</li>
+<li>这里涉及到_冲突域_这个专业名词，所谓的_冲突域_，就是在一个范围内，同时只能1个主机收发数据包，而集线器整机在1个冲突域，所以整机只能1个人发包。</li>
+<li>因为是广播消息，大家一起发就乱了</li>
+</ul>
+<h4 id="mac地址表"><a class="header-anchor" href="#mac地址表"></a>MAC地址表</h4>
+<ul>
+<li><code>MAC地址表</code>是二层设备中存储<code>MAC地址</code>和<code>转发端口</code>映射关系的表</li>
+<li><code>MAC</code>地址其实就是网卡的地址，一个设备想要连接进网络，必须要有网卡，而网卡必须有地址，这样才能被网络上面的其他设备找寻到，这个地址就是<code>MAC</code>地址</li>
+<li>那么一个局域网的交换机收到了一个<code>IP</code>地址，等转换为<code>MAC</code>地址，再转发出去。</li>
+<li>交换机工作在数据链路层，隔离了冲突域，能够学习数据帧当中携带的<code>源MAC地址</code>来构建<code>MAC地址表</code>，同时负责查找目的<code>MAC地址</code>智能的转发数据。</li>
+</ul>
+<h4 id="路由器"><a class="header-anchor" href="#路由器"></a>路由器</h4>
+<ul>
+<li>路由器的主要功能就是实现局域网之间的互联，这个已经很明确了。还有其他功能：
+<ul>
+<li>路由器可以给你的局域网自动分配<code>IP</code></li>
+<li>路由器可以把一个<code>IP</code>分配给很多个主机使用，这些主机对外只表现出一个<code>IP</code>。</li>
+<li>路由器提供防火墙的服务，交换机不能提供该功能，看有些说交换机也可以有这个功能，但是需要更好的硬件</li>
+<li>路由要最短路径送报文，交换要快速转发提高吞吐量。</li>
+</ul>
+</li>
+<li>路由器完全可以用软件来实现，看有的文章是这样，当然，也可能是文章没弄清楚。</li>
+<li>路由器有一个<code>MAC地址</code>，还有<code>IP地址</code></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2020/02/11/K8s-Ingress/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -458,6 +624,28 @@
             
           </span>
 
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -690,6 +878,13 @@ fi
         
           
             <p>开个新博客，来记录工作过程中碰到的各种各类的小问题。</p>
+<h2 id="windows"><a class="header-anchor" href="#windows"></a>Windows</h2>
+<h3 id="端口被占用"><a class="header-anchor" href="#端口被占用"></a>端口被占用</h3>
+<ul>
+<li><code>netstat -aon|findstr &quot;8081&quot;</code>，查看占用端口<code>8081</code>的进程</li>
+<li><code>tasklist|findstr &quot;9088&quot;</code>，查看进程是哪个应用</li>
+<li><code>taskkill /T /F /PID 9088</code> 杀死这个进程</li>
+</ul>
 <h2 id="env"><a class="header-anchor" href="#env"></a>ENV</h2>
 <p>这个章节主要是包括编译啊，版本控制啊，IDE啊之类的小问题</p>
 <h3 id="ij"><a class="header-anchor" href="#ij"></a>IJ</h3>
@@ -1636,16 +1831,21 @@ at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager
 </ul>
 <h3 id="keytool"><a class="header-anchor" href="#keytool"></a>Keytool</h3>
 <ul>
-<li><code>keytool</code>是<code>java</code>默认带的工具。通常生成<code>.jks</code>格式的文件。称为<code>keystore</code></li>
-<li><code>keystore</code>文件里面可以带<code>key-pair</code>，也可以是证书</li>
-<li>以下命令是生成一个名为<code>keystore.jks</code>的<code>keystore</code>,并将证书<code>jetty.crt</code>导入到这个文件里面。同时指定了密码，并且在过程中不需要屏幕交互。<code>-trustcacerts</code>的含义是信任该证书</li>
-</ul>
+<li>
+<p><code>keytool</code>是<code>java</code>默认带的工具。通常生成<code>.jks</code>格式的文件。称为<code>keystore</code></p>
+</li>
+<li>
+<p><code>keystore</code>文件里面可以带<code>key-pair</code>，也可以是证书</p>
+</li>
+<li>
+<p>以下命令是生成一个名为<code>keystore.jks</code>的<code>keystore</code>,并将证书<code>jetty.crt</code>导入到这个文件里面。同时指定了密码，并且在过程中不需要屏幕交互。<code>-trustcacerts</code>的含义是信任该证书</p>
 <pre><code>/opt/jdk/jre/bin/keytool -import -trustcacerts -file jetty.crt -keystore keystore.jks -alias jetty  -storepass changeit -noprompt
 </code></pre>
-<ul>
+</li>
 <li>
 <p>这条命令可以将上一条命令中导入的证书打印输出进行检验</p>
-<p>/opt/jdk/jre/bin/keytool -list -v -keystore keystore.jks</p>
+<pre><code>/opt/jdk/jre/bin/keytool -list -v -keystore keystore.jks
+</code></pre>
 </li>
 </ul>
 <h3 id="openssl"><a class="header-anchor" href="#openssl"></a>openssl</h3>
@@ -1756,7 +1956,17 @@ at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager
 <li>服务器端在收到客户端的公钥之后，会发送一条类似的消息，整个握手过程就结束了。</li>
 </ul>
 <p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/server_answer_verify_msg.png" alt="服务器端加密验证消息"></p>
-<h2 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h2>
+<h4 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h4>
+<ul>
+<li>这边的参考链接好多还没有细看，是写这篇博客过程中找到的，后面需要再进一步学习啊</li>
+<li><a href="https://www.jianshu.com/p/a3a25c6627ee" target="_blank" rel="noopener">Https详解+wireshark抓包演示</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/86304211" target="_blank" rel="noopener">HTTPS抓包了解TLS握手流程</a></li>
+<li><a href="https://crypto.stackexchange.com/questions/34754/what-does-the-tls-1-2-client-finished-message-contain/34792" target="_blank" rel="noopener">What does the TLS 1.2 client finished message contain?<br>
+</a></li>
+<li><a href="https://blog.csdn.net/mrpre/category_9270159.html" target="_blank" rel="noopener">SSL/TLS协议详解<br>
+</a></li>
+</ul>
+<h2 id="参考链接-v2"><a class="header-anchor" href="#参考链接-v2"></a>参考链接</h2>
 <ul>
 <li><a href="https://www.cnblogs.com/gsls200808/p/4500246.html" target="_blank" rel="noopener">KeyStore和TrustStore</a></li>
 <li><a href="https://xz.aliyun.com/t/2530" target="_blank" rel="noopener">TLS 协议详解</a></li>
@@ -2177,6 +2387,28 @@ eric-act-activation-mml  192.168.15.102:8111,192.168.15.102:8010   1h</p>
             
           </span>
 
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/Telecom/" itemprop="url" rel="index">
+                    <span itemprop="name">Telecom</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -2744,255 +2976,6 @@ jti (JWT ID)：编号
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/08/13/Micro-Service/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/08/13/Micro-Service/" itemprop="url">Micro Service</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-13T13:41:09+08:00">
-                2019-08-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/docker/" itemprop="url" rel="index">
-                    <span itemprop="name">docker</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在学习一些<code>micro service</code>相关，记录在这里。<br>
-现在都是说<code>micro service</code>，但是什么是<code>micro service</code>，可能不同的人有不同的定义，但是单纯地只是将软件部署到<code>docker</code>或者<code>k8s</code>上面去，可能并不完全符合<code>micro service</code>，所以学习一下。<br>
-将一些学习到的tips和理念记录下来，最后形成自己的理解。<br>
-学习了一阵，感觉还是不一样的，有一套架构体系的，记录在这里。</p>
-<h3 id="什么是micro-service"><a class="header-anchor" href="#什么是micro-service"></a>什么是micro service</h3>
-<ul>
-<li>只占用需要的内存和处理器处理能力</li>
-<li>如果是处理数据的，假设我们有一个处理inventory data的<code>micro service</code>，那么这个<code>micro service</code>仅仅需要在意inventory data。而不需要考虑其他数据的影响。</li>
-<li><code>micro service</code>不受语言限制，不同语言的<code>micro service</code>仍旧可以联合起来的完成一个solution的</li>
-</ul>
-<h4 id="aws的理解"><a class="header-anchor" href="#aws的理解"></a>AWS的理解</h4>
-<ul>
-<li>
-<p>参考链接：<a href="https://aws.amazon.com/microservices/" target="_blank" rel="noopener">AWS微服务理解</a></p>
-</li>
-<li>
-<p>每个服务都是独立提供服务的模块，可以独立的开发、升级、部署和扩展</p>
-</li>
-<li>
-<p>每个服务不应该和任何其他服务共享代码</p>
-</li>
-<li>
-<p>服务间的任何交互都应该通过<code>API</code>来进行</p>
-</li>
-<li>
-<p>每个服务都是</p>
-</li>
-</ul>
-<h4 id="微软的理解"><a class="header-anchor" href="#微软的理解"></a>微软的理解</h4>
-<ul>
-<li>参考链接：<a href="https://docs.microsoft.com/en-us/azure/architecture/guide/architecture-styles/microservices" target="_blank" rel="noopener">微软文章</a></li>
-</ul>
-<h3 id="micro-service-combination"><a class="header-anchor" href="#micro-service-combination"></a>micro service combination</h3>
-<ul>
-<li><code>micro service</code>本身是一个<code>complete application</code>，它独立完成某个功能，可以有interface或者没有，可以访问数据库，也可以不访问。</li>
-<li>很多<code>micro service</code>联合起来，成为一个solution。</li>
-<li>默认只需要知道对方的<code>endpoint</code>就可以进行通信。其实不一定是<code>http</code>协议的，也有一些其他的很流行的总线方式。</li>
-<li><strong><em>each micro service has to offer an API endpoint! 通常都是REST的endpoint，但是也可以是<code>wisdom endpoint</code></em></strong></li>
-</ul>
-<h3 id="micro-service特点"><a class="header-anchor" href="#micro-service特点"></a>micro service特点</h3>
-<ul>
-<li>增加了scalability。话说这个吧，其实很复杂。看我另外一篇博客。而且未必多加pod，能力就一定上升啊</li>
-<li>从下面杂谈里面的几篇文章里面看起来，大家都认为<code>micro service</code>之后，模块之间基本是完全解耦的，大家都开开心心的全栈式就关心自己的模块，从需求到后期客户维护，完全自主，不用管其他模块。<em>A benefit of microservices is that each team can be responsible for releasing their services independently and without coordination with other teams.</em>
-<ul>
-<li>但是，这怎么可能啊。就我们自己的产品来说，尤其是那些<code>lib</code>库一样的模块，一升级，所有的都得动。没明白。没有明白呀。</li>
-<li>除非所有的小模块都像个产品一样运营。比如提供安全管理功能的模块，剩下调用它的模块按照自己的需求进行升级。</li>
-<li><strong><em>嗯，确实也是有产品这么做的，但是这样就会有很多资源消耗吧。这点在大牛的分享中也提及过，O&amp;M的功能是公用的，但是会占用资源。</em></strong></li>
-<li><strong><em>但是如果大家都用同一份，谈什么微服务哦。那么<code>lib</code>库就不应该占用资源。或者占用资源的就不应该做成<code>lib</code>库？</em></strong></li>
-<li><code>google</code>怎么做的？应该也是有不同的产品吧。</li>
-</ul>
-</li>
-</ul>
-<h4 id="优势"><a class="header-anchor" href="#优势"></a>优势</h4>
-<ul>
-<li>
-<p>改动：一个微小的改动需要很多工作去做，一个微小的改动会影响很多部分，增加一个需要资源的模块，需要增加整个系统的资源，而不是只增加需要增加的部分</p>
-</li>
-<li>
-<p>扩展：基本上就是指<code>load scalability</code>,在monolithich时代，扩展是扩展所有的模块，就是复制出新的一份系统来。而微服务时候，是扩展需要扩展的部分，这点很有优势</p>
-<ul>
-<li>所以从以上两点来说，一个微服务在部署和扩展上面，从业务角度来说，就是service角度来说，应该是独立的。<strong><em>那么反过来成立吗？就是说一个pod或者service，可以独立部署，独立扩展，但是并不能提供独立的服务，那么是不是边界定义得不对呢</em></strong></li>
-<li><em>We define libraries as components that are linked into a program and called using in-memory function calls, while services are out-of-process components who communicate with a mechanism such as a web service request, or remote procedure call.</em></li>
-</ul>
-</li>
-<li>
-<p>方便CI和CD</p>
-</li>
-<li>
-<p>参考链接</p>
-<ul>
-<li><a href="https://martinfowler.com/articles/microservices.html" target="_blank" rel="noopener">Microservices Architecture</a>:</li>
-<li><a href="https://mp.weixin.qq.com/s?__biz=MjM5MjEwNTEzOQ==&amp;mid=401500724&amp;idx=1&amp;sn=4e42fa2ffcd5732ae044fe6a387a1cc3#rd" target="_blank" rel="noopener">上一篇的中文翻译</a></li>
-</ul>
-</li>
-</ul>
-<h4 id="逆势"><a class="header-anchor" href="#逆势"></a>逆势</h4>
-<p>微服务也是会有一些问题和难点的，比如：</p>
-<ul>
-<li>进程间通信会比进程内通信代价大很多，所以应该谨慎设计边界。<em>remote APIs need to be coarser-grained, which is often more awkward to use.</em> 不是很理解这句话</li>
-<li>Consequently the teams are cross-functional, including the full range of skills required for the development: user-experience, database, and project management. 所以嘛，我就说对技术人员的要求越发高了。虽说是team，但是这种team也很不好搭配的好不好。</li>
-<li>并且这种方式，将团队和自己开发的产品绑在了一起。感觉回到了以模块来组织team的年代。实在是有利有弊。还有一个问题，按照现在推荐的，将一部分support的事务归到了技术团队里面，那么有向前延伸吗？话说薪水呢，得涨薪啊</li>
-</ul>
-<h3 id="微服务架构"><a class="header-anchor" href="#微服务架构"></a>微服务架构</h3>
-<p>关于微服务架构的文章真是多如牛毛。一搜一大把。看了陈晧推荐的一篇据说入门级英文文章，确实清晰明了。话说很多中文翻译简直是惨不忍睹啊。真心惨不忍睹！</p>
-<p>看了总觉得有有点心惊啊，从<code>warterful</code>到<code>agile</code>，从<code>monolithic</code>到<code>micro service</code>，对开发人员的要求是越来越高了啊。😦</p>
-<p>还能不能愉快地做开发了啊？<br>
-<em>The microservice approach to division is different, splitting up into services organized around business capability</em></p>
-<p>还得有<code>business capability</code>，话说技术人员理解的<code>business capability</code>正确吗</p>
-<h3 id="杂谈"><a class="header-anchor" href="#杂谈"></a>杂谈</h3>
-<ul>
-<li>
-<p>早上无心工作，摸鱼酱油，看了几篇文章，觉得还不错。 😅 话说<code>InfoQ</code>就是做翻译工作的嘛，咋云计算那边全是翻译啊。</p>
-</li>
-<li>
-<p><a href="https://medium.com/better-programming/how-microservices-architecture-impacted-the-culture-of-software-development-6bba363ecdf1" target="_blank" rel="noopener">How Microservices Architecture Impacted the Culture of Software Development</a>:</p>
-<ul>
-<li>这篇文章的观点很是不错，含义就是说写代码很有趣啊，想干嘛就干嘛，把自己脑子里面的想法实现出来。可是工作以后就郁闷了，全是些模糊的责任，规定好了的框架，规定好了的数据库，规定好了的语言。确实如此，一天天消磨了意志和能力</li>
-<li>现在有了<code>micro service</code>，瞅着大家都挺开心的，有了这个鼓动，似乎乐趣又回来了一点，可以分为很小的<code>repo</code>，可以自行选择各种不同的语言和技术，然后一起做成为一个产品。甚至可以有产品和售后的职责。</li>
-<li>嘛，文章最后还说，这个并不关<code>micro service</code>的关系，所谓的<code>monolithic</code>也应该可以做到。</li>
-</ul>
-</li>
-<li>
-<p><a href="https://medium.com/@steven.lemon182/why-our-team-cancelled-our-move-to-microservices-8fd87898d952" target="_blank" rel="noopener">Why our team cancelled our move to microservices</a></p>
-<ul>
-<li>原文很长，下面的评论也十分之多，实在不算一把头能看完的</li>
-</ul>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -3043,7 +3026,7 @@ jti (JWT ID)：编号
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-count">39</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -3054,7 +3037,7 @@ jti (JWT ID)：编号
               
               <div class="site-state-item site-state-categories">
                 <a href="/hexo_blog/categories/index.html">
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
