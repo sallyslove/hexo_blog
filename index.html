@@ -242,7 +242,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2020/09/10/protocol-ARP/">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2020/09/15/how-endpoint-be-connected-into-network/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Lynn Shen">
@@ -261,7 +261,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/hexo_blog/2020/09/10/protocol-ARP/" itemprop="url">ARP Ipable</a></h1>
+                <a class="post-title-link" href="/hexo_blog/2020/09/15/how-endpoint-be-connected-into-network/" itemprop="url">how endpoint be connected into network</a></h1>
         
 
         <div class="post-meta">
@@ -273,8 +273,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-10T15:50:12+08:00">
-                2020-09-10
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-15T17:14:05+08:00">
+                2020-09-15
               </time>
             
 
@@ -313,52 +313,97 @@
       
         
           
-            <p>在另一篇博客里面记录了基础的网络概念，在这篇博客里面记录网络之间如何转发，从<code>IP</code>地址如何找到对应的主机进行通信。</p>
-<h3 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h3>
+            <ul>
+<li>这篇博客用来记录运行时的过程，包括：
 <ul>
-<li><a href="https://www.zhihu.com/question/49335649" target="_blank" rel="noopener">IP地址和MAC地址的区别和联系-这篇的第一个回答非常清晰</a></li>
-<li><a href="https://www.zhihu.com/question/22007235" target="_blank" rel="noopener">如何跟小白解释路由器和交换机的区别</a></li>
-<li><a href="https://www.zhihu.com/question/20465477" target="_blank" rel="noopener">路由器和交换机的不同之处有哪些？</a></li>
-</ul>
-<h3 id="概念"><a class="header-anchor" href="#概念"></a>概念</h3>
-<h4 id="网卡"><a class="header-anchor" href="#网卡"></a>网卡</h4>
-<ul>
-<li>真正解释网卡的文章几乎没有啊。看到有说网卡就是网络适配器的。然后一台电脑的<code>MAC地址</code>是在网卡上面的</li>
-</ul>
-<h4 id="集线器"><a class="header-anchor" href="#集线器"></a>集线器</h4>
-<ul>
-<li>集线器也就是<code>HUB</code>，工作在物理层。</li>
-<li>集线器顾名思义，有多个网口，那么就可以有多根网线，连接多个网络设备</li>
-<li>形成一个以集线器为中心，向外发散的网络，最初的网络就诞生啦</li>
-<li>集线器只能对信息进行广播，而不能指定发送方，这是集线器的弊端。</li>
-</ul>
-<h4 id="交换机"><a class="header-anchor" href="#交换机"></a>交换机</h4>
-<ul>
-<li>对比上面集线器，交换机工作是第二层，就是数据链路层</li>
-<li>在集线器上面加上网口和设备的地址（形成了MAC地址表），集线器就进化成为了交换机</li>
-<li>这样，集线器的缺点就被克服了。交换机可以按照地址发到相应的设备，而不是广播</li>
-<li>这里涉及到_冲突域_这个专业名词，所谓的_冲突域_，就是在一个范围内，同时只能1个主机收发数据包，而集线器整机在1个冲突域，所以整机只能1个人发包。</li>
-<li>因为是广播消息，大家一起发就乱了</li>
-</ul>
-<h4 id="mac地址表"><a class="header-anchor" href="#mac地址表"></a>MAC地址表</h4>
-<ul>
-<li><code>MAC地址表</code>是二层设备中存储<code>MAC地址</code>和<code>转发端口</code>映射关系的表</li>
-<li><code>MAC</code>地址其实就是网卡的地址，一个设备想要连接进网络，必须要有网卡，而网卡必须有地址，这样才能被网络上面的其他设备找寻到，这个地址就是<code>MAC</code>地址</li>
-<li>那么一个局域网的交换机收到了一个<code>IP</code>地址，等转换为<code>MAC</code>地址，再转发出去。</li>
-<li>交换机工作在数据链路层，隔离了冲突域，能够学习数据帧当中携带的<code>源MAC地址</code>来构建<code>MAC地址表</code>，同时负责查找目的<code>MAC地址</code>智能的转发数据。</li>
-</ul>
-<h4 id="路由器"><a class="header-anchor" href="#路由器"></a>路由器</h4>
-<ul>
-<li>路由器的主要功能就是实现局域网之间的互联，这个已经很明确了。还有其他功能：
-<ul>
-<li>路由器可以给你的局域网自动分配<code>IP</code></li>
-<li>路由器可以把一个<code>IP</code>分配给很多个主机使用，这些主机对外只表现出一个<code>IP</code>。</li>
-<li>路由器提供防火墙的服务，交换机不能提供该功能，看有些说交换机也可以有这个功能，但是需要更好的硬件</li>
-<li>路由要最短路径送报文，交换要快速转发提高吞吐量。</li>
+<li>网卡接入网络</li>
 </ul>
 </li>
-<li>路由器完全可以用软件来实现，看有的文章是这样，当然，也可能是文章没弄清楚。</li>
-<li>路由器有一个<code>MAC地址</code>，还有<code>IP地址</code></li>
+</ul>
+<h2 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h2>
+<p>1）<a href="https://www.cnblogs.com/wade-luffy/p/8548519.html" target="_blank" rel="noopener">局域网的路由器&amp;网卡</a></p>
+<h2 id="消息层次"><a class="header-anchor" href="#消息层次"></a>消息层次</h2>
+<ul>
+<li>从以下的两张图片可以清晰地看到网络的分层，以及对应关系。</li>
+<li><code>Ethernet II, Src: HewlettP_2f:87:8f (b0:0c:d1:2f:87:8f), Dst: Broadcast (ff:ff:ff:ff:ff:ff)</code>是数据链路层，以太网，从中能看到<code>MAC地址</code>，并且是一个广播消息</li>
+<li><code>Internet Protocol Version 4, Src: 0.0.0.0, Dst: 255.255.255.255</code>, IP数据，能看到源和目的地的IP地址</li>
+<li><code>User Datagram Protocol, Src Port: 68, Dst Port: 67</code>, UDP协议，能看到进出端口</li>
+<li><code>Bootstrap Protocol (Discover)</code> 最终的协议是<code>DHCP</code></li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/network/DHCP_package_wireshark.png" alt="DHCP_package_wireshark"></p>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/network/DHCP_package.png" alt="DHCP_package"></p>
+<h2 id="设备接入网络"><a class="header-anchor" href="#设备接入网络"></a>设备接入网络</h2>
+<ul>
+<li>以网卡为例，网卡在出厂时候应该是有<code>MAC地址</code>的，在接入网络时，会按照<code>DHCP</code>协议获取<code>IP</code>地址</li>
+</ul>
+<h3 id="动态主机配置协议-dhcp-dynamic-host-configuration-protocol"><a class="header-anchor" href="#动态主机配置协议-dhcp-dynamic-host-configuration-protocol"></a>动态主机配置协议 DHCP(Dynamic Host Configuration Protocol)</h3>
+<ul>
+<li><code>IP</code>地址可以有两种分配方式，一种是静态手动分配一个<code>IP</code>，另外一种就是依赖<code>DHCP 动态主机配置协议</code> 进行动态<code>IP分配</code>。前者称为<code>静态IP地址</code>,后者称为<code>动态IP地址</code></li>
+<li><code>DHCP</code>的前身是<code>BOOTP协议 Bootstrap Protocol</code>, <code>wireshark</code>里面过滤时候得用<code>BOOTP</code>来过滤</li>
+<li><code>DHCP</code>是应用层的协议，和<code>HTTP</code>,<code>DNS</code>在一层。话说这个层不层的，有点无聊啊，好吧，确实数据是包了一层又一层。</li>
+<li><code>DHCP</code>和<code>DNS</code>一样，是架在<code>UDP</code>（<code>UDP</code>是传输层协议）上面的,<code>DHCP</code>协议是工作在端口67和68上面</li>
+<li>一次IP分配的交互流程如下图，这是按照第一个参考链接，使用<code>ipconfig /release</code>和<code>ipconfig /renew</code>命令后抓到的包，很是有趣啊。<br>
+<img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/network/DHCP.png" alt="DHCP握手"></li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/network/DHCP_wireshark.png" alt="DHCP_wireshark"></p>
+<ul>
+<li>
+<p>在第一条<code>discover</code>信息里面，可以看到客户端从<code>0.0.0.0</code>的端口<code>68</code>往服务器端的<code>255.255.255.255</code>的端口<code>67</code>发了一条<code>Boot request</code>信息，同时也可以看出来，这条消息在传输层是<code>UDP</code>协议<br>
+<img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/network/DHCP_discovery.png" alt="DHCP_discovery"></p>
+</li>
+<li>
+<p>第二条消息是<code>offer</code>消息：</p>
+<ul>
+<li>里面带了客户端的<code>IP地址</code>，用<code>ipconfig</code>命令来看，也确实是当前我的<code>laptop</code>的<code>IP地址</code>。</li>
+<li>这点和第一个参考链接里面的不一样，我自己抓的<code>offer</code>信息，是直接发往当前的<code>client IP</code>地址的，而链接里面的，仍旧是一个广播消息，是发往<code>0.0.0.0</code>的。似乎后者更为合理，毕竟这个时候，有可能有多个客户端在请求。</li>
+<li>同时，在<code>(54)</code>消息里面告诉对方自己是个<code>DHCP</code>服务器，毕竟一个局域网中可以存在多个<code>DHCP</code>服务器</li>
+<li>在这条消息中，同时包含了子网掩码和<code>DNS</code>服务器<br>
+<img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/network/DHCP_offer.png" alt="DHCP_offer"></li>
+</ul>
+</li>
+<li>
+<p>第三条消息仍旧是一条广播消息，客户端并没有在此时就使用分配的<code>IP</code>地址，而是在这条消息里面告诉服务器端，它要开始使用这个地址了<br>
+<img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/network/DHCP_request.png" alt="DHCP_request"></p>
+</li>
+<li>
+<p>最后一条服务器<code>ACK</code>消息里面，有<code>IP租用时间</code>，<strong><em>为啥我的这个值只有一小时啊</em></strong></p>
+<ul>
+<li>通常租借期应该是一天，然后在时间到了一半的时候，客户端会给服务器端发续接消息<br>
+<img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/network/DHCP_ACK.png" alt="DHCP_ACK"></li>
+</ul>
+</li>
+<li>
+<p><code>DHCP starvation attack</code>：这应该是网络安全范畴了，假设用许多假的客户端给服务器发消息，可以占用满所有<code>IP地址</code>，然后可以冒充服务器，给客户端回消息</p>
+</li>
+<li>
+<p><code>DHCP中继</code>： <code>DHCP</code>是一个局域网的协议，当客户端和服务器端不在一个局域网中，就需要用到<code>DHCP中继</code>，在参考链接<code>4和5</code>里面，有描述细节</p>
+</li>
+<li>
+<p>参考链接<br>
+1） <a href="https://blog.csdn.net/u012359618/article/details/51872678" target="_blank" rel="noopener">DHCP详解</a><br>
+2） <a href="https://zhuanlan.zhihu.com/p/89446304" target="_blank" rel="noopener">DHCP详解2</a><br>
+3） <a href="https://zhuanlan.zhihu.com/netops" target="_blank" rel="noopener">知乎找到一个很好的专栏，确实需要系列文章，但是怎么系列，有点难度啊：计算机网络学习笔记</a><br>
+4） <a href="https://zhuanlan.zhihu.com/p/152330355" target="_blank" rel="noopener">简述DHCP和DNS</a><br>
+5） <a href="https://zhuanlan.zhihu.com/p/109846848" target="_blank" rel="noopener">详解什么是DHCP，DHCP的工作原理</a></p>
+</li>
+</ul>
+<h2 id="设备发消息"><a class="header-anchor" href="#设备发消息"></a>设备发消息</h2>
+<h3 id="arp-address-resolution-protocol-地址解析协议"><a class="header-anchor" href="#arp-address-resolution-protocol-地址解析协议"></a>ARP（Address Resolution Protocol）地址解析协议</h3>
+<ul>
+<li>一个网络设备在分配到<code>IP地址</code>之后，就算是加入到网络里面了。</li>
+<li>这时候它要发消息给另一个设备，比如百度，那么需要<code>DNS</code>服务器，将这个域名转换为<code>IP地址</code></li>
+<li>假设<code>DNS</code>域名服务器并不在同一个局域网里面，那么就需要路由器将这条消息转发到另一个局域网中。</li>
+<li>那么，如何找到路由器呢？ 我们在<code>DHCP</code>协议接入时候,确实是有<code>DNS</code>的<code>IP</code>地址，但是知道<code>IP</code>地址，并没有办法进行直接通信</li>
+<li>所以,<code>ARP</code>协议的第一步是广播找到路由器或者无线路由器。</li>
+<li>用<code>wireshark</code>抓包，很有意思的是，我自己的笔记本隔一阵就会寻找一个特定的<code>IP</code>，发出广播消息，这个包没抓下来。</li>
+<li>抓了一个包,呃，<code>MAC</code>全网唯一，就涂掉了</li>
+<li>在广播之后就是简单的问答<br>
+<img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/network/ARP_wireshark.png" alt="ARP_wireshark"></li>
+<li>参考链接：
+<ol>
+<li><a href="https://zhuanlan.zhihu.com/p/28771785" target="_blank" rel="noopener">知乎专栏，图解ARP协议</a></li>
+</ol>
+</li>
 </ul>
 
           
