@@ -284,6 +284,28 @@
           </span>
 
           
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/network/" itemprop="url" rel="index">
+                    <span itemprop="name">network</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -405,6 +427,62 @@
 </ol>
 </li>
 </ul>
+<h3 id="nat-network-address-translation-协议"><a class="header-anchor" href="#nat-network-address-translation-协议"></a>NAT（Network Address Translation）协议</h3>
+<ul>
+<li>通过将内部网络的私有IP地址翻译成全球唯一的公网IP地址，使内部网络可以连接到互联网等外部网络上。</li>
+<li><code>NAT</code>可以分为以下几种：
+<ul>
+<li>静态转换（Static Translation）：一个公网IP对应一个私有IP，并且只有<code>IP</code>转换，不涉及端口</li>
+<li>动态转换（Dynamic Translation）：这个介绍得比较少，实际就是说局域网有多个公有IP地址，并不和局域网内部私有IP地址进行一一绑定。而是动态分配</li>
+<li>端口多路复用（Port Address Translation,PAT），网络地址端口转换NAPT（Port-Level NAT），<strong><em>这个和上面的是一个吗？应该是一个</em></strong> NAPT不但要转换IP地址，还要进行传输层的端口转换，对外只有一个公网IP，通过端口来区别不同私有IP主机的数据。这种才是最常用的一种</li>
+</ul>
+</li>
+<li>会看到内部局部地址、外部局部地址、内部全局地址、外部全局地址的说法，其实就是源的私有IP地址，目标的私有IP地址，源的公有IP地址和目标的公有IP地址</li>
+<li><code>NAT</code>有个映射记录表，对没有相应记录的数据包进行拒绝，提高了网络安全性。这就是说为什么<code>NAT</code>有安全性；对于<code>NAPT</code>来说，<code>NAT</code>转换表里面是“某个网卡私有IP：端口 -&gt; 网关路由器的公有IP：端口”，相当于局域网的设备都共享一个公有IP地址，然后订住网关路由器的一个端口。</li>
+<li><code>NAT</code>的弊端是很明显的，降低效率是肯定的，有一些协议不支持<code>NAT</code>。 <strong><em>这一点需要后续持续学习</em></strong></li>
+<li>参考链接：
+<ul>
+<li><a href="https://zhuanlan.zhihu.com/p/35548780" target="_blank" rel="noopener">网络地址转换NAT:包含配置命令，看这一篇可能就可以了</a></li>
+<li><a href="https://www.zhihu.com/question/31332694" target="_blank" rel="noopener">NAT转换是怎么工作的？知乎问答</a></li>
+<li><a href="https://blog.csdn.net/hzhsan/article/details/45038265" target="_blank" rel="noopener">网络地址转换NAT原理</a></li>
+<li><a href="https://www.cnblogs.com/syfwhu/p/5229020.html" target="_blank" rel="noopener">网络协议之NAT穿透</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="iptables"><a class="header-anchor" href="#iptables"></a>Iptables</h3>
+<h4 id="iptables-简述"><a class="header-anchor" href="#iptables-简述"></a>Iptables 简述</h4>
+<ul>
+<li><code>Iptables</code>的实质是一种防火墙，是基于<code>Netfilter</code>实现的。</li>
+<li><code>Netfilter</code>，在<code>Linux</code>內核中的一個軟體框架，用於管理網路封包。不僅具有網路位址轉換（<code>NAT</code>）的功能，也具備封包內容修改、以及封包過濾等防火牆功能。<a href="https://zh.wikipedia.org/wiki/Netfilter" target="_blank" rel="noopener">Netfilter维基百科</a>
+<ul>
+<li><code>Netfilter</code> 框架提供了一些内核的<code>hook</code>，这些协议栈内有包过滤功能的<code>hook</code>，<code>hook</code>也就构成了<code>netfilter</code>框架</li>
+<li>程序可以通过注册<code>hook</code>函数来在封装包的关键路径上面进行处理，实现各种规则</li>
+</ul>
+</li>
+<li>所以，其实<code>Iptables</code>只是定义了各种规则，是各种规则的集合。真正在干活的其实是<code>netfilter</code>的<code>hook</code></li>
+<li><code>Iptables</code>按照功能分为多个Table， 每个Table里面的每一条规则称为<code>Chain</code>。
+<ul>
+<li>内置的<code>chain</code>是由内置的<code>hook</code>触发的</li>
+<li>所以<code>Chain</code>基本和<code>Hook</code>是一一对应的</li>
+<li><code>PREROUTING</code>: 由<code>NF_IP_PRE_ROUTING hook</code>触发</li>
+<li><code>INPUT</code>: 由<code>NF_IP_LOCAL_IN hook</code>触发</li>
+<li><code>FORWARD</code>: 由<code>NF_IP_FORWARD hook</code>触发</li>
+<li><code>OUTPUT</code>: 由<code>NF_IP_LOCAL_OUT hook</code>触发</li>
+<li><code>POSTROUTING</code>: 由<code>NF_IP_POST_ROUTING hook</code>触发</li>
+</ul>
+</li>
+</ul>
+<h4 id="iptables-tables"><a class="header-anchor" href="#iptables-tables"></a>Iptables Tables</h4>
+<ul>
+<li><code>Iptables</code>将它的规则组织在表里面，常见的有这几种：<code>NAT, FILTER, MANGLE , RAW &amp; SECURITY</code></li>
+<li><code>filter</code>这是最常见的，就是过滤包，起到防火墙的作用</li>
+<li><code>NAT</code>就是何修改包的源/目的地址，这里和协议感觉还有一些不一样</li>
+<li><code>MANGLE</code>可以修改包的<code>IP头</code>。包括很多参数。</li>
+<li><code>RAW</code>这种包，有点类似匿名功能啊，就是不被Iptables知道这个包有通过过</li>
+<li><code>Security</code>给包打上 SELinux 标记，没有仔细了解，和<code>Linux</code>的安全机制有关</li>
+</ul>
+<h4 id="参考链接-v2"><a class="header-anchor" href="#参考链接-v2"></a>参考链接</h4>
+<p>1)<a href="http://arthurchiao.art/blog/deep-dive-into-iptables-and-netfilter-arch-zh/" target="_blank" rel="noopener">深入理解IpTables和Netfilter： 这篇比较好，这回的主要参考，里面也有Netfilter几种hook的介绍</a></p>
 
           
         

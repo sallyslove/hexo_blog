@@ -1190,7 +1190,7 @@
 </ul>
 </li>
 </ul>
-<h4 id="交换机"><a class="header-anchor" href="#交换机"></a>交换机</h4>
+<h4 id="交换机-switch"><a class="header-anchor" href="#交换机-switch"></a>交换机（Switch）</h4>
 <ul>
 <li>对比上面集线器，交换机工作是第二层，就是数据链路层</li>
 <li>在集线器上面加上网口和设备的地址（形成了<code>MAC地址表</code>），集线器就进化成为了交换机</li>
@@ -1205,6 +1205,8 @@
 <li>那么一个局域网的交换机收到了一个<code>IP</code>地址，等转换为<code>MAC</code>地址，再转发出去。</li>
 <li>交换机工作在数据链路层，隔离了冲突域，能够学习数据帧当中携带的<code>源MAC地址</code>来构建<code>MAC地址表</code>，同时负责查找目的<code>MAC地址</code>智能的转发数据。</li>
 </ul>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/network/MAC_address_table.png" alt="MAC地址表"></p>
+<p>图片来自<a href="https://zhuanlan.zhihu.com/p/139355604" target="_blank" rel="noopener">路由表、ARP表、MAC地址表</a></p>
 <h3 id="网络层和应用层"><a class="header-anchor" href="#网络层和应用层"></a>网络层和应用层</h3>
 <h4 id="ip地址"><a class="header-anchor" href="#ip地址"></a>IP地址</h4>
 <ul>
@@ -1216,10 +1218,10 @@
 <li>于是互联网中引入了<code>IP</code>地址。<code>IP</code>地址是因特网（因特网协议就是<code>TCP/IP</code>）的概念，而因特网本身设计时候就是以连接多个以太网为目的的，所以因特网并不考虑数据链路层和物理层的内容。</li>
 <li><code>IP</code>地址就是帮着客户在多个以太网中间转发，在以太网内部，就是<code>MAC</code>地址的事情了。</li>
 <li>当然，因特网也可以架构在其他类型的局域网之上，例如令牌环网。</li>
-<li><code>IP地址</code>可以分为私有和公有。私有一般用于局域网，公有用于广域网</li>
+<li><code>IP地址</code>可以分为私有和公有。私有一般用于局域网，公有用于广域网，真正在上网过程中，需要通过<code>NAT</code>从<code>私有IP</code>转为<code>公有IP</code>。</li>
+<li>这也是为啥要引入<code>IPV6</code>吧，毕竟设备越来越多，<code>IP</code>不够用了</li>
 </ul>
-<h5 id="none"><a class="header-anchor" href="#none"></a></h5>
-<h4 id="路由器"><a class="header-anchor" href="#路由器"></a>路由器</h4>
+<h4 id="路由器-router"><a class="header-anchor" href="#路由器-router"></a>路由器（Router）</h4>
 <ul>
 <li>路由器的主要功能就是实现局域网之间的互联，这个已经很明确了。还有其他功能：
 <ul>
@@ -1231,6 +1233,9 @@
 </li>
 <li>路由器完全可以用软件来实现，看有的文章是这样，当然，也可能是文章没弄清楚。</li>
 <li>路由器有一个<code>MAC地址</code>，还有<code>IP地址</code></li>
+<li>通常说网关网关，也就是路由器。<code>TCP/IP</code>协议会根据子网掩码来判定两个网络中的主机是不是处在不同的网络里</li>
+<li><strong>网关的IP地址是具有路由功能的设备的IP地址，具有路由功能的设备有路由器、启用了路由协议的服务器（实质上相当于一台路由器）、代理服务器（也相当于一台路由器）。</strong><br>
+<a href="https://blog.csdn.net/yuanbinquan/article/details/52963845" target="_blank" rel="noopener"> IP + Netmask + Gateway + DNS</a></li>
 </ul>
 <h4 id="arp缓存表"><a class="header-anchor" href="#arp缓存表"></a>ARP缓存表</h4>
 <ul>
@@ -1255,25 +1260,42 @@ xxxxx                 xxxxx                 static
 <h3 id="子网掩码"><a class="header-anchor" href="#子网掩码"></a>子网掩码</h3>
 <ul>
 <li>
+<p>发现还是不懂，重新回来补课。<code>IPv6</code>中没有子网掩码的概念，也没有网络号与主机号的概念</p>
+</li>
+<li>
 <p>子网掩码(<code>subnet mask</code>)又叫网络掩码、地址掩码、子网络遮罩，它是一种用来指明一个<code>IP地址</code>的哪些位标识的是主机所在的子网，以及哪些位标识的是主机的位掩码。</p>
 </li>
 <li>
 <p>子网掩码不能单独存在，它必须结合<code>IP地址</code>一起使用。</p>
 </li>
 <li>
-<p>子网掩码只有一个作用，就是将某个<code>IP地址</code>划分成网络地址和主机地址两部分</p>
+<p>子网掩码只有一个作用，就是将某个<code>IP地址</code>划分成网络地址和主机地址两部分。只有网络标识相同的两台主机在无路由的情况下才能相互通信</p>
 </li>
 <li>
 <p>子网掩码是一个<code>32</code>位地址，用于屏蔽<code>IP地址</code>的一部分以区别网络标识和主机标识，并说明该<code>IP地址</code>是在局域网上，还是在远程网上。</p>
 </li>
 <li>
+<p>网络地址对应的位都是1，对应主机位置的都是0。比如有个地址<code>192.168.10.10 AND 255.255.255.0</code>，那么该<code>IP地址</code>属于 <code>192.168.10.0</code>这个网络，其主机号为<code>10</code></p>
+</li>
+<li>
+<p>几类网络地址如下：</p>
+<pre><code>类别	子网掩码的二进制数值	子网掩码的十进制数值
+ A	11111111 00000000 00000000 00000000	255.0.0.0
+ B	11111111 11111111 00000000 00000000	255.255.0.0
+ C	11111111 11111111 11111111 00000000	255.255.255.0
+</code></pre>
+</li>
+<li>
+<p>子网掩码给局域网提供了一种方式去进一步划分网络。具体实际中如何应用，还需进一步学习。看下面的例子就比较清楚了。</p>
+</li>
+<li>
 <p>计算稍微有点绕，看知乎上面的比喻比较清楚，举例：</p>
 <ul>
 <li>
-<p>比如我们申请到的网络号为 <code>210.73.a.b</code>，该网络地址为c类IP地址，网络标识为<code>210.73.a</code>，主机标识是<code>b</code>。</p>
+<p>比如我们申请到的网络号为 <code>210.73.a.b</code>，该网络地址为c类IP地址，网络标识为<code>210.73.a</code>，主机标识是<code>b</code>。也就是说前三位是固定的，不可改变的，但是最后一个数字是可以改变，作为局域网里面的主机标示。</p>
 </li>
 <li>
-<p>假设需要16个子网。那么就是<code>1111</code></p>
+<p>假设需要16个子网。那么就需要四位来变化，<code>2</code>的四次方嘛，就是<code>0000</code>到<code>1111</code>，每个子网里面的主机数目其实是固定的。第一个子网就是从<code>00000000</code>到<code>00001111</code></p>
 </li>
 <li>
 <p>然后c类地址的最后一位是主机标识。那么就是<code>11110000</code>.前四位代表子网，后四位代表主机名。最后掩码是<code>255.255.255.240</code>。也可以写成<code>210.73.a.0/28</code></p>
@@ -1285,7 +1307,7 @@ xxxxx                 xxxxx                 static
 <p>再看知乎的例子，<code>192.168.1.x</code>分成4个子网。那么就是<code>11111111,11111111,11111111,11000000</code>， 所以第一个子网就是<code>192.168.1.0/26</code></p>
 </li>
 <li>
-<p>看IP地址的话就是，这四个网段的开头就是：</p>
+<p>看<code>IP地址</code>的话就是，这四个网段的开头就是：</p>
 <pre><code>192.168.1. 00 000000 --&gt; 00 111111 
 192.168.1. 01 000000 --&gt; 01 111111
 192.168.1. 10 000000 --&gt; 10 111111
