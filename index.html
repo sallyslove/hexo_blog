@@ -484,9 +484,11 @@
 <h4 id="iptables-chain"><a class="header-anchor" href="#iptables-chain"></a>Iptables Chain</h4>
 <ul>
 <li>并不是每个表里面有每种链，这点很好理解，因为链和表功能不搭，肯定就放不进去了</li>
+<li>画表格貌似失败了，只能截屏一张图片，来自参考链接1</li>
 </ul>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/network/Iptables_table_chain.png" alt="Tables &amp;amp; Chains"></p>
 <p>|  Tables/Chain   | PREROUTING  | INPUT | FORWARD | OUTPUT | POSTROUTING |<br>
-|  ----  | ----  |<br>
+| :------ | :------: | ------: |<br>
 | 判断路由  |    |       |       |   Y |       |<br>
 | RAW     |   Y  |       |      |   Y |       |<br>
 | 连接跟踪 |   Y  |       |       |   Y |      |<br>
@@ -496,8 +498,22 @@
 | FILTER  |      |   Y   |  Y    |   Y |       |<br>
 | SECURITY|      |   Y   |  Y    |   Y |       |<br>
 | SNAT    |      |   Y   |       |   Y |   Y    |</p>
+<h4 id="how-packages-be-routed"><a class="header-anchor" href="#how-packages-be-routed"></a>How Packages be routed</h4>
+<ul>
+<li>中文文档这里翻译得不是太好。表格还换了个格式，明显原始的更清楚啊</li>
+<li>一个包会不会触发<code>netfilter</code>里面的<code>hook</code>，取决于好些因素，假设没有被filter表过滤掉的话，那么会按照以下规则触发：
+<ul>
+<li>收到的、目的是本机的包：<code>PRETOUTING -&gt; INPUT</code></li>
+<li>收到的、目的是其他主机的包：<code>PRETOUTING -&gt; FORWARD -&gt; POSTROUTING</code></li>
+<li>本地产生的包：<code>OUTPUT -&gt; POSTROUTING</code></li>
+</ul>
+</li>
+</ul>
 <h4 id="参考链接-v2"><a class="header-anchor" href="#参考链接-v2"></a>参考链接</h4>
-<p>1)<a href="http://arthurchiao.art/blog/deep-dive-into-iptables-and-netfilter-arch-zh/" target="_blank" rel="noopener">深入理解IpTables和Netfilter： 这篇比较好，这回的主要参考，里面也有Netfilter几种hook的介绍</a></p>
+<ol>
+<li><a href="http://arthurchiao.art/blog/deep-dive-into-iptables-and-netfilter-arch-zh/" target="_blank" rel="noopener">深入理解IpTables和Netfilter： 这篇比较好，这回的主要参考，里面也有Netfilter几种hook的介绍</a></li>
+<li><a href="https://www.digitalocean.com/community/tutorials/a-deep-dive-into-iptables-and-netfilter-architecture" target="_blank" rel="noopener">上一篇参考链接的英文原文</a></li>
+</ol>
 
           
         
@@ -2261,6 +2277,7 @@ at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager
 <ul>
 <li><a href="https://www.kubernetes.org.cn/kubernetes-services" target="_blank" rel="noopener">名词解释 Services</a></li>
 <li><a href="https://segmentfault.com/a/1190000019376912" target="_blank" rel="noopener">Kubernetes Service详解</a></li>
+<li><a href="https://segmentfault.com/a/1190000022118019?utm_source=sf-related" target="_blank" rel="noopener">一文了解 Kubernetes 中的服务发现</a></li>
 </ul>
 <h2 id="为什么需要service"><a class="header-anchor" href="#为什么需要service"></a>为什么需要service</h2>
 <p>按照参考链接2里面的解释，倒是很容易理解。<code>POD</code>可以起很多个，是实体，还一会有一会没的。<br>
@@ -2294,7 +2311,7 @@ at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager
 </li>
 <li>
 <p>NodePort的解释：the NodePort exposes the service on each Node’s IP via the defined static port. No matter which Node within the cluster is accessed, the service will be reachable based on the port number defined.<br>
-<strong>就是<code>get Nodes</code>的命令出来的Node吧。<code>get Nodes</code>命令给出的是<code>hostname</code>，我们自己的环境里面，<code>hostname</code>一般定义格式是<code>node-10-210-154-52</code>,后面这个就是node的IP。这些node实际上是虚拟机。或者是实体机，现在应该都是虚拟的node。比如可以在openstack的node集群上面搭建k8s的服务</strong></p>
+<strong>就是<code>get Nodes</code>的命令出来的Node吧。<code>get Nodes</code>命令给出的是<code>hostname</code>，我们自己的环境里面，<code>hostname</code>一般定义格式是<code>node-10-2xx-1xx-xxx</code>,后面这个就是node的IP。这些node实际上是虚拟机。或者是实体机，现在应该都是虚拟的node。比如可以在openstack的node集群上面搭建k8s的服务</strong></p>
 </li>
 </ul>
 <ul>
@@ -2356,6 +2373,11 @@ spec:
 <li><code>selector</code>指定了是哪个pod，因为pod可能有很多，所以这里用的是pod的tag <code>app: goweb</code>，就是说，这个service是暴露所有这个tag的pod的功能的</li>
 </ul>
 <h2 id="请求转发"><a class="header-anchor" href="#请求转发"></a>请求转发</h2>
+<ul>
+<li><code>K8S service</code>其实做到了一定的负载均衡，但是是一个简单的轮询。工作在连接层面，其实就是<code>Iptable</code>里面来实现的。</li>
+<li>所以同一个连接里面的请求都会进到同一个<code>POD</code>里面去。因为对于高层的<code>HTTP</code>或者<code>Cookie</code>之类的是无法感知到的。</li>
+</ul>
+<h3 id="service在iptables"><a class="header-anchor" href="#service在iptables"></a>Service在Iptables</h3>
 <p><code>cluster ip</code>类似VIP,从这个名字来说，应该是认为一组pod就是一个<code>cluster</code>，确实也可以如此认为。既然是类似<code>VIP</code>，那么就可以被认为是<code>load banlancer</code>，那么就有策略的问题了。<br>
 使用以下命令，可以查看<code>clusterIP 10.106.202.0</code>的转发策略</p>
 <pre><code>iptables-save | grep 10.106.202.0
@@ -2386,9 +2408,10 @@ spec:
 </li>
 <li>
 <p><code>endpoint</code>是<code>k8s</code>的另一个对象，生成一个<code>service</code>的时候，会相对应生成一个<code>endpoint</code>.</p>
-<p>$ kubectl get ep -n sheild-1 eric-act-activation-mml<br>
-NAME         ENDPOINTS                           AGE<br>
-eric-act-activation-mml  192.168.15.102:8111,192.168.15.102:8010   1h</p>
+<pre><code>$ kubectl get ep -n sheild-1 xxxxxxx-mml
+NAME         ENDPOINTS                           AGE
+xxxxxx-mml  192.168.15.102:8111,192.168.15.102:8010   1h
+</code></pre>
 </li>
 </ul>
 <h3 id="请求代理的三种方式"><a class="header-anchor" href="#请求代理的三种方式"></a>请求代理的三种方式</h3>

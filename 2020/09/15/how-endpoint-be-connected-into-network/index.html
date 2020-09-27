@@ -95,7 +95,8 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/network/DHCP_request.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/network/DHCP_ACK.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/network/ARP_wireshark.png">
-<meta property="og:updated_time" content="2020-09-24T03:25:45.565Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/network/Iptables_table_chain.png">
+<meta property="og:updated_time" content="2020-09-24T07:30:38.858Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="how endpoint be connected into network">
 <meta name="twitter:description" content="这篇博客用来记录运行时的过程，包括：  网卡接入网络    参考链接 1）局域网的路由器&amp;amp;网卡 消息层次  从以下的两张图片可以清晰地看到网络的分层，以及对应关系。 Ethernet II, Src: HewlettP_2f:87:8f (b0:0c:d1:2f:87:8f), Dst: Broadcast (ff:ff:ff:ff:ff:ff)是数据链路层，以太网，从中能看到MAC地址">
@@ -490,9 +491,11 @@
 <h4 id="iptables-chain"><a class="header-anchor" href="#iptables-chain"></a>Iptables Chain</h4>
 <ul>
 <li>并不是每个表里面有每种链，这点很好理解，因为链和表功能不搭，肯定就放不进去了</li>
+<li>画表格貌似失败了，只能截屏一张图片，来自参考链接1</li>
 </ul>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/network/Iptables_table_chain.png" alt="Tables &amp;amp; Chains"></p>
 <p>|  Tables/Chain   | PREROUTING  | INPUT | FORWARD | OUTPUT | POSTROUTING |<br>
-|  ----  | ----  |<br>
+| :------ | :------: | ------: |<br>
 | 判断路由  |    |       |       |   Y |       |<br>
 | RAW     |   Y  |       |      |   Y |       |<br>
 | 连接跟踪 |   Y  |       |       |   Y |      |<br>
@@ -502,8 +505,22 @@
 | FILTER  |      |   Y   |  Y    |   Y |       |<br>
 | SECURITY|      |   Y   |  Y    |   Y |       |<br>
 | SNAT    |      |   Y   |       |   Y |   Y    |</p>
+<h4 id="how-packages-be-routed"><a class="header-anchor" href="#how-packages-be-routed"></a>How Packages be routed</h4>
+<ul>
+<li>中文文档这里翻译得不是太好。表格还换了个格式，明显原始的更清楚啊</li>
+<li>一个包会不会触发<code>netfilter</code>里面的<code>hook</code>，取决于好些因素，假设没有被filter表过滤掉的话，那么会按照以下规则触发：
+<ul>
+<li>收到的、目的是本机的包：<code>PRETOUTING -&gt; INPUT</code></li>
+<li>收到的、目的是其他主机的包：<code>PRETOUTING -&gt; FORWARD -&gt; POSTROUTING</code></li>
+<li>本地产生的包：<code>OUTPUT -&gt; POSTROUTING</code></li>
+</ul>
+</li>
+</ul>
 <h4 id="参考链接-v2"><a class="header-anchor" href="#参考链接-v2"></a>参考链接</h4>
-<p>1)<a href="http://arthurchiao.art/blog/deep-dive-into-iptables-and-netfilter-arch-zh/" target="_blank" rel="noopener">深入理解IpTables和Netfilter： 这篇比较好，这回的主要参考，里面也有Netfilter几种hook的介绍</a></p>
+<ol>
+<li><a href="http://arthurchiao.art/blog/deep-dive-into-iptables-and-netfilter-arch-zh/" target="_blank" rel="noopener">深入理解IpTables和Netfilter： 这篇比较好，这回的主要参考，里面也有Netfilter几种hook的介绍</a></li>
+<li><a href="https://www.digitalocean.com/community/tutorials/a-deep-dive-into-iptables-and-netfilter-architecture" target="_blank" rel="noopener">上一篇参考链接的英文原文</a></li>
+</ol>
 
       
     </div>
@@ -666,7 +683,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消息层次"><span class="nav-number">2.</span> <span class="nav-text">消息层次</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设备接入网络"><span class="nav-number">3.</span> <span class="nav-text">设备接入网络</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#动态主机配置协议-dhcp-dynamic-host-configuration-protocol"><span class="nav-number">3.1.</span> <span class="nav-text">动态主机配置协议 DHCP(Dynamic Host Configuration Protocol)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设备发消息"><span class="nav-number">4.</span> <span class="nav-text">设备发消息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#arp-address-resolution-protocol-地址解析协议"><span class="nav-number">4.1.</span> <span class="nav-text">ARP（Address Resolution Protocol）地址解析协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nat-network-address-translation-协议"><span class="nav-number">4.2.</span> <span class="nav-text">NAT（Network Address Translation）协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iptables"><span class="nav-number">4.3.</span> <span class="nav-text">Iptables</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#iptables-简述"><span class="nav-number">4.3.1.</span> <span class="nav-text">Iptables 简述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iptables-tables"><span class="nav-number">4.3.2.</span> <span class="nav-text">Iptables Tables</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iptables-chain"><span class="nav-number">4.3.3.</span> <span class="nav-text">Iptables Chain</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考链接-v2"><span class="nav-number">4.3.4.</span> <span class="nav-text">参考链接</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消息层次"><span class="nav-number">2.</span> <span class="nav-text">消息层次</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设备接入网络"><span class="nav-number">3.</span> <span class="nav-text">设备接入网络</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#动态主机配置协议-dhcp-dynamic-host-configuration-protocol"><span class="nav-number">3.1.</span> <span class="nav-text">动态主机配置协议 DHCP(Dynamic Host Configuration Protocol)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设备发消息"><span class="nav-number">4.</span> <span class="nav-text">设备发消息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#arp-address-resolution-protocol-地址解析协议"><span class="nav-number">4.1.</span> <span class="nav-text">ARP（Address Resolution Protocol）地址解析协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nat-network-address-translation-协议"><span class="nav-number">4.2.</span> <span class="nav-text">NAT（Network Address Translation）协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iptables"><span class="nav-number">4.3.</span> <span class="nav-text">Iptables</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#iptables-简述"><span class="nav-number">4.3.1.</span> <span class="nav-text">Iptables 简述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iptables-tables"><span class="nav-number">4.3.2.</span> <span class="nav-text">Iptables Tables</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iptables-chain"><span class="nav-number">4.3.3.</span> <span class="nav-text">Iptables Chain</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#how-packages-be-routed"><span class="nav-number">4.3.4.</span> <span class="nav-text">How Packages be routed</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考链接-v2"><span class="nav-number">4.3.5.</span> <span class="nav-text">参考链接</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>

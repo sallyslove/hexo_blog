@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="Service的概念有点多，内容，单独拎出来做一篇。 参考链接  名词解释 Services Kubernetes Service详解  为什么需要service 按照参考链接2里面的解释，倒是很容易理解。POD可以起很多个，是实体，还一会有一会没的。 而service是暴露服务的，这么说，应该只有一个service才对吧。瞅着确实如此啊。 Services service是K8s里面一个非常重要">
+<meta name="description" content="Service的概念有点多，内容，单独拎出来做一篇。 参考链接  名词解释 Services Kubernetes Service详解 一文了解 Kubernetes 中的服务发现  为什么需要service 按照参考链接2里面的解释，倒是很容易理解。POD可以起很多个，是实体，还一会有一会没的。 而service是暴露服务的，这么说，应该只有一个service才对吧。瞅着确实如此啊。 Servi">
 <meta property="og:type" content="article">
 <meta property="og:title" content="K8s Service">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/10/11/K8s-Service/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="Service的概念有点多，内容，单独拎出来做一篇。 参考链接  名词解释 Services Kubernetes Service详解  为什么需要service 按照参考链接2里面的解释，倒是很容易理解。POD可以起很多个，是实体，还一会有一会没的。 而service是暴露服务的，这么说，应该只有一个service才对吧。瞅着确实如此啊。 Services service是K8s里面一个非常重要">
+<meta property="og:description" content="Service的概念有点多，内容，单独拎出来做一篇。 参考链接  名词解释 Services Kubernetes Service详解 一文了解 Kubernetes 中的服务发现  为什么需要service 按照参考链接2里面的解释，倒是很容易理解。POD可以起很多个，是实体，还一会有一会没的。 而service是暴露服务的，这么说，应该只有一个service才对吧。瞅着确实如此啊。 Servi">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-03-05T14:32:32.981Z">
+<meta property="og:updated_time" content="2020-09-27T08:36:59.015Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="K8s Service">
-<meta name="twitter:description" content="Service的概念有点多，内容，单独拎出来做一篇。 参考链接  名词解释 Services Kubernetes Service详解  为什么需要service 按照参考链接2里面的解释，倒是很容易理解。POD可以起很多个，是实体，还一会有一会没的。 而service是暴露服务的，这么说，应该只有一个service才对吧。瞅着确实如此啊。 Services service是K8s里面一个非常重要">
+<meta name="twitter:description" content="Service的概念有点多，内容，单独拎出来做一篇。 参考链接  名词解释 Services Kubernetes Service详解 一文了解 Kubernetes 中的服务发现  为什么需要service 按照参考链接2里面的解释，倒是很容易理解。POD可以起很多个，是实体，还一会有一会没的。 而service是暴露服务的，这么说，应该只有一个service才对吧。瞅着确实如此啊。 Servi">
 
 
 
@@ -336,6 +336,7 @@
 <ul>
 <li><a href="https://www.kubernetes.org.cn/kubernetes-services" target="_blank" rel="noopener">名词解释 Services</a></li>
 <li><a href="https://segmentfault.com/a/1190000019376912" target="_blank" rel="noopener">Kubernetes Service详解</a></li>
+<li><a href="https://segmentfault.com/a/1190000022118019?utm_source=sf-related" target="_blank" rel="noopener">一文了解 Kubernetes 中的服务发现</a></li>
 </ul>
 <h2 id="为什么需要service"><a class="header-anchor" href="#为什么需要service"></a>为什么需要service</h2>
 <p>按照参考链接2里面的解释，倒是很容易理解。<code>POD</code>可以起很多个，是实体，还一会有一会没的。<br>
@@ -369,7 +370,7 @@
 </li>
 <li>
 <p>NodePort的解释：the NodePort exposes the service on each Node’s IP via the defined static port. No matter which Node within the cluster is accessed, the service will be reachable based on the port number defined.<br>
-<strong>就是<code>get Nodes</code>的命令出来的Node吧。<code>get Nodes</code>命令给出的是<code>hostname</code>，我们自己的环境里面，<code>hostname</code>一般定义格式是<code>node-10-210-154-52</code>,后面这个就是node的IP。这些node实际上是虚拟机。或者是实体机，现在应该都是虚拟的node。比如可以在openstack的node集群上面搭建k8s的服务</strong></p>
+<strong>就是<code>get Nodes</code>的命令出来的Node吧。<code>get Nodes</code>命令给出的是<code>hostname</code>，我们自己的环境里面，<code>hostname</code>一般定义格式是<code>node-10-2xx-1xx-xxx</code>,后面这个就是node的IP。这些node实际上是虚拟机。或者是实体机，现在应该都是虚拟的node。比如可以在openstack的node集群上面搭建k8s的服务</strong></p>
 </li>
 </ul>
 <ul>
@@ -431,6 +432,11 @@ spec:
 <li><code>selector</code>指定了是哪个pod，因为pod可能有很多，所以这里用的是pod的tag <code>app: goweb</code>，就是说，这个service是暴露所有这个tag的pod的功能的</li>
 </ul>
 <h2 id="请求转发"><a class="header-anchor" href="#请求转发"></a>请求转发</h2>
+<ul>
+<li><code>K8S service</code>其实做到了一定的负载均衡，但是是一个简单的轮询。工作在连接层面，其实就是<code>Iptable</code>里面来实现的。</li>
+<li>所以同一个连接里面的请求都会进到同一个<code>POD</code>里面去。因为对于高层的<code>HTTP</code>或者<code>Cookie</code>之类的是无法感知到的。</li>
+</ul>
+<h3 id="service在iptables"><a class="header-anchor" href="#service在iptables"></a>Service在Iptables</h3>
 <p><code>cluster ip</code>类似VIP,从这个名字来说，应该是认为一组pod就是一个<code>cluster</code>，确实也可以如此认为。既然是类似<code>VIP</code>，那么就可以被认为是<code>load banlancer</code>，那么就有策略的问题了。<br>
 使用以下命令，可以查看<code>clusterIP 10.106.202.0</code>的转发策略</p>
 <pre><code>iptables-save | grep 10.106.202.0
@@ -461,9 +467,10 @@ spec:
 </li>
 <li>
 <p><code>endpoint</code>是<code>k8s</code>的另一个对象，生成一个<code>service</code>的时候，会相对应生成一个<code>endpoint</code>.</p>
-<p>$ kubectl get ep -n sheild-1 eric-act-activation-mml<br>
-NAME         ENDPOINTS                           AGE<br>
-eric-act-activation-mml  192.168.15.102:8111,192.168.15.102:8010   1h</p>
+<pre><code>$ kubectl get ep -n sheild-1 xxxxxxx-mml
+NAME         ENDPOINTS                           AGE
+xxxxxx-mml  192.168.15.102:8111,192.168.15.102:8010   1h
+</code></pre>
 </li>
 </ul>
 <h3 id="请求代理的三种方式"><a class="header-anchor" href="#请求代理的三种方式"></a>请求代理的三种方式</h3>
@@ -677,7 +684,7 @@ eric-act-activation-mml  192.168.15.102:8111,192.168.15.102:8010   1h</p>
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么需要service"><span class="nav-number">2.</span> <span class="nav-text">为什么需要service</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#services"><span class="nav-number">3.</span> <span class="nav-text">Services</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#暴露service的命令"><span class="nav-number">4.</span> <span class="nav-text">暴露service的命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#yaml文件"><span class="nav-number">4.1.</span> <span class="nav-text">yaml文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#请求转发"><span class="nav-number">5.</span> <span class="nav-text">请求转发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#endpoint"><span class="nav-number">5.1.</span> <span class="nav-text">endpoint</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#请求代理的三种方式"><span class="nav-number">5.2.</span> <span class="nav-text">请求代理的三种方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考链接-v2"><span class="nav-number">5.3.</span> <span class="nav-text">参考链接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务发现"><span class="nav-number">6.</span> <span class="nav-text">服务发现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#内部服务发现"><span class="nav-number">6.1.</span> <span class="nav-text">内部服务发现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#外部服务发现"><span class="nav-number">6.2.</span> <span class="nav-text">外部服务发现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#nodeport"><span class="nav-number">6.2.1.</span> <span class="nav-text">NodePort</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#loadbalancer"><span class="nav-number">6.2.2.</span> <span class="nav-text">LoadBalancer</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么需要service"><span class="nav-number">2.</span> <span class="nav-text">为什么需要service</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#services"><span class="nav-number">3.</span> <span class="nav-text">Services</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#暴露service的命令"><span class="nav-number">4.</span> <span class="nav-text">暴露service的命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#yaml文件"><span class="nav-number">4.1.</span> <span class="nav-text">yaml文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#请求转发"><span class="nav-number">5.</span> <span class="nav-text">请求转发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#service在iptables"><span class="nav-number">5.1.</span> <span class="nav-text">Service在Iptables</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#endpoint"><span class="nav-number">5.2.</span> <span class="nav-text">endpoint</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#请求代理的三种方式"><span class="nav-number">5.3.</span> <span class="nav-text">请求代理的三种方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考链接-v2"><span class="nav-number">5.4.</span> <span class="nav-text">参考链接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务发现"><span class="nav-number">6.</span> <span class="nav-text">服务发现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#内部服务发现"><span class="nav-number">6.1.</span> <span class="nav-text">内部服务发现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#外部服务发现"><span class="nav-number">6.2.</span> <span class="nav-text">外部服务发现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#nodeport"><span class="nav-number">6.2.1.</span> <span class="nav-text">NodePort</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#loadbalancer"><span class="nav-number">6.2.2.</span> <span class="nav-text">LoadBalancer</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
