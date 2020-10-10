@@ -86,10 +86,12 @@
 <meta property="og:site_name" content="跬步">
 <meta property="og:description" content="Service的概念有点多，内容，单独拎出来做一篇。 参考链接  名词解释 Services Kubernetes Service详解 一文了解 Kubernetes 中的服务发现  为什么需要service 按照参考链接2里面的解释，倒是很容易理解。POD可以起很多个，是实体，还一会有一会没的。 而service是暴露服务的，这么说，应该只有一个service才对吧。瞅着确实如此啊。 Servi">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-09-27T08:36:59.015Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/Docker/from_clusterIp_to_podIp.png">
+<meta property="og:updated_time" content="2020-09-29T09:05:22.922Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="K8s Service">
 <meta name="twitter:description" content="Service的概念有点多，内容，单独拎出来做一篇。 参考链接  名词解释 Services Kubernetes Service详解 一文了解 Kubernetes 中的服务发现  为什么需要service 按照参考链接2里面的解释，倒是很容易理解。POD可以起很多个，是实体，还一会有一会没的。 而service是暴露服务的，这么说，应该只有一个service才对吧。瞅着确实如此啊。 Servi">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/Docker/from_clusterIp_to_podIp.png">
 
 
 
@@ -441,23 +443,32 @@ spec:
 使用以下命令，可以查看<code>clusterIP 10.106.202.0</code>的转发策略</p>
 <pre><code>iptables-save | grep 10.106.202.0
 </code></pre>
-<p>需要实际操作，暂时没时间，跳过这一段的细节。目前先简单理解一下：当一条<code>request</code>发到某个<code>service</code>的<code>cluster ip + port</code>上面时，会经过两次数据链转发（这里的数据链，指的是<code>iptables</code>里面的数据转发规则），第一次数据链转发时候会进行load的分配。<br>
+<p>当一条<code>request</code>发到某个<code>service</code>的<code>cluster ip + port</code>上面时，会经过两次数据链转发（这里的数据链，指的是<code>iptables</code>里面的数据转发规则），第一次数据链转发时候会进行load的分配。<br>
 第一条转发链如下.<code>KUBE-SVC-SEG6BTF25PWEPDFT</code>转发链将request均分到4个pod上面。</p>
-<pre><code> -A KUBE-SVC-SEG6BTF25PWEPDFT -m statistic --mode random --probability 0.25000000000 -j KUBE-SEP-5ZXTVLEM4DKNW7T2
+<pre><code> -A KUBE-SERVICES ! -s 10.100.0.0/16 -d 10.254.52.228/32 -p tcp -m comment --comment &quot;eda2-gear-enixjac02/gowebsvc: cluster IP&quot; -m tcp --dport 80 -j KUBE-MARK-MASQ
+ -A KUBE-SVC-SEG6BTF25PWEPDFT -m statistic --mode random --probability 0.25000000000 -j KUBE-SEP-5ZXTVLEM4DKNW7T2
  -A KUBE-SVC-SEG6BTF25PWEPDFT -m statistic --mode random --probability 0.33332999982 -j KUBE-SEP-EBFXI7VOCPDT2QU5
  -A KUBE-SVC-SEG6BTF25PWEPDFT -m statistic --mode random --probability 0.50000000000 -j KUBE-SEP-C3PKSXKMO2M43SPF
  -A KUBE-SVC-SEG6BTF25PWEPDFT -j KUBE-SEP-2GQCCNJGO65Z5MFS
 </code></pre>
-<p>第二次转发的时候，会对目的地做<code>DNAT</code>（😦 完全不知道这是啥），反正做了这个<code>DNAT</code>，然后就<code>DNAT</code>到了<code>endpoint</code>上面。</p>
+<p>第二次转发的时候，会对目的地做<code>DNAT</code>，反正做了这个<code>DNAT</code>，然后就<code>DNAT</code>到了<code>endpoint</code>上面。</p>
+<p><code>KUBE-MARK-MASQ</code>规则如下，<code>MARK</code>会将封包标上某个代号，以便提供作为后续过滤的条件判断依据，进行完此处理动作后，将会继续比对其它规则</p>
+<pre><code>-A KUBE-MARK-MASQ -j MARK --set-xmark 0x4000/0x4000
+</code></pre>
 <p><em>比照上面的规则，可以看出<code>KUBE-SEP-5ZXTVLEM4DKNW7T2</code>这条规则对请求的目的地址作了<code>DNAT</code>到<code>10.244.1.15:8000</code>，这正是<code>goweb</code>POD组中<code>goweb-55c487ccd7-5t2l2</code>这个pod的ip地址</em></p>
 <pre><code>[root@master-1 ~]# iptables-save | grep  &quot;A KUBE-SEP-5ZXTVLEM4DKNW7T2&quot; 
 -A KUBE-SEP-5ZXTVLEM4DKNW7T2 -s 10.244.1.15/32 -j KUBE-MARK-MASQ
 -A KUBE-SEP-5ZXTVLEM4DKNW7T2 -p tcp -m tcp -j DNAT --to-destination 10.244.1.15:8000
 </code></pre>
+<p><code>NodePort</code>类型的服务会比<code>clusterIp</code>多两条，如下：</p>
+<pre><code>-A KUBE-NODEPORTS -p tcp -m comment --comment &quot;eda2-gear-enixjac02/gowebsvc:&quot; -m tcp --dport 31827 -j KUBE-MARK-MASQ
+-A KUBE-NODEPORTS -p tcp -m comment --comment &quot;eda2-gear-enixjac02/gowebsvc:&quot; -m tcp --dport 31827 -j KUBE-SVC-7NDHFS7EDAQWBVTB
+</code></pre>
+<p>相对应的，<code>LoadBalancer</code>类型的服务会再多出两条来</p>
 <h3 id="endpoint"><a class="header-anchor" href="#endpoint"></a>endpoint</h3>
 <ul>
 <li>
-<p>在service创建的时候，<code>kube-proxy</code>组件（每个k8s服务器都会有的组件）会自动创建同名的<code>endpoint</code>对象。</p>
+<p>在<code>service</code>创建的时候，<code>kube-proxy</code>组件（每个k8s服务器都会有的组件）会自动创建同名的<code>endpoint</code>对象。</p>
 </li>
 <li>
 <p>动态地跟踪匹配<code>selector</code>的一组<code>pod</code>当前<code>ip</code>（<code>pod</code>的<code>ip</code>在<code>pod</code>的<code>yaml</code>文件里面可以知道，名字就是<code>podIP</code>）及端口，并生成相应的<code>iptables KUBE-SVC-xxx</code>规则</p>
@@ -467,7 +478,7 @@ spec:
 </li>
 <li>
 <p><code>endpoint</code>是<code>k8s</code>的另一个对象，生成一个<code>service</code>的时候，会相对应生成一个<code>endpoint</code>.</p>
-<pre><code>$ kubectl get ep -n sheild-1 xxxxxxx-mml
+<pre><code>$ kubectl get ep -n sallyslove xxxxxxx-mml
 NAME         ENDPOINTS                           AGE
 xxxxxx-mml  192.168.15.102:8111,192.168.15.102:8010   1h
 </code></pre>
@@ -497,6 +508,29 @@ xxxxxx-mml  192.168.15.102:8111,192.168.15.102:8010   1h
 请求的话通常是端口号+地址就行啦。服务发现要能够发现这个service才行。就是如何让另一个service知道这个service的ip或者hostname，或者让k8s外的客户知道某个service的ip和端口</p>
 <h3 id="内部服务发现"><a class="header-anchor" href="#内部服务发现"></a>内部服务发现</h3>
 <p>内部服务发现有两种方式：环境变量和DNS</p>
+<h4 id="dns方式"><a class="header-anchor" href="#dns方式"></a>DNS方式</h4>
+<ul>
+<li>
+<p>在<code>k8s</code>系统有个<code>namespace</code>为<code>kube-system</code></p>
+<pre><code>$ kubectl get svc --namespace=kube-system
+NAME TYPE CLUSTER-IP       EXTERNAL-IP   PORT(S)                  AGE
+kube-dns                        ClusterIP   10.254.0.10      &lt;none&gt;        53/UDP,53/TCP,9153/TCP   32d
+</code></pre>
+</li>
+<li>
+<p><code>Core DNS</code>是<code>K8S</code>的原生应用，<code>Core DNS</code>会监测服务的创建，每当有新的服务创建，这个服务就会给新的服务创建<code>hostname</code>和<code>IP</code>的对应关系</p>
+</li>
+<li>
+<p><code>clusterIp</code>处于一个叫做<code>K8S</code>的<code>service network</code>的虚拟网络里面，但是这个虚拟网络非常奇怪，因为它没有路由，所以发到<code>clusterIP</code>的请求会被转发到默认的路由上面，然后再发到节点上面，节点的网关上面也没有这个<code>IP</code>的信息，只能将它转发到自己的默认网关上， 在这个过程中，经过了节点的内核</p>
+</li>
+<li>
+<p>而正是经过内核的时候，触发了内核框架<code>netfilter</code>的<code>hook</code>，也就是触发了<code>Iptable</code>的规则，上述的规则开始生效，将请求转发到了目标的<code>POD IP</code>上面。</p>
+</li>
+<li>
+<p>下图也是网络上面的，但是一时找不到出处了。非常清晰</p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Docker/from_clusterIp_to_podIp.png" alt="from_clusterIp_to_podIp"></p>
 <h3 id="外部服务发现"><a class="header-anchor" href="#外部服务发现"></a>外部服务发现</h3>
 <p>外部服务发现，顾名思义，就是k8s服务器以外来发现某个service提供的服务</p>
 <ul>
@@ -517,6 +551,39 @@ xxxxxx-mml  192.168.15.102:8111,192.168.15.102:8010   1h
 <h4 id="loadbalancer"><a class="header-anchor" href="#loadbalancer"></a>LoadBalancer</h4>
 <ul>
 <li><code>LoadBalancer</code>是类型为<code>LoadBalancer</code>的<code>Service</code>，它是建立在<code>NodePort Service</code>集群基础上的，<code>k8s</code>会分配给<code>LoadBalancer Service</code>一个内部的<code>虚拟IP</code>，并且暴露<code>NodePort</code>。除此之外，<code>k8s</code>请求底层云平台创建一个负载均衡器，将每个<code>Node</code>作为后端，负载均衡器将转发请求到<code>[NodeIP]:[NodePort]</code></li>
+</ul>
+<h3 id="debug"><a class="header-anchor" href="#debug"></a>Debug</h3>
+<ul>
+<li>
+<p>参考链接：</p>
+<ol>
+<li><a href="https://www.dazhuanlan.com/2019/10/22/5daee17b80349/?__cf_chl_jschl_tk__=16d0ed9e8a1801a665c5cdb4282507c30bcd27ab-1600843391-0-ASKK6HvcorRj55xKYNub3llJlynYT3Ck6rsxc9p0BGVng5Z6DYb6gVnF8uOlab94C_NFIteNMJTp1hSirK9JU3ni1KKQ9vuAEyn0u1nF-pZfx9l00TNt5THYNhcHGra5DcBwL5A0zHqsgDP9_xTvXWYgbW-9WzAzEiORNZ0Celtm1eYp_bZQZb6fXC0IxcVVacuNjkyQFYb6-llsgW00Lc_z0uWBJN43uoxONoZjDX7A1Yysc49r2PvArVKdYkuuw6u_sv7_VFv64dhBYw6XEG0l66FKwmdaArkp67FHPae-6wXyCSYV0WJYrk1xJk_ttw" target="_blank" rel="noopener">k8s iptables 规则查看</a></li>
+<li><a href="https://myf5.net/post/2343.htm" target="_blank" rel="noopener">nodeport下访问请求未被分发到所有node的排错</a></li>
+<li><a href="https://www.opensourcerers.org/2016/05/27/how-to-trace-iptables-in-rhel7-centos7/" target="_blank" rel="noopener">How to trace IPTables in RHEL7 / CENTOS7</a></li>
+</ol>
+</li>
+<li>
+<p>持久化 <code>Iptable</code>的规则，需要在<code>/ete/system/</code>下面修改文件</p>
+</li>
+<li>
+<p>命令：</p>
+<pre><code>Load the (IPv4) netfilter log kernel module
+modprobe nf_log_ipv4
+
+Enable logging for the IPv4 (AF Family 2)
+sysctl net.netfilter.nf_log.2=nf_log_ipv4
+
+restart rsyslogd
+systemctl restart rsyslog
+
+follow 32741 port
+iptables -t raw -j TRACE -p tcp --dport 32741 -I PREROUTING 1
+iptables -t raw -j TRACE -p tcp --dport 32741 -I OUTPUT 1
+</code></pre>
+</li>
+<li>
+<p>查看 <code>/var/log/messages</code> 中的追踪记录</p>
+</li>
 </ul>
 
       
@@ -684,7 +751,7 @@ xxxxxx-mml  192.168.15.102:8111,192.168.15.102:8010   1h
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么需要service"><span class="nav-number">2.</span> <span class="nav-text">为什么需要service</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#services"><span class="nav-number">3.</span> <span class="nav-text">Services</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#暴露service的命令"><span class="nav-number">4.</span> <span class="nav-text">暴露service的命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#yaml文件"><span class="nav-number">4.1.</span> <span class="nav-text">yaml文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#请求转发"><span class="nav-number">5.</span> <span class="nav-text">请求转发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#service在iptables"><span class="nav-number">5.1.</span> <span class="nav-text">Service在Iptables</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#endpoint"><span class="nav-number">5.2.</span> <span class="nav-text">endpoint</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#请求代理的三种方式"><span class="nav-number">5.3.</span> <span class="nav-text">请求代理的三种方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考链接-v2"><span class="nav-number">5.4.</span> <span class="nav-text">参考链接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务发现"><span class="nav-number">6.</span> <span class="nav-text">服务发现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#内部服务发现"><span class="nav-number">6.1.</span> <span class="nav-text">内部服务发现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#外部服务发现"><span class="nav-number">6.2.</span> <span class="nav-text">外部服务发现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#nodeport"><span class="nav-number">6.2.1.</span> <span class="nav-text">NodePort</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#loadbalancer"><span class="nav-number">6.2.2.</span> <span class="nav-text">LoadBalancer</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么需要service"><span class="nav-number">2.</span> <span class="nav-text">为什么需要service</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#services"><span class="nav-number">3.</span> <span class="nav-text">Services</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#暴露service的命令"><span class="nav-number">4.</span> <span class="nav-text">暴露service的命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#yaml文件"><span class="nav-number">4.1.</span> <span class="nav-text">yaml文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#请求转发"><span class="nav-number">5.</span> <span class="nav-text">请求转发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#service在iptables"><span class="nav-number">5.1.</span> <span class="nav-text">Service在Iptables</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#endpoint"><span class="nav-number">5.2.</span> <span class="nav-text">endpoint</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#请求代理的三种方式"><span class="nav-number">5.3.</span> <span class="nav-text">请求代理的三种方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考链接-v2"><span class="nav-number">5.4.</span> <span class="nav-text">参考链接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务发现"><span class="nav-number">6.</span> <span class="nav-text">服务发现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#内部服务发现"><span class="nav-number">6.1.</span> <span class="nav-text">内部服务发现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#dns方式"><span class="nav-number">6.1.1.</span> <span class="nav-text">DNS方式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#外部服务发现"><span class="nav-number">6.2.</span> <span class="nav-text">外部服务发现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#nodeport"><span class="nav-number">6.2.1.</span> <span class="nav-text">NodePort</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#loadbalancer"><span class="nav-number">6.2.2.</span> <span class="nav-text">LoadBalancer</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#debug"><span class="nav-number">6.3.</span> <span class="nav-text">Debug</span></a></li></ol></li></ol></div>
             
 
           </div>

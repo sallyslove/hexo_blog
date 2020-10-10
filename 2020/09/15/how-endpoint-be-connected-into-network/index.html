@@ -96,7 +96,8 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/network/DHCP_ACK.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/network/ARP_wireshark.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/network/Iptables_table_chain.png">
-<meta property="og:updated_time" content="2020-09-24T07:30:38.858Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/network/Iptables_process.png">
+<meta property="og:updated_time" content="2020-09-30T08:37:38.580Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="how endpoint be connected into network">
 <meta name="twitter:description" content="这篇博客用来记录运行时的过程，包括：  网卡接入网络    参考链接 1）局域网的路由器&amp;amp;网卡 消息层次  从以下的两张图片可以清晰地看到网络的分层，以及对应关系。 Ethernet II, Src: HewlettP_2f:87:8f (b0:0c:d1:2f:87:8f), Dst: Broadcast (ff:ff:ff:ff:ff:ff)是数据链路层，以太网，从中能看到MAC地址">
@@ -464,6 +465,8 @@
 <ul>
 <li><code>Netfilter</code> 框架提供了一些内核的<code>hook</code>，这些协议栈内有包过滤功能的<code>hook</code>，<code>hook</code>也就构成了<code>netfilter</code>框架</li>
 <li>程序可以通过注册<code>hook</code>函数来在封装包的关键路径上面进行处理，实现各种规则</li>
+<li><code>netfilter</code>组件也称为内核空间（<code>kernelspace</code>），是内核的一部分，由一些信息包过滤表组成，这些表包含内核用来控制信息包过滤处理的规则集。</li>
+<li><code>iptables</code>组件是一种工具，也称为用户空间（<code>userspace</code>），它使插入、修改和除去信息包过滤表中的规则变得容易。<a href="https://www.cnblogs.com/Dicky-Zhang/p/5904429.html" target="_blank" rel="noopener">超级详细的iptable教程文档</a></li>
 </ul>
 </li>
 <li>所以，其实<code>Iptables</code>只是定义了各种规则，是各种规则的集合。真正在干活的其实是<code>netfilter</code>的<code>hook</code></li>
@@ -471,7 +474,7 @@
 <ul>
 <li>内置的<code>chain</code>是由内置的<code>hook</code>触发的</li>
 <li>所以<code>Chain</code>基本和<code>Hook</code>是一一对应的</li>
-<li><code>PREROUTING</code>: 由<code>NF_IP_PRE_ROUTING hook</code>触发</li>
+<li><code>PREROUTING</code>: 由<code>NF_IP_PRE_ROUTING hook</code>触发，负责刚刚到的包，包经过<code>PRETOUTING chain</code>之后，将进行路由判断。</li>
 <li><code>INPUT</code>: 由<code>NF_IP_LOCAL_IN hook</code>触发</li>
 <li><code>FORWARD</code>: 由<code>NF_IP_FORWARD hook</code>触发</li>
 <li><code>OUTPUT</code>: 由<code>NF_IP_LOCAL_OUT hook</code>触发</li>
@@ -485,7 +488,7 @@
 <li><code>filter</code>这是最常见的，就是过滤包，起到防火墙的作用</li>
 <li><code>NAT</code>就是何修改包的源/目的地址，这里和协议感觉还有一些不一样</li>
 <li><code>MANGLE</code>可以修改包的<code>IP头</code>。包括很多参数。</li>
-<li><code>RAW</code>这种包，有点类似匿名功能啊，就是不被Iptables知道这个包有通过过</li>
+<li><code>RAW</code>这种包，有点类似匿名功能啊，就是不被<code>Iptables</code>知道这个包有通过过.一但使用了<code>RAW</code>表,在某个链上,<code>RAW</code>表处理完后,将跳过<code>NAT</code>表和<code>ip_conntrack</code>处理,即不再做地址转换和数据包的链接跟踪处理了。</li>
 <li><code>Security</code>给包打上<code>SELinux</code>标记，没有仔细了解，和<code>Linux</code>的安全机制有关</li>
 </ul>
 <h4 id="iptables-chain"><a class="header-anchor" href="#iptables-chain"></a>Iptables Chain</h4>
@@ -494,33 +497,76 @@
 <li>画表格貌似失败了，只能截屏一张图片，来自参考链接1</li>
 </ul>
 <p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/network/Iptables_table_chain.png" alt="Tables &amp;amp; Chains"></p>
-<p>|  Tables/Chain   | PREROUTING  | INPUT | FORWARD | OUTPUT | POSTROUTING |<br>
-| :------ | :------: | ------: |<br>
-| 判断路由  |    |       |       |   Y |       |<br>
-| RAW     |   Y  |       |      |   Y |       |<br>
-| 连接跟踪 |   Y  |       |       |   Y |      |<br>
-| MANGLE  |   Y  |   Y   |  Y    |   Y |   Y  |<br>
-| DNAT    |      |       |       |   Y |       |<br>
-| 路由判断 |  Y   |       |       |   Y |       |<br>
-| FILTER  |      |   Y   |  Y    |   Y |       |<br>
-| SECURITY|      |   Y   |  Y    |   Y |       |<br>
-| SNAT    |      |   Y   |       |   Y |   Y    |</p>
 <h4 id="how-packages-be-routed"><a class="header-anchor" href="#how-packages-be-routed"></a>How Packages be routed</h4>
 <ul>
-<li>中文文档这里翻译得不是太好。表格还换了个格式，明显原始的更清楚啊</li>
-<li>一个包会不会触发<code>netfilter</code>里面的<code>hook</code>，取决于好些因素，假设没有被filter表过滤掉的话，那么会按照以下规则触发：
+<li>
+<p>中文文档这里翻译得不是太好。表格还换了个格式，明显原始的更清楚啊</p>
+</li>
+<li>
+<p>一个包会不会触发<code>netfilter</code>里面的<code>hook</code>，取决于好些因素，假设没有被filter表过滤掉的话，那么会按照以下规则触发：</p>
 <ul>
 <li>收到的、目的是本机的包：<code>PRETOUTING -&gt; INPUT</code></li>
 <li>收到的、目的是其他主机的包：<code>PRETOUTING -&gt; FORWARD -&gt; POSTROUTING</code></li>
-<li>本地产生的包：<code>OUTPUT -&gt; POSTROUTING</code></li>
+<li>本地产生的包：<code>OUTPUT -&gt; POSTROUTING</code>,同样会经过<code>PRETOUTING</code> 和 <code>INPUT</code></li>
 </ul>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/network/Iptables_process.png" alt="Iptable"></p>
 </li>
+<li>
+<p>今天做分享时候这块说得不清楚，几张图片结合起来，其实是很清晰的。</p>
+</li>
+</ul>
+<h4 id="iptables-操作"><a class="header-anchor" href="#iptables-操作"></a>Iptables 操作</h4>
+<ul>
+<li>
+<p>netfilter 框架会对设置的每条一条（出向或入向）规则，自动设置它的反向规则，因此我们只需要设 置一个方向的规则即可。</p>
+</li>
+<li>
+<p>命令格式：</p>
+<pre><code># Abstract structure of an iptables instruction:
+iptables [-t table] command [match pattern] [action]
+</code></pre>
+</li>
+<li>
+<p>选项:</p>
+<pre><code>-P  --policy        &lt;链名&gt;  定义默认策略
+-L  --list          &lt;链名&gt;  查看iptables规则列表 
+-A  --append        &lt;链名&gt;  在规则列表的最后增加1条规则 
+-I  --insert        &lt;链名&gt;  在指定的位置插入1条规则
+-D  --delete        &lt;链名&gt;  从规则列表中删除1条规则
+-R  --replace       &lt;链名&gt;  替换规则列表中的某条规则 
+-F  --flush         &lt;链名&gt;  删除表中所有规则 
+-Z  --zero          &lt;链名&gt;  将表中数据包计数器和流量计数器归零 
+-X  --delete-chain  &lt;链名&gt;  删除自定义链 
+-v  --verbose       &lt;链名&gt;  与-L他命令一起使用显示更多更详细的信息
+</code></pre>
+</li>
+<li>
+<p>执行指令有：<code>ACCEPT、REJECT、DROP、REDIRECT 、MASQUERADE</code>以外，还多出<code>LOG、ULOG、DNAT、RETURN、TOS、SNAT、MIRROR、QUEUE、TTL、MARK</code>等</p>
+<pre><code>SNAT - 修改源IP为固定新IP（静态）, SNAT只对离开路由器的包有意义，因此它只用在POSTROUTING chain中
+
+MASQUERADE - 修改源IP为动态新IP（动态获取网络接口 IP）和SNAT一样，MASQUERADE只对POSTROUTING chain有意义，伪装数据包，例如将 源地址修改为路由器地址。因此如果接口的IP地址发送了变化，MASQUERADE规则不受影响，可以正常工作；而对于SNAT就必须重新调整规则。
+
+DNAT - 修改目的IP，必须在做路由决策之前，因此DNAT 适用于PRETOUTING和OUTPUT（本地生成的包）
+
+REDIRECT - DNAT的一个特殊场景将包重定向到本机另一个端口,重定向到路由器的另一个本地端口，适用于PRETOUTING和OUTPUT chain
+</code></pre>
+</li>
+</ul>
+<h4 id="实际操作配置"><a class="header-anchor" href="#实际操作配置"></a>实际操作配置</h4>
+<ul>
+<li>实际操作暂时没时间，也有点兴趣缺缺<br>
+参考链接：<a href="http://www.ttlsa.com/linux/iptables-router-acl/" target="_blank" rel="noopener">iptables作为路由器实现上网和访问控制</a></li>
 </ul>
 <h4 id="参考链接-v2"><a class="header-anchor" href="#参考链接-v2"></a>参考链接</h4>
 <ol>
 <li><a href="http://arthurchiao.art/blog/deep-dive-into-iptables-and-netfilter-arch-zh/" target="_blank" rel="noopener">深入理解IpTables和Netfilter： 这篇比较好，这回的主要参考，里面也有Netfilter几种hook的介绍</a></li>
-<li><a href="https://www.digitalocean.com/community/tutorials/a-deep-dive-into-iptables-and-netfilter-architecture" target="_blank" rel="noopener">上一篇参考链接的英文原文</a></li>
+<li><a href="https://www.digitalocean.com/community/tutorials/a-deep-dive-into-iptables-and-netfilter-architecture" target="_blank" rel="noopener">上一篇参考链接的英文原文</a><br>
+3） <a href="http://arthurchiao.art/blog/nat-zh/" target="_blank" rel="noopener">NAT - 网络地址转换</a></li>
 </ol>
+<h3 id="虚拟网络"><a class="header-anchor" href="#虚拟网络"></a>虚拟网络</h3>
+<ul>
+<li></li>
+</ul>
 
       
     </div>
@@ -683,7 +729,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消息层次"><span class="nav-number">2.</span> <span class="nav-text">消息层次</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设备接入网络"><span class="nav-number">3.</span> <span class="nav-text">设备接入网络</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#动态主机配置协议-dhcp-dynamic-host-configuration-protocol"><span class="nav-number">3.1.</span> <span class="nav-text">动态主机配置协议 DHCP(Dynamic Host Configuration Protocol)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设备发消息"><span class="nav-number">4.</span> <span class="nav-text">设备发消息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#arp-address-resolution-protocol-地址解析协议"><span class="nav-number">4.1.</span> <span class="nav-text">ARP（Address Resolution Protocol）地址解析协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nat-network-address-translation-协议"><span class="nav-number">4.2.</span> <span class="nav-text">NAT（Network Address Translation）协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iptables"><span class="nav-number">4.3.</span> <span class="nav-text">Iptables</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#iptables-简述"><span class="nav-number">4.3.1.</span> <span class="nav-text">Iptables 简述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iptables-tables"><span class="nav-number">4.3.2.</span> <span class="nav-text">Iptables Tables</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iptables-chain"><span class="nav-number">4.3.3.</span> <span class="nav-text">Iptables Chain</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#how-packages-be-routed"><span class="nav-number">4.3.4.</span> <span class="nav-text">How Packages be routed</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考链接-v2"><span class="nav-number">4.3.5.</span> <span class="nav-text">参考链接</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消息层次"><span class="nav-number">2.</span> <span class="nav-text">消息层次</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设备接入网络"><span class="nav-number">3.</span> <span class="nav-text">设备接入网络</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#动态主机配置协议-dhcp-dynamic-host-configuration-protocol"><span class="nav-number">3.1.</span> <span class="nav-text">动态主机配置协议 DHCP(Dynamic Host Configuration Protocol)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设备发消息"><span class="nav-number">4.</span> <span class="nav-text">设备发消息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#arp-address-resolution-protocol-地址解析协议"><span class="nav-number">4.1.</span> <span class="nav-text">ARP（Address Resolution Protocol）地址解析协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nat-network-address-translation-协议"><span class="nav-number">4.2.</span> <span class="nav-text">NAT（Network Address Translation）协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iptables"><span class="nav-number">4.3.</span> <span class="nav-text">Iptables</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#iptables-简述"><span class="nav-number">4.3.1.</span> <span class="nav-text">Iptables 简述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iptables-tables"><span class="nav-number">4.3.2.</span> <span class="nav-text">Iptables Tables</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iptables-chain"><span class="nav-number">4.3.3.</span> <span class="nav-text">Iptables Chain</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#how-packages-be-routed"><span class="nav-number">4.3.4.</span> <span class="nav-text">How Packages be routed</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iptables-操作"><span class="nav-number">4.3.5.</span> <span class="nav-text">Iptables 操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实际操作配置"><span class="nav-number">4.3.6.</span> <span class="nav-text">实际操作配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考链接-v2"><span class="nav-number">4.3.7.</span> <span class="nav-text">参考链接</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#虚拟网络"><span class="nav-number">4.4.</span> <span class="nav-text">虚拟网络</span></a></li></ol></li></ol></div>
             
 
           </div>

@@ -457,6 +457,8 @@
 <ul>
 <li><code>Netfilter</code> 框架提供了一些内核的<code>hook</code>，这些协议栈内有包过滤功能的<code>hook</code>，<code>hook</code>也就构成了<code>netfilter</code>框架</li>
 <li>程序可以通过注册<code>hook</code>函数来在封装包的关键路径上面进行处理，实现各种规则</li>
+<li><code>netfilter</code>组件也称为内核空间（<code>kernelspace</code>），是内核的一部分，由一些信息包过滤表组成，这些表包含内核用来控制信息包过滤处理的规则集。</li>
+<li><code>iptables</code>组件是一种工具，也称为用户空间（<code>userspace</code>），它使插入、修改和除去信息包过滤表中的规则变得容易。<a href="https://www.cnblogs.com/Dicky-Zhang/p/5904429.html" target="_blank" rel="noopener">超级详细的iptable教程文档</a></li>
 </ul>
 </li>
 <li>所以，其实<code>Iptables</code>只是定义了各种规则，是各种规则的集合。真正在干活的其实是<code>netfilter</code>的<code>hook</code></li>
@@ -464,7 +466,7 @@
 <ul>
 <li>内置的<code>chain</code>是由内置的<code>hook</code>触发的</li>
 <li>所以<code>Chain</code>基本和<code>Hook</code>是一一对应的</li>
-<li><code>PREROUTING</code>: 由<code>NF_IP_PRE_ROUTING hook</code>触发</li>
+<li><code>PREROUTING</code>: 由<code>NF_IP_PRE_ROUTING hook</code>触发，负责刚刚到的包，包经过<code>PRETOUTING chain</code>之后，将进行路由判断。</li>
 <li><code>INPUT</code>: 由<code>NF_IP_LOCAL_IN hook</code>触发</li>
 <li><code>FORWARD</code>: 由<code>NF_IP_FORWARD hook</code>触发</li>
 <li><code>OUTPUT</code>: 由<code>NF_IP_LOCAL_OUT hook</code>触发</li>
@@ -478,7 +480,7 @@
 <li><code>filter</code>这是最常见的，就是过滤包，起到防火墙的作用</li>
 <li><code>NAT</code>就是何修改包的源/目的地址，这里和协议感觉还有一些不一样</li>
 <li><code>MANGLE</code>可以修改包的<code>IP头</code>。包括很多参数。</li>
-<li><code>RAW</code>这种包，有点类似匿名功能啊，就是不被Iptables知道这个包有通过过</li>
+<li><code>RAW</code>这种包，有点类似匿名功能啊，就是不被<code>Iptables</code>知道这个包有通过过.一但使用了<code>RAW</code>表,在某个链上,<code>RAW</code>表处理完后,将跳过<code>NAT</code>表和<code>ip_conntrack</code>处理,即不再做地址转换和数据包的链接跟踪处理了。</li>
 <li><code>Security</code>给包打上<code>SELinux</code>标记，没有仔细了解，和<code>Linux</code>的安全机制有关</li>
 </ul>
 <h4 id="iptables-chain"><a class="header-anchor" href="#iptables-chain"></a>Iptables Chain</h4>
@@ -487,33 +489,76 @@
 <li>画表格貌似失败了，只能截屏一张图片，来自参考链接1</li>
 </ul>
 <p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/network/Iptables_table_chain.png" alt="Tables &amp;amp; Chains"></p>
-<p>|  Tables/Chain   | PREROUTING  | INPUT | FORWARD | OUTPUT | POSTROUTING |<br>
-| :------ | :------: | ------: |<br>
-| 判断路由  |    |       |       |   Y |       |<br>
-| RAW     |   Y  |       |      |   Y |       |<br>
-| 连接跟踪 |   Y  |       |       |   Y |      |<br>
-| MANGLE  |   Y  |   Y   |  Y    |   Y |   Y  |<br>
-| DNAT    |      |       |       |   Y |       |<br>
-| 路由判断 |  Y   |       |       |   Y |       |<br>
-| FILTER  |      |   Y   |  Y    |   Y |       |<br>
-| SECURITY|      |   Y   |  Y    |   Y |       |<br>
-| SNAT    |      |   Y   |       |   Y |   Y    |</p>
 <h4 id="how-packages-be-routed"><a class="header-anchor" href="#how-packages-be-routed"></a>How Packages be routed</h4>
 <ul>
-<li>中文文档这里翻译得不是太好。表格还换了个格式，明显原始的更清楚啊</li>
-<li>一个包会不会触发<code>netfilter</code>里面的<code>hook</code>，取决于好些因素，假设没有被filter表过滤掉的话，那么会按照以下规则触发：
+<li>
+<p>中文文档这里翻译得不是太好。表格还换了个格式，明显原始的更清楚啊</p>
+</li>
+<li>
+<p>一个包会不会触发<code>netfilter</code>里面的<code>hook</code>，取决于好些因素，假设没有被filter表过滤掉的话，那么会按照以下规则触发：</p>
 <ul>
 <li>收到的、目的是本机的包：<code>PRETOUTING -&gt; INPUT</code></li>
 <li>收到的、目的是其他主机的包：<code>PRETOUTING -&gt; FORWARD -&gt; POSTROUTING</code></li>
-<li>本地产生的包：<code>OUTPUT -&gt; POSTROUTING</code></li>
+<li>本地产生的包：<code>OUTPUT -&gt; POSTROUTING</code>,同样会经过<code>PRETOUTING</code> 和 <code>INPUT</code></li>
 </ul>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/network/Iptables_process.png" alt="Iptable"></p>
 </li>
+<li>
+<p>今天做分享时候这块说得不清楚，几张图片结合起来，其实是很清晰的。</p>
+</li>
+</ul>
+<h4 id="iptables-操作"><a class="header-anchor" href="#iptables-操作"></a>Iptables 操作</h4>
+<ul>
+<li>
+<p>netfilter 框架会对设置的每条一条（出向或入向）规则，自动设置它的反向规则，因此我们只需要设 置一个方向的规则即可。</p>
+</li>
+<li>
+<p>命令格式：</p>
+<pre><code># Abstract structure of an iptables instruction:
+iptables [-t table] command [match pattern] [action]
+</code></pre>
+</li>
+<li>
+<p>选项:</p>
+<pre><code>-P  --policy        &lt;链名&gt;  定义默认策略
+-L  --list          &lt;链名&gt;  查看iptables规则列表 
+-A  --append        &lt;链名&gt;  在规则列表的最后增加1条规则 
+-I  --insert        &lt;链名&gt;  在指定的位置插入1条规则
+-D  --delete        &lt;链名&gt;  从规则列表中删除1条规则
+-R  --replace       &lt;链名&gt;  替换规则列表中的某条规则 
+-F  --flush         &lt;链名&gt;  删除表中所有规则 
+-Z  --zero          &lt;链名&gt;  将表中数据包计数器和流量计数器归零 
+-X  --delete-chain  &lt;链名&gt;  删除自定义链 
+-v  --verbose       &lt;链名&gt;  与-L他命令一起使用显示更多更详细的信息
+</code></pre>
+</li>
+<li>
+<p>执行指令有：<code>ACCEPT、REJECT、DROP、REDIRECT 、MASQUERADE</code>以外，还多出<code>LOG、ULOG、DNAT、RETURN、TOS、SNAT、MIRROR、QUEUE、TTL、MARK</code>等</p>
+<pre><code>SNAT - 修改源IP为固定新IP（静态）, SNAT只对离开路由器的包有意义，因此它只用在POSTROUTING chain中
+
+MASQUERADE - 修改源IP为动态新IP（动态获取网络接口 IP）和SNAT一样，MASQUERADE只对POSTROUTING chain有意义，伪装数据包，例如将 源地址修改为路由器地址。因此如果接口的IP地址发送了变化，MASQUERADE规则不受影响，可以正常工作；而对于SNAT就必须重新调整规则。
+
+DNAT - 修改目的IP，必须在做路由决策之前，因此DNAT 适用于PRETOUTING和OUTPUT（本地生成的包）
+
+REDIRECT - DNAT的一个特殊场景将包重定向到本机另一个端口,重定向到路由器的另一个本地端口，适用于PRETOUTING和OUTPUT chain
+</code></pre>
+</li>
+</ul>
+<h4 id="实际操作配置"><a class="header-anchor" href="#实际操作配置"></a>实际操作配置</h4>
+<ul>
+<li>实际操作暂时没时间，也有点兴趣缺缺<br>
+参考链接：<a href="http://www.ttlsa.com/linux/iptables-router-acl/" target="_blank" rel="noopener">iptables作为路由器实现上网和访问控制</a></li>
 </ul>
 <h4 id="参考链接-v2"><a class="header-anchor" href="#参考链接-v2"></a>参考链接</h4>
 <ol>
 <li><a href="http://arthurchiao.art/blog/deep-dive-into-iptables-and-netfilter-arch-zh/" target="_blank" rel="noopener">深入理解IpTables和Netfilter： 这篇比较好，这回的主要参考，里面也有Netfilter几种hook的介绍</a></li>
-<li><a href="https://www.digitalocean.com/community/tutorials/a-deep-dive-into-iptables-and-netfilter-architecture" target="_blank" rel="noopener">上一篇参考链接的英文原文</a></li>
+<li><a href="https://www.digitalocean.com/community/tutorials/a-deep-dive-into-iptables-and-netfilter-architecture" target="_blank" rel="noopener">上一篇参考链接的英文原文</a><br>
+3） <a href="http://arthurchiao.art/blog/nat-zh/" target="_blank" rel="noopener">NAT - 网络地址转换</a></li>
 </ol>
+<h3 id="虚拟网络"><a class="header-anchor" href="#虚拟网络"></a>虚拟网络</h3>
+<ul>
+<li></li>
+</ul>
 
           
         
@@ -2382,23 +2427,32 @@ spec:
 使用以下命令，可以查看<code>clusterIP 10.106.202.0</code>的转发策略</p>
 <pre><code>iptables-save | grep 10.106.202.0
 </code></pre>
-<p>需要实际操作，暂时没时间，跳过这一段的细节。目前先简单理解一下：当一条<code>request</code>发到某个<code>service</code>的<code>cluster ip + port</code>上面时，会经过两次数据链转发（这里的数据链，指的是<code>iptables</code>里面的数据转发规则），第一次数据链转发时候会进行load的分配。<br>
+<p>当一条<code>request</code>发到某个<code>service</code>的<code>cluster ip + port</code>上面时，会经过两次数据链转发（这里的数据链，指的是<code>iptables</code>里面的数据转发规则），第一次数据链转发时候会进行load的分配。<br>
 第一条转发链如下.<code>KUBE-SVC-SEG6BTF25PWEPDFT</code>转发链将request均分到4个pod上面。</p>
-<pre><code> -A KUBE-SVC-SEG6BTF25PWEPDFT -m statistic --mode random --probability 0.25000000000 -j KUBE-SEP-5ZXTVLEM4DKNW7T2
+<pre><code> -A KUBE-SERVICES ! -s 10.100.0.0/16 -d 10.254.52.228/32 -p tcp -m comment --comment &quot;eda2-gear-enixjac02/gowebsvc: cluster IP&quot; -m tcp --dport 80 -j KUBE-MARK-MASQ
+ -A KUBE-SVC-SEG6BTF25PWEPDFT -m statistic --mode random --probability 0.25000000000 -j KUBE-SEP-5ZXTVLEM4DKNW7T2
  -A KUBE-SVC-SEG6BTF25PWEPDFT -m statistic --mode random --probability 0.33332999982 -j KUBE-SEP-EBFXI7VOCPDT2QU5
  -A KUBE-SVC-SEG6BTF25PWEPDFT -m statistic --mode random --probability 0.50000000000 -j KUBE-SEP-C3PKSXKMO2M43SPF
  -A KUBE-SVC-SEG6BTF25PWEPDFT -j KUBE-SEP-2GQCCNJGO65Z5MFS
 </code></pre>
-<p>第二次转发的时候，会对目的地做<code>DNAT</code>（😦 完全不知道这是啥），反正做了这个<code>DNAT</code>，然后就<code>DNAT</code>到了<code>endpoint</code>上面。</p>
+<p>第二次转发的时候，会对目的地做<code>DNAT</code>，反正做了这个<code>DNAT</code>，然后就<code>DNAT</code>到了<code>endpoint</code>上面。</p>
+<p><code>KUBE-MARK-MASQ</code>规则如下，<code>MARK</code>会将封包标上某个代号，以便提供作为后续过滤的条件判断依据，进行完此处理动作后，将会继续比对其它规则</p>
+<pre><code>-A KUBE-MARK-MASQ -j MARK --set-xmark 0x4000/0x4000
+</code></pre>
 <p><em>比照上面的规则，可以看出<code>KUBE-SEP-5ZXTVLEM4DKNW7T2</code>这条规则对请求的目的地址作了<code>DNAT</code>到<code>10.244.1.15:8000</code>，这正是<code>goweb</code>POD组中<code>goweb-55c487ccd7-5t2l2</code>这个pod的ip地址</em></p>
 <pre><code>[root@master-1 ~]# iptables-save | grep  &quot;A KUBE-SEP-5ZXTVLEM4DKNW7T2&quot; 
 -A KUBE-SEP-5ZXTVLEM4DKNW7T2 -s 10.244.1.15/32 -j KUBE-MARK-MASQ
 -A KUBE-SEP-5ZXTVLEM4DKNW7T2 -p tcp -m tcp -j DNAT --to-destination 10.244.1.15:8000
 </code></pre>
+<p><code>NodePort</code>类型的服务会比<code>clusterIp</code>多两条，如下：</p>
+<pre><code>-A KUBE-NODEPORTS -p tcp -m comment --comment &quot;eda2-gear-enixjac02/gowebsvc:&quot; -m tcp --dport 31827 -j KUBE-MARK-MASQ
+-A KUBE-NODEPORTS -p tcp -m comment --comment &quot;eda2-gear-enixjac02/gowebsvc:&quot; -m tcp --dport 31827 -j KUBE-SVC-7NDHFS7EDAQWBVTB
+</code></pre>
+<p>相对应的，<code>LoadBalancer</code>类型的服务会再多出两条来</p>
 <h3 id="endpoint"><a class="header-anchor" href="#endpoint"></a>endpoint</h3>
 <ul>
 <li>
-<p>在service创建的时候，<code>kube-proxy</code>组件（每个k8s服务器都会有的组件）会自动创建同名的<code>endpoint</code>对象。</p>
+<p>在<code>service</code>创建的时候，<code>kube-proxy</code>组件（每个k8s服务器都会有的组件）会自动创建同名的<code>endpoint</code>对象。</p>
 </li>
 <li>
 <p>动态地跟踪匹配<code>selector</code>的一组<code>pod</code>当前<code>ip</code>（<code>pod</code>的<code>ip</code>在<code>pod</code>的<code>yaml</code>文件里面可以知道，名字就是<code>podIP</code>）及端口，并生成相应的<code>iptables KUBE-SVC-xxx</code>规则</p>
@@ -2408,7 +2462,7 @@ spec:
 </li>
 <li>
 <p><code>endpoint</code>是<code>k8s</code>的另一个对象，生成一个<code>service</code>的时候，会相对应生成一个<code>endpoint</code>.</p>
-<pre><code>$ kubectl get ep -n sheild-1 xxxxxxx-mml
+<pre><code>$ kubectl get ep -n sallyslove xxxxxxx-mml
 NAME         ENDPOINTS                           AGE
 xxxxxx-mml  192.168.15.102:8111,192.168.15.102:8010   1h
 </code></pre>
@@ -2438,6 +2492,29 @@ xxxxxx-mml  192.168.15.102:8111,192.168.15.102:8010   1h
 请求的话通常是端口号+地址就行啦。服务发现要能够发现这个service才行。就是如何让另一个service知道这个service的ip或者hostname，或者让k8s外的客户知道某个service的ip和端口</p>
 <h3 id="内部服务发现"><a class="header-anchor" href="#内部服务发现"></a>内部服务发现</h3>
 <p>内部服务发现有两种方式：环境变量和DNS</p>
+<h4 id="dns方式"><a class="header-anchor" href="#dns方式"></a>DNS方式</h4>
+<ul>
+<li>
+<p>在<code>k8s</code>系统有个<code>namespace</code>为<code>kube-system</code></p>
+<pre><code>$ kubectl get svc --namespace=kube-system
+NAME TYPE CLUSTER-IP       EXTERNAL-IP   PORT(S)                  AGE
+kube-dns                        ClusterIP   10.254.0.10      &lt;none&gt;        53/UDP,53/TCP,9153/TCP   32d
+</code></pre>
+</li>
+<li>
+<p><code>Core DNS</code>是<code>K8S</code>的原生应用，<code>Core DNS</code>会监测服务的创建，每当有新的服务创建，这个服务就会给新的服务创建<code>hostname</code>和<code>IP</code>的对应关系</p>
+</li>
+<li>
+<p><code>clusterIp</code>处于一个叫做<code>K8S</code>的<code>service network</code>的虚拟网络里面，但是这个虚拟网络非常奇怪，因为它没有路由，所以发到<code>clusterIP</code>的请求会被转发到默认的路由上面，然后再发到节点上面，节点的网关上面也没有这个<code>IP</code>的信息，只能将它转发到自己的默认网关上， 在这个过程中，经过了节点的内核</p>
+</li>
+<li>
+<p>而正是经过内核的时候，触发了内核框架<code>netfilter</code>的<code>hook</code>，也就是触发了<code>Iptable</code>的规则，上述的规则开始生效，将请求转发到了目标的<code>POD IP</code>上面。</p>
+</li>
+<li>
+<p>下图也是网络上面的，但是一时找不到出处了。非常清晰</p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Docker/from_clusterIp_to_podIp.png" alt="from_clusterIp_to_podIp"></p>
 <h3 id="外部服务发现"><a class="header-anchor" href="#外部服务发现"></a>外部服务发现</h3>
 <p>外部服务发现，顾名思义，就是k8s服务器以外来发现某个service提供的服务</p>
 <ul>
@@ -2458,6 +2535,39 @@ xxxxxx-mml  192.168.15.102:8111,192.168.15.102:8010   1h
 <h4 id="loadbalancer"><a class="header-anchor" href="#loadbalancer"></a>LoadBalancer</h4>
 <ul>
 <li><code>LoadBalancer</code>是类型为<code>LoadBalancer</code>的<code>Service</code>，它是建立在<code>NodePort Service</code>集群基础上的，<code>k8s</code>会分配给<code>LoadBalancer Service</code>一个内部的<code>虚拟IP</code>，并且暴露<code>NodePort</code>。除此之外，<code>k8s</code>请求底层云平台创建一个负载均衡器，将每个<code>Node</code>作为后端，负载均衡器将转发请求到<code>[NodeIP]:[NodePort]</code></li>
+</ul>
+<h3 id="debug"><a class="header-anchor" href="#debug"></a>Debug</h3>
+<ul>
+<li>
+<p>参考链接：</p>
+<ol>
+<li><a href="https://www.dazhuanlan.com/2019/10/22/5daee17b80349/?__cf_chl_jschl_tk__=16d0ed9e8a1801a665c5cdb4282507c30bcd27ab-1600843391-0-ASKK6HvcorRj55xKYNub3llJlynYT3Ck6rsxc9p0BGVng5Z6DYb6gVnF8uOlab94C_NFIteNMJTp1hSirK9JU3ni1KKQ9vuAEyn0u1nF-pZfx9l00TNt5THYNhcHGra5DcBwL5A0zHqsgDP9_xTvXWYgbW-9WzAzEiORNZ0Celtm1eYp_bZQZb6fXC0IxcVVacuNjkyQFYb6-llsgW00Lc_z0uWBJN43uoxONoZjDX7A1Yysc49r2PvArVKdYkuuw6u_sv7_VFv64dhBYw6XEG0l66FKwmdaArkp67FHPae-6wXyCSYV0WJYrk1xJk_ttw" target="_blank" rel="noopener">k8s iptables 规则查看</a></li>
+<li><a href="https://myf5.net/post/2343.htm" target="_blank" rel="noopener">nodeport下访问请求未被分发到所有node的排错</a></li>
+<li><a href="https://www.opensourcerers.org/2016/05/27/how-to-trace-iptables-in-rhel7-centos7/" target="_blank" rel="noopener">How to trace IPTables in RHEL7 / CENTOS7</a></li>
+</ol>
+</li>
+<li>
+<p>持久化 <code>Iptable</code>的规则，需要在<code>/ete/system/</code>下面修改文件</p>
+</li>
+<li>
+<p>命令：</p>
+<pre><code>Load the (IPv4) netfilter log kernel module
+modprobe nf_log_ipv4
+
+Enable logging for the IPv4 (AF Family 2)
+sysctl net.netfilter.nf_log.2=nf_log_ipv4
+
+restart rsyslogd
+systemctl restart rsyslog
+
+follow 32741 port
+iptables -t raw -j TRACE -p tcp --dport 32741 -I PREROUTING 1
+iptables -t raw -j TRACE -p tcp --dport 32741 -I OUTPUT 1
+</code></pre>
+</li>
+<li>
+<p>查看 <code>/var/log/messages</code> 中的追踪记录</p>
+</li>
 </ul>
 
           
