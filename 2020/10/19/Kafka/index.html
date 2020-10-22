@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+<meta name="description" content="开始学习卡夫卡，工作需要，开始得有点晚了。毕竟周围很多同事已经会了。嘛，人比人气死人，进步就好 (๑•̀ㅂ•́)و✧ 消息队列  看到一篇还不错的博客，作者层层深入，所以我觉得我也需要学习一下。 这位作者的系列文章，貌似已经开公众号了，所以点击会跑到微信上面去。汗一个 五分钟时间看了一下，果然是好文章啊。 简单来说，使用消息队列可以解耦生产者和消费者；可以实现异步，提高效率 那么为什么在JAVA中">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/01/28/hello-world/index.html">
+<meta property="og:title" content="Kafka">
+<meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2020/10/19/Kafka/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+<meta property="og:description" content="开始学习卡夫卡，工作需要，开始得有点晚了。毕竟周围很多同事已经会了。嘛，人比人气死人，进步就好 (๑•̀ㅂ•́)و✧ 消息队列  看到一篇还不错的博客，作者层层深入，所以我觉得我也需要学习一下。 这位作者的系列文章，貌似已经开公众号了，所以点击会跑到微信上面去。汗一个 五分钟时间看了一下，果然是好文章啊。 简单来说，使用消息队列可以解耦生产者和消费者；可以实现异步，提高效率 那么为什么在JAVA中">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-10-28T00:39:58.000Z">
+<meta property="og:updated_time" content="2020-10-21T07:01:40.701Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hello World">
-<meta name="twitter:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+<meta name="twitter:title" content="Kafka">
+<meta name="twitter:description" content="开始学习卡夫卡，工作需要，开始得有点晚了。毕竟周围很多同事已经会了。嘛，人比人气死人，进步就好 (๑•̀ㅂ•́)و✧ 消息队列  看到一篇还不错的博客，作者层层深入，所以我觉得我也需要学习一下。 这位作者的系列文章，貌似已经开公众号了，所以点击会跑到微信上面去。汗一个 五分钟时间看了一下，果然是好文章啊。 简单来说，使用消息队列可以解耦生产者和消费者；可以实现异步，提高效率 那么为什么在JAVA中">
 
 
 
@@ -119,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="https://sallyslove.github.io/hexo_blog/2019/01/28/hello-world/">
+  <link rel="canonical" href="https://sallyslove.github.io/hexo_blog/2020/10/19/Kafka/">
 
 
 
 
 
-  <title>Hello World | 跬步</title>
+  <title>Kafka | 跬步</title>
   
 
 
@@ -242,7 +242,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/01/28/hello-world/">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2020/10/19/Kafka/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Lynn Shen">
@@ -259,7 +259,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Hello World</h1>
+          <h1 class="post-title" itemprop="name headline">Kafka</h1>
         
 
         <div class="post-meta">
@@ -271,8 +271,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-28T16:21:54+08:00">
-                2019-01-28
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-10-19T16:07:33+08:00">
+                2020-10-19
               </time>
             
 
@@ -309,20 +309,58 @@
       
 
       
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="quick-start"><a class="header-anchor" href="#quick-start"></a>Quick Start</h2>
-<h3 id="create-a-new-post"><a class="header-anchor" href="#create-a-new-post"></a>Create a new post</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="run-server"><a class="header-anchor" href="#run-server"></a>Run server</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="generate-static-files"><a class="header-anchor" href="#generate-static-files"></a>Generate static files</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="deploy-to-remote-sites"><a class="header-anchor" href="#deploy-to-remote-sites"></a>Deploy to remote sites</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+        <p>开始学习卡夫卡，工作需要，开始得有点晚了。毕竟周围很多同事已经会了。嘛，人比人气死人，进步就好 (๑•̀ㅂ•́)و✧</p>
+<h2 id="消息队列"><a class="header-anchor" href="#消息队列"></a>消息队列</h2>
+<ul>
+<li>看到一篇还不错的博客，作者层层深入，所以我觉得我也需要学习一下。</li>
+<li><a href="https://github.com/ZhongFuCheng3y/3y" target="_blank" rel="noopener">这位作者的系列文章，貌似已经开公众号了，所以点击会跑到微信上面去。汗一个</a></li>
+<li>五分钟时间看了一下，果然是好文章啊。</li>
+<li>简单来说，使用消息队列可以解耦生产者和消费者；可以实现异步，提高效率</li>
+<li>那么为什么在JAVA中已经有了很多现成的消费队列，还需要自己去写一些中间件呢？</li>
+<li>这里面的原因挺多的，但是都很好理解，比如固化，JAVA的队列都是内存里面的，一下就没了，对于产品来说，肯定不能接受；再比如数据的处理，不能重复，或者排序。基于各种需求，自然就产生了各种各样的队列</li>
+</ul>
+<h2 id="zookeeper"><a class="header-anchor" href="#zookeeper"></a>Zookeeper</h2>
+<ul>
+<li>这位博客作者真是很有意思，深入浅出而且比较搞笑。口水话和我相似啊。所为光头就能变强，自宫就能成功嘛。(≧∇≦)ﾉ</li>
+<li>仍旧参考其系列文章：<a href="https://mp.weixin.qq.com/s?__biz=MzI4Njg5MDA5NA==&amp;mid=2247485115&amp;idx=1&amp;sn=5d269f40f820c82b460993669ca6242e&amp;chksm=ebd747badca0ceac9953f82e08b1d1a49498ebd4af77ec5d628a0682bb9f0ac5ab347411f654&amp;token=1741918942&amp;lang=zh_CN#rd" target="_blank" rel="noopener">微信的IP也太长了吧，什么是zookeeper</a></li>
+<li><code>zookeeper</code>的功能包括：统一配置管理、统一命名服务、分布式锁、集群管理。这些功能听上去都超超超高大上啊~</li>
+<li><code>Zookeeper</code>通过感知节点的变化，已经节点数据的变化来实现以上这些高大上的功能点</li>
+<li>集群管理大致有点感觉，既然可以感知节点的变化，那么可以建立相应的临时节点，在有新的集群机器加入的时候。</li>
+<li>分布式锁的功能就是说某个带锁的<code>zNode</code>，各个集群机器在访问这个<code>zNode</code>时候，会创建一个临时<code>node</code>，这个临时的节点上面有个带个号码，比如<code>0000001</code>，谁的最小，谁就获得访问这个特殊的<code>znode</code>的权利</li>
+<li>统一命名服务有点没看明白，后面再研究吧</li>
+</ul>
+<h2 id="kafka"><a class="header-anchor" href="#kafka"></a>Kafka</h2>
+<p><code>kafka</code>是一个消息队列，这个一句话解释感觉好拉风，一句话就说清楚了</p>
+<h3 id="基本概念"><a class="header-anchor" href="#基本概念"></a>基本概念</h3>
+<ul>
+<li><code>kafka</code>有以下几个基本概念：
+<ul>
+<li><code>topic</code>: 作为一个产品，<code>kafka</code>可以有多个消息队列，一个消息队列就是一个<code>topic</code>，有点类似数据库的表。对于一个<code>topic</code>，可以有多个生产者，也可以有多个消费者，这点很好理解。</li>
+<li><code>partition</code>：因为一个<code>topic</code>上面会有多个消费者和生产者，所以分成了多个<code>partition</code>，每个生产者往不同的<code>partition</code>上面丢数据。<strong>这边有个问题，为什么要新引入这个概念呢？ 多个<code>topic</code>不行吗？</strong></li>
+<li><code>broker</code>：那么<code>kafka</code>是支持分布式的，当然如此，也就是集群。那么集群里面可能就不止一个机器上安装了<code>kafka</code>，每个安装了<code>kafka</code>的机器就称为一个<code>broker</code>。需要注意的是，同一个<code>topic</code>的不同<code>partition</code>可能分布在不同的<code>broker</code>上面</li>
+<li><code>replica</code>:大概分布式都要复制吧，不然宕机咋整呢 😉。但是这里需要注意的是，读写都只会对主的<code>partition</code>进行，备份就是备份，老老实实做备份的含义。当主<code>partition</code>在的<code>broker</code>宕机了，会重新选一个主的出来</li>
+</ul>
+</li>
+</ul>
+<h3 id="生产者"><a class="header-anchor" href="#生产者"></a>生产者</h3>
+<ul>
+<li><code>Kafka</code>和<code>Cassandra</code>一样，也是先写到缓存里面，然后再写到磁盘里面。不过<code>Kafka</code>只允许追加写入(顺序访问)，避免缓慢的随机 <code>I/O</code>操作。<strong>这句有点不明白，啥叫追加写入</strong></li>
+</ul>
+<h3 id="消费者"><a class="header-anchor" href="#消费者"></a>消费者</h3>
+<ul>
+<li>多个消费者消费同一个<code>topic</code>的可以组成一个消费者组，消费者组里面的消费者可以每个去消费一个<code>partition</code>，这样就提高了吞吐量</li>
+<li>正常的读磁盘数据是需要将内核态数据拷贝到用户态的，而<code>Kafka</code> 通过调用<code>sendfile()</code>直接从内核空间（DMA的）到内核空间（Socket的），少做了一步拷贝的操作。昨天有同事部分分享时候说是省略了从磁盘读取。感觉这个说法不对，如果数据已经存储到了磁盘上面，是无法省略从磁盘读取的。这个需要进一步的学习</li>
+<li>当消费者组里面一个消费者宕机之后，剩下的消费者需要重新分配，将空缺没有人消费的<code>partition</code>给安排出去。这个过程叫做<code>rebalancing</code>。从<code>kafka</code>的日志里面也能看到这句话</li>
+<li>因为需要继续消费没消费完的<code>partition</code>，那么就需要知道之前的消费者消费到哪里了，就引入了偏移量这个概念。</li>
+<li>偏移量：<code>offset</code>在<code>broker</code>以内部<code>topic(__consumer_offsets)</code>的方式存储，早期的版本可能存在<code>zookeeper</code>里面</li>
+</ul>
+<h3 id="kafka和zookeeper"><a class="header-anchor" href="#kafka和zookeeper"></a>Kafka和Zookeeper</h3>
+<ul>
+<li><code>Zookeeper</code>是<code>Kafka</code>一个重要的依赖。</li>
+<li>探测<code>broker</code>和<code>consumer</code>的添加或移除。</li>
+<li>负责维护所有<code>partition</code>的领导者/从属者关系（主分区和备份分区），如果主分区挂了，需要选举出备份分区作为主分区。</li>
+<li>维护<code>topic、partition</code>等元配置信息</li>
+</ul>
 
       
     </div>
@@ -347,8 +385,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/hexo_blog/2019/01/21/Cassandra数据结构/" rel="next" title="Cassandra数据结构">
-                <i class="fa fa-chevron-left"></i> Cassandra数据结构
+              <a href="/hexo_blog/2020/09/15/how-endpoint-be-connected-into-network/" rel="next" title="how endpoint be connected into network">
+                <i class="fa fa-chevron-left"></i> how endpoint be connected into network
               </a>
             
           </div>
@@ -356,10 +394,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/hexo_blog/2019/02/14/Scala/" rel="prev" title="Scala">
-                Scala <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -489,7 +523,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#quick-start"><span class="nav-number">1.</span> <span class="nav-text">Quick Start</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#create-a-new-post"><span class="nav-number">1.1.</span> <span class="nav-text">Create a new post</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#run-server"><span class="nav-number">1.2.</span> <span class="nav-text">Run server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#generate-static-files"><span class="nav-number">1.3.</span> <span class="nav-text">Generate static files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#deploy-to-remote-sites"><span class="nav-number">1.4.</span> <span class="nav-text">Deploy to remote sites</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#消息队列"><span class="nav-number">1.</span> <span class="nav-text">消息队列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#zookeeper"><span class="nav-number">2.</span> <span class="nav-text">Zookeeper</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka"><span class="nav-number">3.</span> <span class="nav-text">Kafka</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本概念"><span class="nav-number">3.1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生产者"><span class="nav-number">3.2.</span> <span class="nav-text">生产者</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消费者"><span class="nav-number">3.3.</span> <span class="nav-text">消费者</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kafka和zookeeper"><span class="nav-number">3.4.</span> <span class="nav-text">Kafka和Zookeeper</span></a></li></ol></li></ol></div>
             
 
           </div>

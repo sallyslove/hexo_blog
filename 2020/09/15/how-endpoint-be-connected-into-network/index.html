@@ -97,7 +97,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/network/ARP_wireshark.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/network/Iptables_table_chain.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/network/Iptables_process.png">
-<meta property="og:updated_time" content="2020-09-30T08:37:38.580Z">
+<meta property="og:updated_time" content="2020-10-10T08:38:09.639Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="how endpoint be connected into network">
 <meta name="twitter:description" content="这篇博客用来记录运行时的过程，包括：  网卡接入网络    参考链接 1）局域网的路由器&amp;amp;网卡 消息层次  从以下的两张图片可以清晰地看到网络的分层，以及对应关系。 Ethernet II, Src: HewlettP_2f:87:8f (b0:0c:d1:2f:87:8f), Dst: Broadcast (ff:ff:ff:ff:ff:ff)是数据链路层，以太网，从中能看到MAC地址">
@@ -552,17 +552,23 @@ REDIRECT - DNAT的一个特殊场景将包重定向到本机另一个端口,重�
 </code></pre>
 </li>
 </ul>
-<h4 id="实际操作配置"><a class="header-anchor" href="#实际操作配置"></a>实际操作配置</h4>
-<ul>
-<li>实际操作暂时没时间，也有点兴趣缺缺<br>
-参考链接：<a href="http://www.ttlsa.com/linux/iptables-router-acl/" target="_blank" rel="noopener">iptables作为路由器实现上网和访问控制</a></li>
-</ul>
 <h4 id="参考链接-v2"><a class="header-anchor" href="#参考链接-v2"></a>参考链接</h4>
 <ol>
 <li><a href="http://arthurchiao.art/blog/deep-dive-into-iptables-and-netfilter-arch-zh/" target="_blank" rel="noopener">深入理解IpTables和Netfilter： 这篇比较好，这回的主要参考，里面也有Netfilter几种hook的介绍</a></li>
 <li><a href="https://www.digitalocean.com/community/tutorials/a-deep-dive-into-iptables-and-netfilter-architecture" target="_blank" rel="noopener">上一篇参考链接的英文原文</a><br>
 3） <a href="http://arthurchiao.art/blog/nat-zh/" target="_blank" rel="noopener">NAT - 网络地址转换</a></li>
 </ol>
+<h4 id="实际操作配置"><a class="header-anchor" href="#实际操作配置"></a>实际操作配置</h4>
+<ul>
+<li>实际操作暂时没时间，也有点兴趣缺缺<br>
+参考链接：
+<ol>
+<li><a href="http://www.ttlsa.com/linux/iptables-router-acl/" target="_blank" rel="noopener">iptables作为路由器实现上网和访问控制</a></li>
+<li><a href="https://www.cnblogs.com/linuxws/p/10924817.html" target="_blank" rel="noopener">Iptables-linux服务器做路由转发</a></li>
+<li><a href="https://blog.csdn.net/beanewself/article/details/77435208?utm_medium=distribute.pc_relevant.none-task-blog-title-3&amp;spm=1001.2101.3001.4242" target="_blank" rel="noopener">Linux下搭建路由器</a></li>
+</ol>
+</li>
+</ul>
 <h3 id="虚拟网络"><a class="header-anchor" href="#虚拟网络"></a>虚拟网络</h3>
 <ul>
 <li></li>
@@ -600,6 +606,10 @@ REDIRECT - DNAT的一个特殊场景将包重定向到本机另一个端口,重�
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/hexo_blog/2020/10/19/Kafka/" rel="prev" title="Kafka">
+                Kafka <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -683,7 +693,7 @@ REDIRECT - DNAT的一个特殊场景将包重定向到本机另一个端口,重�
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">39</span>
+                  <span class="site-state-item-count">40</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -729,7 +739,7 @@ REDIRECT - DNAT的一个特殊场景将包重定向到本机另一个端口,重�
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消息层次"><span class="nav-number">2.</span> <span class="nav-text">消息层次</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设备接入网络"><span class="nav-number">3.</span> <span class="nav-text">设备接入网络</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#动态主机配置协议-dhcp-dynamic-host-configuration-protocol"><span class="nav-number">3.1.</span> <span class="nav-text">动态主机配置协议 DHCP(Dynamic Host Configuration Protocol)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设备发消息"><span class="nav-number">4.</span> <span class="nav-text">设备发消息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#arp-address-resolution-protocol-地址解析协议"><span class="nav-number">4.1.</span> <span class="nav-text">ARP（Address Resolution Protocol）地址解析协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nat-network-address-translation-协议"><span class="nav-number">4.2.</span> <span class="nav-text">NAT（Network Address Translation）协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iptables"><span class="nav-number">4.3.</span> <span class="nav-text">Iptables</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#iptables-简述"><span class="nav-number">4.3.1.</span> <span class="nav-text">Iptables 简述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iptables-tables"><span class="nav-number">4.3.2.</span> <span class="nav-text">Iptables Tables</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iptables-chain"><span class="nav-number">4.3.3.</span> <span class="nav-text">Iptables Chain</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#how-packages-be-routed"><span class="nav-number">4.3.4.</span> <span class="nav-text">How Packages be routed</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iptables-操作"><span class="nav-number">4.3.5.</span> <span class="nav-text">Iptables 操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实际操作配置"><span class="nav-number">4.3.6.</span> <span class="nav-text">实际操作配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考链接-v2"><span class="nav-number">4.3.7.</span> <span class="nav-text">参考链接</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#虚拟网络"><span class="nav-number">4.4.</span> <span class="nav-text">虚拟网络</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消息层次"><span class="nav-number">2.</span> <span class="nav-text">消息层次</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设备接入网络"><span class="nav-number">3.</span> <span class="nav-text">设备接入网络</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#动态主机配置协议-dhcp-dynamic-host-configuration-protocol"><span class="nav-number">3.1.</span> <span class="nav-text">动态主机配置协议 DHCP(Dynamic Host Configuration Protocol)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设备发消息"><span class="nav-number">4.</span> <span class="nav-text">设备发消息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#arp-address-resolution-protocol-地址解析协议"><span class="nav-number">4.1.</span> <span class="nav-text">ARP（Address Resolution Protocol）地址解析协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nat-network-address-translation-协议"><span class="nav-number">4.2.</span> <span class="nav-text">NAT（Network Address Translation）协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iptables"><span class="nav-number">4.3.</span> <span class="nav-text">Iptables</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#iptables-简述"><span class="nav-number">4.3.1.</span> <span class="nav-text">Iptables 简述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iptables-tables"><span class="nav-number">4.3.2.</span> <span class="nav-text">Iptables Tables</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iptables-chain"><span class="nav-number">4.3.3.</span> <span class="nav-text">Iptables Chain</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#how-packages-be-routed"><span class="nav-number">4.3.4.</span> <span class="nav-text">How Packages be routed</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iptables-操作"><span class="nav-number">4.3.5.</span> <span class="nav-text">Iptables 操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考链接-v2"><span class="nav-number">4.3.6.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实际操作配置"><span class="nav-number">4.3.7.</span> <span class="nav-text">实际操作配置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#虚拟网络"><span class="nav-number">4.4.</span> <span class="nav-text">虚拟网络</span></a></li></ol></li></ol></div>
             
 
           </div>

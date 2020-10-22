@@ -242,6 +242,177 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2020/10/19/Kafka/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2020/10/19/Kafka/" itemprop="url">Kafka</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-10-19T16:07:33+08:00">
+                2020-10-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>开始学习卡夫卡，工作需要，开始得有点晚了。毕竟周围很多同事已经会了。嘛，人比人气死人，进步就好 (๑•̀ㅂ•́)و✧</p>
+<h2 id="消息队列"><a class="header-anchor" href="#消息队列"></a>消息队列</h2>
+<ul>
+<li>看到一篇还不错的博客，作者层层深入，所以我觉得我也需要学习一下。</li>
+<li><a href="https://github.com/ZhongFuCheng3y/3y" target="_blank" rel="noopener">这位作者的系列文章，貌似已经开公众号了，所以点击会跑到微信上面去。汗一个</a></li>
+<li>五分钟时间看了一下，果然是好文章啊。</li>
+<li>简单来说，使用消息队列可以解耦生产者和消费者；可以实现异步，提高效率</li>
+<li>那么为什么在JAVA中已经有了很多现成的消费队列，还需要自己去写一些中间件呢？</li>
+<li>这里面的原因挺多的，但是都很好理解，比如固化，JAVA的队列都是内存里面的，一下就没了，对于产品来说，肯定不能接受；再比如数据的处理，不能重复，或者排序。基于各种需求，自然就产生了各种各样的队列</li>
+</ul>
+<h2 id="zookeeper"><a class="header-anchor" href="#zookeeper"></a>Zookeeper</h2>
+<ul>
+<li>这位博客作者真是很有意思，深入浅出而且比较搞笑。口水话和我相似啊。所为光头就能变强，自宫就能成功嘛。(≧∇≦)ﾉ</li>
+<li>仍旧参考其系列文章：<a href="https://mp.weixin.qq.com/s?__biz=MzI4Njg5MDA5NA==&amp;mid=2247485115&amp;idx=1&amp;sn=5d269f40f820c82b460993669ca6242e&amp;chksm=ebd747badca0ceac9953f82e08b1d1a49498ebd4af77ec5d628a0682bb9f0ac5ab347411f654&amp;token=1741918942&amp;lang=zh_CN#rd" target="_blank" rel="noopener">微信的IP也太长了吧，什么是zookeeper</a></li>
+<li><code>zookeeper</code>的功能包括：统一配置管理、统一命名服务、分布式锁、集群管理。这些功能听上去都超超超高大上啊~</li>
+<li><code>Zookeeper</code>通过感知节点的变化，已经节点数据的变化来实现以上这些高大上的功能点</li>
+<li>集群管理大致有点感觉，既然可以感知节点的变化，那么可以建立相应的临时节点，在有新的集群机器加入的时候。</li>
+<li>分布式锁的功能就是说某个带锁的<code>zNode</code>，各个集群机器在访问这个<code>zNode</code>时候，会创建一个临时<code>node</code>，这个临时的节点上面有个带个号码，比如<code>0000001</code>，谁的最小，谁就获得访问这个特殊的<code>znode</code>的权利</li>
+<li>统一命名服务有点没看明白，后面再研究吧</li>
+</ul>
+<h2 id="kafka"><a class="header-anchor" href="#kafka"></a>Kafka</h2>
+<p><code>kafka</code>是一个消息队列，这个一句话解释感觉好拉风，一句话就说清楚了</p>
+<h3 id="基本概念"><a class="header-anchor" href="#基本概念"></a>基本概念</h3>
+<ul>
+<li><code>kafka</code>有以下几个基本概念：
+<ul>
+<li><code>topic</code>: 作为一个产品，<code>kafka</code>可以有多个消息队列，一个消息队列就是一个<code>topic</code>，有点类似数据库的表。对于一个<code>topic</code>，可以有多个生产者，也可以有多个消费者，这点很好理解。</li>
+<li><code>partition</code>：因为一个<code>topic</code>上面会有多个消费者和生产者，所以分成了多个<code>partition</code>，每个生产者往不同的<code>partition</code>上面丢数据。<strong>这边有个问题，为什么要新引入这个概念呢？ 多个<code>topic</code>不行吗？</strong></li>
+<li><code>broker</code>：那么<code>kafka</code>是支持分布式的，当然如此，也就是集群。那么集群里面可能就不止一个机器上安装了<code>kafka</code>，每个安装了<code>kafka</code>的机器就称为一个<code>broker</code>。需要注意的是，同一个<code>topic</code>的不同<code>partition</code>可能分布在不同的<code>broker</code>上面</li>
+<li><code>replica</code>:大概分布式都要复制吧，不然宕机咋整呢 😉。但是这里需要注意的是，读写都只会对主的<code>partition</code>进行，备份就是备份，老老实实做备份的含义。当主<code>partition</code>在的<code>broker</code>宕机了，会重新选一个主的出来</li>
+</ul>
+</li>
+</ul>
+<h3 id="生产者"><a class="header-anchor" href="#生产者"></a>生产者</h3>
+<ul>
+<li><code>Kafka</code>和<code>Cassandra</code>一样，也是先写到缓存里面，然后再写到磁盘里面。不过<code>Kafka</code>只允许追加写入(顺序访问)，避免缓慢的随机 <code>I/O</code>操作。<strong>这句有点不明白，啥叫追加写入</strong></li>
+</ul>
+<h3 id="消费者"><a class="header-anchor" href="#消费者"></a>消费者</h3>
+<ul>
+<li>多个消费者消费同一个<code>topic</code>的可以组成一个消费者组，消费者组里面的消费者可以每个去消费一个<code>partition</code>，这样就提高了吞吐量</li>
+<li>正常的读磁盘数据是需要将内核态数据拷贝到用户态的，而<code>Kafka</code> 通过调用<code>sendfile()</code>直接从内核空间（DMA的）到内核空间（Socket的），少做了一步拷贝的操作。昨天有同事部分分享时候说是省略了从磁盘读取。感觉这个说法不对，如果数据已经存储到了磁盘上面，是无法省略从磁盘读取的。这个需要进一步的学习</li>
+<li>当消费者组里面一个消费者宕机之后，剩下的消费者需要重新分配，将空缺没有人消费的<code>partition</code>给安排出去。这个过程叫做<code>rebalancing</code>。从<code>kafka</code>的日志里面也能看到这句话</li>
+<li>因为需要继续消费没消费完的<code>partition</code>，那么就需要知道之前的消费者消费到哪里了，就引入了偏移量这个概念。</li>
+<li>偏移量：<code>offset</code>在<code>broker</code>以内部<code>topic(__consumer_offsets)</code>的方式存储，早期的版本可能存在<code>zookeeper</code>里面</li>
+</ul>
+<h3 id="kafka和zookeeper"><a class="header-anchor" href="#kafka和zookeeper"></a>Kafka和Zookeeper</h3>
+<ul>
+<li><code>Zookeeper</code>是<code>Kafka</code>一个重要的依赖。</li>
+<li>探测<code>broker</code>和<code>consumer</code>的添加或移除。</li>
+<li>负责维护所有<code>partition</code>的领导者/从属者关系（主分区和备份分区），如果主分区挂了，需要选举出备份分区作为主分区。</li>
+<li>维护<code>topic、partition</code>等元配置信息</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2020/09/15/how-endpoint-be-connected-into-network/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -544,17 +715,23 @@ REDIRECT - DNAT的一个特殊场景将包重定向到本机另一个端口,重�
 </code></pre>
 </li>
 </ul>
-<h4 id="实际操作配置"><a class="header-anchor" href="#实际操作配置"></a>实际操作配置</h4>
-<ul>
-<li>实际操作暂时没时间，也有点兴趣缺缺<br>
-参考链接：<a href="http://www.ttlsa.com/linux/iptables-router-acl/" target="_blank" rel="noopener">iptables作为路由器实现上网和访问控制</a></li>
-</ul>
 <h4 id="参考链接-v2"><a class="header-anchor" href="#参考链接-v2"></a>参考链接</h4>
 <ol>
 <li><a href="http://arthurchiao.art/blog/deep-dive-into-iptables-and-netfilter-arch-zh/" target="_blank" rel="noopener">深入理解IpTables和Netfilter： 这篇比较好，这回的主要参考，里面也有Netfilter几种hook的介绍</a></li>
 <li><a href="https://www.digitalocean.com/community/tutorials/a-deep-dive-into-iptables-and-netfilter-architecture" target="_blank" rel="noopener">上一篇参考链接的英文原文</a><br>
 3） <a href="http://arthurchiao.art/blog/nat-zh/" target="_blank" rel="noopener">NAT - 网络地址转换</a></li>
 </ol>
+<h4 id="实际操作配置"><a class="header-anchor" href="#实际操作配置"></a>实际操作配置</h4>
+<ul>
+<li>实际操作暂时没时间，也有点兴趣缺缺<br>
+参考链接：
+<ol>
+<li><a href="http://www.ttlsa.com/linux/iptables-router-acl/" target="_blank" rel="noopener">iptables作为路由器实现上网和访问控制</a></li>
+<li><a href="https://www.cnblogs.com/linuxws/p/10924817.html" target="_blank" rel="noopener">Iptables-linux服务器做路由转发</a></li>
+<li><a href="https://blog.csdn.net/beanewself/article/details/77435208?utm_medium=distribute.pc_relevant.none-task-blog-title-3&amp;spm=1001.2101.3001.4242" target="_blank" rel="noopener">Linux下搭建路由器</a></li>
+</ol>
+</li>
+</ul>
 <h3 id="虚拟网络"><a class="header-anchor" href="#虚拟网络"></a>虚拟网络</h3>
 <ul>
 <li></li>
@@ -2850,403 +3027,6 @@ iptables -t raw -j TRACE -p tcp --dport 32741 -I OUTPUT 1
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/08/16/OAuth2-0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/08/16/OAuth2-0/" itemprop="url">OAuth2.0</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-16T10:22:26+08:00">
-                2019-08-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/security/" itemprop="url" rel="index">
-                    <span itemprop="name">security</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>这个Oauth吧，我感觉我几年前就听到了，可惜还是没弄明白。必须承认那些传来传去啊，容易搞混淆和忘。<br>
-嗯，写完了也还是有半懂不懂的感觉，不过好歹是个半懂了 😂</p>
-<h3 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h3>
-<ul>
-<li><a href="https://coolshell.cn/articles/19395.html" target="_blank" rel="noopener">HTTP API 认证授权术</a>：来自酷壳，写得很清楚，一步一步。感觉看这篇就能了解前世今生了。挺好。<br>
-所以这篇博客就是以酷壳这篇为基础来学习的</li>
-</ul>
-<h3 id="http-basic"><a class="header-anchor" href="#http-basic"></a>HTTP Basic</h3>
-<ul>
-<li>上述参考链接里面说得很清楚。其实就是<code>user:password</code>用<code>Base64</code>编码协议进行编码，然后传输</li>
-<li>但是可以看到这里仅仅是加密协议，所以通常会和HTTPS配合起来，用<code>TLS/SSL</code>的安全加密方式来传输</li>
-<li>就是将编码后的字符放在HTTP协议的<code>Authenticate: Basic</code>里面。</li>
-<li>需要注意的点是：
-<ul>
-<li>编码协议和加密协议不一样, <code>Base64</code>就是个编码，<code>RSA/AES</code>才是加密，<code>MD5</code>就只是取摘要的</li>
-<li><code>HTTP Basic</code>方式将密码和用户名放在公网上面传输，存在风险</li>
-</ul>
-</li>
-</ul>
-<h3 id="digital-access"><a class="header-anchor" href="#digital-access"></a>Digital Access</h3>
-<ul>
-<li>参考链接：
-<ul>
-<li><a href="https://www.cnblogs.com/huey/p/5490759.html" target="_blank" rel="noopener">HTTP - 摘要认证</a></li>
-<li><a href="https://www.cnblogs.com/xzwblog/p/6834663.html" target="_blank" rel="noopener">HTTP认证与https简介</a></li>
-<li><a href="https://en.wikipedia.org/wiki/Digest_access_authentication" target="_blank" rel="noopener">维基百科HTTP摘要认证</a></li>
-</ul>
-</li>
-<li>摘要认证与基础认证是兼容的，但是进行了如下修改：
-<ul>
-<li>永远不会以明文方式在网络上发送密码。</li>
-<li>可以防止恶意用户捕获并重放认证的握手过程。</li>
-<li>可以有选择地防止对报文内容的篡改。</li>
-<li>防范其他几种常见的攻击方式。</li>
-</ul>
-</li>
-<li>还是维基百科比较清楚。摘要认证会使用MD5的方式来加密用户名和密码。相对来说，基础认证仅仅是使用了编码方式，而不是加密方式。</li>
-<li>同时，摘要认证使用了<code>nonce values</code>来阻止<code>replay attacks</code><strong><em>不知道翻译成什么，重演攻击？</em></strong></li>
-<li>但是整个过程其实关键是用户的password，这个password如果不够复杂，其实是可以被暴力破解的，而且，整个过程是非常容易受到中间人攻击。 <strong><em>这点我还没理解</em></strong></li>
-</ul>
-<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/OAuth2.0/http_digital_access_nonce.png" alt><br>
-<strong>nonce 说明图</strong></p>
-<ul>
-<li>以下是自己画的简明的流程图，还是比较清楚的。
-<ul>
-<li>[]代表里面的数值</li>
-<li><code>nonce</code>是服务器端生成的随机数。 <code>cnonce</code>是客户端生成的</li>
-<li>如果多了<code>auth</code>，那么还要发送<code>HA2</code>，里面的<code>method</code>就是指<code>GET</code>操作， <code>entity body</code>指的是<code>HTTP request</code>的数据</li>
-<li><code>opaque</code>看起来也是一个随机数，不知道是啥。</li>
-</ul>
-</li>
-</ul>
-<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/OAuth2.0/http_digital_access.png.png" alt></p>
-<h3 id="jwt-json-web-tokens"><a class="header-anchor" href="#jwt-json-web-tokens"></a>JWT – JSON Web Tokens</h3>
-<p>本来想跳过其中几个，直接学习2.0的，貌似不可行。学习时候还是一步步来，不然就看不明白了。<br>
-查博客的时候，又看到阮大神的博客了。不知道有没有人能看到我的博客，😇<br>
-话说看到评论里有人抨击阮大神说没质量的，嗯，我的还是留着自己看吧。😂</p>
-<h4 id="参考链接-v2"><a class="header-anchor" href="#参考链接-v2"></a>参考链接</h4>
-<ul>
-<li><a href="https://www.jianshu.com/p/576dbf44b2ae" target="_blank" rel="noopener">什么是 JWT – JSON WEB TOKEN</a></li>
-<li><a href="http://www.ruanyifeng.com/blog/2018/07/json_web_token-tutorial.html" target="_blank" rel="noopener">JWT – JSON Web Tokens</a>: 阮大神的文章，还比较新，去年的。嘛，这技术不新。话说酷壳的是今年的。</li>
-<li><a href="https://jwt.io/introduction/" target="_blank" rel="noopener">官方文档</a>： 第一篇博客只是翻译，总的来说，JWT不是很复杂的，看了感觉蛮简单。比摘要还简单一点。</li>
-</ul>
-<h4 id="session-认证方式"><a class="header-anchor" href="#session-认证方式"></a>session 认证方式</h4>
-<ul>
-<li>
-<p>基于<code>session</code>的认证方式，其实很好理解的。跟我们产品里面的某种协议类似，第一次登陆时候，客户端通过用户名和密码访问，然后服务器端返回一个<code>sessionId</code>。</p>
-</li>
-<li>
-<p>后续访问的时候，就用这个<code>sessionId</code>来访问，服务器端再通过这个<code>sessionId</code>来查询到这个用户的所有信息。包括用户名啊，密码啊，访问权限啊，登录时长啊，我猜的，应该有这些信息。</p>
-</li>
-<li>
-<p>互联网时代，这个<code>sessionId</code>会被浏览器端写入到自己的<code>cookie</code>里面。<strong>现在还有吗，我咋没看到<code>sessionId</code>字样</strong></p>
-</li>
-<li>
-<p>这种方式的问题看起来有两个比较不好(瞅着这么简单，肯定不行啊，我今天脑内小剧场比较多啊)：</p>
-<ul>
-<li>一个安全问题，基于<code>cookie</code>来做的，想也知道不安全，<code>cookie</code>被读取之后就不成了。</li>
-<li>扩展性不好，这个就比较复杂，有各种扩展性，比如<code>sessionId</code>存在服务器端的内存里面，那么内存客户端数量涨了，服务器就撑不住了；再比如，同一个客户，各种用微信登录，这个<code>session</code>没法在不同服务器之间进行共享，除非再引入中转，但是中转一挂就完蛋。</li>
-</ul>
-</li>
-<li>
-<p>然后对于上述的问题，就想了一个办法来解决，就是服务器端不再存储客户信息，而是所有信息都放在客户端，服务器端只是加一个签名。客户端后面每次访问都带上自己所有信息。</p>
-<ul>
-<li>话说，这不是比带<code>sessionId</code>要带的东西多嘛。每次都带，多麻烦呐。好处是服务器就不需要存储信息，无状态了。</li>
-<li>这个签名我理解就是嗯，这个客户我老人家认证过了这样的。问题是认证过了就不认证了？应该是不认证了。<strong><em>问题在于这个签名怎么做的，服务器端如何知道这个用户是认证过的，合法的呢？比如我微信登录了一个，我再登录另一个服务器，第二个服务器怎么信任我呢。我想这里理解有点问题，不同的服务器，应该是相同的应用和功能。所以软件上是一套。</em></strong></li>
-</ul>
-</li>
-</ul>
-<h4 id="jwt-header"><a class="header-anchor" href="#jwt-header"></a>JWT Header</h4>
-<ul>
-<li>JWT其实就三个部分，header，payload和签名，在同一行。如下：</li>
-</ul>
-<pre><code>Header.Payload.Signature
-</code></pre>
-<ul>
-<li>Header是JSON格式，里面有算法和令牌(token)类型，<strong><em>第一次知道<code>token</code>原来中文翻译成令牌，这是个多么熟悉的词组啊，N年前学网络时候没少听到。令牌令牌令牌的，原来是token，瞬间感觉很多东西更明白了，果然看大神的博客有无限好处</em></strong></li>
-<li>下面是阮大神博客里面的例子，默认是<code>HMAC SHA256</code>（写成 HS256）。令牌类型就是<code>JWT</code>。这样服务器可以知道这次客户端发来的信息是接受过<code>JWT</code>认证的。</li>
-<li>话说认证方式其实也是一种协议啊。特殊的协议。只是之前的<code>HTTP Basic</code>和<code>Digital Access</code>时候不知道服务器端是否存储用户信息。前者我想应该是存储的，后者应该也是存储的，否则无法进行校验。</li>
-</ul>
-<pre><code>{
-  &quot;alg&quot;: &quot;HS256&quot;,
-  &quot;typ&quot;: &quot;JWT&quot;
-}
-</code></pre>
-<ul>
-<li><em>将上面的JSON对象使用Base64URL算法转成字符串</em> 阮大神的实在清楚，我感觉我在加读书笔记。</li>
-<li><strong><em>之前说过Base64只是编码算法，算不得加密算法，所以其实JWT的这部分并不十分安全</em></strong></li>
-</ul>
-<h4 id="jwt-payload"><a class="header-anchor" href="#jwt-payload"></a>JWT payload</h4>
-<ul>
-<li>payload的话，官方定了几个字段。几篇博客里面貌似没有说到如何实现的。</li>
-</ul>
-<pre><code>iss (issuer)：签发人
-exp (expiration time)：过期时间
-sub (subject)：主题
-aud (audience)：受众
-nbf (Not Before)：生效时间
-iat (Issued At)：签发时间
-jti (JWT ID)：编号
-</code></pre>
-<ul>
-<li>也可以定义自己的字段。同样是<code>Base64</code>编码，所以不是加密的。</li>
-</ul>
-<h4 id="jwt-signiture"><a class="header-anchor" href="#jwt-signiture"></a>JWT Signiture</h4>
-<ul>
-<li>
-<p>签名格式如下：</p>
-<pre><code>HMACSHA256(
-   base64UrlEncode(header) + &quot;.&quot; + base64UrlEncode(payload),secret)
-</code></pre>
-</li>
-<li>
-<p>感觉安全性完全就在这个服务器端的秘钥，<code>secret</code>啊。算法就是header里面指定的加密算法。</p>
-</li>
-</ul>
-<h4 id="流程图"><a class="header-anchor" href="#流程图"></a>流程图</h4>
-<p><img src="https://upload-images.jianshu.io/upload_images/1821058-2e28fe6c997a60c9.png?imageMogr2/auto-orient/" alt></p>
-<p><em>来自上面的参考链接1里面</em></p>
-<h4 id="扩展和小结"><a class="header-anchor" href="#扩展和小结"></a>扩展和小结</h4>
-<h5 id="扩展"><a class="header-anchor" href="#扩展"></a>扩展</h5>
-<ul>
-<li>在酷壳文章里面提到了验证服务器。通常实现中，我想服务器应该也会将信息发送到验证服务器来进行<code>secret</code>的加密和签名的解密</li>
-<li>同时还提到了使用<code>RSA</code>加密算法来替代<code>HMAC-SHA256</code>算法，可以看一下。</li>
-</ul>
-<h5 id="小结"><a class="header-anchor" href="#小结"></a>小结</h5>
-<ul>
-<li>看起来JWT还是比较流行的技术，讨论很多，以下：
-<ul>
-<li><em>JWT 的最大缺点是，由于服务器不保存 session 状态，因此无法在使用过程中废止某个 token，或者更改 token 的权限。也就是说，一旦 JWT 签发了，在到期之前就会始终有效，除非服务器部署额外的逻辑。</em> 看评论解释，也就是说我手机登录了我的微信， ipad也登录了。那么这两个是彼此独立的，ipad登录没法把手机登录的踢出来。</li>
-<li>JWT不应该使用 HTTP 协议明码传输，要使用 HTTPS 协议传输</li>
-</ul>
-</li>
-</ul>
-<h3 id="oauth2-0"><a class="header-anchor" href="#oauth2-0"></a>OAuth2.0</h3>
-<h4 id="参考链接-v3"><a class="header-anchor" href="#参考链接-v3"></a>参考链接</h4>
-<ul>
-<li><a href="http://www.ruanyifeng.com/blog/2019/04/oauth_design.html" target="_blank" rel="noopener">OAuth 2.0 的一个简单解释</a>: 阮大神的博客，简单清晰明了，确实大有裨益，这个小区快递员啥的，感觉我妈都能明白</li>
-<li><a href="http://www.ruanyifeng.com/blog/2019/04/oauth-grant-types.html" target="_blank" rel="noopener">OAuth 2.0 的四种方式</a>阮大神的博客，系列作品</li>
-</ul>
-<h4 id="简介"><a class="header-anchor" href="#简介"></a>简介</h4>
-<ul>
-<li>
-<p><code>OAuth 2.0</code>依赖于<code>TLS/SSL</code>的链路加密技术<code>HTTPS</code>。</p>
-</li>
-<li>
-<p>完全放弃了签名的方式，认证服务器再也不返回什么<code>token</code>,<code>secret</code>的密钥了。</p>
-</li>
-<li>
-<p><code>Auth 2.0</code>是完全不同于1.0 的，也是不兼容的.</p>
-</li>
-<li>
-<p><code>Facebook</code>的<code>Graph API</code>只支持<code>OAuth 2.0</code>协议，<code>Google</code>和 <code>Microsoft Azure</code>也支持<code>Auth 2.0</code>，国内的微信和支付宝也支持使用<code>OAuth 2.0</code>。</p>
-</li>
-<li>
-<p><code>OAuth2.0</code>一共有4个flow。在酷壳上面阐述了其中主要的两个flow。</p>
-<pre><code>授权码（authorization-code）
-隐藏式（implicit）
-密码式（password）：
-客户端凭证（client credentials）
-</code></pre>
-</li>
-<li>
-<p><code>OAuth</code> 就是一种授权机制。数据的所有者告诉系统，同意授权第三方应用进入系统，获取这些数据。系统从而产生一个短期的进入令牌，用来代替密码，供第三方应用使用。</p>
-<ul>
-<li>我们有<code>client</code>,<code>Authorization server</code>,<code>Resource owner</code>和<code>Resource server</code>。那么，对照起来，<code>client</code>是第三方应用，<code>Authorization server</code>是验证服务器， <code>Resource server</code>是资源服务器，也就是被访问的资源保存的地方。<code>Resource Owner</code>是终端用户。</li>
-<li>比如说，我访问微信，微信要求登录，会将我的请求转到验证服务器上面，我通过验证，那么微信这个应用会从资源服务器上面获取资源，我作为终端用户就可以使用微信了。这里我就是<code>Resource Owner</code>, 微信是<code>client</code>。</li>
-</ul>
-</li>
-</ul>
-<h4 id="oauth2-0-详解"><a class="header-anchor" href="#oauth2-0-详解"></a>OAuth2.0 详解</h4>
-<h5 id="authorization-code"><a class="header-anchor" href="#authorization-code"></a>Authorization Code</h5>
-<ul>
-<li>流程如下。感觉没啥好说的，整个流程挺清楚的。
-<ul>
-<li><em>不管哪种流程， 第三方应用申请令牌之前，都必须先到系统备案，说明自己的身份，然后会拿到两个身份识别码：客户端 ID（client ID）和客户端密钥（client secret）。应用自阮大神的博客</em></li>
-<li><code>code</code>就是代表<code>authorization code</code>。</li>
-<li><code>redirect_uri</code>意思是我跳转回第三方应用的地址</li>
-<li><code>scope</code>是相关的权限</li>
-<li><code>state</code> 是一个随机的字符串，主要用于防<code>CSRF</code>攻击。<code>CSRF - Cross-site request forgery</code>攻击，中文翻译是跨站请求伪造。</li>
-<li><code>authorization server</code>返回<code>authorization code</code>时候，其实是带在<code>url</code>里面的。</li>
-</ul>
-</li>
-</ul>
-<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/OAuth2.0/oauth2.0_authorization_code.png" alt="自己画的流程图"></p>
-<ul>
-<li>
-<p><code>authorization code</code>的格式如下。里面的<code>state</code>和第一步里面的一样。</p>
-<pre><code>  https://example-client.com/callback?
-  code=Yzk5ZDczMzRlNDEwYlrEqdFSBzjqfTG
-  &amp;state=xcoiv98CoolShell3kch
-</code></pre>
-</li>
-<li>
-<p><code>token</code>令牌的样式如下：</p>
-</li>
-</ul>
-<ul>
-<li>
-<p><code>access_token</code>就是访问请求令牌了</p>
-</li>
-<li>
-<p><code>refresh_token</code>用于刷新<code>access_token</code></p>
-</li>
-<li>
-<p><code>id_token</code>是<code>JWT</code>的<code>token</code>，其中一般会包含用户的<code>OpenID</code></p>
-<pre><code>{
-    &quot;access_token&quot;: &quot;iJKV1QiLCJhbGciOiJSUzI1NiI&quot;,
-    &quot;refresh_token&quot;: &quot;1KaPlrEqdFSBzjqfTGAMxZGU&quot;,
-    &quot;token_type&quot;: &quot;bearer&quot;,
-    &quot;expires&quot;: 3600,
-    &quot;id_token&quot;: &quot;eyJ0eXAiOiJKV1QiLCJhbGciO.eyJhdWQiOiIyZDRkM...&quot;
-}
-</code></pre>
-</li>
-</ul>
-<h5 id="client-credential-flow"><a class="header-anchor" href="#client-credential-flow"></a>Client Credential Flow</h5>
-<ul>
-<li>感觉这个不需要多写了。其实就是上面的流程中没有用户，就是没有<code>Resource Owner</code>。<code>client</code>直接拿自己的<code>clientId</code>和<code>client-secret</code>去做校验和授权了。</li>
-</ul>
-<h5 id="一些疑问"><a class="header-anchor" href="#一些疑问"></a>一些疑问</h5>
-<p>OAuth2.0我还是有些疑问啊：</p>
-<ul>
-<li>为啥要在<code>token</code>里面带上<code>id_token</code>呢， 这不是暴露了嘛</li>
-<li>如何使用<code>refresh_token</code>来刷新<code>access_token</code>呢。虽然很明显这个是一个可选项</li>
-</ul>
-<h4 id="实现"><a class="header-anchor" href="#实现"></a>实现</h4>
-<ul>
-<li>阮大神的博客里面还有一部分实现。我很惊讶的发现，哎哟喂，原来我在加博客的评论时候用了呀，<code>Oauth2.0</code> 😊 ,但是我当时URL乱填一气了。</li>
-<li><em>所谓第三方登录，实质就是 OAuth 授权</em></li>
-<li>参考链接：
-<ul>
-<li><a href="http://www.ruanyifeng.com/blog/2019/04/github-oauth.html" target="_blank" rel="noopener">GitHub OAuth 第三方登录示例教程</a></li>
-</ul>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -3297,7 +3077,7 @@ jti (JWT ID)：编号
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">39</span>
+                  <span class="site-state-item-count">40</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

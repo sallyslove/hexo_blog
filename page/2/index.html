@@ -242,6 +242,403 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/08/16/OAuth2-0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/08/16/OAuth2-0/" itemprop="url">OAuth2.0</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-16T10:22:26+08:00">
+                2019-08-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/security/" itemprop="url" rel="index">
+                    <span itemprop="name">security</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>这个Oauth吧，我感觉我几年前就听到了，可惜还是没弄明白。必须承认那些传来传去啊，容易搞混淆和忘。<br>
+嗯，写完了也还是有半懂不懂的感觉，不过好歹是个半懂了 😂</p>
+<h3 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h3>
+<ul>
+<li><a href="https://coolshell.cn/articles/19395.html" target="_blank" rel="noopener">HTTP API 认证授权术</a>：来自酷壳，写得很清楚，一步一步。感觉看这篇就能了解前世今生了。挺好。<br>
+所以这篇博客就是以酷壳这篇为基础来学习的</li>
+</ul>
+<h3 id="http-basic"><a class="header-anchor" href="#http-basic"></a>HTTP Basic</h3>
+<ul>
+<li>上述参考链接里面说得很清楚。其实就是<code>user:password</code>用<code>Base64</code>编码协议进行编码，然后传输</li>
+<li>但是可以看到这里仅仅是加密协议，所以通常会和HTTPS配合起来，用<code>TLS/SSL</code>的安全加密方式来传输</li>
+<li>就是将编码后的字符放在HTTP协议的<code>Authenticate: Basic</code>里面。</li>
+<li>需要注意的点是：
+<ul>
+<li>编码协议和加密协议不一样, <code>Base64</code>就是个编码，<code>RSA/AES</code>才是加密，<code>MD5</code>就只是取摘要的</li>
+<li><code>HTTP Basic</code>方式将密码和用户名放在公网上面传输，存在风险</li>
+</ul>
+</li>
+</ul>
+<h3 id="digital-access"><a class="header-anchor" href="#digital-access"></a>Digital Access</h3>
+<ul>
+<li>参考链接：
+<ul>
+<li><a href="https://www.cnblogs.com/huey/p/5490759.html" target="_blank" rel="noopener">HTTP - 摘要认证</a></li>
+<li><a href="https://www.cnblogs.com/xzwblog/p/6834663.html" target="_blank" rel="noopener">HTTP认证与https简介</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Digest_access_authentication" target="_blank" rel="noopener">维基百科HTTP摘要认证</a></li>
+</ul>
+</li>
+<li>摘要认证与基础认证是兼容的，但是进行了如下修改：
+<ul>
+<li>永远不会以明文方式在网络上发送密码。</li>
+<li>可以防止恶意用户捕获并重放认证的握手过程。</li>
+<li>可以有选择地防止对报文内容的篡改。</li>
+<li>防范其他几种常见的攻击方式。</li>
+</ul>
+</li>
+<li>还是维基百科比较清楚。摘要认证会使用MD5的方式来加密用户名和密码。相对来说，基础认证仅仅是使用了编码方式，而不是加密方式。</li>
+<li>同时，摘要认证使用了<code>nonce values</code>来阻止<code>replay attacks</code><strong><em>不知道翻译成什么，重演攻击？</em></strong></li>
+<li>但是整个过程其实关键是用户的password，这个password如果不够复杂，其实是可以被暴力破解的，而且，整个过程是非常容易受到中间人攻击。 <strong><em>这点我还没理解</em></strong></li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/OAuth2.0/http_digital_access_nonce.png" alt><br>
+<strong>nonce 说明图</strong></p>
+<ul>
+<li>以下是自己画的简明的流程图，还是比较清楚的。
+<ul>
+<li>[]代表里面的数值</li>
+<li><code>nonce</code>是服务器端生成的随机数。 <code>cnonce</code>是客户端生成的</li>
+<li>如果多了<code>auth</code>，那么还要发送<code>HA2</code>，里面的<code>method</code>就是指<code>GET</code>操作， <code>entity body</code>指的是<code>HTTP request</code>的数据</li>
+<li><code>opaque</code>看起来也是一个随机数，不知道是啥。</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/OAuth2.0/http_digital_access.png.png" alt></p>
+<h3 id="jwt-json-web-tokens"><a class="header-anchor" href="#jwt-json-web-tokens"></a>JWT – JSON Web Tokens</h3>
+<p>本来想跳过其中几个，直接学习2.0的，貌似不可行。学习时候还是一步步来，不然就看不明白了。<br>
+查博客的时候，又看到阮大神的博客了。不知道有没有人能看到我的博客，😇<br>
+话说看到评论里有人抨击阮大神说没质量的，嗯，我的还是留着自己看吧。😂</p>
+<h4 id="参考链接-v2"><a class="header-anchor" href="#参考链接-v2"></a>参考链接</h4>
+<ul>
+<li><a href="https://www.jianshu.com/p/576dbf44b2ae" target="_blank" rel="noopener">什么是 JWT – JSON WEB TOKEN</a></li>
+<li><a href="http://www.ruanyifeng.com/blog/2018/07/json_web_token-tutorial.html" target="_blank" rel="noopener">JWT – JSON Web Tokens</a>: 阮大神的文章，还比较新，去年的。嘛，这技术不新。话说酷壳的是今年的。</li>
+<li><a href="https://jwt.io/introduction/" target="_blank" rel="noopener">官方文档</a>： 第一篇博客只是翻译，总的来说，JWT不是很复杂的，看了感觉蛮简单。比摘要还简单一点。</li>
+</ul>
+<h4 id="session-认证方式"><a class="header-anchor" href="#session-认证方式"></a>session 认证方式</h4>
+<ul>
+<li>
+<p>基于<code>session</code>的认证方式，其实很好理解的。跟我们产品里面的某种协议类似，第一次登陆时候，客户端通过用户名和密码访问，然后服务器端返回一个<code>sessionId</code>。</p>
+</li>
+<li>
+<p>后续访问的时候，就用这个<code>sessionId</code>来访问，服务器端再通过这个<code>sessionId</code>来查询到这个用户的所有信息。包括用户名啊，密码啊，访问权限啊，登录时长啊，我猜的，应该有这些信息。</p>
+</li>
+<li>
+<p>互联网时代，这个<code>sessionId</code>会被浏览器端写入到自己的<code>cookie</code>里面。<strong>现在还有吗，我咋没看到<code>sessionId</code>字样</strong></p>
+</li>
+<li>
+<p>这种方式的问题看起来有两个比较不好(瞅着这么简单，肯定不行啊，我今天脑内小剧场比较多啊)：</p>
+<ul>
+<li>一个安全问题，基于<code>cookie</code>来做的，想也知道不安全，<code>cookie</code>被读取之后就不成了。</li>
+<li>扩展性不好，这个就比较复杂，有各种扩展性，比如<code>sessionId</code>存在服务器端的内存里面，那么内存客户端数量涨了，服务器就撑不住了；再比如，同一个客户，各种用微信登录，这个<code>session</code>没法在不同服务器之间进行共享，除非再引入中转，但是中转一挂就完蛋。</li>
+</ul>
+</li>
+<li>
+<p>然后对于上述的问题，就想了一个办法来解决，就是服务器端不再存储客户信息，而是所有信息都放在客户端，服务器端只是加一个签名。客户端后面每次访问都带上自己所有信息。</p>
+<ul>
+<li>话说，这不是比带<code>sessionId</code>要带的东西多嘛。每次都带，多麻烦呐。好处是服务器就不需要存储信息，无状态了。</li>
+<li>这个签名我理解就是嗯，这个客户我老人家认证过了这样的。问题是认证过了就不认证了？应该是不认证了。<strong><em>问题在于这个签名怎么做的，服务器端如何知道这个用户是认证过的，合法的呢？比如我微信登录了一个，我再登录另一个服务器，第二个服务器怎么信任我呢。我想这里理解有点问题，不同的服务器，应该是相同的应用和功能。所以软件上是一套。</em></strong></li>
+</ul>
+</li>
+</ul>
+<h4 id="jwt-header"><a class="header-anchor" href="#jwt-header"></a>JWT Header</h4>
+<ul>
+<li>JWT其实就三个部分，header，payload和签名，在同一行。如下：</li>
+</ul>
+<pre><code>Header.Payload.Signature
+</code></pre>
+<ul>
+<li>Header是JSON格式，里面有算法和令牌(token)类型，<strong><em>第一次知道<code>token</code>原来中文翻译成令牌，这是个多么熟悉的词组啊，N年前学网络时候没少听到。令牌令牌令牌的，原来是token，瞬间感觉很多东西更明白了，果然看大神的博客有无限好处</em></strong></li>
+<li>下面是阮大神博客里面的例子，默认是<code>HMAC SHA256</code>（写成 HS256）。令牌类型就是<code>JWT</code>。这样服务器可以知道这次客户端发来的信息是接受过<code>JWT</code>认证的。</li>
+<li>话说认证方式其实也是一种协议啊。特殊的协议。只是之前的<code>HTTP Basic</code>和<code>Digital Access</code>时候不知道服务器端是否存储用户信息。前者我想应该是存储的，后者应该也是存储的，否则无法进行校验。</li>
+</ul>
+<pre><code>{
+  &quot;alg&quot;: &quot;HS256&quot;,
+  &quot;typ&quot;: &quot;JWT&quot;
+}
+</code></pre>
+<ul>
+<li><em>将上面的JSON对象使用Base64URL算法转成字符串</em> 阮大神的实在清楚，我感觉我在加读书笔记。</li>
+<li><strong><em>之前说过Base64只是编码算法，算不得加密算法，所以其实JWT的这部分并不十分安全</em></strong></li>
+</ul>
+<h4 id="jwt-payload"><a class="header-anchor" href="#jwt-payload"></a>JWT payload</h4>
+<ul>
+<li>payload的话，官方定了几个字段。几篇博客里面貌似没有说到如何实现的。</li>
+</ul>
+<pre><code>iss (issuer)：签发人
+exp (expiration time)：过期时间
+sub (subject)：主题
+aud (audience)：受众
+nbf (Not Before)：生效时间
+iat (Issued At)：签发时间
+jti (JWT ID)：编号
+</code></pre>
+<ul>
+<li>也可以定义自己的字段。同样是<code>Base64</code>编码，所以不是加密的。</li>
+</ul>
+<h4 id="jwt-signiture"><a class="header-anchor" href="#jwt-signiture"></a>JWT Signiture</h4>
+<ul>
+<li>
+<p>签名格式如下：</p>
+<pre><code>HMACSHA256(
+   base64UrlEncode(header) + &quot;.&quot; + base64UrlEncode(payload),secret)
+</code></pre>
+</li>
+<li>
+<p>感觉安全性完全就在这个服务器端的秘钥，<code>secret</code>啊。算法就是header里面指定的加密算法。</p>
+</li>
+</ul>
+<h4 id="流程图"><a class="header-anchor" href="#流程图"></a>流程图</h4>
+<p><img src="https://upload-images.jianshu.io/upload_images/1821058-2e28fe6c997a60c9.png?imageMogr2/auto-orient/" alt></p>
+<p><em>来自上面的参考链接1里面</em></p>
+<h4 id="扩展和小结"><a class="header-anchor" href="#扩展和小结"></a>扩展和小结</h4>
+<h5 id="扩展"><a class="header-anchor" href="#扩展"></a>扩展</h5>
+<ul>
+<li>在酷壳文章里面提到了验证服务器。通常实现中，我想服务器应该也会将信息发送到验证服务器来进行<code>secret</code>的加密和签名的解密</li>
+<li>同时还提到了使用<code>RSA</code>加密算法来替代<code>HMAC-SHA256</code>算法，可以看一下。</li>
+</ul>
+<h5 id="小结"><a class="header-anchor" href="#小结"></a>小结</h5>
+<ul>
+<li>看起来JWT还是比较流行的技术，讨论很多，以下：
+<ul>
+<li><em>JWT 的最大缺点是，由于服务器不保存 session 状态，因此无法在使用过程中废止某个 token，或者更改 token 的权限。也就是说，一旦 JWT 签发了，在到期之前就会始终有效，除非服务器部署额外的逻辑。</em> 看评论解释，也就是说我手机登录了我的微信， ipad也登录了。那么这两个是彼此独立的，ipad登录没法把手机登录的踢出来。</li>
+<li>JWT不应该使用 HTTP 协议明码传输，要使用 HTTPS 协议传输</li>
+</ul>
+</li>
+</ul>
+<h3 id="oauth2-0"><a class="header-anchor" href="#oauth2-0"></a>OAuth2.0</h3>
+<h4 id="参考链接-v3"><a class="header-anchor" href="#参考链接-v3"></a>参考链接</h4>
+<ul>
+<li><a href="http://www.ruanyifeng.com/blog/2019/04/oauth_design.html" target="_blank" rel="noopener">OAuth 2.0 的一个简单解释</a>: 阮大神的博客，简单清晰明了，确实大有裨益，这个小区快递员啥的，感觉我妈都能明白</li>
+<li><a href="http://www.ruanyifeng.com/blog/2019/04/oauth-grant-types.html" target="_blank" rel="noopener">OAuth 2.0 的四种方式</a>阮大神的博客，系列作品</li>
+</ul>
+<h4 id="简介"><a class="header-anchor" href="#简介"></a>简介</h4>
+<ul>
+<li>
+<p><code>OAuth 2.0</code>依赖于<code>TLS/SSL</code>的链路加密技术<code>HTTPS</code>。</p>
+</li>
+<li>
+<p>完全放弃了签名的方式，认证服务器再也不返回什么<code>token</code>,<code>secret</code>的密钥了。</p>
+</li>
+<li>
+<p><code>Auth 2.0</code>是完全不同于1.0 的，也是不兼容的.</p>
+</li>
+<li>
+<p><code>Facebook</code>的<code>Graph API</code>只支持<code>OAuth 2.0</code>协议，<code>Google</code>和 <code>Microsoft Azure</code>也支持<code>Auth 2.0</code>，国内的微信和支付宝也支持使用<code>OAuth 2.0</code>。</p>
+</li>
+<li>
+<p><code>OAuth2.0</code>一共有4个flow。在酷壳上面阐述了其中主要的两个flow。</p>
+<pre><code>授权码（authorization-code）
+隐藏式（implicit）
+密码式（password）：
+客户端凭证（client credentials）
+</code></pre>
+</li>
+<li>
+<p><code>OAuth</code> 就是一种授权机制。数据的所有者告诉系统，同意授权第三方应用进入系统，获取这些数据。系统从而产生一个短期的进入令牌，用来代替密码，供第三方应用使用。</p>
+<ul>
+<li>我们有<code>client</code>,<code>Authorization server</code>,<code>Resource owner</code>和<code>Resource server</code>。那么，对照起来，<code>client</code>是第三方应用，<code>Authorization server</code>是验证服务器， <code>Resource server</code>是资源服务器，也就是被访问的资源保存的地方。<code>Resource Owner</code>是终端用户。</li>
+<li>比如说，我访问微信，微信要求登录，会将我的请求转到验证服务器上面，我通过验证，那么微信这个应用会从资源服务器上面获取资源，我作为终端用户就可以使用微信了。这里我就是<code>Resource Owner</code>, 微信是<code>client</code>。</li>
+</ul>
+</li>
+</ul>
+<h4 id="oauth2-0-详解"><a class="header-anchor" href="#oauth2-0-详解"></a>OAuth2.0 详解</h4>
+<h5 id="authorization-code"><a class="header-anchor" href="#authorization-code"></a>Authorization Code</h5>
+<ul>
+<li>流程如下。感觉没啥好说的，整个流程挺清楚的。
+<ul>
+<li><em>不管哪种流程， 第三方应用申请令牌之前，都必须先到系统备案，说明自己的身份，然后会拿到两个身份识别码：客户端 ID（client ID）和客户端密钥（client secret）。应用自阮大神的博客</em></li>
+<li><code>code</code>就是代表<code>authorization code</code>。</li>
+<li><code>redirect_uri</code>意思是我跳转回第三方应用的地址</li>
+<li><code>scope</code>是相关的权限</li>
+<li><code>state</code> 是一个随机的字符串，主要用于防<code>CSRF</code>攻击。<code>CSRF - Cross-site request forgery</code>攻击，中文翻译是跨站请求伪造。</li>
+<li><code>authorization server</code>返回<code>authorization code</code>时候，其实是带在<code>url</code>里面的。</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/OAuth2.0/oauth2.0_authorization_code.png" alt="自己画的流程图"></p>
+<ul>
+<li>
+<p><code>authorization code</code>的格式如下。里面的<code>state</code>和第一步里面的一样。</p>
+<pre><code>  https://example-client.com/callback?
+  code=Yzk5ZDczMzRlNDEwYlrEqdFSBzjqfTG
+  &amp;state=xcoiv98CoolShell3kch
+</code></pre>
+</li>
+<li>
+<p><code>token</code>令牌的样式如下：</p>
+</li>
+</ul>
+<ul>
+<li>
+<p><code>access_token</code>就是访问请求令牌了</p>
+</li>
+<li>
+<p><code>refresh_token</code>用于刷新<code>access_token</code></p>
+</li>
+<li>
+<p><code>id_token</code>是<code>JWT</code>的<code>token</code>，其中一般会包含用户的<code>OpenID</code></p>
+<pre><code>{
+    &quot;access_token&quot;: &quot;iJKV1QiLCJhbGciOiJSUzI1NiI&quot;,
+    &quot;refresh_token&quot;: &quot;1KaPlrEqdFSBzjqfTGAMxZGU&quot;,
+    &quot;token_type&quot;: &quot;bearer&quot;,
+    &quot;expires&quot;: 3600,
+    &quot;id_token&quot;: &quot;eyJ0eXAiOiJKV1QiLCJhbGciO.eyJhdWQiOiIyZDRkM...&quot;
+}
+</code></pre>
+</li>
+</ul>
+<h5 id="client-credential-flow"><a class="header-anchor" href="#client-credential-flow"></a>Client Credential Flow</h5>
+<ul>
+<li>感觉这个不需要多写了。其实就是上面的流程中没有用户，就是没有<code>Resource Owner</code>。<code>client</code>直接拿自己的<code>clientId</code>和<code>client-secret</code>去做校验和授权了。</li>
+</ul>
+<h5 id="一些疑问"><a class="header-anchor" href="#一些疑问"></a>一些疑问</h5>
+<p>OAuth2.0我还是有些疑问啊：</p>
+<ul>
+<li>为啥要在<code>token</code>里面带上<code>id_token</code>呢， 这不是暴露了嘛</li>
+<li>如何使用<code>refresh_token</code>来刷新<code>access_token</code>呢。虽然很明显这个是一个可选项</li>
+</ul>
+<h4 id="实现"><a class="header-anchor" href="#实现"></a>实现</h4>
+<ul>
+<li>阮大神的博客里面还有一部分实现。我很惊讶的发现，哎哟喂，原来我在加博客的评论时候用了呀，<code>Oauth2.0</code> 😊 ,但是我当时URL乱填一气了。</li>
+<li><em>所谓第三方登录，实质就是 OAuth 授权</em></li>
+<li>参考链接：
+<ul>
+<li><a href="http://www.ruanyifeng.com/blog/2019/04/github-oauth.html" target="_blank" rel="noopener">GitHub OAuth 第三方登录示例教程</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/08/13/Micro-Service/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2522,215 +2919,6 @@ Interrupt:5 Base address:0x8c00
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/05/15/Cassandra的repair机制/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/05/15/Cassandra的repair机制/" itemprop="url">Cassandra的repair机制</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-15T17:52:05+08:00">
-                2019-05-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/cassandra/" itemprop="url" rel="index">
-                    <span itemprop="name">cassandra</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="cassandra的repair机制"><a class="header-anchor" href="#cassandra的repair机制"></a>Cassandra的repair机制</h2>
-<p>这篇讨论一些robustness的东西。主要就是一个节点down了会怎么样。其实目前知道的就是hint，但是记录下来。<br>
-从一些文档里面看，这个属于写流程的一部分。确实是，读的话，如果node down了应该不会从上面读取了。会写到the coordinator node上面。version 1.0有所不同，但是这个版本太旧了。</p>
-<blockquote>
-<p>By design, hinted handoff inherently allows Cassandra to continue performing the same number of writes even when the cluster is operating at reduced capacity.</p>
-</blockquote>
-<h3 id="hinted-handoff简述"><a class="header-anchor" href="#hinted-handoff简述"></a>Hinted Handoff简述</h3>
-<ul>
-<li><strong><code>hinted handoff</code> 和 一般说的<code>hint</code>应该是同一个东西。</strong> 前者是一个机制，后者就是这个机制产生的事件或者记录。</li>
-<li><code>hinted handoff</code>跟consistency level 相关，毕竟这个是写机制的一部分。</li>
-<li>cassandra的config文件里面需要配置几个参数：
-<ul>
-<li><code>hinted_handoff_enabled</code>：默认为true，打开这个机制</li>
-<li><code>max_hint_window_in_ms</code>： 为已经down掉的node记录hint log的时间长度</li>
-<li><code>gc_grace_seconds</code>: Configures the time-to-live (TTL) period for a hint so that the database won’t replay the hint after this duration. Setting this parameter to 0 disables hints。 这个参数没用过，后面可以试试看</li>
-<li><code>hinted_handoff_throttle_in_kb</code> 和    <code>max_hints_delivery_threads</code> 这两个没咋研究过，先放着吧</li>
-</ul>
-</li>
-<li>按照文档，当写入发生时候，并且a replica node for the key is down。就可能会触发hinted handoff的机制</li>
-</ul>
-<h4 id="hint-详述"><a class="header-anchor" href="#hint-详述"></a>Hint 详述</h4>
-<ul>
-<li>
-<blockquote>
-<p>The hint consists of a target ID for the downed node, a hint ID that is a time UUID for the data, a message ID that identifies the Cassandra version, and the data itself as a blob.</p>
-</blockquote>
-<ul>
-<li>hint里面有：down node的target ID， 标注这条数据的hint ID， 标注cassandra version的message ID以及数据本身</li>
-<li>这是cassandra 3.0之后的。之前的可能不一样</li>
-</ul>
-</li>
-<li>
-<p>和想象地一样，当Gossipy发现downed node起来之后，coordinator node会将hint记录的数据写过去，并且删除掉hint</p>
-</li>
-<li>
-<blockquote>
-<p>The coordinator also checks every ten minutes for hints corresponding to writes that timed out during an outage too brief for the failure detector to notice through gossip.</p>
-</blockquote>
-</li>
-<li>
-<p>这句有点难以理解，看了下一句有点明白。如果有的节点宕机时间很短，而Gossdip并没有发现，那么coordinator 会返回一个exception，同时把write fail了，但是会记录一个hint。所以如果瞬间有很多短暂的fail，coordinator node会一下子压力过大，扔出overloadexception</p>
-</li>
-</ul>
-<blockquote>
-<p>If a replica node is overloaded or unavailable, and the failure detector has not yet marked the node as down, then expect most or all writes to that node to fail after the timeout triggered by write_request_timeout_in_ms, (10 seconds by default). The coordinator returns a TimeOutException exception, and the write will fail but a hint will be stored.</p>
-</blockquote>
-<h4 id="hint-和-consistency-level"><a class="header-anchor" href="#hint-和-consistency-level"></a>Hint 和 consistency level</h4>
-<ul>
-<li>
-<blockquote>
-<p>当一致性等级设定为ONE，QUORUM，或者ALL的时候，提示的写并不参与到一致性级别的计数中。如果没有足够的节点满足写的一致性级别需要，会抛出 UnavailableException而不是触发Hinted Handoff。（这是Casssandra和Dynamo复制模型不一样的地方之一）</p>
-</blockquote>
-</li>
-<li>接上文，如果将consistency level设置成为Any，那么hint就算了。所以即使只是写了hint，写操作也会成功，但是这时候读数据是读不出来的。</li>
-</ul>
-<h3 id="repairing-data"><a class="header-anchor" href="#repairing-data"></a>Repairing Data</h3>
-<ul>
-<li>Read repair: The reconciliation or correction happens when a read finds an inconsistency.</li>
-<li>When data is read, a read repair can resolve any data inconsistencies. When data isn’t read, you need to use either the hinted handoff or anti-entropy mechanism to resolve any data inconsistences.</li>
-</ul>
-<h4 id="read-repair"><a class="header-anchor" href="#read-repair"></a>Read Repair</h4>
-<h4 id="anti-entropy"><a class="header-anchor" href="#anti-entropy"></a>anti-entropy</h4>
-<h3 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h3>
-<ul>
-<li><a href="https://wiki.apache.org/cassandra/HintedHandoff" target="_blank" rel="noopener">wiki上面的简介</a></li>
-<li><a href="https://docs.datastax.com/en/cassandra/3.0/cassandra/operations/opsRepairNodesHintedHandoff.html" target="_blank" rel="noopener">官方</a></li>
-<li><a href="http://www.cnblogs.com/sing1ee/archive/2012/07/09/2765056.html" target="_blank" rel="noopener">比较好的博客一篇</a>： 看起来很多就是官方文档的翻译</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2781,7 +2969,7 @@ Interrupt:5 Base address:0x8c00
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">39</span>
+                  <span class="site-state-item-count">40</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
