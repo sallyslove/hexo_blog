@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="K8s概念 这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。 deployment  这几者的关系比较复杂。还需要进一步去看。目前先记录一下：deployment是实际的deploy，然后pod是根据replica里面的设定来起的。所以，如果将deployment删除掉，那么相应的pod和replica set都会没有  deployment spec详解 网上基本">
+<meta name="description" content="K8s概念 这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。 namespace   当团队或项目中具有许多用户时，可以考虑使用Namespace来区分。   默认情况下，相同Namespace中的对象将具有相同的访问控制策略。   Kubernetes从两个初始的Namespace开始：   default   kube-system 由Kubernetes系统创">
 <meta property="og:type" content="article">
 <meta property="og:title" content="K8s概念理解">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/02/27/K8s概念理解/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="K8s概念 这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。 deployment  这几者的关系比较复杂。还需要进一步去看。目前先记录一下：deployment是实际的deploy，然后pod是根据replica里面的设定来起的。所以，如果将deployment删除掉，那么相应的pod和replica set都会没有  deployment spec详解 网上基本">
+<meta property="og:description" content="K8s概念 这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。 namespace   当团队或项目中具有许多用户时，可以考虑使用Namespace来区分。   默认情况下，相同Namespace中的对象将具有相同的访问控制策略。   Kubernetes从两个初始的Namespace开始：   default   kube-system 由Kubernetes系统创">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-07-15T09:15:16.074Z">
+<meta property="og:updated_time" content="2020-11-05T08:00:23.967Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="K8s概念理解">
-<meta name="twitter:description" content="K8s概念 这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。 deployment  这几者的关系比较复杂。还需要进一步去看。目前先记录一下：deployment是实际的deploy，然后pod是根据replica里面的设定来起的。所以，如果将deployment删除掉，那么相应的pod和replica set都会没有  deployment spec详解 网上基本">
+<meta name="twitter:description" content="K8s概念 这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。 namespace   当团队或项目中具有许多用户时，可以考虑使用Namespace来区分。   默认情况下，相同Namespace中的对象将具有相同的访问控制策略。   Kubernetes从两个初始的Namespace开始：   default   kube-system 由Kubernetes系统创">
 
 
 
@@ -333,6 +333,45 @@
       
         <h2 id="k8s概念"><a class="header-anchor" href="#k8s概念"></a>K8s概念</h2>
 <p>这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。</p>
+<h3 id="namespace"><a class="header-anchor" href="#namespace"></a>namespace</h3>
+<ul>
+<li>
+<p>当团队或项目中具有许多用户时，可以考虑使用Namespace来区分。</p>
+</li>
+<li>
+<p>默认情况下，相同Namespace中的对象将具有相同的访问控制策略。</p>
+</li>
+<li>
+<p>Kubernetes从两个初始的Namespace开始：</p>
+<ul>
+<li>
+<p>default</p>
+</li>
+<li>
+<p>kube-system 由Kubernetes系统创建的对象的Namespace</p>
+</li>
+<li>
+<p>自己电脑上面装好的docker for desktop里面有以下的namespace</p>
+<pre><code>$ kubectl get namespaces
+NAME           STATUS    AGE
+default        Active    15d
+docker         Active    15d
+kube-public    Active    15d
+kube-system    Active    15d
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p>大多数<code>Kubernetes</code>资源（例如<code>pod</code>、<code>services</code>、<code>replication controllers</code>或其他）都在某些Namespace中，但Namespace资源本身并不在Namespace中。而低级别资源（如<code>Node</code>和<code>persistentVolumes</code>）不在任何Namespace中。</p>
+</li>
+<li>
+<p><code>Events</code>是一个例外：它们可能有也可能没有Namespace，具体取决于<code>Events</code>的对象。</p>
+</li>
+<li>
+<p>参考链接：<a href="http://docs.kubernetes.org.cn/242.html" target="_blank" rel="noopener">Kubernetes Namespaces</a></p>
+</li>
+</ul>
 <h3 id="deployment"><a class="header-anchor" href="#deployment"></a>deployment</h3>
 <ul>
 <li>这几者的关系比较复杂。还需要进一步去看。目前先记录一下：<code>deployment</code>是实际的<code>deploy</code>，然后<code>pod</code>是根据<code>replica</code>里面的设定来起的。所以，如果将<code>deployment</code>删除掉，那么相应的<code>pod</code>和<code>replica set</code>都会没有</li>
@@ -395,12 +434,66 @@ map[special.how:very]
 </li>
 </ul>
 <h4 id="pod调用configmap"><a class="header-anchor" href="#pod调用configmap"></a>POD调用configmap</h4>
+<ul>
+<li><code>configmap</code>里面是文件的话，可以进行加载目录，看下面卷的段落</li>
+</ul>
+<h3 id="volume"><a class="header-anchor" href="#volume"></a>Volume</h3>
+<ul>
+<li>这个单词的含义感觉真是奇怪，翻译成中文是卷，卷和磁盘有什么关系哦，我只想到了花卷。😆</li>
+<li>总的来说，卷就是所有容器都可以访问的磁盘空间，并且在<code>pod</code>重启之后内容仍旧存在</li>
+</ul>
+<h4 id="emptydir"><a class="header-anchor" href="#emptydir"></a>emptyDir</h4>
+<ul>
+<li>简单的在<code>pod</code>的里面进行定义，不刻意指定类型，就是这个类型</li>
+<li>完全就是一个空目录</li>
+<li>默认为空（如果该目录原来有文件也会被重置为空）</li>
+</ul>
+<pre><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pd
+spec:
+  containers:
+  - image: ...
+    name: ...
+    volumeMounts:
+    - mountPath: /cache
+      name: cache-volume
+  volumes:
+  - name: cache-volume
+    emptyDir: {}
+</code></pre>
+<h4 id="configmap方式"><a class="header-anchor" href="#configmap方式"></a>configMap方式</h4>
+<ul>
+<li>
+<p><code>configMap</code>也可以用来加载卷卷，加载的时候还可以指定权限。实例如下：<br>
+apiVersion: v1<br>
+kind: Pod<br>
+metadata:<br>
+name: configmap-pod<br>
+spec:<br>
+containers:<br>
+- name: …<br>
+image: …<br>
+volumeMounts:<br>
+- name: config-vol<br>
+mountPath: /etc/config<br>
+volumes:<br>
+- name: config-vol<br>
+configMap:<br>
+name: log-config<br>
+defaultMode: 420</p>
+</li>
+<li>
+<p>默认的权限应该是<code>420</code>，应该是<code>read only</code>，在工作中是加载了一个<code>SHELL脚本</code>，所以将权限修改为<code>0755</code>，然后就可以在代码里面调用了</p>
+</li>
+</ul>
 <h3 id="secrets"><a class="header-anchor" href="#secrets"></a>secrets</h3>
 <h3 id="persistentvolumnclumns"><a class="header-anchor" href="#persistentvolumnclumns"></a>PersistentVolumnClumns</h3>
 <ul>
-<li>PVC在定义的时候有个storageclass。这个storageclass是定义在<code>kube-system</code>的namespace里面的</li>
-<li>在安装时候，share C盘遇到了问题，用“docker for desktop”的默认的storageclass：hostpath来创PVC，就起不来了。于是在大神的教导下另创了一个StorageClass，将其映射到docker machine的虚机里面。解决了这个问题。</li>
-<li>在尝试解决这个C盘没法share的问题时候参考了很多资料。工作电脑由于系统关系，没有办法创建administrator group的user，所以绕不过去。</li>
+<li><code>PVC</code>在定义的时候有个<code>storageclass</code>。这个<code>storageclass</code>是定义在<code>kube-system</code>的<code>namespace</code>里面的</li>
+<li>在安装时候，<code>share C</code>盘遇到了问题，用<code>docker for desktop</code>的默认的<code>storageclass</code>：<code>hostpath</code>来创<code>PVC</code>，就起不来了。于是在大神的教导下另创了一个<code>StorageClass</code>，将其映射到<code>docker machine</code>的虚机里面。解决了这个问题。</li>
+<li>在尝试解决这个C盘没法share的问题时候参考了很多资料。工作电脑由于系统关系，没有办法创建<code>administrator group</code>的<code>user</code>，所以绕不过去。</li>
 <li>参考的链接有：
 <ul>
 <li><a href="https://dotblogs.com.tw/swater111/2017/01/26/101009" target="_blank" rel="noopener">share C盘总结</a>：这篇资料还是不错的，里面汇总了可能遇到的好几个问题。</li>
@@ -409,52 +502,13 @@ map[special.how:very]
 </ul>
 </li>
 </ul>
-<h3 id="namespace"><a class="header-anchor" href="#namespace"></a>namespace</h3>
-<ul>
-<li>
-<p>当团队或项目中具有许多用户时，可以考虑使用Namespace来区分。</p>
-</li>
-<li>
-<p>默认情况下，相同Namespace中的对象将具有相同的访问控制策略。</p>
-</li>
-<li>
-<p>Kubernetes从两个初始的Namespace开始：</p>
-<ul>
-<li>
-<p>default</p>
-</li>
-<li>
-<p>kube-system 由Kubernetes系统创建的对象的Namespace</p>
-</li>
-<li>
-<p>自己电脑上面装好的docker for desktop里面有以下的namespace</p>
-<pre><code>$ kubectl get namespaces
-NAME           STATUS    AGE
-default        Active    15d
-docker         Active    15d
-kube-public    Active    15d
-kube-system    Active    15d
-</code></pre>
-</li>
-</ul>
-</li>
-<li>
-<p>大多数<code>Kubernetes</code>资源（例如<code>pod</code>、<code>services</code>、<code>replication controllers</code>或其他）都在某些Namespace中，但Namespace资源本身并不在Namespace中。而低级别资源（如<code>Node</code>和<code>persistentVolumes</code>）不在任何Namespace中。</p>
-</li>
-<li>
-<p><code>Events</code>是一个例外：它们可能有也可能没有Namespace，具体取决于<code>Events</code>的对象。</p>
-</li>
-<li>
-<p>参考链接：<a href="http://docs.kubernetes.org.cn/242.html" target="_blank" rel="noopener">Kubernetes Namespaces</a></p>
-</li>
-</ul>
 <h3 id="replication-controller"><a class="header-anchor" href="#replication-controller"></a>replication controller</h3>
 <ul>
 <li>The replication controller defines how many instances should be running, the Docker Image to use, and a name to identify the service.<br>
 <strong>决定多少个instance可以理解，不同的instance可以使用不同的image吗</strong></li>
 </ul>
 <h3 id="ingress"><a class="header-anchor" href="#ingress"></a>Ingress</h3>
-<p><code>Ingress</code>的内容也已经挪到新的一篇博客里面去了：<a href="https://sallyslove.github.io/hexo_blog/2020/02/11/K8s-Ingress/">K8s-Ingress</a></p>
+<p><code>Ingress</code>的内容挪到新的一篇博客里面去了：<a href="https://sallyslove.github.io/hexo_blog/2020/02/11/K8s-Ingress/">K8s-Ingress</a></p>
 <h3 id="daemonset"><a class="header-anchor" href="#daemonset"></a>DaemonSet</h3>
 <ul>
 <li>一个<code>DaemonSet</code>对象能确保其创建的<code>Pod</code>在集群中的每一台（或指定）<code>Node</code>上都运行一个副本。</li>
@@ -622,7 +676,7 @@ kube-system    Active    15d
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">40</span>
+                  <span class="site-state-item-count">39</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -668,7 +722,7 @@ kube-system    Active    15d
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s概念"><span class="nav-number">1.</span> <span class="nav-text">K8s概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#deployment"><span class="nav-number">1.1.</span> <span class="nav-text">deployment</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#deployment-spec详解"><span class="nav-number">1.1.1.</span> <span class="nav-text">deployment spec详解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#deployment参考链接"><span class="nav-number">1.1.2.</span> <span class="nav-text">deployment参考链接</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pod"><span class="nav-number">1.2.</span> <span class="nav-text">Pod</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#services"><span class="nav-number">1.3.</span> <span class="nav-text">Services</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#configmap"><span class="nav-number">1.4.</span> <span class="nav-text">configmap</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#configmap的作用"><span class="nav-number">1.4.1.</span> <span class="nav-text">configmap的作用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#创建configmap"><span class="nav-number">1.4.2.</span> <span class="nav-text">创建configmap</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pod调用configmap"><span class="nav-number">1.4.3.</span> <span class="nav-text">POD调用configmap</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#secrets"><span class="nav-number">1.5.</span> <span class="nav-text">secrets</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#persistentvolumnclumns"><span class="nav-number">1.6.</span> <span class="nav-text">PersistentVolumnClumns</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#namespace"><span class="nav-number">1.7.</span> <span class="nav-text">namespace</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#replication-controller"><span class="nav-number">1.8.</span> <span class="nav-text">replication controller</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ingress"><span class="nav-number">1.9.</span> <span class="nav-text">Ingress</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#daemonset"><span class="nav-number">1.10.</span> <span class="nav-text">DaemonSet</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参考链接"><span class="nav-number">1.10.1.</span> <span class="nav-text">参考链接</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#custom-resource-definition"><span class="nav-number">1.11.</span> <span class="nav-text">Custom Resource Definition</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#custom-resource"><span class="nav-number">1.11.1.</span> <span class="nav-text">Custom Resource</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#crd"><span class="nav-number">1.11.2.</span> <span class="nav-text">CRD</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考链接-v2"><span class="nav-number">1.11.3.</span> <span class="nav-text">参考链接</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#k8s概念"><span class="nav-number">1.</span> <span class="nav-text">K8s概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#namespace"><span class="nav-number">1.1.</span> <span class="nav-text">namespace</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#deployment"><span class="nav-number">1.2.</span> <span class="nav-text">deployment</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#deployment-spec详解"><span class="nav-number">1.2.1.</span> <span class="nav-text">deployment spec详解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#deployment参考链接"><span class="nav-number">1.2.2.</span> <span class="nav-text">deployment参考链接</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pod"><span class="nav-number">1.3.</span> <span class="nav-text">Pod</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#services"><span class="nav-number">1.4.</span> <span class="nav-text">Services</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#configmap"><span class="nav-number">1.5.</span> <span class="nav-text">configmap</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#configmap的作用"><span class="nav-number">1.5.1.</span> <span class="nav-text">configmap的作用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#创建configmap"><span class="nav-number">1.5.2.</span> <span class="nav-text">创建configmap</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pod调用configmap"><span class="nav-number">1.5.3.</span> <span class="nav-text">POD调用configmap</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#volume"><span class="nav-number">1.6.</span> <span class="nav-text">Volume</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#emptydir"><span class="nav-number">1.6.1.</span> <span class="nav-text">emptyDir</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#configmap方式"><span class="nav-number">1.6.2.</span> <span class="nav-text">configMap方式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#secrets"><span class="nav-number">1.7.</span> <span class="nav-text">secrets</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#persistentvolumnclumns"><span class="nav-number">1.8.</span> <span class="nav-text">PersistentVolumnClumns</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#replication-controller"><span class="nav-number">1.9.</span> <span class="nav-text">replication controller</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ingress"><span class="nav-number">1.10.</span> <span class="nav-text">Ingress</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#daemonset"><span class="nav-number">1.11.</span> <span class="nav-text">DaemonSet</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参考链接"><span class="nav-number">1.11.1.</span> <span class="nav-text">参考链接</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#custom-resource-definition"><span class="nav-number">1.12.</span> <span class="nav-text">Custom Resource Definition</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#custom-resource"><span class="nav-number">1.12.1.</span> <span class="nav-text">Custom Resource</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#crd"><span class="nav-number">1.12.2.</span> <span class="nav-text">CRD</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考链接-v2"><span class="nav-number">1.12.3.</span> <span class="nav-text">参考链接</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>

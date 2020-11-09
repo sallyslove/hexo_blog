@@ -1089,181 +1089,6 @@ jti (JWT ID)：编号
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/07/26/K8s端口映射命令/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/07/26/K8s端口映射命令/" itemprop="url">K8s常用命令集2</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-26T11:17:05+08:00">
-                2019-07-26
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/docker/" itemprop="url" rel="index">
-                    <span itemprop="name">docker</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>K8s的前两篇文档大而乱啊。所以的话，还是小而精更好吧。</p>
-<p>接着记录命令，最好相关命令放在一起。</p>
-<ul>
-<li><code>kubectl port-forward</code>
-<ul>
-<li>
-<p>Forward one or more local ports to a pod. This command requires the node to have ‘socat’ installed. <strong><em>socat是什么?</em></strong></p>
-</li>
-<li>
-<p>参考链接：</p>
-<ul>
-<li><a href="https://imti.co/kubernetes-port-forwarding/" target="_blank" rel="noopener">Kubernetes Port Forwarding for Local Development</a></li>
-<li><a href="https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#port-forward" target="_blank" rel="noopener">官方文档</a></li>
-</ul>
-</li>
-<li>
-<p>用例：</p>
-<ul>
-<li>以下命令的含义是：将本地端口<code>8080</code>和<code>8081</code>，映射到<code>k8s</code>服务<code>ok</code>的<code>8080</code>和<code>80</code>端口上面。<code>-n</code>代表的<code>namespace</code></li>
-<li>默认地址是<code>localhost</code></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<pre><code>  kubectl port-forward service/ok 8080:8080 8081:80 -n the-project
-</code></pre>
-<ul>
-<li><code>kubectl edit</code> 命令可以用来修改一个资源。<code>kubectl edit deployment &lt;resource_name&gt; -n &lt;namespace&gt;</code>,需要注意的是修改是暂时的，如果使用<code>helm upgrade</code>命令，那么修改会被覆盖掉
-<ul>
-<li>参考链接： <a href="https://stackoverflow.com/questions/45502729/how-do-i-edit-a-resource-configuration-with-kubectl" target="_blank" rel="noopener">kubectl edit</a></li>
-</ul>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/07/26/Java-Remote-Debug/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1760,6 +1585,15 @@ Interrupt:5 Base address:0x8c00
 <ul>
 <li>一个<code>IP</code>地址加一个传输层端口号定义一个<code>socket</code>。</li>
 <li><code>socket</code>是唯一的，一个客户端<code>socket</code>和一个服务端<code>socket</code>定义一个连接<code>connection</code>，一端发送的数据，另一端就会接收到 。来自 <a href="http://arthurchiao.art/blog/nat-zh/" target="_blank" rel="noopener">[译]NAT - 网络地址转换</a></li>
+<li><code>raw socket</code>和<code>direct socket</code>，在工作中碰到这两个词，简直是一脸懵，后来发现是同一个含义，就是指直接打开<code>TCP</code>连接。目前看起来，只能用代码来开一个<code>raw socket</code>。</li>
+<li><em>If you are interested in writing your own implementations of one of these protocols, or need to use a different transport-layer protocol, you’ll need to use raw sockets.</em> <code>raw socket</code>可以自己做个<code>protocal</code>，不用<code>TCP</code>或者<code>UDP</code></li>
+<li>过程中看到几篇有趣文章，看得不够细致。链接先贴着 ❤️
+<ul>
+<li><a href="https://squidarth.com/networking/systems/rc/2018/05/28/using-raw-sockets.html" target="_blank" rel="noopener">using-raw-sockets</a></li>
+<li><a href="https://stackoverflow.com/questions/5476112/raw-socket-question-are-tcp-packets-passed-to-a-raw-socket" target="_blank" rel="noopener">Are TCP packets passed to a raw socket?</a></li>
+<li><a href="https://www.opensourceforu.com/2015/03/a-guide-to-using-raw-sockets/" target="_blank" rel="noopener">a-guide-to-using-raw-sockets</a></li>
+</ul>
+</li>
 </ul>
 
           
@@ -2919,6 +2753,215 @@ Interrupt:5 Base address:0x8c00
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/05/15/Cassandra的repair机制/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/05/15/Cassandra的repair机制/" itemprop="url">Cassandra的repair机制</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-15T17:52:05+08:00">
+                2019-05-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/cassandra/" itemprop="url" rel="index">
+                    <span itemprop="name">cassandra</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="cassandra的repair机制"><a class="header-anchor" href="#cassandra的repair机制"></a>Cassandra的repair机制</h2>
+<p>这篇讨论一些robustness的东西。主要就是一个节点down了会怎么样。其实目前知道的就是hint，但是记录下来。<br>
+从一些文档里面看，这个属于写流程的一部分。确实是，读的话，如果node down了应该不会从上面读取了。会写到the coordinator node上面。version 1.0有所不同，但是这个版本太旧了。</p>
+<blockquote>
+<p>By design, hinted handoff inherently allows Cassandra to continue performing the same number of writes even when the cluster is operating at reduced capacity.</p>
+</blockquote>
+<h3 id="hinted-handoff简述"><a class="header-anchor" href="#hinted-handoff简述"></a>Hinted Handoff简述</h3>
+<ul>
+<li><strong><code>hinted handoff</code> 和 一般说的<code>hint</code>应该是同一个东西。</strong> 前者是一个机制，后者就是这个机制产生的事件或者记录。</li>
+<li><code>hinted handoff</code>跟consistency level 相关，毕竟这个是写机制的一部分。</li>
+<li>cassandra的config文件里面需要配置几个参数：
+<ul>
+<li><code>hinted_handoff_enabled</code>：默认为true，打开这个机制</li>
+<li><code>max_hint_window_in_ms</code>： 为已经down掉的node记录hint log的时间长度</li>
+<li><code>gc_grace_seconds</code>: Configures the time-to-live (TTL) period for a hint so that the database won’t replay the hint after this duration. Setting this parameter to 0 disables hints。 这个参数没用过，后面可以试试看</li>
+<li><code>hinted_handoff_throttle_in_kb</code> 和    <code>max_hints_delivery_threads</code> 这两个没咋研究过，先放着吧</li>
+</ul>
+</li>
+<li>按照文档，当写入发生时候，并且a replica node for the key is down。就可能会触发hinted handoff的机制</li>
+</ul>
+<h4 id="hint-详述"><a class="header-anchor" href="#hint-详述"></a>Hint 详述</h4>
+<ul>
+<li>
+<blockquote>
+<p>The hint consists of a target ID for the downed node, a hint ID that is a time UUID for the data, a message ID that identifies the Cassandra version, and the data itself as a blob.</p>
+</blockquote>
+<ul>
+<li>hint里面有：down node的target ID， 标注这条数据的hint ID， 标注cassandra version的message ID以及数据本身</li>
+<li>这是cassandra 3.0之后的。之前的可能不一样</li>
+</ul>
+</li>
+<li>
+<p>和想象地一样，当Gossipy发现downed node起来之后，coordinator node会将hint记录的数据写过去，并且删除掉hint</p>
+</li>
+<li>
+<blockquote>
+<p>The coordinator also checks every ten minutes for hints corresponding to writes that timed out during an outage too brief for the failure detector to notice through gossip.</p>
+</blockquote>
+</li>
+<li>
+<p>这句有点难以理解，看了下一句有点明白。如果有的节点宕机时间很短，而Gossdip并没有发现，那么coordinator 会返回一个exception，同时把write fail了，但是会记录一个hint。所以如果瞬间有很多短暂的fail，coordinator node会一下子压力过大，扔出overloadexception</p>
+</li>
+</ul>
+<blockquote>
+<p>If a replica node is overloaded or unavailable, and the failure detector has not yet marked the node as down, then expect most or all writes to that node to fail after the timeout triggered by write_request_timeout_in_ms, (10 seconds by default). The coordinator returns a TimeOutException exception, and the write will fail but a hint will be stored.</p>
+</blockquote>
+<h4 id="hint-和-consistency-level"><a class="header-anchor" href="#hint-和-consistency-level"></a>Hint 和 consistency level</h4>
+<ul>
+<li>
+<blockquote>
+<p>当一致性等级设定为ONE，QUORUM，或者ALL的时候，提示的写并不参与到一致性级别的计数中。如果没有足够的节点满足写的一致性级别需要，会抛出 UnavailableException而不是触发Hinted Handoff。（这是Casssandra和Dynamo复制模型不一样的地方之一）</p>
+</blockquote>
+</li>
+<li>接上文，如果将consistency level设置成为Any，那么hint就算了。所以即使只是写了hint，写操作也会成功，但是这时候读数据是读不出来的。</li>
+</ul>
+<h3 id="repairing-data"><a class="header-anchor" href="#repairing-data"></a>Repairing Data</h3>
+<ul>
+<li>Read repair: The reconciliation or correction happens when a read finds an inconsistency.</li>
+<li>When data is read, a read repair can resolve any data inconsistencies. When data isn’t read, you need to use either the hinted handoff or anti-entropy mechanism to resolve any data inconsistences.</li>
+</ul>
+<h4 id="read-repair"><a class="header-anchor" href="#read-repair"></a>Read Repair</h4>
+<h4 id="anti-entropy"><a class="header-anchor" href="#anti-entropy"></a>anti-entropy</h4>
+<h3 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h3>
+<ul>
+<li><a href="https://wiki.apache.org/cassandra/HintedHandoff" target="_blank" rel="noopener">wiki上面的简介</a></li>
+<li><a href="https://docs.datastax.com/en/cassandra/3.0/cassandra/operations/opsRepairNodesHintedHandoff.html" target="_blank" rel="noopener">官方</a></li>
+<li><a href="http://www.cnblogs.com/sing1ee/archive/2012/07/09/2765056.html" target="_blank" rel="noopener">比较好的博客一篇</a>： 看起来很多就是官方文档的翻译</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
@@ -2969,7 +3012,7 @@ Interrupt:5 Base address:0x8c00
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">40</span>
+                  <span class="site-state-item-count">39</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

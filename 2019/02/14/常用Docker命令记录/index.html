@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="跬步">
 <meta property="og:description" content="Docker相关的信息都记录在这里 参考链接  Dockerfile RUN，CMD，ENTRYPOINT命令区别  常用docker命令 这篇记录一下 Docker 相关的知识，我怕我会忘啊 😅  docker run -d / -it / -v / -p /--name/-l  -d: background; -v: 磁盘映射 ；-p：端口映射; -l: label   docker bui">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-01-13T09:19:07.630Z">
+<meta property="og:updated_time" content="2020-10-30T07:24:31.663Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Docker">
 <meta name="twitter:description" content="Docker相关的信息都记录在这里 参考链接  Dockerfile RUN，CMD，ENTRYPOINT命令区别  常用docker命令 这篇记录一下 Docker 相关的知识，我怕我会忘啊 😅  docker run -d / -it / -v / -p /--name/-l  -d: background; -v: 磁盘映射 ；-p：端口映射; -l: label   docker bui">
@@ -369,6 +369,16 @@
 <li>参考链接：<a href="https://www.katacoda.com/courses/docker/2" target="_blank" rel="noopener">karacoda docker在线课程</a></li>
 </ul>
 <h2 id="dockerfile"><a class="header-anchor" href="#dockerfile"></a>Dockerfile</h2>
+<ul>
+<li>这几天正好在做<code>docker image</code>，几点经验写在下面：
+<ul>
+<li>打包： 使用原始的<code>docker build</code>命令自然是可以的，产品中就不是这样了。<code>JAVA</code>使用的自然是<code>maven</code>的<code>docker plugin</code>，这个很多年前就用过。而这回<code>SCALA</code>里面，感觉是自然带的，直接<code>sbt</code>里面<code>package</code>就可以打出，也许这个理解有差池。</li>
+<li>调试，制作<code>docker image</code>的过程我是大致明白的，其实每一步都会有一个临时的<code>image</code>，然后会在此基础上面起一个容器，在这个容器里面去执行。所以出错了，需要找到这一步的临时镜像和容器。</li>
+<li>参考以下链接，主要是用<code>docker commit 20f3e5cebec5 tempimagename</code> 将临时的镜像存储下来</li>
+<li><a href="https://www.joyfulbikeshedding.com/blog/2019-08-27-debugging-docker-builds.html" target="_blank" rel="noopener">Debugging Docker builds</a></li>
+</ul>
+</li>
+</ul>
 <h3 id="cmd-run"><a class="header-anchor" href="#cmd-run"></a>CMD &amp; RUN</h3>
 <ul>
 <li><code>CMD</code> 和 <code>RUN</code>都可以执行命令，两者的区别如下：
@@ -392,7 +402,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="maven-docker-plugin"><a class="header-anchor" href="#maven-docker-plugin"></a>Maven Docker Plugin</h2>
+<h3 id="maven-docker-plugin"><a class="header-anchor" href="#maven-docker-plugin"></a>Maven Docker Plugin</h3>
 <ul>
 <li><code>maven</code>有好几个支持<code>Docker</code>的<code>plugin</code></li>
 <li><code>io.fabric8:docker-maven-plugin</code> 就是其中的一个</li>
@@ -517,7 +527,7 @@
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">40</span>
+                  <span class="site-state-item-count">39</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -563,7 +573,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用docker命令"><span class="nav-number">2.</span> <span class="nav-text">常用docker命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker的概念"><span class="nav-number">3.</span> <span class="nav-text">Docker的概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dockerfile"><span class="nav-number">4.</span> <span class="nav-text">Dockerfile</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#cmd-run"><span class="nav-number">4.1.</span> <span class="nav-text">CMD &amp; RUN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#endpoint"><span class="nav-number">4.2.</span> <span class="nav-text">Endpoint</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#maven-docker-plugin"><span class="nav-number">5.</span> <span class="nav-text">Maven Docker Plugin</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用docker命令"><span class="nav-number">2.</span> <span class="nav-text">常用docker命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker的概念"><span class="nav-number">3.</span> <span class="nav-text">Docker的概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dockerfile"><span class="nav-number">4.</span> <span class="nav-text">Dockerfile</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#cmd-run"><span class="nav-number">4.1.</span> <span class="nav-text">CMD &amp; RUN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#endpoint"><span class="nav-number">4.2.</span> <span class="nav-text">Endpoint</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#maven-docker-plugin"><span class="nav-number">4.3.</span> <span class="nav-text">Maven Docker Plugin</span></a></li></ol></li></ol></div>
             
 
           </div>

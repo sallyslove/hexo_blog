@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="工作多年，Linux命令是时不时要用到的。每次都是百度之（虽然不是真的用的百度:P），记录在这里，省得每次还得去找 AWK 参考链接 -linux awk命令详解  使用awk分割字符串并且获取分割后的最后一个字符串  实例 awk 其实是读入一行，进行查找，再进行操作。可以集合SED和GREP的作用。下面用例子来说明问题  awk -F&apos;-&apos; &apos;{print $1}&apos;  用-做分隔符，然后将-分">
+<meta name="description" content="工作多年，Linux命令是时不时要用到的。每次都是百度之（虽然不是真的用的百度:P），记录在这里，省得每次还得去找 AWK  linux awk命令详解 使用awk分割字符串并且获取分割后的最后一个字符串  Example awk 其实是读入一行，进行查找，再进行操作。可以集合SED和GREP的作用。下面用例子来说明问题  awk -F&apos;-&apos; &apos;{print $1}&apos;  用-做分隔符，然后将-分隔">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Linux Command">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2020/01/09/Linux-Command/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="工作多年，Linux命令是时不时要用到的。每次都是百度之（虽然不是真的用的百度:P），记录在这里，省得每次还得去找 AWK 参考链接 -linux awk命令详解  使用awk分割字符串并且获取分割后的最后一个字符串  实例 awk 其实是读入一行，进行查找，再进行操作。可以集合SED和GREP的作用。下面用例子来说明问题  awk -F&apos;-&apos; &apos;{print $1}&apos;  用-做分隔符，然后将-分">
+<meta property="og:description" content="工作多年，Linux命令是时不时要用到的。每次都是百度之（虽然不是真的用的百度:P），记录在这里，省得每次还得去找 AWK  linux awk命令详解 使用awk分割字符串并且获取分割后的最后一个字符串  Example awk 其实是读入一行，进行查找，再进行操作。可以集合SED和GREP的作用。下面用例子来说明问题  awk -F&apos;-&apos; &apos;{print $1}&apos;  用-做分隔符，然后将-分隔">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-09-04T05:50:34.956Z">
+<meta property="og:updated_time" content="2020-10-30T06:46:33.567Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux Command">
-<meta name="twitter:description" content="工作多年，Linux命令是时不时要用到的。每次都是百度之（虽然不是真的用的百度:P），记录在这里，省得每次还得去找 AWK 参考链接 -linux awk命令详解  使用awk分割字符串并且获取分割后的最后一个字符串  实例 awk 其实是读入一行，进行查找，再进行操作。可以集合SED和GREP的作用。下面用例子来说明问题  awk -F&apos;-&apos; &apos;{print $1}&apos;  用-做分隔符，然后将-分">
+<meta name="twitter:description" content="工作多年，Linux命令是时不时要用到的。每次都是百度之（虽然不是真的用的百度:P），记录在这里，省得每次还得去找 AWK  linux awk命令详解 使用awk分割字符串并且获取分割后的最后一个字符串  Example awk 其实是读入一行，进行查找，再进行操作。可以集合SED和GREP的作用。下面用例子来说明问题  awk -F&apos;-&apos; &apos;{print $1}&apos;  用-做分隔符，然后将-分隔">
 
 
 
@@ -333,12 +333,11 @@
       
         <p>工作多年，<code>Linux</code>命令是时不时要用到的。每次都是百度之（虽然不是真的用的百度:P），记录在这里，省得每次还得去找</p>
 <h2 id="awk"><a class="header-anchor" href="#awk"></a>AWK</h2>
-<h3 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h3>
-<p>-<a href="https://www.cnblogs.com/ggjucheng/archive/2013/01/13/2858470.html" target="_blank" rel="noopener">linux awk命令详解</a></p>
 <ul>
+<li><a href="https://www.cnblogs.com/ggjucheng/archive/2013/01/13/2858470.html" target="_blank" rel="noopener">linux awk命令详解</a></li>
 <li><a href="https://www.cnblogs.com/dakewei/p/9848176.html" target="_blank" rel="noopener">使用awk分割字符串并且获取分割后的最后一个字符串</a></li>
 </ul>
-<h3 id="实例"><a class="header-anchor" href="#实例"></a>实例</h3>
+<h3 id="example"><a class="header-anchor" href="#example"></a>Example</h3>
 <p><code>awk</code> 其实是读入一行，进行查找，再进行操作。可以集合<code>SED</code>和<code>GREP</code>的作用。下面用例子来说明问题</p>
 <ul>
 <li><code>awk -F'-' '{print $1}'</code>
@@ -353,33 +352,24 @@
 </ul>
 </li>
 </ul>
-<h2 id="sed"><a class="header-anchor" href="#sed"></a>SED</h2>
-<h3 id="实例-v2"><a class="header-anchor" href="#实例-v2"></a>实例</h3>
-<h2 id="截取字符串的方法"><a class="header-anchor" href="#截取字符串的方法"></a>截取字符串的方法</h2>
-<h3 id="参考链接-v2"><a class="header-anchor" href="#参考链接-v2"></a>参考链接</h3>
-<p>-<a href="https://www.jb51.net/article/56563.htm" target="_blank" rel="noopener">Shell脚本8种字符串截取方法总结</a></p>
-<h3 id="实例-v3"><a class="header-anchor" href="#实例-v3"></a>实例</h3>
+<h2 id="curl"><a class="header-anchor" href="#curl"></a>CURL</h2>
 <ul>
-<li><code>var=http://www.aaa.com/123.htm</code></li>
-<li><code>echo ${var#*//}</code>
-<ul>
-<li><code>#</code> 号是运算符，<code>*//</code> 表示从左边开始删除第一个 <code>//</code> 号及左边的所有字符</li>
-<li>所以这样的话会将<code>http://</code>都给删除掉</li>
-</ul>
+<li>
+<p><a href="https://www.cnblogs.com/duhuo/p/5695256.html" target="_blank" rel="noopener">Linux curl命令详解</a></p>
 </li>
-<li><code>echo ${var##*/}</code>
-<ul>
-<li><code>##</code>是运算符指最后一个，<code>*/</code>表示<code>/</code>和<code>/</code>左边的所有字符。所以一个<code>#</code>是第一个，两个是最后一个。</li>
-<li>这句话会删除最后一个<code>/</code>以及左边的字符， 结果只留下了<code>123.htm</code></li>
-</ul>
+<li>
+<p><code>curl</code>命令作用广泛，可以作为传输工具使用，我们在产品中也经常用来判断一个<code>URL</code>是否可连接</p>
 </li>
+</ul>
+<h3 id="实例"><a class="header-anchor" href="#实例"></a>实例</h3>
+<ul>
+<li><code>curl -o linux.html http://www.linux.com</code>： 保存网页，在我们的产品中，使用这种形式进行了文件下载</li>
 </ul>
 <h2 id="判断文件"><a class="header-anchor" href="#判断文件"></a>判断文件</h2>
-<h3 id="参考链接-v3"><a class="header-anchor" href="#参考链接-v3"></a>参考链接</h3>
 <ul>
 <li><a href="https://www.cnblogs.com/37yan/p/6962563.html" target="_blank" rel="noopener">shell判断文件存在</a></li>
 </ul>
-<h3 id="实例-v4"><a class="header-anchor" href="#实例-v4"></a>实例</h3>
+<h3 id="实例-v2"><a class="header-anchor" href="#实例-v2"></a>实例</h3>
 <ul>
 <li>
 <p>判断文件存在与否</p>
@@ -405,13 +395,33 @@ fi
 <li>直接写在一起就可以了</li>
 </ul>
 <h2 id="生成随机密码"><a class="header-anchor" href="#生成随机密码"></a>生成随机密码</h2>
-<h3 id="参考链接-v4"><a class="header-anchor" href="#参考链接-v4"></a>参考链接</h3>
+<h3 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h3>
 <ul>
 <li><a href="https://www.cnblogs.com/EasonJim/p/9041957.html" target="_blank" rel="noopener">Linux下生成随机密码</a></li>
 </ul>
-<h3 id="实例-v5"><a class="header-anchor" href="#实例-v5"></a>实例</h3>
+<h3 id="实例-v3"><a class="header-anchor" href="#实例-v3"></a>实例</h3>
 <ul>
 <li><code>date +%s |sha256sum |base64 |head -c 32 ;echo</code> 这样的话说是根据当前时间来算的。所以安全性其实很高啊</li>
+</ul>
+<h2 id="截取字符串的方法"><a class="header-anchor" href="#截取字符串的方法"></a>截取字符串的方法</h2>
+<ul>
+<li><a href="https://www.jb51.net/article/56563.htm" target="_blank" rel="noopener">Shell脚本8种字符串截取方法总结</a></li>
+</ul>
+<h3 id="实例-v4"><a class="header-anchor" href="#实例-v4"></a>实例</h3>
+<ul>
+<li><code>var=http://www.aaa.com/123.htm</code></li>
+<li><code>echo ${var#*//}</code>
+<ul>
+<li><code>#</code> 号是运算符，<code>*//</code> 表示从左边开始删除第一个 <code>//</code> 号及左边的所有字符</li>
+<li>所以这样的话会将<code>http://</code>都给删除掉</li>
+</ul>
+</li>
+<li><code>echo ${var##*/}</code>
+<ul>
+<li><code>##</code>是运算符指最后一个，<code>*/</code>表示<code>/</code>和<code>/</code>左边的所有字符。所以一个<code>#</code>是第一个，两个是最后一个。</li>
+<li>这句话会删除最后一个<code>/</code>以及左边的字符， 结果只留下了<code>123.htm</code></li>
+</ul>
+</li>
 </ul>
 
       
@@ -533,7 +543,7 @@ fi
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">40</span>
+                  <span class="site-state-item-count">39</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -579,7 +589,7 @@ fi
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#awk"><span class="nav-number">1.</span> <span class="nav-text">AWK</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参考链接"><span class="nav-number">1.1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实例"><span class="nav-number">1.2.</span> <span class="nav-text">实例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sed"><span class="nav-number">2.</span> <span class="nav-text">SED</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实例-v2"><span class="nav-number">2.1.</span> <span class="nav-text">实例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#截取字符串的方法"><span class="nav-number">3.</span> <span class="nav-text">截取字符串的方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参考链接-v2"><span class="nav-number">3.1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实例-v3"><span class="nav-number">3.2.</span> <span class="nav-text">实例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#判断文件"><span class="nav-number">4.</span> <span class="nav-text">判断文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参考链接-v3"><span class="nav-number">4.1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实例-v4"><span class="nav-number">4.2.</span> <span class="nav-text">实例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字符串操作"><span class="nav-number">5.</span> <span class="nav-text">字符串操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#字符串连接"><span class="nav-number">5.1.</span> <span class="nav-text">字符串连接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生成随机密码"><span class="nav-number">6.</span> <span class="nav-text">生成随机密码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参考链接-v4"><span class="nav-number">6.1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实例-v5"><span class="nav-number">6.2.</span> <span class="nav-text">实例</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#awk"><span class="nav-number">1.</span> <span class="nav-text">AWK</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#example"><span class="nav-number">1.1.</span> <span class="nav-text">Example</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#curl"><span class="nav-number">2.</span> <span class="nav-text">CURL</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实例"><span class="nav-number">2.1.</span> <span class="nav-text">实例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#判断文件"><span class="nav-number">3.</span> <span class="nav-text">判断文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实例-v2"><span class="nav-number">3.1.</span> <span class="nav-text">实例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字符串操作"><span class="nav-number">4.</span> <span class="nav-text">字符串操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#字符串连接"><span class="nav-number">4.1.</span> <span class="nav-text">字符串连接</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生成随机密码"><span class="nav-number">5.</span> <span class="nav-text">生成随机密码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参考链接"><span class="nav-number">5.1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实例-v3"><span class="nav-number">5.2.</span> <span class="nav-text">实例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#截取字符串的方法"><span class="nav-number">6.</span> <span class="nav-text">截取字符串的方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实例-v4"><span class="nav-number">6.1.</span> <span class="nav-text">实例</span></a></li></ol></li></ol></div>
             
 
           </div>

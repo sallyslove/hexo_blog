@@ -87,7 +87,7 @@
 <meta property="og:description" content="基础网络概念放在这里，在另一篇博客里面记录网络之间如何转发，从IP地址如何找到对应的主机进行通信。 前后一年时间，这回大致是明白了。想当年大学时代，我网络学得不错的啊 😇  参考链接  IP地址和MAC地址的区别和联系-这篇的第一个回答非常清晰 如何跟小白解释路由器和交换机的区别 路由器和交换机的不同之处有哪些？  网络常用语  LAN：LAN，全称Local Area Network，中文名">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/network/MAC_address_table.png">
-<meta property="og:updated_time" content="2020-09-28T03:05:59.976Z">
+<meta property="og:updated_time" content="2020-11-09T07:53:31.719Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="network basic concept">
 <meta name="twitter:description" content="基础网络概念放在这里，在另一篇博客里面记录网络之间如何转发，从IP地址如何找到对应的主机进行通信。 前后一年时间，这回大致是明白了。想当年大学时代，我网络学得不错的啊 😇  参考链接  IP地址和MAC地址的区别和联系-这篇的第一个回答非常清晰 如何跟小白解释路由器和交换机的区别 路由器和交换机的不同之处有哪些？  网络常用语  LAN：LAN，全称Local Area Network，中文名">
@@ -557,6 +557,15 @@ Interrupt:5 Base address:0x8c00
 <ul>
 <li>一个<code>IP</code>地址加一个传输层端口号定义一个<code>socket</code>。</li>
 <li><code>socket</code>是唯一的，一个客户端<code>socket</code>和一个服务端<code>socket</code>定义一个连接<code>connection</code>，一端发送的数据，另一端就会接收到 。来自 <a href="http://arthurchiao.art/blog/nat-zh/" target="_blank" rel="noopener">[译]NAT - 网络地址转换</a></li>
+<li><code>raw socket</code>和<code>direct socket</code>，在工作中碰到这两个词，简直是一脸懵，后来发现是同一个含义，就是指直接打开<code>TCP</code>连接。目前看起来，只能用代码来开一个<code>raw socket</code>。</li>
+<li><em>If you are interested in writing your own implementations of one of these protocols, or need to use a different transport-layer protocol, you’ll need to use raw sockets.</em> <code>raw socket</code>可以自己做个<code>protocal</code>，不用<code>TCP</code>或者<code>UDP</code></li>
+<li>过程中看到几篇有趣文章，看得不够细致。链接先贴着 ❤️
+<ul>
+<li><a href="https://squidarth.com/networking/systems/rc/2018/05/28/using-raw-sockets.html" target="_blank" rel="noopener">using-raw-sockets</a></li>
+<li><a href="https://stackoverflow.com/questions/5476112/raw-socket-question-are-tcp-packets-passed-to-a-raw-socket" target="_blank" rel="noopener">Are TCP packets passed to a raw socket?</a></li>
+<li><a href="https://www.opensourceforu.com/2015/03/a-guide-to-using-raw-sockets/" target="_blank" rel="noopener">a-guide-to-using-raw-sockets</a></li>
+</ul>
+</li>
 </ul>
 
       
@@ -678,7 +687,7 @@ Interrupt:5 Base address:0x8c00
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">40</span>
+                  <span class="site-state-item-count">39</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

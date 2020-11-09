@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="常用k8s命令 这篇记录一下常用的k8s命令，我怕我会忘啊  -_-# 没错，这是docker那篇的姐妹篇哦。棒棒哒:P   kubectl cluster-info   kubectl get nodes：用下面这条命令可以打出node的具体信息 kubectl get nodes -o wide    kubectl run first-deployment --image=katacoda/">
+<meta name="description" content="常用k8s命令 这篇记录一下常用的k8s命令，我怕我会忘啊  -_-# 没错，这是docker那篇的姐妹篇哦。棒棒哒 集群命令  kubectl cluster-info  查询命令   kubectl get nodes：用下面这条命令可以打出node的具体信息 kubectl get nodes -o wide    kubectl get pods： get pods的话，会把replica">
 <meta property="og:type" content="article">
 <meta property="og:title" content="常用k8s命令记录">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/02/15/常用k8s命令记录/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="常用k8s命令 这篇记录一下常用的k8s命令，我怕我会忘啊  -_-# 没错，这是docker那篇的姐妹篇哦。棒棒哒:P   kubectl cluster-info   kubectl get nodes：用下面这条命令可以打出node的具体信息 kubectl get nodes -o wide    kubectl run first-deployment --image=katacoda/">
+<meta property="og:description" content="常用k8s命令 这篇记录一下常用的k8s命令，我怕我会忘啊  -_-# 没错，这是docker那篇的姐妹篇哦。棒棒哒 集群命令  kubectl cluster-info  查询命令   kubectl get nodes：用下面这条命令可以打出node的具体信息 kubectl get nodes -o wide    kubectl get pods： get pods的话，会把replica">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-03-04T08:30:05.850Z">
+<meta property="og:updated_time" content="2020-11-05T03:27:22.146Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="常用k8s命令记录">
-<meta name="twitter:description" content="常用k8s命令 这篇记录一下常用的k8s命令，我怕我会忘啊  -_-# 没错，这是docker那篇的姐妹篇哦。棒棒哒:P   kubectl cluster-info   kubectl get nodes：用下面这条命令可以打出node的具体信息 kubectl get nodes -o wide    kubectl run first-deployment --image=katacoda/">
+<meta name="twitter:description" content="常用k8s命令 这篇记录一下常用的k8s命令，我怕我会忘啊  -_-# 没错，这是docker那篇的姐妹篇哦。棒棒哒 集群命令  kubectl cluster-info  查询命令   kubectl get nodes：用下面这条命令可以打出node的具体信息 kubectl get nodes -o wide    kubectl get pods： get pods的话，会把replica">
 
 
 
@@ -332,50 +332,24 @@
 
       
         <h2 id="常用k8s命令"><a class="header-anchor" href="#常用k8s命令"></a>常用k8s命令</h2>
-<p>这篇记录一下常用的k8s命令，我怕我会忘啊  -_-#<br>
-没错，这是docker那篇的姐妹篇哦。棒棒哒:P</p>
+<p>这篇记录一下常用的<code>k8s</code>命令，我怕我会忘啊  -_-#<br>
+没错，这是<code>docker</code>那篇的姐妹篇哦。棒棒哒</p>
+<h3 id="集群命令"><a class="header-anchor" href="#集群命令"></a>集群命令</h3>
 <ul>
-<li>
-<p><code>kubectl cluster-info</code></p>
-</li>
+<li><code>kubectl cluster-info</code></li>
+</ul>
+<h3 id="查询命令"><a class="header-anchor" href="#查询命令"></a>查询命令</h3>
+<ul>
 <li>
 <p><code>kubectl get nodes</code>：用下面这条命令可以打出<code>node</code>的具体信息</p>
 <pre><code>kubectl get nodes -o wide
 </code></pre>
 </li>
 <li>
-<p><code>kubectl run first-deployment --image=katacoda/docker-http-server --port=80</code></p>
-<ul>
-<li><code>-port</code>仍旧是内部的端口</li>
-<li>外部端口可以用<code>--hostport=8001</code>指定， 但是这样做的话， —<em>Under the covers, this exposes the Pod via Docker Port Mapping.</em> As a result, you will not see the service listed using <code>kubectl get svc</code>。目前的理解是，因为是用的<code>docker</code>的方法，所以<code>k8s</code>不知道
-<ul>
-<li>用<code>docker ps</code>命令能看到这个<code>container</code>，然后可以注意到有两个<code>ps</code>进程。其中一个是<code>paused</code>状态，然后我们的端口<code>8001</code>其实开在这个<code>paused</code>的<code>ps</code>上面。</li>
-<li>The ports are exposed on the Pod, not the http container itself. The Pause container is responsible for defining the network for the Pod. Other containers in the pod share the same network namespace. This improves network performance and allow multiple containers to communicate over the same network interface…感觉这段解释很关键啊。这个container的名字是： k8s_POD_“httpexposed”,最后一个字段是我们起的pod的名字</li>
-</ul>
-</li>
-<li><code>--replicas</code>： 复制因子</li>
-</ul>
+<p><code>kubectl get pods</code>： <code>get pods</code>的话，会把<code>replication cotronller</code>， <code>service</code>， <code>deployment</code>都给打印出来</p>
 </li>
 <li>
-<p><code>kubectl get pods</code></p>
-<ul>
-<li>所以get pods的话，会把replication cotronller， service， deployment都给打印出来</li>
-</ul>
-</li>
-<li>
-<p><code>kubectl get rc</code></p>
-<ul>
-<li>将replication controller打印出来。</li>
-</ul>
-</li>
-<li>
-<p><code>kubectl get services</code></p>
-</li>
-<li>
-<p><code>kubectl get deployments</code></p>
-<ul>
-<li>感受一下这两个的区别</li>
-</ul>
+<p><code>kubectl get rc</code>: <code>replication controller</code>打印出来。</p>
 </li>
 </ul>
 <pre><code>$ kubectl get pods
@@ -393,27 +367,91 @@ httpexposed   1         1         1            1           11m
 <ul>
 <li><code>kubectl describe deployment http</code></li>
 <li><code>kubectl describe svc http</code> 能看到很多信息，包括整个cluster对外的ip，各个node的内部ip之类</li>
-<li><code>kubectl scale --replicas=3 deployment http</code> scale的命令</li>
-<li><code>kubectl create -f deployment.yaml</code> 通过yaml文件创建一个deployment
+<li><code>kubectl get ing</code> 可以用来看Ingress</li>
+<li><code>kubectl config set-context $(kubectl config current-context) --namespace=&lt;insert-namespace-name-here&gt;</code></li>
+<li><code>kubectl config get-contexts</code></li>
+<li><code>kubectl get namespaces</code></li>
+</ul>
+<h3 id="创建类命令"><a class="header-anchor" href="#创建类命令"></a>创建类命令</h3>
 <ul>
-<li><code>kubectl create -f service.yaml</code> 也可以通过<code>yaml</code>文件创建<code>service</code></li>
+<li>
+<p><code>kubectl run first-deployment --image=katacoda/docker-http-server --port=80</code></p>
+<ul>
+<li><code>-port</code>仍旧是内部的端口</li>
+<li>外部端口可以用<code>--hostport=8001</code>指定， 但是这样做的话， —<em>Under the covers, this exposes the Pod via Docker Port Mapping.</em> As a result, you will not see the service listed using <code>kubectl get svc</code>。目前的理解是，因为是用的<code>docker</code>的方法，所以<code>k8s</code>不知道
+<ul>
+<li>用<code>docker ps</code>命令能看到这个<code>container</code>，然后可以注意到有两个<code>ps</code>进程。其中一个是<code>paused</code>状态，然后我们的端口<code>8001</code>其实开在这个<code>paused</code>的<code>ps</code>上面。</li>
+<li><em>The ports are exposed on the Pod, not the http container itself. The Pause container is responsible for defining the network for the Pod. Other containers in the pod share the same network namespace. This improves network performance and allow multiple containers to communicate over the same network interface.</em> 感觉这段解释很关键啊。这个container的名字是： k8s_POD_“httpexposed”,最后一个字段是我们起的pod的名字</li>
+</ul>
+</li>
+<li><code>--replicas</code>： 复制因子</li>
+</ul>
+</li>
+<li>
+<p><code>kubectl scale --replicas=3 deployment http</code> scale的命令</p>
+</li>
+<li>
+<p><code>kubectl create -f deployment.yaml</code> 通过yaml文件创建一个deployment</p>
+</li>
+<li>
+<p><code>kubectl create -f service.yaml</code> 也可以通过<code>yaml</code>文件创建<code>service</code></p>
+<ul>
 <li><code>ymal</code>文件里面的内容还不是非常清楚。参考<a href="https://blog.csdn.net/luanpeng825485697/article/details/83753260" target="_blank" rel="noopener">k8s yaml文件详解</a></li>
 </ul>
 </li>
-<li><code>kubectl apply -f deployment.yaml</code>如果<code>yaml</code>文件有改动的话，可以用这条命令来update</li>
+<li>
+<p><code>kubectl apply -f deployment.yaml</code>如果<code>yaml</code>文件有改动的话，可以用这条命令来update</p>
+</li>
 </ul>
 <pre><code> $ kubectl apply -f deployment.yaml
   Warning: kubectl apply should be used on resource created by either kubectl create --save-config or kubectl apply
   deployment.extensions/webapp1 configured
 </code></pre>
 <ul>
-<li><code>kubectl exec $pod -- /usr/bin/curl -s localhost/unhealthy</code></li>
-<li><code>kubectl get ing</code> 可以用来看Ingress</li>
-<li><code>kubectl create namespace</code>创建namespace</li>
-<li><code>kubectl config set-context $(kubectl config current-context) --namespace=&lt;insert-namespace-name-here&gt;</code></li>
-<li><code>kubectl config get-contexts</code></li>
-<li><code>kubectl get namespaces</code></li>
-<li><code>kubectl delete pvc --all --namespace default</code> 用这个命令来做<code>delete</code>。一堆都行。<code>pvc</code>换成<code>pod</code>，<code>deployments</code>，<code>secret</code>，<code>configmap</code>，<code>service</code>啥的</li>
+<li>
+<p><code>kubectl exec $pod -- /usr/bin/curl -s localhost/unhealthy</code></p>
+</li>
+<li>
+<p><code>kubectl create namespace</code>创建namespace</p>
+</li>
+<li>
+<p><code>kubectl delete pvc --all --namespace default</code> 用这个命令来做<code>delete</code>。一堆都行。<code>pvc</code>换成<code>pod</code>，<code>deployments</code>，<code>secret</code>，<code>configmap</code>，<code>service</code>啥的</p>
+</li>
+</ul>
+<h3 id="工作中常用实用命令"><a class="header-anchor" href="#工作中常用实用命令"></a>工作中常用实用命令</h3>
+<h4 id="端口映射"><a class="header-anchor" href="#端口映射"></a>端口映射</h4>
+<ul>
+<li><code>kubectl port-forward</code>
+<ul>
+<li>
+<p>Forward one or more local ports to a pod. This command requires the node to have ‘socat’ installed. <strong><em>socat是什么?</em></strong></p>
+</li>
+<li>
+<p>参考链接：</p>
+<ul>
+<li><a href="https://imti.co/kubernetes-port-forwarding/" target="_blank" rel="noopener">Kubernetes Port Forwarding for Local Development</a></li>
+<li><a href="https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#port-forward" target="_blank" rel="noopener">官方文档</a></li>
+</ul>
+</li>
+<li>
+<p>用例：</p>
+<ul>
+<li>以下命令的含义是：将本地端口<code>8080</code>和<code>8081</code>，映射到<code>k8s</code>服务<code>ok</code>的<code>8080</code>和<code>80</code>端口上面。<code>-n</code>代表的<code>namespace</code></li>
+<li>默认地址是<code>localhost</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<pre><code>  kubectl port-forward service/ok 8080:8080 8081:80 -n the-project
+</code></pre>
+<h4 id="临时编辑资源"><a class="header-anchor" href="#临时编辑资源"></a>临时编辑资源</h4>
+<ul>
+<li><code>kubectl edit</code> 命令可以用来修改一个资源。<code>kubectl edit deployment &lt;resource_name&gt; -n &lt;namespace&gt;</code>,需要注意的是修改是暂时的，如果使用<code>helm upgrade</code>命令，那么修改会被覆盖掉
+<ul>
+<li>参考链接： <a href="https://stackoverflow.com/questions/45502729/how-do-i-edit-a-resource-configuration-with-kubectl" target="_blank" rel="noopener">kubectl edit</a></li>
+</ul>
+</li>
 </ul>
 <h3 id="参考文档"><a class="header-anchor" href="#参考文档"></a>参考文档</h3>
 <ul>
@@ -540,7 +578,7 @@ httpexposed   1         1         1            1           11m
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">40</span>
+                  <span class="site-state-item-count">39</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -586,7 +624,7 @@ httpexposed   1         1         1            1           11m
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#常用k8s命令"><span class="nav-number">1.</span> <span class="nav-text">常用k8s命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文档"><span class="nav-number">1.1.</span> <span class="nav-text">参考文档</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#常用k8s命令"><span class="nav-number">1.</span> <span class="nav-text">常用k8s命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#集群命令"><span class="nav-number">1.1.</span> <span class="nav-text">集群命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查询命令"><span class="nav-number">1.2.</span> <span class="nav-text">查询命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建类命令"><span class="nav-number">1.3.</span> <span class="nav-text">创建类命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#工作中常用实用命令"><span class="nav-number">1.4.</span> <span class="nav-text">工作中常用实用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#端口映射"><span class="nav-number">1.4.1.</span> <span class="nav-text">端口映射</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#临时编辑资源"><span class="nav-number">1.4.2.</span> <span class="nav-text">临时编辑资源</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文档"><span class="nav-number">1.5.</span> <span class="nav-text">参考文档</span></a></li></ol></li></ol></div>
             
 
           </div>
