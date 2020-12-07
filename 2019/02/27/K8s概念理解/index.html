@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="跬步">
 <meta property="og:description" content="K8s概念 这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。 namespace   当团队或项目中具有许多用户时，可以考虑使用Namespace来区分。   默认情况下，相同Namespace中的对象将具有相同的访问控制策略。   Kubernetes从两个初始的Namespace开始：   default   kube-system 由Kubernetes系统创">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-11-05T08:00:23.967Z">
+<meta property="og:updated_time" content="2020-11-09T08:15:54.447Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="K8s概念理解">
 <meta name="twitter:description" content="K8s概念 这篇是从K8s的常用命令分出来的，实在是概念比较多，跟常用命令杂在一起不合适了。 namespace   当团队或项目中具有许多用户时，可以考虑使用Namespace来区分。   默认情况下，相同Namespace中的对象将具有相同的访问控制策略。   Kubernetes从两个初始的Namespace开始：   default   kube-system 由Kubernetes系统创">
@@ -441,6 +441,7 @@ map[special.how:very]
 <ul>
 <li>这个单词的含义感觉真是奇怪，翻译成中文是卷，卷和磁盘有什么关系哦，我只想到了花卷。😆</li>
 <li>总的来说，卷就是所有容器都可以访问的磁盘空间，并且在<code>pod</code>重启之后内容仍旧存在</li>
+<li>参考<a href="https://blog.51cto.com/3842834/2320539" target="_blank" rel="noopener">两种常见类型的Volume深度实践</a></li>
 </ul>
 <h4 id="emptydir"><a class="header-anchor" href="#emptydir"></a>emptyDir</h4>
 <ul>
@@ -466,26 +467,27 @@ spec:
 <h4 id="configmap方式"><a class="header-anchor" href="#configmap方式"></a>configMap方式</h4>
 <ul>
 <li>
-<p><code>configMap</code>也可以用来加载卷卷，加载的时候还可以指定权限。实例如下：<br>
-apiVersion: v1<br>
-kind: Pod<br>
-metadata:<br>
-name: configmap-pod<br>
-spec:<br>
-containers:<br>
-- name: …<br>
-image: …<br>
-volumeMounts:<br>
-- name: config-vol<br>
-mountPath: /etc/config<br>
-volumes:<br>
-- name: config-vol<br>
-configMap:<br>
-name: log-config<br>
-defaultMode: 420</p>
+<p><code>configMap</code>也可以用来加载卷卷，加载的时候还可以指定权限。实例如下：</p>
+<pre><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: configmap-pod
+spec:
+  containers:
+    - name: ...
+      image: ...
+      volumeMounts:
+        - name: config-vol
+          mountPath: /etc/config
+  volumes:
+    - name: config-vol
+      configMap:
+        name: log-config
+        defaultMode: 420
+</code></pre>
 </li>
 <li>
-<p>默认的权限应该是<code>420</code>，应该是<code>read only</code>，在工作中是加载了一个<code>SHELL脚本</code>，所以将权限修改为<code>0755</code>，然后就可以在代码里面调用了</p>
+<p>默认的权限应该是<code>420</code>，应该是<code>read only</code>，在工作中是加载了一个<code>SHELL脚本</code>，所以将权限修改为<code>0755</code>，然后就可以在代码里面调用了。 可参考<a href="https://cloud.tencent.com/developer/ask/230096" target="_blank" rel="noopener">k8s configMap 挂载目录 权限 420</a></p>
 </li>
 </ul>
 <h3 id="secrets"><a class="header-anchor" href="#secrets"></a>secrets</h3>
