@@ -242,6 +242,215 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/05/15/Cassandra的repair机制/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/05/15/Cassandra的repair机制/" itemprop="url">Cassandra的repair机制</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-15T17:52:05+08:00">
+                2019-05-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/cassandra/" itemprop="url" rel="index">
+                    <span itemprop="name">cassandra</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="cassandra的repair机制"><a class="header-anchor" href="#cassandra的repair机制"></a>Cassandra的repair机制</h2>
+<p>这篇讨论一些robustness的东西。主要就是一个节点down了会怎么样。其实目前知道的就是hint，但是记录下来。<br>
+从一些文档里面看，这个属于写流程的一部分。确实是，读的话，如果node down了应该不会从上面读取了。会写到the coordinator node上面。version 1.0有所不同，但是这个版本太旧了。</p>
+<blockquote>
+<p>By design, hinted handoff inherently allows Cassandra to continue performing the same number of writes even when the cluster is operating at reduced capacity.</p>
+</blockquote>
+<h3 id="hinted-handoff简述"><a class="header-anchor" href="#hinted-handoff简述"></a>Hinted Handoff简述</h3>
+<ul>
+<li><strong><code>hinted handoff</code> 和 一般说的<code>hint</code>应该是同一个东西。</strong> 前者是一个机制，后者就是这个机制产生的事件或者记录。</li>
+<li><code>hinted handoff</code>跟consistency level 相关，毕竟这个是写机制的一部分。</li>
+<li>cassandra的config文件里面需要配置几个参数：
+<ul>
+<li><code>hinted_handoff_enabled</code>：默认为true，打开这个机制</li>
+<li><code>max_hint_window_in_ms</code>： 为已经down掉的node记录hint log的时间长度</li>
+<li><code>gc_grace_seconds</code>: Configures the time-to-live (TTL) period for a hint so that the database won’t replay the hint after this duration. Setting this parameter to 0 disables hints。 这个参数没用过，后面可以试试看</li>
+<li><code>hinted_handoff_throttle_in_kb</code> 和    <code>max_hints_delivery_threads</code> 这两个没咋研究过，先放着吧</li>
+</ul>
+</li>
+<li>按照文档，当写入发生时候，并且a replica node for the key is down。就可能会触发hinted handoff的机制</li>
+</ul>
+<h4 id="hint-详述"><a class="header-anchor" href="#hint-详述"></a>Hint 详述</h4>
+<ul>
+<li>
+<blockquote>
+<p>The hint consists of a target ID for the downed node, a hint ID that is a time UUID for the data, a message ID that identifies the Cassandra version, and the data itself as a blob.</p>
+</blockquote>
+<ul>
+<li>hint里面有：down node的target ID， 标注这条数据的hint ID， 标注cassandra version的message ID以及数据本身</li>
+<li>这是cassandra 3.0之后的。之前的可能不一样</li>
+</ul>
+</li>
+<li>
+<p>和想象地一样，当Gossipy发现downed node起来之后，coordinator node会将hint记录的数据写过去，并且删除掉hint</p>
+</li>
+<li>
+<blockquote>
+<p>The coordinator also checks every ten minutes for hints corresponding to writes that timed out during an outage too brief for the failure detector to notice through gossip.</p>
+</blockquote>
+</li>
+<li>
+<p>这句有点难以理解，看了下一句有点明白。如果有的节点宕机时间很短，而Gossdip并没有发现，那么coordinator 会返回一个exception，同时把write fail了，但是会记录一个hint。所以如果瞬间有很多短暂的fail，coordinator node会一下子压力过大，扔出overloadexception</p>
+</li>
+</ul>
+<blockquote>
+<p>If a replica node is overloaded or unavailable, and the failure detector has not yet marked the node as down, then expect most or all writes to that node to fail after the timeout triggered by write_request_timeout_in_ms, (10 seconds by default). The coordinator returns a TimeOutException exception, and the write will fail but a hint will be stored.</p>
+</blockquote>
+<h4 id="hint-和-consistency-level"><a class="header-anchor" href="#hint-和-consistency-level"></a>Hint 和 consistency level</h4>
+<ul>
+<li>
+<blockquote>
+<p>当一致性等级设定为ONE，QUORUM，或者ALL的时候，提示的写并不参与到一致性级别的计数中。如果没有足够的节点满足写的一致性级别需要，会抛出 UnavailableException而不是触发Hinted Handoff。（这是Casssandra和Dynamo复制模型不一样的地方之一）</p>
+</blockquote>
+</li>
+<li>接上文，如果将consistency level设置成为Any，那么hint就算了。所以即使只是写了hint，写操作也会成功，但是这时候读数据是读不出来的。</li>
+</ul>
+<h3 id="repairing-data"><a class="header-anchor" href="#repairing-data"></a>Repairing Data</h3>
+<ul>
+<li>Read repair: The reconciliation or correction happens when a read finds an inconsistency.</li>
+<li>When data is read, a read repair can resolve any data inconsistencies. When data isn’t read, you need to use either the hinted handoff or anti-entropy mechanism to resolve any data inconsistences.</li>
+</ul>
+<h4 id="read-repair"><a class="header-anchor" href="#read-repair"></a>Read Repair</h4>
+<h4 id="anti-entropy"><a class="header-anchor" href="#anti-entropy"></a>anti-entropy</h4>
+<h3 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h3>
+<ul>
+<li><a href="https://wiki.apache.org/cassandra/HintedHandoff" target="_blank" rel="noopener">wiki上面的简介</a></li>
+<li><a href="https://docs.datastax.com/en/cassandra/3.0/cassandra/operations/opsRepairNodesHintedHandoff.html" target="_blank" rel="noopener">官方</a></li>
+<li><a href="http://www.cnblogs.com/sing1ee/archive/2012/07/09/2765056.html" target="_blank" rel="noopener">比较好的博客一篇</a>： 看起来很多就是官方文档的翻译</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/04/18/Cassandra Batch/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2745,425 +2954,6 @@ httpexposed   1         1         1            1           11m
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/02/14/Scala/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/02/14/Scala/" itemprop="url">Scala</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-14T10:18:49+08:00">
-                2019-02-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/Scala/" itemprop="url" rel="index">
-                    <span itemprop="name">Scala</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="scala概念快速解释"><a class="header-anchor" href="#scala概念快速解释"></a>Scala概念快速解释</h2>
-<ul>
-<li><code>Scala</code>有很多特有的概念。如果要看懂代码就得大致明白含义，这篇博客就是快速解释一下，其中可能会有不够准确的地方，就是不求甚解，只求迅速读懂<code>scala</code>代码了.</li>
-<li>隔了一段时间又开始看<code>scala</code>的代码，结果发现这篇博客写得太不声情并茂了。<code>scala</code>还是比较复杂的。这么简单写几句不太成，得给一点例子才行。</li>
-</ul>
-<h3 id="enum"><a class="header-anchor" href="#enum"></a>Enum</h3>
-<ul>
-<li>简单来说，并没有枚举这个类型，但是可以继承<code>Enumeration</code>来达到枚举的效果</li>
-<li>通常定义一个<code>object</code>来继承<code>Enumeration</code></li>
-<li>使用<code>Enum</code>，类型都是<code>Enum.Value</code></li>
-<li><a href="http://kubicode.me/2015/06/06/Scala/Enum-in-Scala/" target="_blank" rel="noopener">Scala中的Enum，这篇对比了一下java和scala的枚举</a></li>
-</ul>
-<h3 id="none"><a class="header-anchor" href="#none"></a>&lt;-</h3>
-<ul>
-<li>
-<p><code>for</code> 循环里面用的，看下面这个例子就比较清楚：</p>
-<pre><code>for(x &lt;- 1 to 5)  println(i)
-
-for { 
-     x&lt;-1 to 5
-     y&lt;-2 to 6
-   } println (x,y)
-</code></pre>
-</li>
-<li>
-<p>参考链接： <a href="https://stackoverflow.com/questions/31799536/what-is-%E2%86%90-in-scala" target="_blank" rel="noopener">what-is-←-in-scala</a></p>
-</li>
-</ul>
-<h3 id="sealed-class"><a class="header-anchor" href="#sealed-class"></a>sealed class</h3>
-<h3 id="val和var的区别"><a class="header-anchor" href="#val和var的区别"></a>val和var的区别</h3>
-<ul>
-<li><code>val</code>就是常量，只能赋值一次</li>
-<li><code>var</code>变量，可以赋值多次</li>
-<li><a href="https://www.cnblogs.com/IChing/p/7093345.html" target="_blank" rel="noopener">scala基础- val和var的区别</a></li>
-</ul>
-<h3 id="object"><a class="header-anchor" href="#object"></a>object</h3>
-<p>看了几篇博客，解释都不够清晰的感觉，还是<code>stackoverflow</code>上面解释得更清楚.</p>
-<ul>
-<li>有好几种用法：
-<ul>
-<li>
-<p>作为<code>static</code>函数的<code>class</code>文件，这是最常见到的用法：</p>
-<pre><code>object A {
-  def twice(i: Int): Int = 2*i
-}
-</code></pre>
-<p>这样可以直接调用<code>A.twice</code>，没有必要先声明一个<code>A</code>的对象。这种是类似<code>java</code>里面的<code>static</code>函数的</p>
-</li>
-</ul>
-</li>
-</ul>
-<ul>
-<li>参考链接：<a href="https://stackoverflow.com/questions/1755345/difference-between-object-and-class-in-scala" target="_blank" rel="noopener">difference-between-object-and-class-in-scala</a></li>
-</ul>
-<h3 id="trait"><a class="header-anchor" href="#trait"></a>trait</h3>
-<ul>
-<li><a href="http://www.runoob.com/scala/scala-traits.html" target="_blank" rel="noopener">Scala Trait(特征)</a></li>
-<li>类似<code>java</code>的<code>Interface</code>，其实更近似于抽象类</li>
-<li>但是可以使用<code>with</code>关键字多重继承，很好用的感觉哦</li>
-<li><code>scala</code>本身还是有<code>interface</code>关键字的，本身也可以使用<code>with</code>关键字来实现接口</li>
-</ul>
-<h3 id="case-class"><a class="header-anchor" href="#case-class"></a>case class</h3>
-<ul>
-<li><a href="https://blog.csdn.net/bluishglc/article/details/50914001" target="_blank" rel="noopener">csdn上的一篇文章</a></li>
-<li>简单来说，<code>case class</code>会默认生成很多东西，比如伴生对象，比如工厂方法，比如<code>toString</code>， <code>copy</code>，构造方法参数同名的属性</li>
-<li>最开心的用法，应该就是不用<code>new</code>出一个对象来。而是可以直接<code>methodName(构造函数参数)</code>这样来获取一个对象。其实是同名的工厂方法</li>
-<li>还有一个开心的用法就是<code>case class</code>可以直接用在<code>case</code>语句里面进行判断</li>
-</ul>
-<h3 id="implicit"><a class="header-anchor" href="#implicit"></a>implicit</h3>
-<ul>
-<li>
-<p>隐式转换。例子如下：</p>
-<pre><code>    def display(input:String):Unit = println(input)
-    implicit def typeConvertor(input:Int):String = input.toString
-    display(12)
-</code></pre>
-</li>
-<li>
-<p>本来的话，<code>display</code>函数只能接收一个字符串类型的参数，但是在相同作用域里面有隐式函数的存在，自动将整型转换成了字符串下类型</p>
-</li>
-<li>
-<p>需要注意的一点是，在相同作用域里面，相同参数，相同返回值的函数，函数名并不关键。确实不关键，在调用<code>display(12)</code>的时候，我们并没有说，啊，请用隐式函数<code>typeConvertor</code></p>
-</li>
-<li>
-<p>所以，如果有另一个隐式函数，也是将整型转换为字符串，<code>scala</code>会出错。因为回不知道用哪一个</p>
-</li>
-<li>
-<p>参考链接：</p>
-<ul>
-<li><a href="https://www.cnblogs.com/rollenholt/p/4118567.html" target="_blank" rel="noopener">详尽解释的博客，博主其他博客也不错</a></li>
-</ul>
-</li>
-</ul>
-<h3 id="asscala"><a class="header-anchor" href="#asscala"></a>asScala</h3>
-<ul>
-<li><code>import scala.collection.JavaConverters._</code></li>
-<li>理解就是将<code>Java</code>的一些结构自动转为<code>Scala</code>的结构</li>
-<li>以下参考里面将<code>ArrayList</code>转成了<code>mutable.Buffer</code>。</li>
-<li>参考链接
-<ul>
-<li><a href="https://blog.csdn.net/guotong1988/article/details/51454281" target="_blank" rel="noopener">asScala</a></li>
-</ul>
-</li>
-</ul>
-<h2 id="scala-code-example"><a class="header-anchor" href="#scala-code-example"></a>Scala Code Example</h2>
-<h3 id="map"><a class="header-anchor" href="#map"></a>Map</h3>
-<h4 id="map-foreach"><a class="header-anchor" href="#map-foreach"></a>Map.foreach</h4>
-<ul>
-<li>
-<p><code>map</code>里面的元素在<code>foreach</code>的用法时候，都是二元组。<code>_1</code>是键值，<code>_2</code>是赋值</p>
-<pre><code>val m1 = Map(3 -&gt; &quot;geeks&quot;, 1 -&gt; &quot;for&quot;, 2 -&gt; &quot;cs&quot;, 6 -&gt; &quot;geeks&quot;) 
-
-val result = m1.foreach(x =&gt; println(&quot;key=&quot; + x._1 + &quot;, value=&quot; + x._2)) 
-</code></pre>
-</li>
-</ul>
-<h3 id="how-to-call-shell-command-in-scala"><a class="header-anchor" href="#how-to-call-shell-command-in-scala"></a>how to call shell command in Scala</h3>
-<ul>
-<li>
-<p>在<code>scala</code>里面调用<code>shell</code>命令是非常方便的，只需要引入<code>import scala.sys.process._</code>包就可以了</p>
-<p>val path = “pwd”.!!.trim<br>
-println(path)</p>
-</li>
-<li>
-<p><a href="https://stackoverflow.com/questions/52967383/how-to-execute-shell-script-sh-file-in-scala-program" target="_blank" rel="noopener">How to execute shell script in scala</a></p>
-</li>
-<li>
-<p><a href="https://stackoverflow.com/questions/40129780/execute-shell-script-from-scala-application" target="_blank" rel="noopener">Execute shell script from scala application</a></p>
-</li>
-</ul>
-<h3 id="scala-json"><a class="header-anchor" href="#scala-json"></a>Scala &amp; Json</h3>
-<ul>
-<li>工作过程中需要判断字符串是不是<code>JSON</code>格式，所以去学习了这个。<code>JSON</code>也是现在常用的数据结构。呃，因为<code>REST</code>里面是<code>JSON</code>的缘故嘛，反正越来越多，没觉得比<code>XML</code>好</li>
-<li>有一堆的<code>3pp</code>可以用，我们自己的产品里面也有好几个<code>3pp</code>,包括<code>playjson</code>和<code>gJson</code></li>
-<li>这个链接里面列出了多种库：<a href="https://stackoverflow.com/questions/8054018/what-json-library-to-use-in-scala" target="_blank" rel="noopener">What JSON library to use in Scala?</a></li>
-<li>最后我使用的是<code>play-json</code>，这回的代码其实<code>JAVA</code>工程，但是架构在一个<code>SBT</code>项目里面。而<code>play-json</code>是基于<code>jackson</code>的（很多库都是基于<code>jsckson</code>的就是了），所以在<code>SBT</code>里面引入<code>play-json</code>，也就可以在我需要修改的<code>JAVA</code>代码里面调用<code>jackson</code>了</li>
-</ul>
-<h4 id="如何判断一个字符串是不是json格式"><a class="header-anchor" href="#如何判断一个字符串是不是json格式"></a>如何判断一个字符串是不是JSON格式</h4>
-<ul>
-<li>事实上，不管是<code>java</code>还是<code>scala</code>,都不存在这样的一个现成的接口。</li>
-<li>现在通用的方法就是将字符串进行转换，转换成功就说明是，报错就不是，我呵呵一下。</li>
-<li>这个参考链接里面是<code>JAVA</code>的，但是<code>scala</code>是一样的。也是调用库函数<br>
-<a href="https://stackoverflow.com/questions/10174898/how-to-check-whether-a-given-string-is-valid-json-in-java" target="_blank" rel="noopener">how-to-check-whether-a-given-string-is-valid-json-in-java</a></li>
-</ul>
-<h3 id="actor"><a class="header-anchor" href="#actor"></a>Actor</h3>
-<ul>
-<li>
-<p><code>actor</code>其实不是<code>scala</code>的概念，<code>Linux</code>里面就有的。但是感觉写在<code>scala</code>里面比较合适。</p>
-</li>
-<li>
-<p><a href="https://cloud.tencent.com/developer/article/1135999" target="_blank" rel="noopener">漫谈并发编程：Actor模型</a>这篇里面其实蛮清楚的。基础的一些用法在这边看一下也就明白一些了</p>
-</li>
-<li>
-<p>基于<code>Actor</code>的并发编程中，所有的对象都是一个<code>actor</code>，类似面向对象编程中，所有的都是对象一样。只是<code>Actor</code>再和<code>Scala</code>结合，这个可读性，必须熟悉代码的才行。</p>
-</li>
-<li>
-<p>首先有一个<code>ActorSystem</code>，然后<code>Actor</code>是家族式的，有一个父的<code>Actor</code>，然后其他<code>Actor</code>由父而来。父<code>Actor</code>可以创建子<code>Actor</code>，事实上，是整个<code>life cycle</code>的控制</p>
-</li>
-<li>
-<p>顶层的父<code>Actor</code>用以下语句创建。<code>Props</code>里面的就是<code>Actor</code>的类的名字，后面一个参数是<code>Actor</code>的名字</p>
-<pre><code>system.actorOf(Props[BetterMaster], &quot;master&quot;)
-</code></pre>
-</li>
-<li>
-<p>子<code>Actor</code>创建的方式是类似的，只是是由父 <code>Actor</code>创建的。父<code>Actor</code>内部，通过调用<code>ActorContext</code>的<code>actorOf()</code>方法来创建它自身的<code>child actor</code>。和父<code>Actor</code>一样，参数是<code>Actor</code>的实现的类的名字和<code>Actor</code>的名字。</p>
-</li>
-</ul>
-<pre><code>	context.actorOf(Props[BetterTalker], &quot;talker&quot;)
-</code></pre>
-<h2 id="scala-环境"><a class="header-anchor" href="#scala-环境"></a>Scala 环境</h2>
-<h3 id="scala-ij-环境"><a class="header-anchor" href="#scala-ij-环境"></a>Scala IJ 环境</h3>
-<ul>
-<li><a href="https://blog.csdn.net/high2011/article/details/76541233" target="_blank" rel="noopener">基本scala环境在IJ里面的搭建</a></li>
-</ul>
-<h4 id="sbt工程already-exist"><a class="header-anchor" href="#sbt工程already-exist"></a>SBT工程already exist</h4>
-<ul>
-<li>把一个scala的工程导入，又删除之后， 就再也导不到IJ里面了。</li>
-<li>IJ会报错。解决方法在下面的链接里面。</li>
-<li><a href="https://stackoverflow.com/questions/24937328/intellij-idea-cannot-import-sbt-project" target="_blank" rel="noopener">scala重复导入</a></li>
-</ul>
-<h4 id="skipping-scala-files-without-a-scala-sdk"><a class="header-anchor" href="#skipping-scala-files-without-a-scala-sdk"></a>skipping Scala files without a Scala SDK</h4>
-<ul>
-<li>这个问题是因为没有<code>scala</code>的<code>SDK</code>导致的</li>
-<li><a href="https://stackoverflow.com/questions/34798160/problems-importing-scala-libraries-in-intellij" target="_blank" rel="noopener">没有scala SDK</a></li>
-<li><a href="https://www.jetbrains.com/help/idea/2016.2/adding-frameworks-support.html" target="_blank" rel="noopener">IJ配置framework support</a></li>
-</ul>
-<h4 id="depencensy-scala-ij-sbt-not-found-type-moduleid"><a class="header-anchor" href="#depencensy-scala-ij-sbt-not-found-type-moduleid"></a>depencensy.scala IJ SBT not found: type ModuleID</h4>
-<ul>
-<li>同时也会有&quot;dump project structure from sbt shell&quot;</li>
-<li>项目的依赖也无法更新</li>
-<li>解决的办法是在导入项目的时候，将<code>Use sbt shell</code>和<code>Download</code>里面的项目都勾上。这样就可以解决一堆问题</li>
-</ul>
-<h3 id="scala-sbt-环境"><a class="header-anchor" href="#scala-sbt-环境"></a>Scala SBT 环境</h3>
-<ul>
-<li>安装<code>SBT</code>, <a href="https://www.scala-sbt.org/1.x/docs/Installing-sbt-on-Windows.html" target="_blank" rel="noopener">SBT下载</a></li>
-</ul>
-<h4 id="常用命令"><a class="header-anchor" href="#常用命令"></a>常用命令</h4>
-<ul>
-<li><code>show name</code>: 当前项目名字</li>
-<li><code>show libraryDependencies</code>： 常看依赖</li>
-<li><code>compile</code>：编译</li>
-<li><code>package</code>:打包，如果有<code>Dockfile</code>，会将镜像也做出来</li>
-<li><code>sbt evicted</code>: 查看依赖</li>
-</ul>
-<h4 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h4>
-<ul>
-<li><a href="https://www.scala-sbt.org/1.x/docs/zh-cn/Directories.html" target="_blank" rel="noopener">官方文档</a></li>
-<li><a href="https://blog.csdn.net/zrc199021/article/details/51776256" target="_blank" rel="noopener">CSDN博客一篇</a></li>
-</ul>
-<h4 id="could-not-access-type-localtime-in-value-org-joda-time"><a class="header-anchor" href="#could-not-access-type-localtime-in-value-org-joda-time"></a>Could not access type LocalTime in value org.joda.time</h4>
-<ul>
-<li>在用<code>SBT compile</code>时候报以下的错误：</li>
-</ul>
-<pre><code>[error] missing or invalid dependency detected while loading class file 'DefaultReads.class'.
-[error] Could not access type LocalTime in value org.joda.time,
-[error] because it (or its dependencies) are missing. Check your build definition for
-[error] missing or conflicting dependencies. (Re-run with `-Ylog-classpath` to see the problematic classpath.)
-[error] A full rebuild may help if 'DefaultReads.class' was compiled against an incompatible version of org.joda.time.
-</code></pre>
-<ul>
-<li>
-<p><code>google</code>了一堆，在Stack Overflow上面有一堆类似的问题</p>
-<ul>
-<li><a href="https://stackoverflow.com/questions/8619348/why-is-scala-saying-it-can-t-see-members-of-org-joda-time-period" target="_blank" rel="noopener">joda-time-period</a></li>
-<li><a href="https://stackoverflow.com/questions/38218926/cant-compile-scala-sbt-project" target="_blank" rel="noopener">cant-compile-scala-sbt-project</a></li>
-</ul>
-</li>
-<li>
-<p>实际解决的方式是：在<code>Dependency.scala</code>里面加入:</p>
-<pre><code>val jodaTime: ModuleID = &quot;joda-time&quot; % &quot;joda-time&quot; % &quot;2.10.6&quot;
-</code></pre>
-<p>val joda: ModuleID = “org.joda”  % “joda-convert” % “1.6”</p>
-</li>
-<li>
-<p>搜索<code>org.joda.time.LocalTime</code>,这个类是在<code>2.10.6</code>版本里面的。</p>
-</li>
-<li>
-<p>奇怪的是这个版本的包没有<code>download</code>下来，手动下载放在<code>repo</code>里面，问题就解决了。</p>
-</li>
-<li>
-<p>看到有的解释是说，如果只装了<code>java</code>，没有装<code>scala</code>的话就需要这两个依赖包，很有可能就是这个原因。因为我并没有额外安装<code>scala</code></p>
-</li>
-</ul>
-<h4 id="object-play-not-found"><a class="header-anchor" href="#object-play-not-found"></a>object play not found</h4>
-<ul>
-<li>
-<p><a href="https://stackoverflow.com/questions/36658125/object-play-not-found-in-scala-application" target="_blank" rel="noopener">object-play-not-found-in-scala-application</a></p>
-</li>
-<li>
-<p>在解决这个问题的时候，发现几个有趣的地方：</p>
-<ul>
-<li>
-<p>如果用<code>docker</code>的<code>plugin</code>去做<code>image</code>，和<code>sbt</code>直接<code>package</code>命令做<code>image</code>，前者支持换行时候<code>&amp;&amp;</code>，后者不支持</p>
-</li>
-<li>
-<p><code>dependency</code>文件里面，在<code>java</code>的<code>maven</code>结构下面写成</p>
-<pre><code>libraryDependencies += &quot;com.typesafe.play&quot; % &quot;play-json&quot; % &quot;2.5.2&quot;
-</code></pre>
-</li>
-</ul>
-<p>就可以了，在scala里面必须带上版本，写成</p>
-<pre><code>  libraryDependencies += &quot;com.typesafe.play&quot; % &quot;play-json_2.11&quot; % &quot;2.5.2&quot;
-</code></pre>
-<p>否则会报错的</p>
-</li>
-</ul>
-<h4 id="conflicting-cross-version-suffix"><a class="header-anchor" href="#conflicting-cross-version-suffix"></a>conflicting cross-version suffix</h4>
-<ul>
-<li>编译时候报错，这个也是上一个章节中<code>playjson</code>报的错误，其实就是在<code>build</code>文件里面指定了<code>scala</code>的版本是2.12，但是加进去依赖是2.11.就报错了。</li>
-<li>将<code>playjson</code>的版本改为<code>play-json_2.12 % 2.7.2</code>也就好了。</li>
-<li><a href="https://stackoverflow.com/questions/23617920/why-is-the-error-conflicting-cross-version-suffixes" target="_blank" rel="noopener">why-is-the-error-conflicting-cross-version-suffixes</a></li>
-</ul>
-<h4 id="not-found-type-moduleid"><a class="header-anchor" href="#not-found-type-moduleid"></a>not found: type ModuleID</h4>
-<ul>
-<li>这个错误真是狗血，让我很是郁闷了一会。<code>google</code>都没找到啥。在<code>git status</code>之后发现<code>repo</code>里面被改了一堆东西</li>
-<li>再<code>git checkout</code>之后就正常了。<code>sbt</code>正常启动起来。</li>
-<li>这一堆改动应当是<code>IDE</code>，就是<code>IJ</code>改的。<code>IJ</code>吧，感觉还是<code>maven</code>好用一点。</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -3214,7 +3004,7 @@ println(path)</p>
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">39</span>
+                  <span class="site-state-item-count">40</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -3231,6 +3021,15 @@ println(path)</p>
               </div>
             
 
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
             
 
           </nav>

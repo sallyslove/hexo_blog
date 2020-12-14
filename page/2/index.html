@@ -242,6 +242,252 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/08/22/5G/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/08/22/5G/" itemprop="url">5G</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-22T14:04:36+08:00">
+                2019-08-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/Telecom/" itemprop="url" rel="index">
+                    <span itemprop="name">Telecom</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>作为通信行业的一名软件开发人员，我要开始学习5G啦。😃</p>
+<p>里面有非常多的新网元引入。各种缩写漫天飞舞 😢</p>
+<h2 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h2>
+<ul>
+<li><a href="https://medium.com/5g-nr/5g-service-based-architecture-sba-47900b0ded0a" target="_blank" rel="noopener">5G Service-Based Architecture (SBA)</a></li>
+<li><a href="https://www.grandmetric.com/2018/03/02/5g-core-network-functions/" target="_blank" rel="noopener">5G Core Network Functions</a></li>
+</ul>
+<h2 id="5gc-概述"><a class="header-anchor" href="#5gc-概述"></a>5GC 概述</h2>
+<ul>
+<li><code>5G</code>里面的新的<code>core network</code>一般叫做<code>NR</code>，但是也有的地方，比如霓虹国，称为<code>next generation</code></li>
+<li><code>SA</code>和<code>NSA</code>：<code>SA</code>就是<code>standalone</code>,<code>NSA</code>就是<code>non standslone</code>。这边的<code>SA</code>其实就是说只有<code>5G</code>，后面就是<code>4G</code>和<code>5G</code>并存。不同的运营商会有不同的网络状况。
+<ul>
+<li>现在正处于一个过渡期间，也可能会长期存在，出现了一些在4G的网元上面开发5G的功能，然后作为5G的网元来用的情况。</li>
+</ul>
+</li>
+<li>通常我们关心的<code>5GC</code>是<code>5G corenetwork</code>的缩写。然后<code>5G</code>的核心有三大类: <code>SBA - service based architecture</code>, <code>CUPS - Control and User Plane Separation</code> 和 网络切片<br>
+<strong>所以5GC和NR是一个东西?</strong></li>
+<li>配置还是和4G一样的。统一来配置的。<code>E&amp;M</code>统一来做，因为现在平台软件是一致，所以RAN和core都一样，都用一个来做配置</li>
+<li><code>UDC</code>换了个名字叫<code>UDR</code></li>
+</ul>
+<h3 id="sba"><a class="header-anchor" href="#sba"></a>SBA</h3>
+<ul>
+<li>
+<p><code>SBA</code> 感觉和软件架构上面的微服务有点异曲同工的感觉。<code>4G</code>时代是各种各样的协议，每两个网元之间就可能有一种协议，并且还各不相同。但是到了<code>5G</code>的时候就是大家统一都是用<code>HTTP</code>协议了。然后各个网元只是提供<code>service</code></p>
+</li>
+<li>
+<p>所以SBA是一种架构</p>
+<p><img src="https://www.grandmetric.com/wp-content/uploads/2018/03/5G_Core_Network.png" alt></p>
+</li>
+</ul>
+<h2 id="5g-nr"><a class="header-anchor" href="#5g-nr"></a>5G NR</h2>
+<p><code>NR</code>指的是<code>new Radio</code>。在<code>5G</code>里面分为了<code>NE - Network Element</code>和<code>NF - Network Function</code>两个概念。顾名思义，<code>NF</code>是往外提供服务的</p>
+<ul>
+<li><code>NF</code>是一个功能，3GPP里面定义的，NE是一个实际的网元。一个NE可能会实现多个NF。</li>
+</ul>
+<h3 id="amf"><a class="header-anchor" href="#amf"></a>AMF</h3>
+<p>与接入网相关</p>
+<h4 id="smf"><a class="header-anchor" href="#smf"></a>SMF</h4>
+<p>可能有一些与provision相关的</p>
+<h3 id="nef-network-exposure-function"><a class="header-anchor" href="#nef-network-exposure-function"></a>NEF - Network Exposure Function</h3>
+<h4 id="scef-和-mtc-iwf"><a class="header-anchor" href="#scef-和-mtc-iwf"></a>SCEF 和 MTC - IWF</h4>
+<ul>
+<li><code>(MTC - IWF) Machine Type Communications - Interwording Function</code>,</li>
+</ul>
+<h4 id="nef是什么"><a class="header-anchor" href="#nef是什么"></a>NEF是什么</h4>
+<ul>
+<li>NEF provides a mechanism for securely exposing services and features of the 5G core.</li>
+<li><code>NEF</code>是和<code>SMF</code>连接在一起的。将<code>core</code>里面的功能暴露给外界的应用</li>
+</ul>
+<h3 id="nrf"><a class="header-anchor" href="#nrf"></a>NRF</h3>
+<h4 id="nrf是什么"><a class="header-anchor" href="#nrf是什么"></a>NRF是什么</h4>
+<ul>
+<li><code>NF Repository function (NRF)</code> supports: service discovery function, maintains NF profile and available NF instances. (not present in EPC world)。</li>
+<li>替换了原来<code>4G</code>里面的<code>ENUM</code>和<code>AAA</code></li>
+<li><code>NRF</code>的功能看起来比较简单，有以下：
+<ul>
+<li>Service registration and discovery function so that Network Functions can discover each other.</li>
+<li>Maintains NF profile and available NF instances</li>
+<li>嗯，就是以上说的，<code>NR</code>会将自己注册到<code>NRF</code>里面，注册时候会带上不少信息，比如能提供的服务，自己认可的能访问服务的<code>NR</code>之类，同时会将自己的名字告诉给<code>NRF</code>。还有订阅功能。就是在<code>NRF</code>订阅自己关注哪些<code>NF</code>的哪些service</li>
+<li><code>NR</code>可以通过<code>NRF</code>来访问其他<code>NR</code>。过程如下图所示。</li>
+<li><code>NRF</code>在告诉同时会颁发一个<code>token</code>，做一些初步的验证。</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://miro.medium.com/max/1008/1*VfK1R5ie3DRElDFHjrI-kw.png" alt></p>
+<p><em>Network Repository Function service registration and discovery</em> (Credit: <a href="http://www.3gpp.org/ftp/information/presentations/Presentations_2017/webinar-ct-status-11-2017.pdf" target="_blank" rel="noopener">3GPP</a>)</p>
+<ul>
+<li>实际的部署和功能可能会更加复杂，例如，
+<ul>
+<li>每个网络切片可以有自己的<code>NRF</code></li>
+<li>我大中华地域广阔，还会有地域的概念，一个不够。</li>
+<li>那么一个上海人漫游到北京，联上了北京的<code>NRF</code>,北京的<code>NRF</code>得和上海的进行通信。如果漫游到了境外， 就更加复杂了。</li>
+<li><code>NRF</code>也可以监控各个网元的状态，或者提供更加复杂的功能</li>
+</ul>
+</li>
+<li>在<code>R16</code>里面提出了一个proxy的概念，<code>SCP - service Communication proxy</code>，因为<code>NRF</code>的网络通信过于繁杂，造成了很大的负担，所以引入的。</li>
+</ul>
+<h4 id="scp"><a class="header-anchor" href="#scp"></a>SCP</h4>
+<h3 id="nssf"><a class="header-anchor" href="#nssf"></a>NSSF</h3>
+<ul>
+<li><code>NSSF</code>的数据分为<code>static</code>和<code>synamic</code>的数据。前者存在<code>UDM</code>里面，后者在<code>NSSF</code>里面。</li>
+<li><code>UE</code>连入的时候会申请使用某种<code>slice</code>，然后网络会返回许可，存储的时候可以存在<code>UDM</code>里面</li>
+<li>切片分为接入网，<code>RAN</code>和核心网，接入网是频段等的切片，目前没有合适的solution，而核心网的切片实际上就是拉一套小型的核心网起来，虚拟的，里面可能<code>AMF</code>是独立的，而<code>PCF</code>就是共用的。</li>
+</ul>
+<h3 id="pcf-policy-control-function"><a class="header-anchor" href="#pcf-policy-control-function"></a>PCF -  Policy Control Function</h3>
+<ul>
+<li><code>PCF</code>其实就是<code>4G</code>里面的<code>PCRF</code>。都是做<code>policy control</code>的</li>
+<li><code>PCF</code>可以支持<code>AMF</code>的<code>policy control</code>和网络切片的<code>policy control</code></li>
+<li><code>PCF</code>理解<code>UE</code>级别的，就是这个<code>UE</code>可以使用哪些<code>AMF</code>和<code>NSSF</code>。</li>
+</ul>
+<h2 id="5g基站和接入网的演进"><a class="header-anchor" href="#5g基站和接入网的演进"></a>5G基站和接入网的演进</h2>
+<p>由于工作缘故，接触到的基本是核心网，话说刚刚入行的时候，我是做接入网的来着。<br>
+但是其实，5G虽然是核心网变化最大，接入网也是有改变的</p>
+<h3 id="参考链接-v2"><a class="header-anchor" href="#参考链接-v2"></a>参考链接</h3>
+<ul>
+<li><a href="https://blog.csdn.net/ityouknow/article/details/81351317" target="_blank" rel="noopener">第一次有人把5G讲的这么简单明了</a></li>
+<li><a href="https://blog.csdn.xn--ne5Gt-vq5hmb652jn0tuwkpp6bfuycjqfvo0b/cf2SudS8x8F0v/article/details/78778384" target="_blank" rel="noopener">详解5G的六大关键技术</a></li>
+</ul>
+<h3 id="5g的改变"><a class="header-anchor" href="#5g的改变"></a>5G的改变</h3>
+<ul>
+<li>高频段传输：频率越高，能使用的频率资源越丰富。频率资源越丰富，能实现的传输速率就越高。</li>
+<li>微基站：这个老早就有了。嗯，基站越小越好，覆盖好，而且能搞一大堆。高频段传输，距离短，正好用一大堆小基站</li>
+<li>Ｍassive MIMO（大规模多天线技术）</li>
+<li>D2D： 这个技术还是不错的，就是说如果靠得近，手机之间直接进行连接，不需要走基站了。但是后面技术如何支持的，并没有提到</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/08/16/OAuth2-0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2753,215 +2999,6 @@ Interrupt:5 Base address:0x8c00
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/05/15/Cassandra的repair机制/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/05/15/Cassandra的repair机制/" itemprop="url">Cassandra的repair机制</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-15T17:52:05+08:00">
-                2019-05-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/cassandra/" itemprop="url" rel="index">
-                    <span itemprop="name">cassandra</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="cassandra的repair机制"><a class="header-anchor" href="#cassandra的repair机制"></a>Cassandra的repair机制</h2>
-<p>这篇讨论一些robustness的东西。主要就是一个节点down了会怎么样。其实目前知道的就是hint，但是记录下来。<br>
-从一些文档里面看，这个属于写流程的一部分。确实是，读的话，如果node down了应该不会从上面读取了。会写到the coordinator node上面。version 1.0有所不同，但是这个版本太旧了。</p>
-<blockquote>
-<p>By design, hinted handoff inherently allows Cassandra to continue performing the same number of writes even when the cluster is operating at reduced capacity.</p>
-</blockquote>
-<h3 id="hinted-handoff简述"><a class="header-anchor" href="#hinted-handoff简述"></a>Hinted Handoff简述</h3>
-<ul>
-<li><strong><code>hinted handoff</code> 和 一般说的<code>hint</code>应该是同一个东西。</strong> 前者是一个机制，后者就是这个机制产生的事件或者记录。</li>
-<li><code>hinted handoff</code>跟consistency level 相关，毕竟这个是写机制的一部分。</li>
-<li>cassandra的config文件里面需要配置几个参数：
-<ul>
-<li><code>hinted_handoff_enabled</code>：默认为true，打开这个机制</li>
-<li><code>max_hint_window_in_ms</code>： 为已经down掉的node记录hint log的时间长度</li>
-<li><code>gc_grace_seconds</code>: Configures the time-to-live (TTL) period for a hint so that the database won’t replay the hint after this duration. Setting this parameter to 0 disables hints。 这个参数没用过，后面可以试试看</li>
-<li><code>hinted_handoff_throttle_in_kb</code> 和    <code>max_hints_delivery_threads</code> 这两个没咋研究过，先放着吧</li>
-</ul>
-</li>
-<li>按照文档，当写入发生时候，并且a replica node for the key is down。就可能会触发hinted handoff的机制</li>
-</ul>
-<h4 id="hint-详述"><a class="header-anchor" href="#hint-详述"></a>Hint 详述</h4>
-<ul>
-<li>
-<blockquote>
-<p>The hint consists of a target ID for the downed node, a hint ID that is a time UUID for the data, a message ID that identifies the Cassandra version, and the data itself as a blob.</p>
-</blockquote>
-<ul>
-<li>hint里面有：down node的target ID， 标注这条数据的hint ID， 标注cassandra version的message ID以及数据本身</li>
-<li>这是cassandra 3.0之后的。之前的可能不一样</li>
-</ul>
-</li>
-<li>
-<p>和想象地一样，当Gossipy发现downed node起来之后，coordinator node会将hint记录的数据写过去，并且删除掉hint</p>
-</li>
-<li>
-<blockquote>
-<p>The coordinator also checks every ten minutes for hints corresponding to writes that timed out during an outage too brief for the failure detector to notice through gossip.</p>
-</blockquote>
-</li>
-<li>
-<p>这句有点难以理解，看了下一句有点明白。如果有的节点宕机时间很短，而Gossdip并没有发现，那么coordinator 会返回一个exception，同时把write fail了，但是会记录一个hint。所以如果瞬间有很多短暂的fail，coordinator node会一下子压力过大，扔出overloadexception</p>
-</li>
-</ul>
-<blockquote>
-<p>If a replica node is overloaded or unavailable, and the failure detector has not yet marked the node as down, then expect most or all writes to that node to fail after the timeout triggered by write_request_timeout_in_ms, (10 seconds by default). The coordinator returns a TimeOutException exception, and the write will fail but a hint will be stored.</p>
-</blockquote>
-<h4 id="hint-和-consistency-level"><a class="header-anchor" href="#hint-和-consistency-level"></a>Hint 和 consistency level</h4>
-<ul>
-<li>
-<blockquote>
-<p>当一致性等级设定为ONE，QUORUM，或者ALL的时候，提示的写并不参与到一致性级别的计数中。如果没有足够的节点满足写的一致性级别需要，会抛出 UnavailableException而不是触发Hinted Handoff。（这是Casssandra和Dynamo复制模型不一样的地方之一）</p>
-</blockquote>
-</li>
-<li>接上文，如果将consistency level设置成为Any，那么hint就算了。所以即使只是写了hint，写操作也会成功，但是这时候读数据是读不出来的。</li>
-</ul>
-<h3 id="repairing-data"><a class="header-anchor" href="#repairing-data"></a>Repairing Data</h3>
-<ul>
-<li>Read repair: The reconciliation or correction happens when a read finds an inconsistency.</li>
-<li>When data is read, a read repair can resolve any data inconsistencies. When data isn’t read, you need to use either the hinted handoff or anti-entropy mechanism to resolve any data inconsistences.</li>
-</ul>
-<h4 id="read-repair"><a class="header-anchor" href="#read-repair"></a>Read Repair</h4>
-<h4 id="anti-entropy"><a class="header-anchor" href="#anti-entropy"></a>anti-entropy</h4>
-<h3 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h3>
-<ul>
-<li><a href="https://wiki.apache.org/cassandra/HintedHandoff" target="_blank" rel="noopener">wiki上面的简介</a></li>
-<li><a href="https://docs.datastax.com/en/cassandra/3.0/cassandra/operations/opsRepairNodesHintedHandoff.html" target="_blank" rel="noopener">官方</a></li>
-<li><a href="http://www.cnblogs.com/sing1ee/archive/2012/07/09/2765056.html" target="_blank" rel="noopener">比较好的博客一篇</a>： 看起来很多就是官方文档的翻译</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -3012,7 +3049,7 @@ Interrupt:5 Base address:0x8c00
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">39</span>
+                  <span class="site-state-item-count">40</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -3029,6 +3066,15 @@ Interrupt:5 Base address:0x8c00
               </div>
             
 
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
             
 
           </nav>

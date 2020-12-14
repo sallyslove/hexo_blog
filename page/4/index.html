@@ -242,6 +242,326 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/02/14/Scala/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2019/02/14/Scala/" itemprop="url">Scala</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-14T10:18:49+08:00">
+                2019-02-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/Scala/" itemprop="url" rel="index">
+                    <span itemprop="name">Scala</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="scala概念快速解释"><a class="header-anchor" href="#scala概念快速解释"></a>Scala概念快速解释</h2>
+<ul>
+<li><code>Scala</code>有很多特有的概念。如果要看懂代码就得大致明白含义，这篇博客就是快速解释一下，其中可能会有不够准确的地方，就是不求甚解，只求迅速读懂<code>scala</code>代码了.</li>
+<li>隔了一段时间又开始看<code>scala</code>的代码，结果发现这篇博客写得太不声情并茂了。<code>scala</code>还是比较复杂的。这么简单写几句不太成，得给一点例子才行。</li>
+</ul>
+<h3 id="enum"><a class="header-anchor" href="#enum"></a>Enum</h3>
+<ul>
+<li>简单来说，并没有枚举这个类型，但是可以继承<code>Enumeration</code>来达到枚举的效果</li>
+<li>通常定义一个<code>object</code>来继承<code>Enumeration</code></li>
+<li>使用<code>Enum</code>，类型都是<code>Enum.Value</code></li>
+<li><a href="http://kubicode.me/2015/06/06/Scala/Enum-in-Scala/" target="_blank" rel="noopener">Scala中的Enum，这篇对比了一下java和scala的枚举</a></li>
+</ul>
+<h3 id="none"><a class="header-anchor" href="#none"></a>&lt;-</h3>
+<ul>
+<li>
+<p><code>for</code> 循环里面用的，看下面这个例子就比较清楚：</p>
+<pre><code>for(x &lt;- 1 to 5)  println(i)
+
+for { 
+     x&lt;-1 to 5
+     y&lt;-2 to 6
+   } println (x,y)
+</code></pre>
+</li>
+<li>
+<p>参考链接： <a href="https://stackoverflow.com/questions/31799536/what-is-%E2%86%90-in-scala" target="_blank" rel="noopener">what-is-←-in-scala</a></p>
+</li>
+</ul>
+<h3 id="sealed-class"><a class="header-anchor" href="#sealed-class"></a>sealed class</h3>
+<h3 id="val和var的区别"><a class="header-anchor" href="#val和var的区别"></a>val和var的区别</h3>
+<ul>
+<li><code>val</code>就是常量，只能赋值一次</li>
+<li><code>var</code>变量，可以赋值多次</li>
+<li><a href="https://www.cnblogs.com/IChing/p/7093345.html" target="_blank" rel="noopener">scala基础- val和var的区别</a></li>
+</ul>
+<h3 id="object"><a class="header-anchor" href="#object"></a>object</h3>
+<p>看了几篇博客，解释都不够清晰的感觉，还是<code>stackoverflow</code>上面解释得更清楚.</p>
+<ul>
+<li>有好几种用法：
+<ul>
+<li>
+<p>作为<code>static</code>函数的<code>class</code>文件，这是最常见到的用法：</p>
+<pre><code>object A {
+  def twice(i: Int): Int = 2*i
+}
+</code></pre>
+<p>这样可以直接调用<code>A.twice</code>，没有必要先声明一个<code>A</code>的对象。这种是类似<code>java</code>里面的<code>static</code>函数的</p>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>参考链接：<a href="https://stackoverflow.com/questions/1755345/difference-between-object-and-class-in-scala" target="_blank" rel="noopener">difference-between-object-and-class-in-scala</a></li>
+</ul>
+<h3 id="trait"><a class="header-anchor" href="#trait"></a>trait</h3>
+<ul>
+<li><a href="http://www.runoob.com/scala/scala-traits.html" target="_blank" rel="noopener">Scala Trait(特征)</a></li>
+<li>类似<code>java</code>的<code>Interface</code>，其实更近似于抽象类</li>
+<li>但是可以使用<code>with</code>关键字多重继承，很好用的感觉哦</li>
+<li><code>scala</code>本身还是有<code>interface</code>关键字的，本身也可以使用<code>with</code>关键字来实现接口</li>
+</ul>
+<h3 id="case-class"><a class="header-anchor" href="#case-class"></a>case class</h3>
+<ul>
+<li><a href="https://blog.csdn.net/bluishglc/article/details/50914001" target="_blank" rel="noopener">csdn上的一篇文章</a></li>
+<li>简单来说，<code>case class</code>会默认生成很多东西，比如伴生对象，比如工厂方法，比如<code>toString</code>， <code>copy</code>，构造方法参数同名的属性</li>
+<li>最开心的用法，应该就是不用<code>new</code>出一个对象来。而是可以直接<code>methodName(构造函数参数)</code>这样来获取一个对象。其实是同名的工厂方法</li>
+<li>还有一个开心的用法就是<code>case class</code>可以直接用在<code>case</code>语句里面进行判断</li>
+</ul>
+<h3 id="implicit"><a class="header-anchor" href="#implicit"></a>implicit</h3>
+<ul>
+<li>
+<p>隐式转换。例子如下：</p>
+<pre><code>    def display(input:String):Unit = println(input)
+    implicit def typeConvertor(input:Int):String = input.toString
+    display(12)
+</code></pre>
+</li>
+<li>
+<p>本来的话，<code>display</code>函数只能接收一个字符串类型的参数，但是在相同作用域里面有隐式函数的存在，自动将整型转换成了字符串下类型</p>
+</li>
+<li>
+<p>需要注意的一点是，在相同作用域里面，相同参数，相同返回值的函数，函数名并不关键。确实不关键，在调用<code>display(12)</code>的时候，我们并没有说，啊，请用隐式函数<code>typeConvertor</code></p>
+</li>
+<li>
+<p>所以，如果有另一个隐式函数，也是将整型转换为字符串，<code>scala</code>会出错。因为回不知道用哪一个</p>
+</li>
+<li>
+<p>参考链接：</p>
+<ul>
+<li><a href="https://www.cnblogs.com/rollenholt/p/4118567.html" target="_blank" rel="noopener">详尽解释的博客，博主其他博客也不错</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="asscala"><a class="header-anchor" href="#asscala"></a>asScala</h3>
+<ul>
+<li><code>import scala.collection.JavaConverters._</code></li>
+<li>理解就是将<code>Java</code>的一些结构自动转为<code>Scala</code>的结构</li>
+<li>以下参考里面将<code>ArrayList</code>转成了<code>mutable.Buffer</code>。</li>
+<li>参考链接
+<ul>
+<li><a href="https://blog.csdn.net/guotong1988/article/details/51454281" target="_blank" rel="noopener">asScala</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="scala-code-example"><a class="header-anchor" href="#scala-code-example"></a>Scala Code Example</h2>
+<h3 id="map"><a class="header-anchor" href="#map"></a>Map</h3>
+<h4 id="map-foreach"><a class="header-anchor" href="#map-foreach"></a>Map.foreach</h4>
+<ul>
+<li>
+<p><code>map</code>里面的元素在<code>foreach</code>的用法时候，都是二元组。<code>_1</code>是键值，<code>_2</code>是赋值</p>
+<pre><code>val m1 = Map(3 -&gt; &quot;geeks&quot;, 1 -&gt; &quot;for&quot;, 2 -&gt; &quot;cs&quot;, 6 -&gt; &quot;geeks&quot;) 
+
+val result = m1.foreach(x =&gt; println(&quot;key=&quot; + x._1 + &quot;, value=&quot; + x._2)) 
+</code></pre>
+</li>
+</ul>
+<h3 id="how-to-call-shell-command-in-scala"><a class="header-anchor" href="#how-to-call-shell-command-in-scala"></a>how to call shell command in Scala</h3>
+<ul>
+<li>
+<p>在<code>scala</code>里面调用<code>shell</code>命令是非常方便的，只需要引入<code>import scala.sys.process._</code>包就可以了</p>
+<p>val path = “pwd”.!!.trim<br>
+println(path)</p>
+</li>
+<li>
+<p><a href="https://stackoverflow.com/questions/52967383/how-to-execute-shell-script-sh-file-in-scala-program" target="_blank" rel="noopener">How to execute shell script in scala</a></p>
+</li>
+<li>
+<p><a href="https://stackoverflow.com/questions/40129780/execute-shell-script-from-scala-application" target="_blank" rel="noopener">Execute shell script from scala application</a></p>
+</li>
+</ul>
+<h3 id="scala-json"><a class="header-anchor" href="#scala-json"></a>Scala &amp; Json</h3>
+<ul>
+<li>工作过程中需要判断字符串是不是<code>JSON</code>格式，所以去学习了这个。<code>JSON</code>也是现在常用的数据结构。呃，因为<code>REST</code>里面是<code>JSON</code>的缘故嘛，反正越来越多，没觉得比<code>XML</code>好</li>
+<li>有一堆的<code>3pp</code>可以用，我们自己的产品里面也有好几个<code>3pp</code>,包括<code>playjson</code>和<code>gJson</code></li>
+<li>这个链接里面列出了多种库：<a href="https://stackoverflow.com/questions/8054018/what-json-library-to-use-in-scala" target="_blank" rel="noopener">What JSON library to use in Scala?</a></li>
+<li>最后我使用的是<code>play-json</code>，这回的代码其实<code>JAVA</code>工程，但是架构在一个<code>SBT</code>项目里面。而<code>play-json</code>是基于<code>jackson</code>的（很多库都是基于<code>jsckson</code>的就是了），所以在<code>SBT</code>里面引入<code>play-json</code>，也就可以在我需要修改的<code>JAVA</code>代码里面调用<code>jackson</code>了</li>
+</ul>
+<h4 id="如何判断一个字符串是不是json格式"><a class="header-anchor" href="#如何判断一个字符串是不是json格式"></a>如何判断一个字符串是不是JSON格式</h4>
+<ul>
+<li>事实上，不管是<code>java</code>还是<code>scala</code>,都不存在这样的一个现成的接口。</li>
+<li>现在通用的方法就是将字符串进行转换，转换成功就说明是，报错就不是，我呵呵一下。</li>
+<li>这个参考链接里面是<code>JAVA</code>的，但是<code>scala</code>是一样的。也是调用库函数<br>
+<a href="https://stackoverflow.com/questions/10174898/how-to-check-whether-a-given-string-is-valid-json-in-java" target="_blank" rel="noopener">how-to-check-whether-a-given-string-is-valid-json-in-java</a></li>
+</ul>
+<h3 id="actor"><a class="header-anchor" href="#actor"></a>Actor</h3>
+<ul>
+<li>
+<p><code>actor</code>其实不是<code>scala</code>的概念，<code>Linux</code>里面就有的。但是感觉写在<code>scala</code>里面比较合适。</p>
+</li>
+<li>
+<p><a href="https://cloud.tencent.com/developer/article/1135999" target="_blank" rel="noopener">漫谈并发编程：Actor模型</a>这篇里面其实蛮清楚的。基础的一些用法在这边看一下也就明白一些了</p>
+</li>
+<li>
+<p>基于<code>Actor</code>的并发编程中，所有的对象都是一个<code>actor</code>，类似面向对象编程中，所有的都是对象一样。只是<code>Actor</code>再和<code>Scala</code>结合，这个可读性，必须熟悉代码的才行。</p>
+</li>
+<li>
+<p>首先有一个<code>ActorSystem</code>，然后<code>Actor</code>是家族式的，有一个父的<code>Actor</code>，然后其他<code>Actor</code>由父而来。父<code>Actor</code>可以创建子<code>Actor</code>，事实上，是整个<code>life cycle</code>的控制</p>
+</li>
+<li>
+<p>顶层的父<code>Actor</code>用以下语句创建。<code>Props</code>里面的就是<code>Actor</code>的类的名字，后面一个参数是<code>Actor</code>的名字</p>
+<pre><code>system.actorOf(Props[BetterMaster], &quot;master&quot;)
+</code></pre>
+</li>
+<li>
+<p>子<code>Actor</code>创建的方式是类似的，只是是由父 <code>Actor</code>创建的。父<code>Actor</code>内部，通过调用<code>ActorContext</code>的<code>actorOf()</code>方法来创建它自身的<code>child actor</code>。和父<code>Actor</code>一样，参数是<code>Actor</code>的实现的类的名字和<code>Actor</code>的名字。</p>
+</li>
+</ul>
+<pre><code>	context.actorOf(Props[BetterTalker], &quot;talker&quot;)
+</code></pre>
+<ul>
+<li><code>Actor</code>本身是<code>TRAIT</code>，<code>preStart</code>与<code>postStop</code>是很重要的方法。这样，通过这些函数，可以控制一个<code>Actor</code>的生命周期。在我们的代码里面通过重载父<code>Actor</code>的<code>preStart</code>方法，来控制了整个<code>Actor System</code></li>
+</ul>
+<h4 id="tell"><a class="header-anchor" href="#tell"></a>tell</h4>
+<ul>
+<li><code>tell</code>其实是一个函数，也就是<code>!</code>，看到这感叹号简直是 😂 这都个可读性只能OMG了。</li>
+<li><a href="https://stackoverflow.com/questions/49649745/what-is-the-second-argument-of-the-actorref-tell-method" target="_blank" rel="noopener">tell<br>
+的第二个参数是干嘛的</a></li>
+<li><code>tell</code>有两个参数，第一个是消息，第二个是回调的<code>Actor</code>，就是说收到消息的<code>Actor</code>可以给第二个参数(也是个<code>Actor</code>)发送消息，来告诉它自己收到了第一个参数指定的消息。同时收到消息的<code>Actor</code>也会认为消息是第二个参数发来的。</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/01/28/hello-world/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2276,7 +2596,7 @@ saved_caches_directory几个参数前面不能空格</p>
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">39</span>
+                  <span class="site-state-item-count">40</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2293,6 +2613,15 @@ saved_caches_directory几个参数前面不能空格</p>
               </div>
             
 
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
             
 
           </nav>

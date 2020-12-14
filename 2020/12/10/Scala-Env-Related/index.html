@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/hexo_blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/hexo_blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/hexo_blog/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="编程语言,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="原来的Scala博客越来越大了。将里面的环境的部分抽出来成为这篇博客。话说对比于Java的Maven，Sbt也太不好用了。 ItelliJ  基本scala环境在IJ里面的搭建  SBT工程already exist  把一个scala的工程导入，又删除之后， 就再也导不到IJ里面了。 IJ会报错。解决方法在下面的链接里面。 scala重复导入  skipping Scala files with">
+<meta name="keywords" content="编程语言">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Scala Env Related">
+<meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2020/12/10/Scala-Env-Related/index.html">
+<meta property="og:site_name" content="跬步">
+<meta property="og:description" content="原来的Scala博客越来越大了。将里面的环境的部分抽出来成为这篇博客。话说对比于Java的Maven，Sbt也太不好用了。 ItelliJ  基本scala环境在IJ里面的搭建  SBT工程already exist  把一个scala的工程导入，又删除之后， 就再也导不到IJ里面了。 IJ会报错。解决方法在下面的链接里面。 scala重复导入  skipping Scala files with">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-12-10T05:42:38.814Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Scala Env Related">
+<meta name="twitter:description" content="原来的Scala博客越来越大了。将里面的环境的部分抽出来成为这篇博客。话说对比于Java的Maven，Sbt也太不好用了。 ItelliJ  基本scala环境在IJ里面的搭建  SBT工程already exist  把一个scala的工程导入，又删除之后， 就再也导不到IJ里面了。 IJ会报错。解决方法在下面的链接里面。 scala重复导入  skipping Scala files with">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/hexo_blog/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://sallyslove.github.io/hexo_blog/2020/12/10/Scala-Env-Related/">
+
+
+
+
+
+  <title>Scala Env Related | 跬步</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/hexo_blog/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">跬步</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">不积跬步，无以至千里</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/hexo_blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/hexo_blog/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/hexo_blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2020/12/10/Scala-Env-Related/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Scala Env Related</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-12-10T10:22:10+08:00">
+                2020-12-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/Scala/" itemprop="url" rel="index">
+                    <span itemprop="name">Scala</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>原来的<code>Scala</code>博客越来越大了。将里面的环境的部分抽出来成为这篇博客。话说对比于<code>Java</code>的<code>Maven</code>，<code>Sbt</code>也太不好用了。</p>
+<h2 id="itellij"><a class="header-anchor" href="#itellij"></a>ItelliJ</h2>
+<ul>
+<li><a href="https://blog.csdn.net/high2011/article/details/76541233" target="_blank" rel="noopener">基本scala环境在IJ里面的搭建</a></li>
+</ul>
+<h3 id="sbt工程already-exist"><a class="header-anchor" href="#sbt工程already-exist"></a>SBT工程already exist</h3>
+<ul>
+<li>把一个scala的工程导入，又删除之后， 就再也导不到IJ里面了。</li>
+<li>IJ会报错。解决方法在下面的链接里面。</li>
+<li><a href="https://stackoverflow.com/questions/24937328/intellij-idea-cannot-import-sbt-project" target="_blank" rel="noopener">scala重复导入</a></li>
+</ul>
+<h3 id="skipping-scala-files-without-a-scala-sdk"><a class="header-anchor" href="#skipping-scala-files-without-a-scala-sdk"></a>skipping Scala files without a Scala SDK</h3>
+<ul>
+<li>这个问题是因为没有<code>scala</code>的<code>SDK</code>导致的</li>
+<li><a href="https://stackoverflow.com/questions/34798160/problems-importing-scala-libraries-in-intellij" target="_blank" rel="noopener">没有scala SDK</a></li>
+<li><a href="https://www.jetbrains.com/help/idea/2016.2/adding-frameworks-support.html" target="_blank" rel="noopener">IJ配置framework support</a></li>
+</ul>
+<h3 id="depencensy-scala-ij-sbt-not-found-type-moduleid"><a class="header-anchor" href="#depencensy-scala-ij-sbt-not-found-type-moduleid"></a>depencensy.scala IJ SBT not found: type ModuleID</h3>
+<ul>
+<li>同时也会有&quot;dump project structure from sbt shell&quot;</li>
+<li>项目的依赖也无法更新</li>
+<li>解决的办法是在导入项目的时候，将<code>Use sbt shell</code>和<code>Download</code>里面的项目都勾上。这样就可以解决一堆问题</li>
+</ul>
+<h2 id="sbt"><a class="header-anchor" href="#sbt"></a>SBT</h2>
+<ul>
+<li>安装<code>SBT</code>, <a href="https://www.scala-sbt.org/1.x/docs/Installing-sbt-on-Windows.html" target="_blank" rel="noopener">SBT下载</a></li>
+</ul>
+<h3 id="常用命令"><a class="header-anchor" href="#常用命令"></a>常用命令</h3>
+<ul>
+<li><code>show name</code>: 当前项目名字</li>
+<li><code>show libraryDependencies</code>： 常看依赖</li>
+<li><code>compile</code>：编译</li>
+<li><code>package</code>:打包，如果有<code>Dockfile</code>，会将镜像也做出来</li>
+<li><code>sbt evicted</code>: 查看依赖</li>
+</ul>
+<h3 id="sbt-配置"><a class="header-anchor" href="#sbt-配置"></a>SBT 配置</h3>
+<h4 id="仓库配置"><a class="header-anchor" href="#仓库配置"></a>仓库配置</h4>
+<ul>
+<li><a href="https://www.jianshu.com/p/6db9bac848bd" target="_blank" rel="noopener">sbt仓库设置</a></li>
+<li><code>sbt</code>的仓库可以分两层配置
+<ul>
+<li>
+<p>每个项目可以配置自己的仓库，在<code>project</code>目录下面的<code>plugin.sbt</code>里面可以如下配置：</p>
+<pre><code>resolvers += &quot;SBT repository&quot; at &quot;https://xxx.xxx.xxx.xxx/&lt;repo&gt;&quot;
+</code></pre>
+</li>
+<li>
+<p>在<code>~/.sbt</code>目录下面有一个<code>repository</code>的文件，可以配置仓库。按照上面的链接就可以了。这样配置，就是<code>sbt</code>全局的了</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h3>
+<ul>
+<li><a href="https://www.scala-sbt.org/1.x/docs/zh-cn/Directories.html" target="_blank" rel="noopener">官方文档</a></li>
+<li><a href="https://blog.csdn.net/zrc199021/article/details/51776256" target="_blank" rel="noopener">CSDN博客一篇</a></li>
+</ul>
+<h3 id="could-not-access-type-localtime-in-value-org-joda-time"><a class="header-anchor" href="#could-not-access-type-localtime-in-value-org-joda-time"></a>Could not access type LocalTime in value org.joda.time</h3>
+<ul>
+<li>在用<code>SBT compile</code>时候报以下的错误：</li>
+</ul>
+<pre><code>[error] missing or invalid dependency detected while loading class file 'DefaultReads.class'.
+[error] Could not access type LocalTime in value org.joda.time,
+[error] because it (or its dependencies) are missing. Check your build definition for
+[error] missing or conflicting dependencies. (Re-run with `-Ylog-classpath` to see the problematic classpath.)
+[error] A full rebuild may help if 'DefaultReads.class' was compiled against an incompatible version of org.joda.time.
+</code></pre>
+<ul>
+<li>
+<p><code>google</code>了一堆，在Stack Overflow上面有一堆类似的问题</p>
+<ul>
+<li><a href="https://stackoverflow.com/questions/8619348/why-is-scala-saying-it-can-t-see-members-of-org-joda-time-period" target="_blank" rel="noopener">joda-time-period</a></li>
+<li><a href="https://stackoverflow.com/questions/38218926/cant-compile-scala-sbt-project" target="_blank" rel="noopener">cant-compile-scala-sbt-project</a></li>
+</ul>
+</li>
+<li>
+<p>实际解决的方式是：在<code>Dependency.scala</code>里面加入:</p>
+<pre><code>val jodaTime: ModuleID = &quot;joda-time&quot; % &quot;joda-time&quot; % &quot;2.10.6&quot;
+</code></pre>
+<p>val joda: ModuleID = “org.joda”  % “joda-convert” % “1.6”</p>
+</li>
+<li>
+<p>搜索<code>org.joda.time.LocalTime</code>,这个类是在<code>2.10.6</code>版本里面的。</p>
+</li>
+<li>
+<p>奇怪的是这个版本的包没有<code>download</code>下来，手动下载放在<code>repo</code>里面，问题就解决了。</p>
+</li>
+<li>
+<p>看到有的解释是说，如果只装了<code>java</code>，没有装<code>scala</code>的话就需要这两个依赖包，很有可能就是这个原因。因为我并没有额外安装<code>scala</code></p>
+</li>
+</ul>
+<h3 id="object-play-not-found"><a class="header-anchor" href="#object-play-not-found"></a>object play not found</h3>
+<ul>
+<li>
+<p><a href="https://stackoverflow.com/questions/36658125/object-play-not-found-in-scala-application" target="_blank" rel="noopener">object-play-not-found-in-scala-application</a></p>
+</li>
+<li>
+<p>在解决这个问题的时候，发现几个有趣的地方：</p>
+<ul>
+<li>
+<p>如果用<code>docker</code>的<code>plugin</code>去做<code>image</code>，和<code>sbt</code>直接<code>package</code>命令做<code>image</code>，前者支持换行时候<code>&amp;&amp;</code>，后者不支持</p>
+</li>
+<li>
+<p><code>dependency</code>文件里面，在<code>java</code>的<code>maven</code>结构下面写成</p>
+<pre><code>libraryDependencies += &quot;com.typesafe.play&quot; % &quot;play-json&quot; % &quot;2.5.2&quot;
+</code></pre>
+</li>
+</ul>
+<p>就可以了，在scala里面必须带上版本，写成</p>
+<pre><code>  libraryDependencies += &quot;com.typesafe.play&quot; % &quot;play-json_2.11&quot; % &quot;2.5.2&quot;
+</code></pre>
+<p>否则会报错的</p>
+</li>
+</ul>
+<h3 id="conflicting-cross-version-suffix"><a class="header-anchor" href="#conflicting-cross-version-suffix"></a>conflicting cross-version suffix</h3>
+<ul>
+<li>编译时候报错，这个也是上一个章节中<code>playjson</code>报的错误，其实就是在<code>build</code>文件里面指定了<code>scala</code>的版本是2.12，但是加进去依赖是2.11.就报错了。</li>
+<li>将<code>playjson</code>的版本改为<code>play-json_2.12 % 2.7.2</code>也就好了。</li>
+<li><a href="https://stackoverflow.com/questions/23617920/why-is-the-error-conflicting-cross-version-suffixes" target="_blank" rel="noopener">why-is-the-error-conflicting-cross-version-suffixes</a></li>
+</ul>
+<h3 id="not-found-type-moduleid"><a class="header-anchor" href="#not-found-type-moduleid"></a>not found: type ModuleID</h3>
+<ul>
+<li>这个错误真是狗血，让我很是郁闷了一会。<code>google</code>都没找到啥。在<code>git status</code>之后发现<code>repo</code>里面被改了一堆东西</li>
+<li>再<code>git checkout</code>之后就正常了。<code>sbt</code>正常启动起来。</li>
+<li>这一堆改动应当是<code>IDE</code>，就是<code>IJ</code>改的。<code>IJ</code>吧，感觉还是<code>maven</code>好用一点。</li>
+</ul>
+<h3 id="wrong-checksum"><a class="header-anchor" href="#wrong-checksum"></a>wrong checksum</h3>
+<ul>
+<li>这个错误只要将本地的包删除掉重新编译，不知道为啥会产生这种错误</li>
+<li><a href="https://www.cnblogs.com/duchaoqun/p/12703935.html" target="_blank" rel="noopener">sbt wrong checksum</a></li>
+</ul>
+<h3 id="unsupported-platform-protoc-3-7-0-windows-x86-32-exe"><a class="header-anchor" href="#unsupported-platform-protoc-3-7-0-windows-x86-32-exe"></a>Unsupported platform: protoc-3.7.0-windows-x86_32.exe</h3>
+<pre><code>[error] stack trace is suppressed; run 'last synchronizer / Compile / protocGenerate' for the full output
+[error] (synchronizer / Compile / protocGenerate) error occurred while compiling protobuf files: Unsupported platform: protoc-3.7.0-windows-x86_32.exe
+</code></pre>
+<h4 id="问题和解决"><a class="header-anchor" href="#问题和解决"></a>问题和解决</h4>
+<ul>
+<li>这是个奇怪的问题，问题本身很直白，在<code>gitbash</code>里面调用<code>protoc</code>时候将平台认成了<code>X32</code>，但是本身<code>protoc</code>不支持<code>X32</code>，就报错了。</li>
+<li>最后这个问题也没解决，花了一周时间，也没用。应该是因为之前我的笔记本是32位的，后期是64位的，所以认错了。</li>
+<li>如果将<code>os.name</code>，<code>os.version</code>，<code>arch</code>这些在其他代码里面打印出来，<code>gitbash</code>里面也是正确是。不知道为啥通过<code>proto</code>调用的就是错误的</li>
+<li><code>IJ</code>里面认的是对的，也就没有再纠结了。</li>
+</ul>
+<h4 id="protobuf"><a class="header-anchor" href="#protobuf"></a>protobuf</h4>
+<ul>
+<li><code>protoc</code>目前的理解是一种数据模型构建方式，类似<code>XML</code>，<code>JSON</code>。</li>
+<li>这个<code>protoc</code>需要一个生成器，就是<code>JAR</code>包里面在找的。</li>
+<li>原生来说，这个<code>3pp</code>是支持<code>JAVA</code>的，为了在<code>SCALA</code>里面运用的话，需要额外下载一个<code>plugin</code>：<a href="https://scalapb.github.io/docs/json" target="_blank" rel="noopener">scalapb</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/hexo_blog/tags/编程语言/" rel="tag"># 编程语言</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/hexo_blog/2020/10/19/Kafka/" rel="next" title="Kafka">
+                <i class="fa fa-chevron-left"></i> Kafka
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Lynn Shen</p>
+              <p class="site-description motion-element" itemprop="description">35岁开始的博客，有点晚哦</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/hexo_blog/archives/">
+              
+                  <span class="site-state-item-count">40</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/hexo_blog/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#itellij"><span class="nav-number">1.</span> <span class="nav-text">ItelliJ</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sbt工程already-exist"><span class="nav-number">1.1.</span> <span class="nav-text">SBT工程already exist</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#skipping-scala-files-without-a-scala-sdk"><span class="nav-number">1.2.</span> <span class="nav-text">skipping Scala files without a Scala SDK</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#depencensy-scala-ij-sbt-not-found-type-moduleid"><span class="nav-number">1.3.</span> <span class="nav-text">depencensy.scala IJ SBT not found: type ModuleID</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sbt"><span class="nav-number">2.</span> <span class="nav-text">SBT</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#常用命令"><span class="nav-number">2.1.</span> <span class="nav-text">常用命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sbt-配置"><span class="nav-number">2.2.</span> <span class="nav-text">SBT 配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#仓库配置"><span class="nav-number">2.2.1.</span> <span class="nav-text">仓库配置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考链接"><span class="nav-number">2.3.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#could-not-access-type-localtime-in-value-org-joda-time"><span class="nav-number">2.4.</span> <span class="nav-text">Could not access type LocalTime in value org.joda.time</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#object-play-not-found"><span class="nav-number">2.5.</span> <span class="nav-text">object play not found</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#conflicting-cross-version-suffix"><span class="nav-number">2.6.</span> <span class="nav-text">conflicting cross-version suffix</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#not-found-type-moduleid"><span class="nav-number">2.7.</span> <span class="nav-text">not found: type ModuleID</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#wrong-checksum"><span class="nav-number">2.8.</span> <span class="nav-text">wrong checksum</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#unsupported-platform-protoc-3-7-0-windows-x86-32-exe"><span class="nav-number">2.9.</span> <span class="nav-text">Unsupported platform: protoc-3.7.0-windows-x86_32.exe</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#问题和解决"><span class="nav-number">2.9.1.</span> <span class="nav-text">问题和解决</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#protobuf"><span class="nav-number">2.9.2.</span> <span class="nav-text">protobuf</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lynn Shen</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/hexo_blog/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/hexo_blog/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://billts.site/extra_css/gitment.css">
+        <script src="https://billts.site/js/gitment.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitment({
+            id: window.location.pathname, 
+            owner: 'sallyslove',
+            repo: 'blog_comments',
+            
+            oauth: {
+            
+            
+                client_secret: '6eefacd862f6eee016278732c7470c216afce267',
+            
+                client_id: '2fca3ca261d5bf6d52eb'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

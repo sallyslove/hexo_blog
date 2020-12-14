@@ -242,6 +242,295 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2020/12/10/Scala-Env-Related/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/hexo_blog/2020/12/10/Scala-Env-Related/" itemprop="url">Scala Env Related</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-12-10T10:22:10+08:00">
+                2020-12-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/Scala/" itemprop="url" rel="index">
+                    <span itemprop="name">Scala</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>原来的<code>Scala</code>博客越来越大了。将里面的环境的部分抽出来成为这篇博客。话说对比于<code>Java</code>的<code>Maven</code>，<code>Sbt</code>也太不好用了。</p>
+<h2 id="itellij"><a class="header-anchor" href="#itellij"></a>ItelliJ</h2>
+<ul>
+<li><a href="https://blog.csdn.net/high2011/article/details/76541233" target="_blank" rel="noopener">基本scala环境在IJ里面的搭建</a></li>
+</ul>
+<h3 id="sbt工程already-exist"><a class="header-anchor" href="#sbt工程already-exist"></a>SBT工程already exist</h3>
+<ul>
+<li>把一个scala的工程导入，又删除之后， 就再也导不到IJ里面了。</li>
+<li>IJ会报错。解决方法在下面的链接里面。</li>
+<li><a href="https://stackoverflow.com/questions/24937328/intellij-idea-cannot-import-sbt-project" target="_blank" rel="noopener">scala重复导入</a></li>
+</ul>
+<h3 id="skipping-scala-files-without-a-scala-sdk"><a class="header-anchor" href="#skipping-scala-files-without-a-scala-sdk"></a>skipping Scala files without a Scala SDK</h3>
+<ul>
+<li>这个问题是因为没有<code>scala</code>的<code>SDK</code>导致的</li>
+<li><a href="https://stackoverflow.com/questions/34798160/problems-importing-scala-libraries-in-intellij" target="_blank" rel="noopener">没有scala SDK</a></li>
+<li><a href="https://www.jetbrains.com/help/idea/2016.2/adding-frameworks-support.html" target="_blank" rel="noopener">IJ配置framework support</a></li>
+</ul>
+<h3 id="depencensy-scala-ij-sbt-not-found-type-moduleid"><a class="header-anchor" href="#depencensy-scala-ij-sbt-not-found-type-moduleid"></a>depencensy.scala IJ SBT not found: type ModuleID</h3>
+<ul>
+<li>同时也会有&quot;dump project structure from sbt shell&quot;</li>
+<li>项目的依赖也无法更新</li>
+<li>解决的办法是在导入项目的时候，将<code>Use sbt shell</code>和<code>Download</code>里面的项目都勾上。这样就可以解决一堆问题</li>
+</ul>
+<h2 id="sbt"><a class="header-anchor" href="#sbt"></a>SBT</h2>
+<ul>
+<li>安装<code>SBT</code>, <a href="https://www.scala-sbt.org/1.x/docs/Installing-sbt-on-Windows.html" target="_blank" rel="noopener">SBT下载</a></li>
+</ul>
+<h3 id="常用命令"><a class="header-anchor" href="#常用命令"></a>常用命令</h3>
+<ul>
+<li><code>show name</code>: 当前项目名字</li>
+<li><code>show libraryDependencies</code>： 常看依赖</li>
+<li><code>compile</code>：编译</li>
+<li><code>package</code>:打包，如果有<code>Dockfile</code>，会将镜像也做出来</li>
+<li><code>sbt evicted</code>: 查看依赖</li>
+</ul>
+<h3 id="sbt-配置"><a class="header-anchor" href="#sbt-配置"></a>SBT 配置</h3>
+<h4 id="仓库配置"><a class="header-anchor" href="#仓库配置"></a>仓库配置</h4>
+<ul>
+<li><a href="https://www.jianshu.com/p/6db9bac848bd" target="_blank" rel="noopener">sbt仓库设置</a></li>
+<li><code>sbt</code>的仓库可以分两层配置
+<ul>
+<li>
+<p>每个项目可以配置自己的仓库，在<code>project</code>目录下面的<code>plugin.sbt</code>里面可以如下配置：</p>
+<pre><code>resolvers += &quot;SBT repository&quot; at &quot;https://xxx.xxx.xxx.xxx/&lt;repo&gt;&quot;
+</code></pre>
+</li>
+<li>
+<p>在<code>~/.sbt</code>目录下面有一个<code>repository</code>的文件，可以配置仓库。按照上面的链接就可以了。这样配置，就是<code>sbt</code>全局的了</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h3>
+<ul>
+<li><a href="https://www.scala-sbt.org/1.x/docs/zh-cn/Directories.html" target="_blank" rel="noopener">官方文档</a></li>
+<li><a href="https://blog.csdn.net/zrc199021/article/details/51776256" target="_blank" rel="noopener">CSDN博客一篇</a></li>
+</ul>
+<h3 id="could-not-access-type-localtime-in-value-org-joda-time"><a class="header-anchor" href="#could-not-access-type-localtime-in-value-org-joda-time"></a>Could not access type LocalTime in value org.joda.time</h3>
+<ul>
+<li>在用<code>SBT compile</code>时候报以下的错误：</li>
+</ul>
+<pre><code>[error] missing or invalid dependency detected while loading class file 'DefaultReads.class'.
+[error] Could not access type LocalTime in value org.joda.time,
+[error] because it (or its dependencies) are missing. Check your build definition for
+[error] missing or conflicting dependencies. (Re-run with `-Ylog-classpath` to see the problematic classpath.)
+[error] A full rebuild may help if 'DefaultReads.class' was compiled against an incompatible version of org.joda.time.
+</code></pre>
+<ul>
+<li>
+<p><code>google</code>了一堆，在Stack Overflow上面有一堆类似的问题</p>
+<ul>
+<li><a href="https://stackoverflow.com/questions/8619348/why-is-scala-saying-it-can-t-see-members-of-org-joda-time-period" target="_blank" rel="noopener">joda-time-period</a></li>
+<li><a href="https://stackoverflow.com/questions/38218926/cant-compile-scala-sbt-project" target="_blank" rel="noopener">cant-compile-scala-sbt-project</a></li>
+</ul>
+</li>
+<li>
+<p>实际解决的方式是：在<code>Dependency.scala</code>里面加入:</p>
+<pre><code>val jodaTime: ModuleID = &quot;joda-time&quot; % &quot;joda-time&quot; % &quot;2.10.6&quot;
+</code></pre>
+<p>val joda: ModuleID = “org.joda”  % “joda-convert” % “1.6”</p>
+</li>
+<li>
+<p>搜索<code>org.joda.time.LocalTime</code>,这个类是在<code>2.10.6</code>版本里面的。</p>
+</li>
+<li>
+<p>奇怪的是这个版本的包没有<code>download</code>下来，手动下载放在<code>repo</code>里面，问题就解决了。</p>
+</li>
+<li>
+<p>看到有的解释是说，如果只装了<code>java</code>，没有装<code>scala</code>的话就需要这两个依赖包，很有可能就是这个原因。因为我并没有额外安装<code>scala</code></p>
+</li>
+</ul>
+<h3 id="object-play-not-found"><a class="header-anchor" href="#object-play-not-found"></a>object play not found</h3>
+<ul>
+<li>
+<p><a href="https://stackoverflow.com/questions/36658125/object-play-not-found-in-scala-application" target="_blank" rel="noopener">object-play-not-found-in-scala-application</a></p>
+</li>
+<li>
+<p>在解决这个问题的时候，发现几个有趣的地方：</p>
+<ul>
+<li>
+<p>如果用<code>docker</code>的<code>plugin</code>去做<code>image</code>，和<code>sbt</code>直接<code>package</code>命令做<code>image</code>，前者支持换行时候<code>&amp;&amp;</code>，后者不支持</p>
+</li>
+<li>
+<p><code>dependency</code>文件里面，在<code>java</code>的<code>maven</code>结构下面写成</p>
+<pre><code>libraryDependencies += &quot;com.typesafe.play&quot; % &quot;play-json&quot; % &quot;2.5.2&quot;
+</code></pre>
+</li>
+</ul>
+<p>就可以了，在scala里面必须带上版本，写成</p>
+<pre><code>  libraryDependencies += &quot;com.typesafe.play&quot; % &quot;play-json_2.11&quot; % &quot;2.5.2&quot;
+</code></pre>
+<p>否则会报错的</p>
+</li>
+</ul>
+<h3 id="conflicting-cross-version-suffix"><a class="header-anchor" href="#conflicting-cross-version-suffix"></a>conflicting cross-version suffix</h3>
+<ul>
+<li>编译时候报错，这个也是上一个章节中<code>playjson</code>报的错误，其实就是在<code>build</code>文件里面指定了<code>scala</code>的版本是2.12，但是加进去依赖是2.11.就报错了。</li>
+<li>将<code>playjson</code>的版本改为<code>play-json_2.12 % 2.7.2</code>也就好了。</li>
+<li><a href="https://stackoverflow.com/questions/23617920/why-is-the-error-conflicting-cross-version-suffixes" target="_blank" rel="noopener">why-is-the-error-conflicting-cross-version-suffixes</a></li>
+</ul>
+<h3 id="not-found-type-moduleid"><a class="header-anchor" href="#not-found-type-moduleid"></a>not found: type ModuleID</h3>
+<ul>
+<li>这个错误真是狗血，让我很是郁闷了一会。<code>google</code>都没找到啥。在<code>git status</code>之后发现<code>repo</code>里面被改了一堆东西</li>
+<li>再<code>git checkout</code>之后就正常了。<code>sbt</code>正常启动起来。</li>
+<li>这一堆改动应当是<code>IDE</code>，就是<code>IJ</code>改的。<code>IJ</code>吧，感觉还是<code>maven</code>好用一点。</li>
+</ul>
+<h3 id="wrong-checksum"><a class="header-anchor" href="#wrong-checksum"></a>wrong checksum</h3>
+<ul>
+<li>这个错误只要将本地的包删除掉重新编译，不知道为啥会产生这种错误</li>
+<li><a href="https://www.cnblogs.com/duchaoqun/p/12703935.html" target="_blank" rel="noopener">sbt wrong checksum</a></li>
+</ul>
+<h3 id="unsupported-platform-protoc-3-7-0-windows-x86-32-exe"><a class="header-anchor" href="#unsupported-platform-protoc-3-7-0-windows-x86-32-exe"></a>Unsupported platform: protoc-3.7.0-windows-x86_32.exe</h3>
+<pre><code>[error] stack trace is suppressed; run 'last synchronizer / Compile / protocGenerate' for the full output
+[error] (synchronizer / Compile / protocGenerate) error occurred while compiling protobuf files: Unsupported platform: protoc-3.7.0-windows-x86_32.exe
+</code></pre>
+<h4 id="问题和解决"><a class="header-anchor" href="#问题和解决"></a>问题和解决</h4>
+<ul>
+<li>这是个奇怪的问题，问题本身很直白，在<code>gitbash</code>里面调用<code>protoc</code>时候将平台认成了<code>X32</code>，但是本身<code>protoc</code>不支持<code>X32</code>，就报错了。</li>
+<li>最后这个问题也没解决，花了一周时间，也没用。应该是因为之前我的笔记本是32位的，后期是64位的，所以认错了。</li>
+<li>如果将<code>os.name</code>，<code>os.version</code>，<code>arch</code>这些在其他代码里面打印出来，<code>gitbash</code>里面也是正确是。不知道为啥通过<code>proto</code>调用的就是错误的</li>
+<li><code>IJ</code>里面认的是对的，也就没有再纠结了。</li>
+</ul>
+<h4 id="protobuf"><a class="header-anchor" href="#protobuf"></a>protobuf</h4>
+<ul>
+<li><code>protoc</code>目前的理解是一种数据模型构建方式，类似<code>XML</code>，<code>JSON</code>。</li>
+<li>这个<code>protoc</code>需要一个生成器，就是<code>JAR</code>包里面在找的。</li>
+<li>原生来说，这个<code>3pp</code>是支持<code>JAVA</code>的，为了在<code>SCALA</code>里面运用的话，需要额外下载一个<code>plugin</code>：<a href="https://scalapb.github.io/docs/json" target="_blank" rel="noopener">scalapb</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2020/10/19/Kafka/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1295,6 +1584,22 @@ fi
 </ul>
 <h2 id="env"><a class="header-anchor" href="#env"></a>ENV</h2>
 <p>这个章节主要是包括编译啊，版本控制啊，IDE啊之类的小问题</p>
+<h3 id="soapui"><a class="header-anchor" href="#soapui"></a>SoapUI</h3>
+<ul>
+<li>工作里面一般用<code>soapUI</code>来发送请求。之前一直发送的是<code>WSDL</code>的，也就是<code>XML</code>格式。</li>
+<li>现在流行<code>REST</code>，昨天尝试了一天也没成功啊。OMG 😦</li>
+<li>对应于<code>WSDL</code>的是<code>WADL</code>，用于导入<code>HTTP</code>的请求。但是坑爹的是我们代码里面没有。尝试了以下两种方式：
+<ul>
+<li>从<code>WSDL</code>转换成为<code>WADL</code>也是可行的。有一个小的工具搜索到： <a href="https://sourceforge.net/p/tinywsdl/wiki/wsdl11/" target="_blank" rel="noopener">tinywsdl</a>,但是可能是<code>WADL</code>不是那么流行，需要写代码来转换。</li>
+<li>另一种方式要简单直接很多，就是<code>soapUI</code>的<code>import swagger</code>功能，直接右键就能看到。从<code>swagger</code>网站上面也可以导出生成<code>yaml</code>或者<code>json</code>文件。</li>
+<li>不幸的是，遇到了这个错误：<a href="https://github.com/SmartBear/readyapi-swagger-plugin/issues/3" target="_blank" rel="noopener"><br>
+error on creating project out of swagger spec<br>
+</a></li>
+<li>完全一致，<code>JSON</code>的格式报版本问题，<code>YAML</code>的格式报<code>null</code></li>
+<li>按照上述网页，应该是<code>swagger</code>插件只能支持字符串格式。然鹅，我的文件里面好多不是字符串的。只能最终放弃了。</li>
+</ul>
+</li>
+</ul>
 <h3 id="ij"><a class="header-anchor" href="#ij"></a>IJ</h3>
 <h4 id="command-too-long-error"><a class="header-anchor" href="#command-too-long-error"></a>command too long error</h4>
 <ul>
@@ -1429,7 +1734,7 @@ Unable to connect to the server: x509: certificate signed by unknown authority (
 <li>其实就是<code>kube</code>的<code>config</code>文件: <code>~/.kube/config</code> 文件过时了。里面的<code>certification</code>需要更新。从<code>kube server</code>上面把<code>config</code>拿下来替换一些本地的就好了。</li>
 </ul>
 <h3 id="k8s的nodeport-service出错"><a class="header-anchor" href="#k8s的nodeport-service出错"></a>K8s的NodePort Service出错</h3>
-<h5 id="nodeport-service的nodeport无法访问"><a class="header-anchor" href="#nodeport-service的nodeport无法访问"></a>NodePort Service的NodePort无法访问</h5>
+<h4 id="nodeport-service的nodeport无法访问"><a class="header-anchor" href="#nodeport-service的nodeport无法访问"></a>NodePort Service的NodePort无法访问</h4>
 <ul>
 <li>在工作中碰到一个问题。<code>NodePort</code>的<code>NodePort</code>无法访问，只有我组开发的一个服务有问题，其他服务都是OK的
 <ul>
@@ -2813,252 +3118,6 @@ iptables -t raw -j TRACE -p tcp --dport 32741 -I OUTPUT 1
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/08/22/5G/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/hexo_blog/2019/08/22/5G/" itemprop="url">5G</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-22T14:04:36+08:00">
-                2019-08-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/Telecom/" itemprop="url" rel="index">
-                    <span itemprop="name">Telecom</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>作为通信行业的一名软件开发人员，我要开始学习5G啦。😃</p>
-<p>里面有非常多的新网元引入。各种缩写漫天飞舞 😢</p>
-<h2 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h2>
-<ul>
-<li><a href="https://medium.com/5g-nr/5g-service-based-architecture-sba-47900b0ded0a" target="_blank" rel="noopener">5G Service-Based Architecture (SBA)</a></li>
-<li><a href="https://www.grandmetric.com/2018/03/02/5g-core-network-functions/" target="_blank" rel="noopener">5G Core Network Functions</a></li>
-</ul>
-<h2 id="5gc-概述"><a class="header-anchor" href="#5gc-概述"></a>5GC 概述</h2>
-<ul>
-<li><code>5G</code>里面的新的<code>core network</code>一般叫做<code>NR</code>，但是也有的地方，比如霓虹国，称为<code>next generation</code></li>
-<li><code>SA</code>和<code>NSA</code>：<code>SA</code>就是<code>standalone</code>,<code>NSA</code>就是<code>non standslone</code>。这边的<code>SA</code>其实就是说只有<code>5G</code>，后面就是<code>4G</code>和<code>5G</code>并存。不同的运营商会有不同的网络状况。
-<ul>
-<li>现在正处于一个过渡期间，也可能会长期存在，出现了一些在4G的网元上面开发5G的功能，然后作为5G的网元来用的情况。</li>
-</ul>
-</li>
-<li>通常我们关心的<code>5GC</code>是<code>5G corenetwork</code>的缩写。然后<code>5G</code>的核心有三大类: <code>SBA - service based architecture</code>, <code>CUPS - Control and User Plane Separation</code> 和 网络切片<br>
-<strong>所以5GC和NR是一个东西?</strong></li>
-<li>配置还是和4G一样的。统一来配置的。<code>E&amp;M</code>统一来做，因为现在平台软件是一致，所以RAN和core都一样，都用一个来做配置</li>
-<li><code>UDC</code>换了个名字叫<code>UDR</code></li>
-</ul>
-<h3 id="sba"><a class="header-anchor" href="#sba"></a>SBA</h3>
-<ul>
-<li>
-<p><code>SBA</code> 感觉和软件架构上面的微服务有点异曲同工的感觉。<code>4G</code>时代是各种各样的协议，每两个网元之间就可能有一种协议，并且还各不相同。但是到了<code>5G</code>的时候就是大家统一都是用<code>HTTP</code>协议了。然后各个网元只是提供<code>service</code></p>
-</li>
-<li>
-<p>所以SBA是一种架构</p>
-<p><img src="https://www.grandmetric.com/wp-content/uploads/2018/03/5G_Core_Network.png" alt></p>
-</li>
-</ul>
-<h2 id="5g-nr"><a class="header-anchor" href="#5g-nr"></a>5G NR</h2>
-<p><code>NR</code>指的是<code>new Radio</code>。在<code>5G</code>里面分为了<code>NE - Network Element</code>和<code>NF - Network Function</code>两个概念。顾名思义，<code>NF</code>是往外提供服务的</p>
-<ul>
-<li><code>NF</code>是一个功能，3GPP里面定义的，NE是一个实际的网元。一个NE可能会实现多个NF。</li>
-</ul>
-<h3 id="amf"><a class="header-anchor" href="#amf"></a>AMF</h3>
-<p>与接入网相关</p>
-<h4 id="smf"><a class="header-anchor" href="#smf"></a>SMF</h4>
-<p>可能有一些与provision相关的</p>
-<h3 id="nef-network-exposure-function"><a class="header-anchor" href="#nef-network-exposure-function"></a>NEF - Network Exposure Function</h3>
-<h4 id="scef-和-mtc-iwf"><a class="header-anchor" href="#scef-和-mtc-iwf"></a>SCEF 和 MTC - IWF</h4>
-<ul>
-<li><code>(MTC - IWF) Machine Type Communications - Interwording Function</code>,</li>
-</ul>
-<h4 id="nef是什么"><a class="header-anchor" href="#nef是什么"></a>NEF是什么</h4>
-<ul>
-<li>NEF provides a mechanism for securely exposing services and features of the 5G core.</li>
-<li><code>NEF</code>是和<code>SMF</code>连接在一起的。将<code>core</code>里面的功能暴露给外界的应用</li>
-</ul>
-<h3 id="nrf"><a class="header-anchor" href="#nrf"></a>NRF</h3>
-<h4 id="nrf是什么"><a class="header-anchor" href="#nrf是什么"></a>NRF是什么</h4>
-<ul>
-<li><code>NF Repository function (NRF)</code> supports: service discovery function, maintains NF profile and available NF instances. (not present in EPC world)。</li>
-<li>替换了原来<code>4G</code>里面的<code>ENUM</code>和<code>AAA</code></li>
-<li><code>NRF</code>的功能看起来比较简单，有以下：
-<ul>
-<li>Service registration and discovery function so that Network Functions can discover each other.</li>
-<li>Maintains NF profile and available NF instances</li>
-<li>嗯，就是以上说的，<code>NR</code>会将自己注册到<code>NRF</code>里面，注册时候会带上不少信息，比如能提供的服务，自己认可的能访问服务的<code>NR</code>之类，同时会将自己的名字告诉给<code>NRF</code>。还有订阅功能。就是在<code>NRF</code>订阅自己关注哪些<code>NF</code>的哪些service</li>
-<li><code>NR</code>可以通过<code>NRF</code>来访问其他<code>NR</code>。过程如下图所示。</li>
-<li><code>NRF</code>在告诉同时会颁发一个<code>token</code>，做一些初步的验证。</li>
-</ul>
-</li>
-</ul>
-<p><img src="https://miro.medium.com/max/1008/1*VfK1R5ie3DRElDFHjrI-kw.png" alt></p>
-<p><em>Network Repository Function service registration and discovery</em> (Credit: <a href="http://www.3gpp.org/ftp/information/presentations/Presentations_2017/webinar-ct-status-11-2017.pdf" target="_blank" rel="noopener">3GPP</a>)</p>
-<ul>
-<li>实际的部署和功能可能会更加复杂，例如，
-<ul>
-<li>每个网络切片可以有自己的<code>NRF</code></li>
-<li>我大中华地域广阔，还会有地域的概念，一个不够。</li>
-<li>那么一个上海人漫游到北京，联上了北京的<code>NRF</code>,北京的<code>NRF</code>得和上海的进行通信。如果漫游到了境外， 就更加复杂了。</li>
-<li><code>NRF</code>也可以监控各个网元的状态，或者提供更加复杂的功能</li>
-</ul>
-</li>
-<li>在<code>R16</code>里面提出了一个proxy的概念，<code>SCP - service Communication proxy</code>，因为<code>NRF</code>的网络通信过于繁杂，造成了很大的负担，所以引入的。</li>
-</ul>
-<h4 id="scp"><a class="header-anchor" href="#scp"></a>SCP</h4>
-<h3 id="nssf"><a class="header-anchor" href="#nssf"></a>NSSF</h3>
-<ul>
-<li><code>NSSF</code>的数据分为<code>static</code>和<code>synamic</code>的数据。前者存在<code>UDM</code>里面，后者在<code>NSSF</code>里面。</li>
-<li><code>UE</code>连入的时候会申请使用某种<code>slice</code>，然后网络会返回许可，存储的时候可以存在<code>UDM</code>里面</li>
-<li>切片分为接入网，<code>RAN</code>和核心网，接入网是频段等的切片，目前没有合适的solution，而核心网的切片实际上就是拉一套小型的核心网起来，虚拟的，里面可能<code>AMF</code>是独立的，而<code>PCF</code>就是共用的。</li>
-</ul>
-<h3 id="pcf-policy-control-function"><a class="header-anchor" href="#pcf-policy-control-function"></a>PCF -  Policy Control Function</h3>
-<ul>
-<li><code>PCF</code>其实就是<code>4G</code>里面的<code>PCRF</code>。都是做<code>policy control</code>的</li>
-<li><code>PCF</code>可以支持<code>AMF</code>的<code>policy control</code>和网络切片的<code>policy control</code></li>
-<li><code>PCF</code>理解<code>UE</code>级别的，就是这个<code>UE</code>可以使用哪些<code>AMF</code>和<code>NSSF</code>。</li>
-</ul>
-<h2 id="5g基站和接入网的演进"><a class="header-anchor" href="#5g基站和接入网的演进"></a>5G基站和接入网的演进</h2>
-<p>由于工作缘故，接触到的基本是核心网，话说刚刚入行的时候，我是做接入网的来着。<br>
-但是其实，5G虽然是核心网变化最大，接入网也是有改变的</p>
-<h3 id="参考链接-v2"><a class="header-anchor" href="#参考链接-v2"></a>参考链接</h3>
-<ul>
-<li><a href="https://blog.csdn.net/ityouknow/article/details/81351317" target="_blank" rel="noopener">第一次有人把5G讲的这么简单明了</a></li>
-<li><a href="https://blog.csdn.xn--ne5Gt-vq5hmb652jn0tuwkpp6bfuycjqfvo0b/cf2SudS8x8F0v/article/details/78778384" target="_blank" rel="noopener">详解5G的六大关键技术</a></li>
-</ul>
-<h3 id="5g的改变"><a class="header-anchor" href="#5g的改变"></a>5G的改变</h3>
-<ul>
-<li>高频段传输：频率越高，能使用的频率资源越丰富。频率资源越丰富，能实现的传输速率就越高。</li>
-<li>微基站：这个老早就有了。嗯，基站越小越好，覆盖好，而且能搞一大堆。高频段传输，距离短，正好用一大堆小基站</li>
-<li>Ｍassive MIMO（大规模多天线技术）</li>
-<li>D2D： 这个技术还是不错的，就是说如果靠得近，手机之间直接进行连接，不需要走基站了。但是后面技术如何支持的，并没有提到</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -3109,7 +3168,7 @@ iptables -t raw -j TRACE -p tcp --dport 32741 -I OUTPUT 1
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">39</span>
+                  <span class="site-state-item-count">40</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -3126,6 +3185,15 @@ iptables -t raw -j TRACE -p tcp --dport 32741 -I OUTPUT 1
               </div>
             
 
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
             
 
           </nav>

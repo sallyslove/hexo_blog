@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="跬步">
 <meta property="og:description" content="Scala概念快速解释  Scala有很多特有的概念。如果要看懂代码就得大致明白含义，这篇博客就是快速解释一下，其中可能会有不够准确的地方，就是不求甚解，只求迅速读懂scala代码了. 隔了一段时间又开始看scala的代码，结果发现这篇博客写得太不声情并茂了。scala还是比较复杂的。这么简单写几句不太成，得给一点例子才行。  Enum  简单来说，并没有枚举这个类型，但是可以继承Enumerat">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-12-04T08:16:29.847Z">
+<meta property="og:updated_time" content="2020-12-10T07:51:49.486Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Scala">
 <meta name="twitter:description" content="Scala概念快速解释  Scala有很多特有的概念。如果要看懂代码就得大致明白含义，这篇博客就是快速解释一下，其中可能会有不够准确的地方，就是不求甚解，只求迅速读懂scala代码了. 隔了一段时间又开始看scala的代码，结果发现这篇博客写得太不声情并茂了。scala还是比较复杂的。这么简单写几句不太成，得给一点例子才行。  Enum  简单来说，并没有枚举这个类型，但是可以继承Enumerat">
@@ -500,114 +500,15 @@ println(path)</p>
 </ul>
 <pre><code>	context.actorOf(Props[BetterTalker], &quot;talker&quot;)
 </code></pre>
-<h2 id="scala-环境"><a class="header-anchor" href="#scala-环境"></a>Scala 环境</h2>
-<h3 id="scala-ij-环境"><a class="header-anchor" href="#scala-ij-环境"></a>Scala IJ 环境</h3>
 <ul>
-<li><a href="https://blog.csdn.net/high2011/article/details/76541233" target="_blank" rel="noopener">基本scala环境在IJ里面的搭建</a></li>
+<li><code>Actor</code>本身是<code>TRAIT</code>，<code>preStart</code>与<code>postStop</code>是很重要的方法。这样，通过这些函数，可以控制一个<code>Actor</code>的生命周期。在我们的代码里面通过重载父<code>Actor</code>的<code>preStart</code>方法，来控制了整个<code>Actor System</code></li>
 </ul>
-<h4 id="sbt工程already-exist"><a class="header-anchor" href="#sbt工程already-exist"></a>SBT工程already exist</h4>
+<h4 id="tell"><a class="header-anchor" href="#tell"></a>tell</h4>
 <ul>
-<li>把一个scala的工程导入，又删除之后， 就再也导不到IJ里面了。</li>
-<li>IJ会报错。解决方法在下面的链接里面。</li>
-<li><a href="https://stackoverflow.com/questions/24937328/intellij-idea-cannot-import-sbt-project" target="_blank" rel="noopener">scala重复导入</a></li>
-</ul>
-<h4 id="skipping-scala-files-without-a-scala-sdk"><a class="header-anchor" href="#skipping-scala-files-without-a-scala-sdk"></a>skipping Scala files without a Scala SDK</h4>
-<ul>
-<li>这个问题是因为没有<code>scala</code>的<code>SDK</code>导致的</li>
-<li><a href="https://stackoverflow.com/questions/34798160/problems-importing-scala-libraries-in-intellij" target="_blank" rel="noopener">没有scala SDK</a></li>
-<li><a href="https://www.jetbrains.com/help/idea/2016.2/adding-frameworks-support.html" target="_blank" rel="noopener">IJ配置framework support</a></li>
-</ul>
-<h4 id="depencensy-scala-ij-sbt-not-found-type-moduleid"><a class="header-anchor" href="#depencensy-scala-ij-sbt-not-found-type-moduleid"></a>depencensy.scala IJ SBT not found: type ModuleID</h4>
-<ul>
-<li>同时也会有&quot;dump project structure from sbt shell&quot;</li>
-<li>项目的依赖也无法更新</li>
-<li>解决的办法是在导入项目的时候，将<code>Use sbt shell</code>和<code>Download</code>里面的项目都勾上。这样就可以解决一堆问题</li>
-</ul>
-<h3 id="scala-sbt-环境"><a class="header-anchor" href="#scala-sbt-环境"></a>Scala SBT 环境</h3>
-<ul>
-<li>安装<code>SBT</code>, <a href="https://www.scala-sbt.org/1.x/docs/Installing-sbt-on-Windows.html" target="_blank" rel="noopener">SBT下载</a></li>
-</ul>
-<h4 id="常用命令"><a class="header-anchor" href="#常用命令"></a>常用命令</h4>
-<ul>
-<li><code>show name</code>: 当前项目名字</li>
-<li><code>show libraryDependencies</code>： 常看依赖</li>
-<li><code>compile</code>：编译</li>
-<li><code>package</code>:打包，如果有<code>Dockfile</code>，会将镜像也做出来</li>
-<li><code>sbt evicted</code>: 查看依赖</li>
-</ul>
-<h4 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h4>
-<ul>
-<li><a href="https://www.scala-sbt.org/1.x/docs/zh-cn/Directories.html" target="_blank" rel="noopener">官方文档</a></li>
-<li><a href="https://blog.csdn.net/zrc199021/article/details/51776256" target="_blank" rel="noopener">CSDN博客一篇</a></li>
-</ul>
-<h4 id="could-not-access-type-localtime-in-value-org-joda-time"><a class="header-anchor" href="#could-not-access-type-localtime-in-value-org-joda-time"></a>Could not access type LocalTime in value org.joda.time</h4>
-<ul>
-<li>在用<code>SBT compile</code>时候报以下的错误：</li>
-</ul>
-<pre><code>[error] missing or invalid dependency detected while loading class file 'DefaultReads.class'.
-[error] Could not access type LocalTime in value org.joda.time,
-[error] because it (or its dependencies) are missing. Check your build definition for
-[error] missing or conflicting dependencies. (Re-run with `-Ylog-classpath` to see the problematic classpath.)
-[error] A full rebuild may help if 'DefaultReads.class' was compiled against an incompatible version of org.joda.time.
-</code></pre>
-<ul>
-<li>
-<p><code>google</code>了一堆，在Stack Overflow上面有一堆类似的问题</p>
-<ul>
-<li><a href="https://stackoverflow.com/questions/8619348/why-is-scala-saying-it-can-t-see-members-of-org-joda-time-period" target="_blank" rel="noopener">joda-time-period</a></li>
-<li><a href="https://stackoverflow.com/questions/38218926/cant-compile-scala-sbt-project" target="_blank" rel="noopener">cant-compile-scala-sbt-project</a></li>
-</ul>
-</li>
-<li>
-<p>实际解决的方式是：在<code>Dependency.scala</code>里面加入:</p>
-<pre><code>val jodaTime: ModuleID = &quot;joda-time&quot; % &quot;joda-time&quot; % &quot;2.10.6&quot;
-</code></pre>
-<p>val joda: ModuleID = “org.joda”  % “joda-convert” % “1.6”</p>
-</li>
-<li>
-<p>搜索<code>org.joda.time.LocalTime</code>,这个类是在<code>2.10.6</code>版本里面的。</p>
-</li>
-<li>
-<p>奇怪的是这个版本的包没有<code>download</code>下来，手动下载放在<code>repo</code>里面，问题就解决了。</p>
-</li>
-<li>
-<p>看到有的解释是说，如果只装了<code>java</code>，没有装<code>scala</code>的话就需要这两个依赖包，很有可能就是这个原因。因为我并没有额外安装<code>scala</code></p>
-</li>
-</ul>
-<h4 id="object-play-not-found"><a class="header-anchor" href="#object-play-not-found"></a>object play not found</h4>
-<ul>
-<li>
-<p><a href="https://stackoverflow.com/questions/36658125/object-play-not-found-in-scala-application" target="_blank" rel="noopener">object-play-not-found-in-scala-application</a></p>
-</li>
-<li>
-<p>在解决这个问题的时候，发现几个有趣的地方：</p>
-<ul>
-<li>
-<p>如果用<code>docker</code>的<code>plugin</code>去做<code>image</code>，和<code>sbt</code>直接<code>package</code>命令做<code>image</code>，前者支持换行时候<code>&amp;&amp;</code>，后者不支持</p>
-</li>
-<li>
-<p><code>dependency</code>文件里面，在<code>java</code>的<code>maven</code>结构下面写成</p>
-<pre><code>libraryDependencies += &quot;com.typesafe.play&quot; % &quot;play-json&quot; % &quot;2.5.2&quot;
-</code></pre>
-</li>
-</ul>
-<p>就可以了，在scala里面必须带上版本，写成</p>
-<pre><code>  libraryDependencies += &quot;com.typesafe.play&quot; % &quot;play-json_2.11&quot; % &quot;2.5.2&quot;
-</code></pre>
-<p>否则会报错的</p>
-</li>
-</ul>
-<h4 id="conflicting-cross-version-suffix"><a class="header-anchor" href="#conflicting-cross-version-suffix"></a>conflicting cross-version suffix</h4>
-<ul>
-<li>编译时候报错，这个也是上一个章节中<code>playjson</code>报的错误，其实就是在<code>build</code>文件里面指定了<code>scala</code>的版本是2.12，但是加进去依赖是2.11.就报错了。</li>
-<li>将<code>playjson</code>的版本改为<code>play-json_2.12 % 2.7.2</code>也就好了。</li>
-<li><a href="https://stackoverflow.com/questions/23617920/why-is-the-error-conflicting-cross-version-suffixes" target="_blank" rel="noopener">why-is-the-error-conflicting-cross-version-suffixes</a></li>
-</ul>
-<h4 id="not-found-type-moduleid"><a class="header-anchor" href="#not-found-type-moduleid"></a>not found: type ModuleID</h4>
-<ul>
-<li>这个错误真是狗血，让我很是郁闷了一会。<code>google</code>都没找到啥。在<code>git status</code>之后发现<code>repo</code>里面被改了一堆东西</li>
-<li>再<code>git checkout</code>之后就正常了。<code>sbt</code>正常启动起来。</li>
-<li>这一堆改动应当是<code>IDE</code>，就是<code>IJ</code>改的。<code>IJ</code>吧，感觉还是<code>maven</code>好用一点。</li>
+<li><code>tell</code>其实是一个函数，也就是<code>!</code>，看到这感叹号简直是 😂 这都个可读性只能OMG了。</li>
+<li><a href="https://stackoverflow.com/questions/49649745/what-is-the-second-argument-of-the-actorref-tell-method" target="_blank" rel="noopener">tell<br>
+的第二个参数是干嘛的</a></li>
+<li><code>tell</code>有两个参数，第一个是消息，第二个是回调的<code>Actor</code>，就是说收到消息的<code>Actor</code>可以给第二个参数(也是个<code>Actor</code>)发送消息，来告诉它自己收到了第一个参数指定的消息。同时收到消息的<code>Actor</code>也会认为消息是第二个参数发来的。</li>
 </ul>
 
       
@@ -729,7 +630,7 @@ println(path)</p>
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">39</span>
+                  <span class="site-state-item-count">40</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -746,6 +647,15 @@ println(path)</p>
               </div>
             
 
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
             
 
           </nav>
@@ -775,7 +685,7 @@ println(path)</p>
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#scala概念快速解释"><span class="nav-number">1.</span> <span class="nav-text">Scala概念快速解释</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#enum"><span class="nav-number">1.1.</span> <span class="nav-text">Enum</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#none"><span class="nav-number">1.2.</span> <span class="nav-text">&lt;-</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sealed-class"><span class="nav-number">1.3.</span> <span class="nav-text">sealed class</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#val和var的区别"><span class="nav-number">1.4.</span> <span class="nav-text">val和var的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#object"><span class="nav-number">1.5.</span> <span class="nav-text">object</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#trait"><span class="nav-number">1.6.</span> <span class="nav-text">trait</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#case-class"><span class="nav-number">1.7.</span> <span class="nav-text">case class</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#implicit"><span class="nav-number">1.8.</span> <span class="nav-text">implicit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#asscala"><span class="nav-number">1.9.</span> <span class="nav-text">asScala</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#scala-code-example"><span class="nav-number">2.</span> <span class="nav-text">Scala Code Example</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#map"><span class="nav-number">2.1.</span> <span class="nav-text">Map</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#map-foreach"><span class="nav-number">2.1.1.</span> <span class="nav-text">Map.foreach</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#how-to-call-shell-command-in-scala"><span class="nav-number">2.2.</span> <span class="nav-text">how to call shell command in Scala</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#scala-json"><span class="nav-number">2.3.</span> <span class="nav-text">Scala &amp; Json</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#如何判断一个字符串是不是json格式"><span class="nav-number">2.3.1.</span> <span class="nav-text">如何判断一个字符串是不是JSON格式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#actor"><span class="nav-number">2.4.</span> <span class="nav-text">Actor</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#scala-环境"><span class="nav-number">3.</span> <span class="nav-text">Scala 环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#scala-ij-环境"><span class="nav-number">3.1.</span> <span class="nav-text">Scala IJ 环境</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#sbt工程already-exist"><span class="nav-number">3.1.1.</span> <span class="nav-text">SBT工程already exist</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#skipping-scala-files-without-a-scala-sdk"><span class="nav-number">3.1.2.</span> <span class="nav-text">skipping Scala files without a Scala SDK</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#depencensy-scala-ij-sbt-not-found-type-moduleid"><span class="nav-number">3.1.3.</span> <span class="nav-text">depencensy.scala IJ SBT not found: type ModuleID</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#scala-sbt-环境"><span class="nav-number">3.2.</span> <span class="nav-text">Scala SBT 环境</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#常用命令"><span class="nav-number">3.2.1.</span> <span class="nav-text">常用命令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考链接"><span class="nav-number">3.2.2.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#could-not-access-type-localtime-in-value-org-joda-time"><span class="nav-number">3.2.3.</span> <span class="nav-text">Could not access type LocalTime in value org.joda.time</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#object-play-not-found"><span class="nav-number">3.2.4.</span> <span class="nav-text">object play not found</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#conflicting-cross-version-suffix"><span class="nav-number">3.2.5.</span> <span class="nav-text">conflicting cross-version suffix</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#not-found-type-moduleid"><span class="nav-number">3.2.6.</span> <span class="nav-text">not found: type ModuleID</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#scala概念快速解释"><span class="nav-number">1.</span> <span class="nav-text">Scala概念快速解释</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#enum"><span class="nav-number">1.1.</span> <span class="nav-text">Enum</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#none"><span class="nav-number">1.2.</span> <span class="nav-text">&lt;-</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sealed-class"><span class="nav-number">1.3.</span> <span class="nav-text">sealed class</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#val和var的区别"><span class="nav-number">1.4.</span> <span class="nav-text">val和var的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#object"><span class="nav-number">1.5.</span> <span class="nav-text">object</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#trait"><span class="nav-number">1.6.</span> <span class="nav-text">trait</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#case-class"><span class="nav-number">1.7.</span> <span class="nav-text">case class</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#implicit"><span class="nav-number">1.8.</span> <span class="nav-text">implicit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#asscala"><span class="nav-number">1.9.</span> <span class="nav-text">asScala</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#scala-code-example"><span class="nav-number">2.</span> <span class="nav-text">Scala Code Example</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#map"><span class="nav-number">2.1.</span> <span class="nav-text">Map</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#map-foreach"><span class="nav-number">2.1.1.</span> <span class="nav-text">Map.foreach</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#how-to-call-shell-command-in-scala"><span class="nav-number">2.2.</span> <span class="nav-text">how to call shell command in Scala</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#scala-json"><span class="nav-number">2.3.</span> <span class="nav-text">Scala &amp; Json</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#如何判断一个字符串是不是json格式"><span class="nav-number">2.3.1.</span> <span class="nav-text">如何判断一个字符串是不是JSON格式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#actor"><span class="nav-number">2.4.</span> <span class="nav-text">Actor</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#tell"><span class="nav-number">2.4.1.</span> <span class="nav-text">tell</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
