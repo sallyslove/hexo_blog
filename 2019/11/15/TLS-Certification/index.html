@@ -92,7 +92,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Certificate/certificate_algorithm.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Certificate/certificate_detail_content.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/Security/TLS/Certificate/DN_explaination.jpg">
-<meta property="og:updated_time" content="2020-08-25T09:47:25.600Z">
+<meta property="og:updated_time" content="2021-01-22T05:54:41.351Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="TLS - Certificate">
 <meta name="twitter:description" content="参考链接  SSL/TLS for dummies part 3 – Understanding Certificate Authority HTTPS 精读之 TLS 证书校验 https SSL主流数字证书都有哪些格式？ Java Secure Socket Extension  为啥需要证书  我们知道在TLS传输中需要使用不对称加密算法，在其中有公钥，私钥。公钥用来给客户端给自己发消息，私">
@@ -414,6 +414,20 @@
 <li>然后就可以信任中间<code>CA</code>的公钥，再用这个公钥来解服务器的证书</li>
 <li>然后得到服务器，比如百度的公钥</li>
 </ul>
+<h4 id="eddsa签名机制"><a class="header-anchor" href="#eddsa签名机制"></a>EdDSA签名机制</h4>
+<p>这是在工作中碰到的，一看一脸懵啊，懵逼归懵逼，那老大说看一看，还是得学习一下。<br>
+万能的<code>Google</code>哥和<code>stackoverflow</code>在，还是不怕的。记在这里，这样感觉没白干活啊。话说我最近好生懒散呐。😓</p>
+<h5 id="什么是eddsa签名机制"><a class="header-anchor" href="#什么是eddsa签名机制"></a>什么是EdDSA签名机制</h5>
+<ul>
+<li>我压根看不了啊，都是数学啊：<a href="https://blog.csdn.net/zhangchen124/article/details/110815686" target="_blank" rel="noopener">区块链中的数学 - EdDSA签名机制</a></li>
+<li>关键点就是这个爱德华曲线，然后在里面不会用随机数。</li>
+<li>最大的区别在于没有使用随机数，这样产生的签名结果是确定性的，即每次对同一消息签名结果相同</li>
+<li>当然这个玩意也是会被攻击的，细节可以参考<a href="https://www.anquanke.com/post/id/167018" target="_blank" rel="noopener">针对EdDSA的fault attack</a></li>
+</ul>
+<h5 id="工作中碰到的问题"><a class="header-anchor" href="#工作中碰到的问题"></a>工作中碰到的问题</h5>
+<ul>
+<li>工作中的问题跟这个是一样的：<a href="https://stackoverflow.com/questions/65566138/apache-mina-sshd-ssh-client-always-prints-eddsa-provider-not-supported" target="_blank" rel="noopener">Apache mina-sshd ssh client always prints EdDSA provider not supported</a></li>
+</ul>
 <h3 id="证书格式"><a class="header-anchor" href="#证书格式"></a>证书格式</h3>
 <ul>
 <li>证书的规范是<code>X.509</code>，有好几个版本。起码到<code>v3</code>,应该也是目前比较常用的一个版本。证书的内容遵循<code>asn.1</code>格式。😂 居然是<code>asn.1</code>的，久违的一个规范了。</li>
@@ -619,7 +633,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/hexo_blog/categories/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -663,7 +677,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为啥需要证书"><span class="nav-number">2.</span> <span class="nav-text">为啥需要证书</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#证书的使用过程"><span class="nav-number">3.</span> <span class="nav-text">证书的使用过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#root-ca-和-中间ca"><span class="nav-number">4.</span> <span class="nav-text">Root CA 和 中间CA</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#root-ca"><span class="nav-number">4.1.</span> <span class="nav-text">Root CA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#中间ca"><span class="nav-number">4.2.</span> <span class="nav-text">中间CA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#证书签名算法"><span class="nav-number">4.3.</span> <span class="nav-text">证书签名算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#证书校验"><span class="nav-number">4.4.</span> <span class="nav-text">证书校验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#证书格式"><span class="nav-number">4.5.</span> <span class="nav-text">证书格式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#证书的详细内容"><span class="nav-number">4.5.1.</span> <span class="nav-text">证书的详细内容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#证书查看和格式转换"><span class="nav-number">4.5.2.</span> <span class="nav-text">证书查看和格式转换</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#java中的实现"><span class="nav-number">5.</span> <span class="nav-text">Java中的实现</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为啥需要证书"><span class="nav-number">2.</span> <span class="nav-text">为啥需要证书</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#证书的使用过程"><span class="nav-number">3.</span> <span class="nav-text">证书的使用过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#root-ca-和-中间ca"><span class="nav-number">4.</span> <span class="nav-text">Root CA 和 中间CA</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#root-ca"><span class="nav-number">4.1.</span> <span class="nav-text">Root CA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#中间ca"><span class="nav-number">4.2.</span> <span class="nav-text">中间CA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#证书签名算法"><span class="nav-number">4.3.</span> <span class="nav-text">证书签名算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#证书校验"><span class="nav-number">4.4.</span> <span class="nav-text">证书校验</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#eddsa签名机制"><span class="nav-number">4.4.1.</span> <span class="nav-text">EdDSA签名机制</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#什么是eddsa签名机制"><span class="nav-number">4.4.1.1.</span> <span class="nav-text">什么是EdDSA签名机制</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#工作中碰到的问题"><span class="nav-number">4.4.1.2.</span> <span class="nav-text">工作中碰到的问题</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#证书格式"><span class="nav-number">4.5.</span> <span class="nav-text">证书格式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#证书的详细内容"><span class="nav-number">4.5.1.</span> <span class="nav-text">证书的详细内容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#证书查看和格式转换"><span class="nav-number">4.5.2.</span> <span class="nav-text">证书查看和格式转换</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#java中的实现"><span class="nav-number">5.</span> <span class="nav-text">Java中的实现</span></a></li></ol></div>
             
 
           </div>
@@ -683,7 +697,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
