@@ -1,134 +1,55 @@
 <!DOCTYPE html>
-
-
-
-  
-
-
-<html class="theme-next pisces use-motion" lang="zh-Hans">
-<head><meta name="generator" content="Hexo 3.9.0">
+<html lang="zh-CN">
+<head>
   <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/hexo_blog/css/main.css">
 
 
+<link rel="stylesheet" href="/hexo_blog/lib/font-awesome/css/all.min.css">
 
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"sallyslove.github.io","root":"/hexo_blog/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
 
-
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform">
-<meta http-equiv="Cache-Control" content="no-siteapp">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-  <link href="/hexo_blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
-
-
-
-
-
-
-
-<link href="/hexo_blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
-
-<link href="/hexo_blog/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png?v=5.1.4">
-
-
-  <link rel="mask-icon" href="/hexo_blog/images/logo.svg?v=5.1.4" color="#222">
-
-
-
-
-
-  <meta name="keywords" content="Hexo, NexT">
-
-
-
-
-
-
-
-
-
-
-<meta name="description" content="Cassandra 数据结构 必须了解Cassandra的数据结构。本身并不是多么复杂，而且有足够多的文档，所以简单写一下。 KeySpace  好像没啥需要解释的。 在论文里面看到说namespace的另一个作用是可以做数据重复。  Column  Column是Cassandra中最小的数据单元，它是一个三元的数据类型，包含name,value,timestamp. name是必须的，valu">
+  <meta name="description" content="Cassandra 数据结构 必须了解Cassandra的数据结构。本身并不是多么复杂，而且有足够多的文档，所以简单写一下。 KeySpace  好像没啥需要解释的。 在论文里面看到说namespace的另一个作用是可以做数据重复。  Column  Column是Cassandra中最小的数据单元，它是一个三元的数据类型，包含name,value,timestamp. name是必须的，valu">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Cassandra数据结构">
-<meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/01/21/Cassandra数据结构/index.html">
+<meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/01/21/Cassandra%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/index.html">
 <meta property="og:site_name" content="跬步">
 <meta property="og:description" content="Cassandra 数据结构 必须了解Cassandra的数据结构。本身并不是多么复杂，而且有足够多的文档，所以简单写一下。 KeySpace  好像没啥需要解释的。 在论文里面看到说namespace的另一个作用是可以做数据重复。  Column  Column是Cassandra中最小的数据单元，它是一个三元的数据类型，包含name,value,timestamp. name是必须的，valu">
-<meta property="og:locale" content="zh-Hans">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_column.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_super_column.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_column_family.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_storage_picture.png">
-<meta property="og:updated_time" content="2020-09-04T05:47:35.456Z">
+<meta property="article:published_time" content="2019-01-21T07:35:56.000Z">
+<meta property="article:modified_time" content="2021-02-22T08:45:42.696Z">
+<meta property="article:author" content="Lynn Shen">
+<meta property="article:tag" content="Cassandra">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Cassandra数据结构">
-<meta name="twitter:description" content="Cassandra 数据结构 必须了解Cassandra的数据结构。本身并不是多么复杂，而且有足够多的文档，所以简单写一下。 KeySpace  好像没啥需要解释的。 在论文里面看到说namespace的另一个作用是可以做数据重复。  Column  Column是Cassandra中最小的数据单元，它是一个三元的数据类型，包含name,value,timestamp. name是必须的，valu">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_column.png">
 
+<link rel="canonical" href="https://sallyslove.github.io/hexo_blog/2019/01/21/Cassandra%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">
 
 
-<script type="text/javascript" id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/hexo_blog/',
-    scheme: 'Pisces',
-    version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
-    fancybox: true,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    duoshuo: {
-      userId: '0',
-      author: '博主'
-    },
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
   };
 </script>
-
-
-
-  <link rel="canonical" href="https://sallyslove.github.io/hexo_blog/2019/01/21/Cassandra数据结构/">
-
-
-
-
 
   <title>Cassandra数据结构 | 跬步</title>
   
@@ -138,194 +59,157 @@
 
 
 
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
 
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
 
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
-
-  
-  
-    
-  
-
-  <div class="container sidebar-position-left page-post-detail">
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta ">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/hexo_blog/" class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">跬步</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
     </div>
-      
-        <p class="site-subtitle">不积跬步，无以至千里</p>
-      
   </div>
 
-  <div class="site-nav-toggle">
-    <button>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
+  <div class="site-meta">
+
+    <a href="/hexo_blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">跬步</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">不积跬步，无以至千里</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
   </div>
 </div>
 
+
+
+
 <nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu">
-      
-        
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
-          <a href="/hexo_blog/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
-            
-            首页
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-categories">
-          <a href="/hexo_blog/categories/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
-            
-            分类
-          </a>
-        </li>
-      
-        
+
+    <a href="/hexo_blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
         <li class="menu-item menu-item-archives">
-          <a href="/hexo_blog/archives/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
-            
-            归档
-          </a>
-        </li>
-      
 
-      
-    </ul>
-  
+    <a href="/hexo_blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
-  
+  </li>
+  </ul>
 </nav>
 
 
 
- </div>
+
+</div>
     </header>
 
-    <main id="main" class="main">
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
       <div class="main-inner">
         <div class="content-wrap">
-          <div id="content" class="content">
+          
+
+          <div class="content post posts-expand">
             
 
-  <div id="posts" class="posts-expand">
     
-
-  
-
   
   
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/hexo_blog/2019/01/21/Cassandra数据结构/">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/2019/01/21/Cassandra%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content>
       <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content="35岁开始的博客，有点晚哦">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="跬步">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">Cassandra数据结构</h1>
-        
+        <h1 class="post-title" itemprop="name headline">
+          Cassandra数据结构
+        </h1>
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-21T15:35:56+08:00">
-                2019-01-21
-              </time>
-            
+              <span class="post-meta-item-text">发表于</span>
 
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/cassandra/" itemprop="url" rel="index">
-                    <span itemprop="name">cassandra</span>
-                  </a>
-                </span>
-
-                
-                
-              
+              <time title="创建时间：2019-01-21 15:35:56" itemprop="dateCreated datePublished" datetime="2019-01-21T15:35:56+08:00">2019-01-21</time>
             </span>
-          
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-02-22 16:45:42" itemprop="dateModified" datetime="2021-02-22T16:45:42+08:00">2021-02-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/cassandra/" itemprop="url" rel="index"><span itemprop="name">cassandra</span></a>
+                </span>
+            </span>
 
           
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
+            <span id="/hexo_blog/2019/01/21/Cassandra%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="post-meta-item leancloud_visitors" data-flag-title="Cassandra数据结构" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
 
         </div>
       </header>
-    
 
     
     
@@ -333,20 +217,17 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
         <h2 id="cassandra-数据结构"><a class="header-anchor" href="#cassandra-数据结构"></a>Cassandra 数据结构</h2>
-<p>必须了解Cassandra的数据结构。本身并不是多么复杂，而且有足够多的文档，所以简单写一下。</p>
+<p>必须了解<code>Cassandra</code>的数据结构。本身并不是多么复杂，而且有足够多的文档，所以简单写一下。</p>
 <h3 id="keyspace"><a class="header-anchor" href="#keyspace"></a>KeySpace</h3>
 <ul>
 <li>好像没啥需要解释的。</li>
-<li>在论文里面看到说namespace的另一个作用是可以做数据重复。</li>
+<li>在论文里面看到说<code>namespace</code>的另一个作用是可以做数据重复。</li>
 </ul>
 <h3 id="column"><a class="header-anchor" href="#column"></a>Column</h3>
 <ul>
-<li>Column是Cassandra中最小的数据单元，它是一个三元的数据类型，包含name,value,timestamp.</li>
-<li>name是必须的，value不是必须的，timestamp经常可以忽略不计，如下图<br>
+<li><code>Column</code>是<code>Cassandra</code>中最小的数据单元，它是一个三元的数据类型，包含<code>name,value,timestamp.</code></li>
+<li><code>name</code>是必须的，<code>value</code>不是必须的，<code>timestamp</code>经常可以忽略不计，如下图<br>
 <img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_column.png" alt="引用自第一篇参考链接"></li>
 </ul>
 <blockquote>
@@ -354,9 +235,9 @@
 </blockquote>
 <h3 id="super-column"><a class="header-anchor" href="#super-column"></a>Super Column</h3>
 <ul>
-<li>可以将SuperColumn想象成Column的数组，它包含一个name以及一系列Column.</li>
-<li>SuperColumn本身不包含timestamp属性。使用SuperColumn有一个限制，要读取其中一个子列的值，必须把所有子列都反序列化，且不能在子列中建索引<br>
-<img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_super_column.png" alt></li>
+<li>可以将<code>SuperColumn</code>想象成<code>Column</code>的数组，它包含一个<code>name</code>以及一系列<code>Column</code>.</li>
+<li><code>SuperColumn</code>本身不包含<code>timestamp</code>属性。使用<code>SuperColumn</code>有一个限制，要读取其中一个子列的值，必须把所有子列都反序列化，且不能在子列中建索引<br>
+<img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_super_column.png" alt=""></li>
 </ul>
 <blockquote>
 <p>引用自csdn</p>
@@ -385,10 +266,10 @@
 <p>每一行有一个<code>row</code>的名字，然后每一行里面是一个个的<code>column</code>，也可以是<code>super column</code></p>
 </li>
 <li>
-<p><code>ColumnFamily</code>是一个包含了许多<code>Row</code>的结构，每一个<code>Row</code>都包含有client提供的Key以及和该Key关联的一系列Column。</p>
+<p><code>ColumnFamily</code>是一个包含了许多<code>Row</code>的结构，每一个<code>Row</code>都包含有<code>client</code>提供的<code>Key</code>以及和该<code>Key</code>关联的一系列<code>Column</code>。</p>
 </li>
 <li>
-<p>每一行里面的<code>column</code>的名字可以是不变的。也可以是可变的。静态和动态column</p>
+<p>每一行里面的<code>column</code>的名字可以是不变的。也可以是可变的。静态和动态<code>column</code></p>
 </li>
 <li>
 <p>需要注意的是，数据写入的时候已经经过排序了。就是说一行的所有<code>column</code>，会根据它的名字来进行排序。</p>
@@ -411,18 +292,18 @@
           phone: &quot;888&quot;
         }
 </code></pre>
-<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_column_family.png" alt></p>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_column_family.png" alt=""></p>
 <blockquote>
 <p>引用自第一篇参考链接文档</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_storage_picture.png" alt></p>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Cassandra/cassandra_storage_picture.png" alt=""></p>
 <blockquote>
 <p>引用自第二篇参考链接文档</p>
 </blockquote>
 <h3 id="对应到表的定义里面"><a class="header-anchor" href="#对应到表的定义里面"></a>对应到表的定义里面</h3>
 <p>目前对于表结构的理解是这样的，可能后面有更正：</p>
 <ul>
-<li>如果用<code>desc tables</code>去查看一张表。那么可以看到primaryKey字样，类似<code>PRIMARY KEY ()</code>，还有<code>CLUSTERING ORDER</code> 字样</li>
+<li>如果用<code>desc tables</code>去查看一张表。那么可以看到<code>primaryKey</code>字样，类似<code>PRIMARY KEY ()</code>，还有<code>CLUSTERING ORDER</code> 字样</li>
 <li><strong><em>那么这个primary key就是对应数据模型里面的row的名字。也就是super column的名字。只不过这个名字是几个primaryKey联合起来组成的。？</em></strong></li>
 <li><code>primaryKey</code>可以用来查询数据。<code>primary key</code>分为两个部分<code>partition key</code>和<code>clustering key</code>， 前者组合起来决定一个数据的存储在哪个<code>node</code>上面, 后者会用来排序。而 <code>CLUSTERING ORDER</code>决定排序时候使用的参数的顺序</li>
 <li>查询是时候必须给出所有的<code>partition key</code>，之前有过<code>ALLOW FILTERING</code>的字段来容忍缺失<code>partition key</code>，现在没有这个功能了。</li>
@@ -433,7 +314,7 @@
 <p>这里的<code>race_year</code>和<code>race_name</code>就是组合的<code>partition key</code>,而<code>rank</code>就是<code>a clustering column</code>，用来排序的</p>
 <ul>
 <li>也可能看到<code>CLUSTERING ORDER BY</code>的字样里面，有<code>ASC</code>，代表升序排序，可以指定为<code>DESC</code>降序排序</li>
-<li>在3.0的版本之前，还可能看到<code>COMPACT STORAGE</code>，现在已经没有啦，所以也就不写了。</li>
+<li>在<code>3.0</code>的版本之前，还可能看到<code>COMPACT STORAGE</code>，现在已经没有啦，所以也就不写了。</li>
 </ul>
 <h3 id="data-moduling"><a class="header-anchor" href="#data-moduling"></a>data moduling</h3>
 <ul>
@@ -458,402 +339,266 @@ You perform several optimizations in the physical data modeling stage, including
 <li><a href="https://stackoverflow.com/questions/24949676/difference-between-partition-key-composite-key-and-clustering-key-in-cassandra" target="_blank" rel="noopener">primary key partition key and clustering key</a></li>
 </ul>
 
-      
     </div>
+
     
     
     
 
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/hexo_blog/2019/01/21/Cassandra读数据过程/" rel="next" title="Cassandra读数据过程">
-                <i class="fa fa-chevron-left"></i> Cassandra读数据过程
-              </a>
-            
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hexo_blog/tags/Cassandra/" rel="tag"># Cassandra</a>
           </div>
 
-          <span class="post-nav-divider"></span>
+        
 
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/hexo_blog/2019/01/28/hello-world/" rel="prev" title="Hello World">
-                Hello World <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
 
-      
-      
-    </footer>
-  </div>
-  
-  
-  
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2019/01/21/Cassandra%E8%AF%BB%E6%95%B0%E6%8D%AE%E8%BF%87%E7%A8%8B/" rel="prev" title="Cassandra读数据过程">
+      <i class="fa fa-chevron-left"></i> Cassandra读数据过程
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2019/01/28/hello-world/" rel="next" title="Hello World">
+      Hello World <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
   </article>
+  
+  
+  
 
-
-
-    <div class="post-spread">
-      
-    </div>
-  </div>
 
 
           </div>
           
 
-
-          
-
-  
-    <div class="comments" id="comments">
-      
-        <div id="gitment-container"></div>
-      
-    </div>
-
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <p class="site-author-name" itemprop="name">Lynn Shen</p>
-              <p class="site-description motion-element" itemprop="description">35岁开始的博客，有点晚哦</p>
-          </div>
-
-          <nav class="site-state motion-element">
-
-            
-              <div class="site-state-item site-state-posts">
-              
-                <a href="/hexo_blog/archives/">
-              
-                  <span class="site-state-item-count">40</span>
-                  <span class="site-state-item-name">日志</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-categories">
-                <a href="/hexo_blog/categories/index.html">
-                  <span class="site-state-item-count">10</span>
-                  <span class="site-state-item-name">分类</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-tags">
-                
-                  <span class="site-state-item-count">1</span>
-                  <span class="site-state-item-name">标签</span>
-                
-              </div>
-            
-
-          </nav>
-
-          
-
-          
-
-          
-          
-
-          
-          
-
-          
-
-        </div>
-      </section>
-
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#cassandra-数据结构"><span class="nav-number">1.</span> <span class="nav-text">Cassandra 数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#keyspace"><span class="nav-number">1.1.</span> <span class="nav-text">KeySpace</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#column"><span class="nav-number">1.2.</span> <span class="nav-text">Column</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#super-column"><span class="nav-number">1.3.</span> <span class="nav-text">Super Column</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#columnfamily"><span class="nav-number">1.4.</span> <span class="nav-text">ColumnFamily</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对应到表的定义里面"><span class="nav-number">1.5.</span> <span class="nav-text">对应到表的定义里面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#data-moduling"><span class="nav-number">1.6.</span> <span class="nav-text">data moduling</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文档"><span class="nav-number">1.7.</span> <span class="nav-text">参考文档</span></a></li></ol></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
-
-
-        
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
-  <span class="with-love">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">Lynn Shen</span>
-
-  
-</div>
-
-
-  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
-
-
-
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
-
-
-
-
-        
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
-    
-
-    
-
-  </div>
-
-  
-
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
   }
 </script>
 
-
-
-
-
-
-
-
-
+        </div>
+          
   
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
 
+  <aside class="sidebar">
+    <div class="sidebar-inner">
 
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
 
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#cassandra-数据结构"><span class="nav-number">1.</span> <span class="nav-text">Cassandra 数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#keyspace"><span class="nav-number">1.1.</span> <span class="nav-text">KeySpace</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#column"><span class="nav-number">1.2.</span> <span class="nav-text">Column</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#super-column"><span class="nav-number">1.3.</span> <span class="nav-text">Super Column</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#columnfamily"><span class="nav-number">1.4.</span> <span class="nav-text">ColumnFamily</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对应到表的定义里面"><span class="nav-number">1.5.</span> <span class="nav-text">对应到表的定义里面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#data-moduling"><span class="nav-number">1.6.</span> <span class="nav-text">data moduling</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文档"><span class="nav-number">1.7.</span> <span class="nav-text">参考文档</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
 
-
-
-
-
-
-
-
-
-  
-  
-    <script type="text/javascript" src="/hexo_blog/lib/jquery/index.js?v=2.1.3"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/hexo_blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/hexo_blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/hexo_blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-  
-
-
-  
-
-
-  <script type="text/javascript" src="/hexo_blog/js/src/utils.js?v=5.1.4"></script>
-
-  <script type="text/javascript" src="/hexo_blog/js/src/motion.js?v=5.1.4"></script>
-
-
-
-  
-  
-
-
-  <script type="text/javascript" src="/hexo_blog/js/src/affix.js?v=5.1.4"></script>
-
-  <script type="text/javascript" src="/hexo_blog/js/src/schemes/pisces.js?v=5.1.4"></script>
-
-
-
-  
-  <script type="text/javascript" src="/hexo_blog/js/src/scrollspy.js?v=5.1.4"></script>
-<script type="text/javascript" src="/hexo_blog/js/src/post-details.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  <script type="text/javascript" src="/hexo_blog/js/src/bootstrap.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  
-
-
-
-
-	
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-
-
-
-
-
-
-<!-- LOCAL: You can save these files to your site and update links -->
-    
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Lynn Shen</p>
+  <div class="site-description" itemprop="description">35岁开始的博客，有点晚哦</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/hexo_blog/archives/">
         
-        <link rel="stylesheet" href="https://billts.site/extra_css/gitment.css">
-        <script src="https://billts.site/js/gitment.js"></script>
-    
-<!-- END LOCAL -->
+          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/hexo_blog/categories/">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
 
-    
 
-    
-      <script type="text/javascript">
-      function renderGitment(){
-        var gitment = new Gitment({
-            id: window.location.pathname, 
-            owner: 'sallyslove',
-            repo: 'blog_comments',
-            
-            oauth: {
-            
-            
-                client_secret: '6eefacd862f6eee016278732c7470c216afce267',
-            
-                client_id: '2fca3ca261d5bf6d52eb'
-            }});
-        gitment.render('gitment-container');
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lynn Shen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":null,"app_key":null,"server_url":"https://sallyslove.github.io/hexo_blog","security":false};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
       }
+    }
 
-      
-      renderGitment();
-      
-      </script>
-    
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
 
 
+      </div>
+    </footer>
+  </div>
 
+  
+  <script src="/hexo_blog/lib/anime.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/hexo_blog/js/utils.js"></script>
+
+<script src="/hexo_blog/js/motion.js"></script>
+
+
+<script src="/hexo_blog/js/schemes/muse.js"></script>
+
+
+<script src="/hexo_blog/js/next-boot.js"></script>
 
 
 
@@ -864,16 +609,15 @@ You perform several optimizations in the physical data modeling stage, including
 
 
 
-  
 
-  
 
-  
 
-  
-  
 
-  
+
+
+
+
+
 
   
 

@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/hexo_blog/css/main.css">
+
+
+<link rel="stylesheet" href="/hexo_blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"sallyslove.github.io","root":"/hexo_blog/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="作为一个写代码不咋地样的开发，咳，这是多年想掩饰的缺点啊。虽说天下文章一大抄，总归，即使是基础的写法也是得学习的。写在这篇文档里面。 所以，应该有大量的代码例子吧 ୧(๑•̀◡•́๑)૭ Map Map.foreach   map里面的元素在foreach的用法时候，都是二元组。_1是键值，_2是赋值 val m1 &#x3D; Map(3 -&gt; &quot;geeks&quot;, 1 -&gt;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Scala Code Example">
+<meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2021/02/24/Scala-Code-Example/index.html">
+<meta property="og:site_name" content="跬步">
+<meta property="og:description" content="作为一个写代码不咋地样的开发，咳，这是多年想掩饰的缺点啊。虽说天下文章一大抄，总归，即使是基础的写法也是得学习的。写在这篇文档里面。 所以，应该有大量的代码例子吧 ୧(๑•̀◡•́๑)૭ Map Map.foreach   map里面的元素在foreach的用法时候，都是二元组。_1是键值，_2是赋值 val m1 &#x3D; Map(3 -&gt; &quot;geeks&quot;, 1 -&gt;">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-02-24T02:18:27.000Z">
+<meta property="article:modified_time" content="2021-02-24T05:21:29.233Z">
+<meta property="article:author" content="Lynn Shen">
+<meta property="article:tag" content="Language">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://sallyslove.github.io/hexo_blog/2021/02/24/Scala-Code-Example/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Scala Code Example | 跬步</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hexo_blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">跬步</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">不积跬步，无以至千里</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/hexo_blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/hexo_blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/2021/02/24/Scala-Code-Example/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content="35岁开始的博客，有点晚哦">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Scala Code Example
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-02-24 10:18:27 / 修改时间：13:21:29" itemprop="dateCreated datePublished" datetime="2021-02-24T10:18:27+08:00">2021-02-24</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/Scala/" itemprop="url" rel="index"><span itemprop="name">Scala</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/hexo_blog/2021/02/24/Scala-Code-Example/" class="post-meta-item leancloud_visitors" data-flag-title="Scala Code Example" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>作为一个写代码不咋地样的开发，咳，这是多年想掩饰的缺点啊。虽说天下文章一大抄，总归，即使是基础的写法也是得学习的。写在这篇文档里面。<br>
+所以，应该有大量的代码例子吧 ୧(๑•̀◡•́๑)૭</p>
+<h2 id="map"><a class="header-anchor" href="#map"></a>Map</h2>
+<h3 id="map-foreach"><a class="header-anchor" href="#map-foreach"></a>Map.foreach</h3>
+<ul>
+<li>
+<p><code>map</code>里面的元素在<code>foreach</code>的用法时候，都是二元组。<code>_1</code>是键值，<code>_2</code>是赋值</p>
+<pre><code>val m1 = Map(3 -&gt; &quot;geeks&quot;, 1 -&gt; &quot;for&quot;, 2 -&gt; &quot;cs&quot;, 6 -&gt; &quot;geeks&quot;) 
+
+val result = m1.foreach(x =&gt; println(&quot;key=&quot; + x._1 + &quot;, value=&quot; + x._2)) 
+</code></pre>
+</li>
+</ul>
+<h2 id="how-to-call-shell-command-in-scala"><a class="header-anchor" href="#how-to-call-shell-command-in-scala"></a>how to call shell command in Scala</h2>
+<ul>
+<li>
+<p>在<code>scala</code>里面调用<code>shell</code>命令是非常方便的，只需要引入<code>import scala.sys.process._</code>包就可以了</p>
+<p>val path = “pwd”.!!.trim<br>
+println(path)</p>
+</li>
+<li>
+<p><a href="https://stackoverflow.com/questions/52967383/how-to-execute-shell-script-sh-file-in-scala-program" target="_blank" rel="noopener">How to execute shell script in scala</a></p>
+</li>
+<li>
+<p><a href="https://stackoverflow.com/questions/40129780/execute-shell-script-from-scala-application" target="_blank" rel="noopener">Execute shell script from scala application</a></p>
+</li>
+</ul>
+<h2 id="scala中处理json"><a class="header-anchor" href="#scala中处理json"></a>Scala中处理Json</h2>
+<ul>
+<li>工作过程中需要判断字符串是不是<code>JSON</code>格式，所以去学习了这个。<code>JSON</code>也是现在常用的数据结构。呃，因为<code>REST</code>里面是<code>JSON</code>的缘故嘛，反正越来越多，没觉得比<code>XML</code>好</li>
+<li>有一堆的<code>3pp</code>可以用，我们自己的产品里面也有好几个<code>3pp</code>,包括<code>playjson</code>和<code>gJson</code>，还有<code>GSON</code>。暂时的话，应该学习<code>jackson</code>和<code>GSON</code>就足够了吧</li>
+<li>这个链接里面列出了多种库：<a href="https://stackoverflow.com/questions/8054018/what-json-library-to-use-in-scala" target="_blank" rel="noopener">What JSON library to use in Scala?</a></li>
+<li>最后我使用的是<code>playjson</code>，这回的代码其实<code>JAVA</code>工程，但是架构在一个<code>SBT</code>项目里面。而<code>playjson</code>是基于<code>jackson</code>的（很多库都是基于<code>jsckson</code>的就是了），所以在<code>SBT</code>里面引入<code>playjson</code>，也就可以在我需要修改的<code>JAVA</code>代码里面调用<code>jackson</code>了。</li>
+<li>上面的理解应该有的不对，<code>play</code>是一个框架，<code>playjson</code>是其中的一个项目，是依赖<code>jackson</code>的，并且可以不依赖<code>play</code>框架</li>
+<li>参考<a href="https://github.com/playframework/play-json" target="_blank" rel="noopener">playframework/play-json</a>来在<code>SBT</code>，<code>Maven</code>里面引入</li>
+</ul>
+<h3 id="如何判断一个字符串是不是json格式"><a class="header-anchor" href="#如何判断一个字符串是不是json格式"></a>如何判断一个字符串是不是JSON格式</h3>
+<ul>
+<li>事实上，不管是<code>java</code>还是<code>scala</code>,都不存在这样的一个现成的接口。</li>
+<li>现在通用的方法就是将字符串进行转换，转换成功就说明是，报错就不是，我呵呵一下。</li>
+<li>这个参考链接里面是<code>JAVA</code>的，但是<code>scala</code>是一样的。也是调用库函数<br>
+<a href="https://stackoverflow.com/questions/10174898/how-to-check-whether-a-given-string-is-valid-json-in-java" target="_blank" rel="noopener">how-to-check-whether-a-given-string-is-valid-json-in-java</a></li>
+</ul>
+<h3 id="如何得到一个json节点"><a class="header-anchor" href="#如何得到一个json节点"></a>如何得到一个Json节点</h3>
+<ul>
+<li></li>
+</ul>
+<h3 id="如何修改一个json节点的值"><a class="header-anchor" href="#如何修改一个json节点的值"></a>如何修改一个Json节点的值</h3>
+<h3 id="如何判断某个json节点是不是一个jsonlist或者jsonobject"><a class="header-anchor" href="#如何判断某个json节点是不是一个jsonlist或者jsonobject"></a>如何判断某个Json节点是不是一个JsonList或者JSONObject</h3>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hexo_blog/tags/Language/" rel="tag"># Language</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2020/12/10/Scala-Env-Related/" rel="prev" title="Scala Env Related">
+      <i class="fa fa-chevron-left"></i> Scala Env Related
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2021/02/24/Hexo-Related/" rel="next" title="Hexo Related">
+      Hexo Related <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#map"><span class="nav-number">1.</span> <span class="nav-text">Map</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#map-foreach"><span class="nav-number">1.1.</span> <span class="nav-text">Map.foreach</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#how-to-call-shell-command-in-scala"><span class="nav-number">2.</span> <span class="nav-text">how to call shell command in Scala</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#scala中处理json"><span class="nav-number">3.</span> <span class="nav-text">Scala中处理Json</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#如何判断一个字符串是不是json格式"><span class="nav-number">3.1.</span> <span class="nav-text">如何判断一个字符串是不是JSON格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何得到一个json节点"><span class="nav-number">3.2.</span> <span class="nav-text">如何得到一个Json节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何修改一个json节点的值"><span class="nav-number">3.3.</span> <span class="nav-text">如何修改一个Json节点的值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何判断某个json节点是不是一个jsonlist或者jsonobject"><span class="nav-number">3.4.</span> <span class="nav-text">如何判断某个Json节点是不是一个JsonList或者JSONObject</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Lynn Shen</p>
+  <div class="site-description" itemprop="description">35岁开始的博客，有点晚哦</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/hexo_blog/archives/">
+        
+          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/hexo_blog/categories/">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lynn Shen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":null,"app_key":null,"server_url":"https://sallyslove.github.io/hexo_blog","security":false};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/hexo_blog/lib/anime.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/hexo_blog/js/utils.js"></script>
+
+<script src="/hexo_blog/js/motion.js"></script>
+
+
+<script src="/hexo_blog/js/schemes/muse.js"></script>
+
+
+<script src="/hexo_blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

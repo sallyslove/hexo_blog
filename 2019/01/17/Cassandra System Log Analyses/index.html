@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/hexo_blog/css/main.css">
+
+
+<link rel="stylesheet" href="/hexo_blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"sallyslove.github.io","root":"/hexo_blog/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Cassandra system log分析 最近一周可能都会在看Cassandra的system log，看Cassandra在干嘛。其中会涉及到cassandra的一些机制，概念记录下来。 文档名字暂时的，其中的概念可能后期会移走。 Nodetool Cassandra的状态可以用NodeTool来check，如果采用了ssl 认证，那么命令是 NodeTool --ssl Gossip Ta">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cassandra system log分析">
+<meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/01/17/Cassandra%20System%20Log%20Analyses/index.html">
+<meta property="og:site_name" content="跬步">
+<meta property="og:description" content="Cassandra system log分析 最近一周可能都会在看Cassandra的system log，看Cassandra在干嘛。其中会涉及到cassandra的一些机制，概念记录下来。 文档名字暂时的，其中的概念可能后期会移走。 Nodetool Cassandra的状态可以用NodeTool来check，如果采用了ssl 认证，那么命令是 NodeTool --ssl Gossip Ta">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-01-17T06:28:35.000Z">
+<meta property="article:modified_time" content="2021-02-22T09:16:52.857Z">
+<meta property="article:author" content="Lynn Shen">
+<meta property="article:tag" content="Cassandra">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://sallyslove.github.io/hexo_blog/2019/01/17/Cassandra%20System%20Log%20Analyses/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Cassandra system log分析 | 跬步</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hexo_blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">跬步</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">不积跬步，无以至千里</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/hexo_blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/hexo_blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/2019/01/17/Cassandra%20System%20Log%20Analyses/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content="35岁开始的博客，有点晚哦">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Cassandra system log分析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-01-17 14:28:35" itemprop="dateCreated datePublished" datetime="2019-01-17T14:28:35+08:00">2019-01-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-02-22 17:16:52" itemprop="dateModified" datetime="2021-02-22T17:16:52+08:00">2021-02-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/cassandra/" itemprop="url" rel="index"><span itemprop="name">cassandra</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/hexo_blog/2019/01/17/Cassandra%20System%20Log%20Analyses/" class="post-meta-item leancloud_visitors" data-flag-title="Cassandra system log分析" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="cassandra-system-log分析"><a class="header-anchor" href="#cassandra-system-log分析"></a>Cassandra system log分析</h2>
+<p>最近一周可能都会在看Cassandra的system log，看Cassandra在干嘛。其中会涉及到cassandra的一些机制，概念记录下来。<br>
+文档名字暂时的，其中的概念可能后期会移走。</p>
+<h3 id="nodetool"><a class="header-anchor" href="#nodetool"></a>Nodetool</h3>
+<p>Cassandra的状态可以用<code>NodeTool</code>来check，如果采用了ssl 认证，那么命令是 <code>NodeTool --ssl</code></p>
+<h3 id="gossip-tasks"><a class="header-anchor" href="#gossip-tasks"></a>Gossip Tasks</h3>
+<h4 id="pending-task-log"><a class="header-anchor" href="#pending-task-log"></a>Pending task log</h4>
+<p>名字太好记 ，有没有 😃<br>
+Cassandra 的各个节点是无中心化对待的。能做到这一点的一个关键是使用了Gossip协议。这是一个很适用于不可信网络的协议</p>
+<ul>
+<li>参考链接， 后续需要更为仔细深入的学习： <a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-apache-cassandra3x3/index.html" target="_blank" rel="noopener">Apache Cassandra 3.X 系列</a></li>
+<li>Cassandra中Gossip协议被实现在类<code>Gossiper</code>中。</li>
+<li>Gossiper 类维护了一个节点列表，这个列表里包括存活的和死亡的节点。</li>
+<li><code>GossipTask</code> 是位于 <code>org.apche.cassandra.gms.Gossip</code> 类下的一个内部类。</li>
+<li>GossipTask会向其他节点发消息，默认时间是1s</li>
+<li>在log里面会有：<br>
+[GossipTasks:1] 2019-01-03 04:19:33,680 Gossiper.java:751 - Gossip stage has 378 pending tasks; skipping status check (no nodes will be marked down)</li>
+</ul>
+<h4 id="pause-error-not-making-nodes-down"><a class="header-anchor" href="#pause-error-not-making-nodes-down"></a>Pause Error: Not making Nodes Down</h4>
+<ul>
+<li>在log里面经常会出现:以下是说cassandra在做其他事情，导致Gossip停顿了， hang住了。但是并不标示node状态。</li>
+<li>通常是GC的时候，这一句的上一句log确实提示了一次55742ms的GC，但是GC通常也发生在有很多task的时候，所以应该看看其他在做什么task</li>
+</ul>
+<pre><code>WARN  [GossipTasks:1] 2019-01-02 00:00:04,546 FailureDetector.java:287 - Not marking nodes down due to local pause of 54491963082 &gt; 5000000000
+</code></pre>
+<ul>
+<li><a href="http://www.cnblogs.com/jobforlife/p/7092467.html" target="_blank" rel="noopener">error解释</a></li>
+</ul>
+<h3 id="service-thread"><a class="header-anchor" href="#service-thread"></a>Service Thread</h3>
+<p>没有看到这个Service Thread的具体解释。从log里面看有很多功能</p>
+<h4 id="statuslogger"><a class="header-anchor" href="#statuslogger"></a>StatusLogger</h4>
+<p>如此简单的一个函数也有好几种log啦。</p>
+<h5 id="threadpoolmetrics：-stage"><a class="header-anchor" href="#threadpoolmetrics：-stage"></a>ThreadPoolMetrics： Stage</h5>
+<p>打印出各种stage的状态，一个接一个的pool的状态。真心不少啊。</p>
+<ul>
+<li>在log里面会有：</li>
+</ul>
+<pre><code>INFO  [Service Thread] 2019-01-02 00:00:04,547 StatusLogger.java:52 - Pool Name Active   Pending      Completed   Blocked  All Time Blocked
+</code></pre>
+<ul>
+<li>鉴于stage比较多，另外写一篇blog来解释这堆。请看本站的stage。</li>
+</ul>
+<h5 id="cache"><a class="header-anchor" href="#cache"></a>Cache</h5>
+<p>输出KeyCache 和 RowCache的状态</p>
+<ul>
+<li>在log里面是：</li>
+</ul>
+<pre><code>INFO  [Service Thread] 2019-01-02 00:00:05,130 StatusLogger.java:88 - Cache Type  Size Capacity KeysToSave
+INFO  [Service Thread] 2019-01-02 00:00:05,130 StatusLogger.java:90 - KeyCache   1406343  104857600
+</code></pre>
+<ul>
+<li>这篇 log已经很长了。KeyCache和RowCache另开一篇log。</li>
+</ul>
+<h5 id="per-cf-stats"><a class="header-anchor" href="#per-cf-stats"></a>per-CF stats</h5>
+<p>per-CF stats是源码里面的注释，我也不知道是啥哦</p>
+<ul>
+<li>在log里面是：</li>
+</ul>
+<pre><code>INFO  [Service Thread] 2019-01-03 02:54:45,722 StatusLogger.java:106 (table_name)    6284,288376
+</code></pre>
+<ul>
+<li>Cassandra的API里面对于<code>StatusLogger</code>也没有解释。 ORZ，看来是个很直白的文件啊<br>
+-<code>org.apache.cassandra.utils.StatusLogger</code> 只有一个函数<code>log()</code></li>
+</ul>
+<pre><code>logger.info(String.format(&quot;%-25s%20s&quot;, &quot;Table&quot;, &quot;Memtable ops,data&quot;));
+logger.info(String.format(&quot;%-25s%20s&quot;,
+                   cfs.keyspace.getName() 
+				   + &quot;.&quot; + cfs.name,                                      cfs.metric.memtableColumnsCount.getValue() 
+				   + &quot;,&quot; + cfs.metric.memtableLiveDataSize.getValue()));
+    }。
+</code></pre>
+<ul>
+<li>所以，第一个数值是memTable的column的个数，第二个是data的size</li>
+<li>一个问题是： 这个column也太多了吧。。。。。。</li>
+<li>被大神吊打了。这个值是表访问次数。</li>
+</ul>
+<h4 id="gcinspector"><a class="header-anchor" href="#gcinspector"></a>GCInspector</h4>
+<p>-在log里面是：</p>
+<pre><code>INFO  [Service Thread] 2019-01-02 00:00:04,546 GCInspector.java:284 - ConcurrentMarkSweep GC in 55742ms.  CMS Old Gen: 7331643368 -&gt; 7331643360; Par Eden Space: 1006632960 -&gt; 784484600; Par Survivor Space: 125829104 -&gt; 0
+</code></pre>
+<ul>
+<li>这句log的意思是：做了一次CMS GC。然后数字对应，11位是G，9位是M，所以 eden区是784M</li>
+<li>参考本站GC的文章了解更多CMS算法的内容</li>
+</ul>
+<h3 id="periodic-commit-log-syncer"><a class="header-anchor" href="#periodic-commit-log-syncer"></a>PERIODIC-COMMIT-LOG-SYNCER</h3>
+<ul>
+<li>在log里面是：</li>
+</ul>
+<pre><code>WARN  [PERIODIC-COMMIT-LOG-SYNCER] 2019-01-03 04:04:17,232 AbstractCommitLogService.java:117 - Out of 5 commit log syncs over the past 573s with average duration of 9734.40ms...
+</code></pre>
+<ul>
+<li>这个应该是将commit log写到disk上面的task。没有再查资料。参考本站cassandra写过程那篇博客</li>
+</ul>
+<h3 id="rmi-tcp-connection-idle"><a class="header-anchor" href="#rmi-tcp-connection-idle"></a>RMI TCP Connection(idle)</h3>
+<h3 id="indexsummarymanager"><a class="header-anchor" href="#indexsummarymanager"></a>IndexSummaryManager</h3>
+<ul>
+<li>在log里面是：</li>
+</ul>
+<pre><code> INFO  [IndexSummaryManager:1] 2019-01-02 03:21:59,849 IndexSummaryRedistribution.java:74 - Redistributing index summaries
+</code></pre>
+<ul>
+<li>Manages the fixed-size memory pool for index summaries, periodically resizing them in order to give more memory to hot sstables and less memory to cold sstables.</li>
+<li>还不是很理解，就是说index summary一开始也是存在内存中的吗？确实在参数配置里面有index_summary_capacity_in_mb和index_summary_resize_interval_in_minutes</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hexo_blog/tags/Cassandra/" rel="tag"># Cassandra</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2019/01/14/React%E5%85%A5%E9%97%A8-1/" rel="prev" title="React入门(1)">
+      <i class="fa fa-chevron-left"></i> React入门(1)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2019/01/17/Cassandra-%E5%86%99%E6%95%B0%E6%8D%AE%E8%BF%87%E7%A8%8B/" rel="next" title="Cassandra 写数据过程">
+      Cassandra 写数据过程 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#cassandra-system-log分析"><span class="nav-number">1.</span> <span class="nav-text">Cassandra system log分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#nodetool"><span class="nav-number">1.1.</span> <span class="nav-text">Nodetool</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gossip-tasks"><span class="nav-number">1.2.</span> <span class="nav-text">Gossip Tasks</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#pending-task-log"><span class="nav-number">1.2.1.</span> <span class="nav-text">Pending task log</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pause-error-not-making-nodes-down"><span class="nav-number">1.2.2.</span> <span class="nav-text">Pause Error: Not making Nodes Down</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#service-thread"><span class="nav-number">1.3.</span> <span class="nav-text">Service Thread</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#statuslogger"><span class="nav-number">1.3.1.</span> <span class="nav-text">StatusLogger</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#threadpoolmetrics：-stage"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">ThreadPoolMetrics： Stage</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#cache"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">Cache</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#per-cf-stats"><span class="nav-number">1.3.1.3.</span> <span class="nav-text">per-CF stats</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gcinspector"><span class="nav-number">1.3.2.</span> <span class="nav-text">GCInspector</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#periodic-commit-log-syncer"><span class="nav-number">1.4.</span> <span class="nav-text">PERIODIC-COMMIT-LOG-SYNCER</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rmi-tcp-connection-idle"><span class="nav-number">1.5.</span> <span class="nav-text">RMI TCP Connection(idle)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#indexsummarymanager"><span class="nav-number">1.6.</span> <span class="nav-text">IndexSummaryManager</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Lynn Shen</p>
+  <div class="site-description" itemprop="description">35岁开始的博客，有点晚哦</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/hexo_blog/archives/">
+        
+          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/hexo_blog/categories/">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lynn Shen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":null,"app_key":null,"server_url":"https://sallyslove.github.io/hexo_blog","security":false};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/hexo_blog/lib/anime.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/hexo_blog/js/utils.js"></script>
+
+<script src="/hexo_blog/js/motion.js"></script>
+
+
+<script src="/hexo_blog/js/schemes/muse.js"></script>
+
+
+<script src="/hexo_blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
