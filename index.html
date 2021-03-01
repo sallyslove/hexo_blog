@@ -162,7 +162,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/hexo_blog/2021/02/24/Hexo-Related/" class="post-title-link" itemprop="url">Hexo Related</a>
+            <a href="/hexo_blog/2021/02/24/Hexo-Related/" class="post-title-link" itemprop="url">Hexo & NextT评论，阅读次数和升级</a>
         </h2>
 
         <div class="post-meta">
@@ -179,11 +179,11 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-02-25 16:18:04" itemprop="dateModified" datetime="2021-02-25T16:18:04+08:00">2021-02-25</time>
+                <time title="修改时间：2021-02-26 15:52:49" itemprop="dateModified" datetime="2021-02-26T15:52:49+08:00">2021-02-26</time>
               </span>
 
           
-            <span id="/hexo_blog/2021/02/24/Hexo-Related/" class="post-meta-item leancloud_visitors" data-flag-title="Hexo Related" title="阅读次数">
+            <span id="/hexo_blog/2021/02/24/Hexo-Related/" class="post-meta-item leancloud_visitors" data-flag-title="Hexo & NextT评论，阅读次数和升级" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -224,10 +224,10 @@
 </code></pre>
 <p>昨天刚刚升级哒，(づ￣ 3￣)づ，开心，我觉得新版本还是不错的</p>
 <h2 id="升级的过程"><a class="header-anchor" href="#升级的过程"></a>升级的过程</h2>
+<blockquote>
+<p><a href="https://lanvnal.com/2020/02/16/hexo-ban-ben-sheng-ji/" target="_blank" rel="noopener">Hexo版本升级指南</a></p>
+</blockquote>
 <ul>
-<li>
-<p>参考了<a href="https://lanvnal.com/2020/02/16/hexo-ban-ben-sheng-ji/" target="_blank" rel="noopener">Hexo版本升级指南</a></p>
-</li>
 <li>
 <p>里面的一些命令执行不起来，大约是我的<code>npm</code>环境有些问题</p>
 </li>
@@ -248,10 +248,10 @@
 </ul>
 <h2 id="功能配置"><a class="header-anchor" href="#功能配置"></a>功能配置</h2>
 <h3 id="评论功能"><a class="header-anchor" href="#评论功能"></a>评论功能</h3>
-<ul>
-<li>
+<blockquote>
 <p><a href="https://xfqwdsj.github.io/blog/2020/03/20/hexo-comments/" target="_blank" rel="noopener">Hexo Next主题的评论功能</a></p>
-</li>
+</blockquote>
+<ul>
 <li>
 <p>虽然参考了这篇文档，但是其实并不需要，在<code>NextT</code>的配置文件里面都写得非常清晰，比如用来必力：</p>
 <pre><code># LiveRe comments system
@@ -263,10 +263,16 @@ livere_uid: # &lt;your_uid&gt;
 <p>按照参考的链接里面几个评论插件的优缺点相比较，来必力是比较好的一款。然鹅，我登录不进去啊。OMG</p>
 </li>
 </ul>
-<h3 id="阅读数量"><a class="header-anchor" href="#阅读数量"></a>阅读数量</h3>
+<blockquote>
+<p><a href="https://qianfanguojin.github.io/2019/07/23/Hexo%E5%8D%9A%E5%AE%A2%E8%BF%9B%E9%98%B6%EF%BC%9A%E4%B8%BANext%E4%B8%BB%E9%A2%98%E6%B7%BB%E5%8A%A0Valine%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F/" target="_blank" rel="noopener">Hexo博客进阶：为Next主题添加Valine评论系统</a></p>
+</blockquote>
 <ul>
-<li>作为一个孤独地默默地写着博客的人，对于“我的博客有人看吗？”这种疑问，绝对是好奇的，所以阅读数量也很关键啊，当然，也可能受到一万点的暴击，没人看啊 😦</li>
-<li><a href="https://bjtu-hxs.github.io/2018/06/12/leancloud-config/" target="_blank" rel="noopener">Hexo博客Next主题添加统计文章阅读量功能</a></li>
+<li>目前选择使用的是<code>valine</code>，这个也是已经在<code>NextT</code>中有所集成的，同样需要在<code>leanCloud</code>上面有张表，需要的表名是<code>Comment</code>。</li>
+</ul>
+<h3 id="阅读数量"><a class="header-anchor" href="#阅读数量"></a>阅读数量</h3>
+<p><a href="https://bjtu-hxs.github.io/2018/06/12/leancloud-config/" target="_blank" rel="noopener">Hexo博客Next主题添加统计文章阅读量功能</a></p>
+<ul>
+<li>作为一个孤独地默默地写着博客的人，对于“我的博客有人看吗？”这种疑问，绝对是好奇的，所以阅读数量也很关键啊，当然，也可能受到一万点的暴击，没人看，只能自己点吧 😦</li>
 <li>参考了上面一篇文档，但是其中还是遇到了一些问题。<code>NextT</code>集成的还是不错的，配置<code>leancloud_visitors</code>就可以了。</li>
 <li>碰到的问题和解决方法：
 <ul>
@@ -320,7 +326,7 @@ livere_uid: # &lt;your_uid&gt;
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/hexo_blog/2021/02/24/Scala-Code-Example/" class="post-title-link" itemprop="url">Scala Code Example</a>
+            <a href="/hexo_blog/2021/02/24/Scala-Code-Example/" class="post-title-link" itemprop="url">Scala代码样例</a>
         </h2>
 
         <div class="post-meta">
@@ -329,10 +335,16 @@ livere_uid: # &lt;your_uid&gt;
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2021-02-24 10:18:27 / 修改时间：13:21:29" itemprop="dateCreated datePublished" datetime="2021-02-24T10:18:27+08:00">2021-02-24</time>
+              <time title="创建时间：2021-02-24 10:18:27" itemprop="dateCreated datePublished" datetime="2021-02-24T10:18:27+08:00">2021-02-24</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-02-26 17:10:36" itemprop="dateModified" datetime="2021-02-26T17:10:36+08:00">2021-02-26</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -344,7 +356,7 @@ livere_uid: # &lt;your_uid&gt;
             </span>
 
           
-            <span id="/hexo_blog/2021/02/24/Scala-Code-Example/" class="post-meta-item leancloud_visitors" data-flag-title="Scala Code Example" title="阅读次数">
+            <span id="/hexo_blog/2021/02/24/Scala-Code-Example/" class="post-meta-item leancloud_visitors" data-flag-title="Scala代码样例" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -375,8 +387,8 @@ livere_uid: # &lt;your_uid&gt;
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>作为一个写代码不咋地样的开发，咳，这是多年想掩饰的缺点啊。虽说天下文章一大抄，总归，即使是基础的写法也是得学习的。写在这篇文档里面。<br>
-所以，应该有大量的代码例子吧 ୧(๑•̀◡•́๑)૭</p>
+          <p>作为一个写代码不咋地样的开发，咳，这是多年想掩饰的缺点啊。<sup>_</sup></p>
+<p>虽说天下文章一大抄，总归，即使是基础的写法也是得学习的。写在这篇文档里面。</p>
 <h2 id="map"><a class="header-anchor" href="#map"></a>Map</h2>
 <h3 id="map-foreach"><a class="header-anchor" href="#map-foreach"></a>Map.foreach</h3>
 <ul>
@@ -405,25 +417,144 @@ println(path)</p>
 <h2 id="scala中处理json"><a class="header-anchor" href="#scala中处理json"></a>Scala中处理Json</h2>
 <ul>
 <li>工作过程中需要判断字符串是不是<code>JSON</code>格式，所以去学习了这个。<code>JSON</code>也是现在常用的数据结构。呃，因为<code>REST</code>里面是<code>JSON</code>的缘故嘛，反正越来越多，没觉得比<code>XML</code>好</li>
-<li>有一堆的<code>3pp</code>可以用，我们自己的产品里面也有好几个<code>3pp</code>,包括<code>playjson</code>和<code>gJson</code>，还有<code>GSON</code>。暂时的话，应该学习<code>jackson</code>和<code>GSON</code>就足够了吧</li>
-<li>这个链接里面列出了多种库：<a href="https://stackoverflow.com/questions/8054018/what-json-library-to-use-in-scala" target="_blank" rel="noopener">What JSON library to use in Scala?</a></li>
-<li>最后我使用的是<code>playjson</code>，这回的代码其实<code>JAVA</code>工程，但是架构在一个<code>SBT</code>项目里面。而<code>playjson</code>是基于<code>jackson</code>的（很多库都是基于<code>jsckson</code>的就是了），所以在<code>SBT</code>里面引入<code>playjson</code>，也就可以在我需要修改的<code>JAVA</code>代码里面调用<code>jackson</code>了。</li>
-<li>上面的理解应该有的不对，<code>play</code>是一个框架，<code>playjson</code>是其中的一个项目，是依赖<code>jackson</code>的，并且可以不依赖<code>play</code>框架</li>
-<li>参考<a href="https://github.com/playframework/play-json" target="_blank" rel="noopener">playframework/play-json</a>来在<code>SBT</code>，<code>Maven</code>里面引入</li>
 </ul>
-<h3 id="如何判断一个字符串是不是json格式"><a class="header-anchor" href="#如何判断一个字符串是不是json格式"></a>如何判断一个字符串是不是JSON格式</h3>
+<h3 id="有哪些可用的json库"><a class="header-anchor" href="#有哪些可用的json库"></a>有哪些可用的JSON库</h3>
+<blockquote>
+<p><a href="https://stackoverflow.com/questions/8054018/what-json-library-to-use-in-scala" target="_blank" rel="noopener">What JSON library to use in Scala?</a></p>
+</blockquote>
 <ul>
-<li>事实上，不管是<code>java</code>还是<code>scala</code>,都不存在这样的一个现成的接口。</li>
-<li>现在通用的方法就是将字符串进行转换，转换成功就说明是，报错就不是，我呵呵一下。</li>
-<li>这个参考链接里面是<code>JAVA</code>的，但是<code>scala</code>是一样的。也是调用库函数<br>
-<a href="https://stackoverflow.com/questions/10174898/how-to-check-whether-a-given-string-is-valid-json-in-java" target="_blank" rel="noopener">how-to-check-whether-a-given-string-is-valid-json-in-java</a></li>
+<li>
+<p>有一堆的<code>3pp</code>可以用，我们自己的产品里面也有好几个<code>3pp</code>,包括<code>playjson</code>和<code>gJson</code>，还有<code>GSON</code>。暂时的话，应该学习<code>jackson</code>和<code>GSON</code>就足够了吧</p>
+</li>
+<li>
+<p>最后我使用的是<code>playjson</code>，这回的代码其实<code>JAVA</code>工程，但是架构在一个<code>SBT</code>项目里面。而<code>playjson</code>是基于<code>jackson</code>的（很多库都是基于<code>jsckson</code>的就是了），所以在<code>SBT</code>里面引入<code>playjson</code>，也就可以在我需要修改的<code>JAVA</code>代码里面调用<code>jackson</code>了。</p>
+</li>
 </ul>
-<h3 id="如何得到一个json节点"><a class="header-anchor" href="#如何得到一个json节点"></a>如何得到一个Json节点</h3>
+<h3 id="playjson"><a class="header-anchor" href="#playjson"></a>playjson</h3>
+<blockquote>
+<p><a href="https://github.com/playframework/play-json" target="_blank" rel="noopener">playframework/play-json</a></p>
+</blockquote>
 <ul>
-<li></li>
+<li><code>play</code>是一个框架，<code>playjson</code>是其中的一个项目，是依赖<code>jackson</code>的，并且可以不依赖<code>play</code>框架</li>
+<li>上述参考中有如何在<code>SBT</code>，<code>Maven</code>里面引入<code>playjson</code></li>
+<li><code>playjson</code>里面的数据结构如下：<br>
+<img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Coding_Language/Scala_Json.png" alt=""></li>
 </ul>
-<h3 id="如何修改一个json节点的值"><a class="header-anchor" href="#如何修改一个json节点的值"></a>如何修改一个Json节点的值</h3>
-<h3 id="如何判断某个json节点是不是一个jsonlist或者jsonobject"><a class="header-anchor" href="#如何判断某个json节点是不是一个jsonlist或者jsonobject"></a>如何判断某个Json节点是不是一个JsonList或者JSONObject</h3>
+<blockquote>
+<p>自己画的，可能不那么准确，大概就是这个含义</p>
+</blockquote>
+<ul>
+<li>以下章节，以<code>playjson</code>为依赖实现</li>
+</ul>
+<h4 id="如何判断一个字符串是不是json格式"><a class="header-anchor" href="#如何判断一个字符串是不是json格式"></a>如何判断一个字符串是不是JSON格式</h4>
+<blockquote>
+<p><a href="https://stackoverflow.com/questions/10174898/how-to-check-whether-a-given-string-is-valid-json-in-java" target="_blank" rel="noopener">how-to-check-whether-a-given-string-is-valid-json-in-java</a></p>
+</blockquote>
+<ul>
+<li>
+<p>事实上，不管是<code>java</code>还是<code>scala</code>,都不存在这样的一个现成的接口。</p>
+</li>
+<li>
+<p>现在通用的方法就是将字符串进行转换，转换成功就说明是，报错就不是，我呵呵一下。</p>
+</li>
+<li>
+<p>这个参考链接里面是<code>JAVA</code>的，但是<code>scala</code>是一样的。也是调用库函数</p>
+<pre><code>try {
+      final ObjectMapper mapper = new ObjectMapper();
+     mapper.readTree(jsonInString);
+     return true;
+  } catch (IOException e) {
+     return false;
+  }
+</code></pre>
+</li>
+</ul>
+<h4 id="生成json"><a class="header-anchor" href="#生成json"></a>生成Json</h4>
+<ul>
+<li>
+<p><code>playjson</code>和<code>String</code>结构可以互相转换，参考<code>github</code>上面的官方就可以了：</p>
+<pre><code>#convert String to JSON
+val json: JsValue = Json.parse(&quot;&quot;&quot;
+{
+  &quot;name&quot; : &quot;Watership Down&quot;,
+  &quot;location&quot; : {
+    &quot;lat&quot; : 51.235685,
+    &quot;long&quot; : -1.309197
+  },
+  &quot;residents&quot; : [ {
+    &quot;name&quot; : &quot;Fiver&quot;,
+    &quot;age&quot; : 4,
+    &quot;role&quot; : null
+  }, {
+    &quot;name&quot; : &quot;Bigwig&quot;,
+    &quot;age&quot; : 6,
+    &quot;role&quot; : &quot;Owsla&quot;
+  } ]
+}&quot;&quot;&quot;)
+  
+#convert JSON to String  
+val jsonString = Json.stringify(json)
+</code></pre>
+</li>
+</ul>
+<h4 id="得到一个json节点"><a class="header-anchor" href="#得到一个json节点"></a>得到一个Json节点</h4>
+<h5 id="知道路径"><a class="header-anchor" href="#知道路径"></a>知道路径</h5>
+<ul>
+<li>
+<p>如果知道路径，就是<code>XPATH</code>那种，可以直接得到。</p>
+<pre><code> val lat = (json \ &quot;location&quot; \ &quot;lat&quot;).get
+// returns JsNumber(51.235685)
+
+
+val bigwig = (json \ &quot;residents&quot; \ 1).get
+// returns {&quot;name&quot;:&quot;Bigwig&quot;,&quot;age&quot;:6,&quot;role&quot;:&quot;Owsla&quot;}
+</code></pre>
+</li>
+<li>
+<p>上面是官网上面的两个例子，返回的类型是一个<code>JSObject</code></p>
+</li>
+<li>
+<p>如果路径不对，找不到，是会报错的，可以使用<code>validate</code>函数来做校验</p>
+<pre><code>val bogusResult = (json \ &quot;bogus&quot;).validate[String]
+// JsError
+</code></pre>
+</li>
+<li>
+<p>如果不使用<code>get</code>函数，如下，是不会报错的</p>
+<pre><code>val maybeName  = (json \  &quot;user&quot; \ name)
+</code></pre>
+</li>
+</ul>
+<h5 id="只知道键值"><a class="header-anchor" href="#只知道键值"></a>只知道键值</h5>
+<ul>
+<li>
+<p>本来以为这种不支持的，没想到也是有办法，赞一个</p>
+<pre><code>val names = json \\ &quot;name&quot;
+// returns Seq(JsString(&quot;Watership Down&quot;), JsString(&quot;Fiver&quot;), JsString(&quot;Bigwig&quot;))
+</code></pre>
+</li>
+</ul>
+<h5 id="通过index"><a class="header-anchor" href="#通过index"></a>通过index</h5>
+<ul>
+<li>
+<p>也可以通过<code>index</code>来得到节点值，</p>
+<pre><code>val name = json(&quot;name&quot;)
+// returns JsString(&quot;Watership Down&quot;)
+#这个例子和上面的json \\ &quot;name&quot;的结果相比，就返回了第一个值。这点值得留意
+
+val bigwig = json(&quot;residents&quot;)(1)
+// returns {&quot;name&quot;:&quot;Bigwig&quot;,&quot;age&quot;:6,&quot;role&quot;:&quot;Owsla&quot;}
+</code></pre>
+</li>
+</ul>
+<h4 id="如何修改一个json节点的值"><a class="header-anchor" href="#如何修改一个json节点的值"></a>如何修改一个Json节点的值</h4>
+<blockquote>
+<p><a href="https://stackoverflow.com/questions/14649141/how-to-replace-a-json-value-in-play" target="_blank" rel="noopener">how-to-replace-a-json-value-in-play</a></p>
+</blockquote>
+<ul>
+<li><code>playjson</code>提供了接口在<code>JSONObject</code>里面新加</li>
+</ul>
+<h4 id="如何判断某个json节点是不是一个jsonlist或者jsonobject"><a class="header-anchor" href="#如何判断某个json节点是不是一个jsonlist或者jsonobject"></a>如何判断某个Json节点是不是一个JsonList或者JSONObject</h4>
 
       
     </div>
@@ -457,7 +588,7 @@ println(path)</p>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/hexo_blog/2020/12/10/Scala-Env-Related/" class="post-title-link" itemprop="url">Scala Env Related</a>
+            <a href="/hexo_blog/2020/12/10/Scala-Env-Related/" class="post-title-link" itemprop="url">Scala环境相关</a>
         </h2>
 
         <div class="post-meta">
@@ -474,7 +605,7 @@ println(path)</p>
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-02-24 10:19:43" itemprop="dateModified" datetime="2021-02-24T10:19:43+08:00">2021-02-24</time>
+                <time title="修改时间：2021-02-26 10:06:21" itemprop="dateModified" datetime="2021-02-26T10:06:21+08:00">2021-02-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -487,7 +618,7 @@ println(path)</p>
             </span>
 
           
-            <span id="/hexo_blog/2020/12/10/Scala-Env-Related/" class="post-meta-item leancloud_visitors" data-flag-title="Scala Env Related" title="阅读次数">
+            <span id="/hexo_blog/2020/12/10/Scala-Env-Related/" class="post-meta-item leancloud_visitors" data-flag-title="Scala环境相关" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -836,7 +967,7 @@ println(path)</p>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/hexo_blog/2020/09/15/how-endpoint-be-connected-into-network/" class="post-title-link" itemprop="url">how endpoint be connected into network</a>
+            <a href="/hexo_blog/2020/09/15/how-endpoint-be-connected-into-network/" class="post-title-link" itemprop="url">终端是如何接入网络的</a>
         </h2>
 
         <div class="post-meta">
@@ -853,7 +984,7 @@ println(path)</p>
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-10-10 16:38:09" itemprop="dateModified" datetime="2020-10-10T16:38:09+08:00">2020-10-10</time>
+                <time title="修改时间：2021-02-26 10:06:43" itemprop="dateModified" datetime="2021-02-26T10:06:43+08:00">2021-02-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -866,7 +997,7 @@ println(path)</p>
             </span>
 
           
-            <span id="/hexo_blog/2020/09/15/how-endpoint-be-connected-into-network/" class="post-meta-item leancloud_visitors" data-flag-title="how endpoint be connected into network" title="阅读次数">
+            <span id="/hexo_blog/2020/09/15/how-endpoint-be-connected-into-network/" class="post-meta-item leancloud_visitors" data-flag-title="终端是如何接入网络的" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
