@@ -179,7 +179,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-02-26 15:52:49" itemprop="dateModified" datetime="2021-02-26T15:52:49+08:00">2021-02-26</time>
+                <time title="修改时间：2021-03-12 10:40:18" itemprop="dateModified" datetime="2021-03-12T10:40:18+08:00">2021-03-12</time>
               </span>
 
           
@@ -273,6 +273,7 @@ livere_uid: # &lt;your_uid&gt;
 <p><a href="https://bjtu-hxs.github.io/2018/06/12/leancloud-config/" target="_blank" rel="noopener">Hexo博客Next主题添加统计文章阅读量功能</a></p>
 <ul>
 <li>作为一个孤独地默默地写着博客的人，对于“我的博客有人看吗？”这种疑问，绝对是好奇的，所以阅读数量也很关键啊，当然，也可能受到一万点的暴击，没人看，只能自己点吧 😦</li>
+<li>更新：果然受到了一定打击，没人看啊。。。只能收拾好心情，自己加油。安慰自己一下，咳，就当写日记吧</li>
 <li>参考了上面一篇文档，但是其中还是遇到了一些问题。<code>NextT</code>集成的还是不错的，配置<code>leancloud_visitors</code>就可以了。</li>
 <li>碰到的问题和解决方法：
 <ul>
@@ -343,7 +344,7 @@ livere_uid: # &lt;your_uid&gt;
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-02-26 17:10:36" itemprop="dateModified" datetime="2021-02-26T17:10:36+08:00">2021-02-26</time>
+                <time title="修改时间：2021-03-12 13:53:00" itemprop="dateModified" datetime="2021-03-12T13:53:00+08:00">2021-03-12</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -387,8 +388,7 @@ livere_uid: # &lt;your_uid&gt;
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>作为一个写代码不咋地样的开发，咳，这是多年想掩饰的缺点啊。<sup>_</sup></p>
-<p>虽说天下文章一大抄，总归，即使是基础的写法也是得学习的。写在这篇文档里面。</p>
+          <p>虽说天下文章一大抄，总归，即使是基础的写法也是得学习的。写在这篇文档里面。</p>
 <h2 id="map"><a class="header-anchor" href="#map"></a>Map</h2>
 <h3 id="map-foreach"><a class="header-anchor" href="#map-foreach"></a>Map.foreach</h3>
 <ul>
@@ -400,7 +400,26 @@ val result = m1.foreach(x =&gt; println(&quot;key=&quot; + x._1 + &quot;, value=
 </code></pre>
 </li>
 </ul>
-<h2 id="how-to-call-shell-command-in-scala"><a class="header-anchor" href="#how-to-call-shell-command-in-scala"></a>how to call shell command in Scala</h2>
+<h2 id="怎么判断一个变量的类型"><a class="header-anchor" href="#怎么判断一个变量的类型"></a>怎么判断一个变量的类型</h2>
+<ul>
+<li>
+<p><code>isInstanceOf</code>，但是有一个发现：</p>
+<pre><code>scala&gt; (Boolean.box(a)).isInstanceOf[Boolean]
+res13: Boolean = true
+scala&gt; (Boolean.box(a)).isInstanceOf[scala.Boolean]
+res14: Boolean = true
+scala&gt; Boolean.box(a).getClass.getName
+res15: String = java.lang.Boolean
+</code></pre>
+</li>
+<li>
+<p>所以这样看来，还是<code>ClassName</code>比较准确。然鹅，不能使用<code>getClass.getSimpleName</code>，这样出来的，</p>
+<pre><code>scala&gt; a.getClass.getSimpleName
+res10: String = boolean
+</code></pre>
+</li>
+</ul>
+<h2 id="scala中调用shell"><a class="header-anchor" href="#scala中调用shell"></a>Scala中调用shell</h2>
 <ul>
 <li>
 <p>在<code>scala</code>里面调用<code>shell</code>命令是非常方便的，只需要引入<code>import scala.sys.process._</code>包就可以了</p>
@@ -555,6 +574,40 @@ val bigwig = json(&quot;residents&quot;)(1)
 <li><code>playjson</code>提供了接口在<code>JSONObject</code>里面新加</li>
 </ul>
 <h4 id="如何判断某个json节点是不是一个jsonlist或者jsonobject"><a class="header-anchor" href="#如何判断某个json节点是不是一个jsonlist或者jsonobject"></a>如何判断某个Json节点是不是一个JsonList或者JSONObject</h4>
+<h2 id="实践所得"><a class="header-anchor" href="#实践所得"></a>实践所得</h2>
+<h3 id="boolean"><a class="header-anchor" href="#boolean"></a>Boolean</h3>
+<ul>
+<li>工作中的一个<code>bug</code>，某个标志，在框架代码中定义的时候是<code>java</code>写的；</li>
+<li>调用的工程是<code>scala</code>的，所以直接使用了<code>scala</code>的<code>Boolean</code>。</li>
+<li>两个并不兼容。相当于框架中定义的函数并没有被调用，由于这个标志位并不是项目的测试重点，所以就漏到客户那边，才发现这个标志位在<code>GUI</code>上面没法被设置。因为框架的背景代码是<code>java</code>定义的，而<code>GUI</code>渲染时候是根据<code>annotation</code>去渲染的。就没成功。</li>
+<li>好吧，这个框架我还不够细致的了解啊。需要学习的细节太多了。<br>
+<img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Coding_Language/Scala_Boolean.PNG" alt=""></li>
+</ul>
+<blockquote>
+<p>scala里面的Boolean定义</p>
+</blockquote>
+<h4 id="如何进行类型转换"><a class="header-anchor" href="#如何进行类型转换"></a>如何进行类型转换</h4>
+<blockquote>
+<p>里面提供了好几种方法，简单描述一下<br>
+<a href="https://stackoverflow.com/questions/9638492/conversion-of-scala-map-containing-boolean-to-java-map-containing-java-lang-bool" target="_blank" rel="noopener">scala-boolean-to-java</a></p>
+</blockquote>
+<ul>
+<li>
+<p>可以使用<code>box</code>方法得到<code>java.lang.Boolean</code></p>
+<pre><code>val b: java.util.Map[Int, java.lang.Boolean] = a.mapValues(Boolean.box)
+</code></pre>
+</li>
+<li>
+<p>可以使用<code>scala.Predef</code>中的<code>boolean2Boolean</code>函数，在上述链接里面也有类似方法的定义</p>
+<pre><code>implicit def boolMap2Java[T](m: Map[T, Boolean]): 
+java.util.Map[T, java.lang.Boolean] = m.mapValues(Boolean.box)
+val b: java.util.Map[Int, java.lang.Boolean] = a
+</code></pre>
+</li>
+<li>
+<p>还可以使用<code>JavaConversions</code>的<code>asJava</code></p>
+</li>
+</ul>
 
       
     </div>
@@ -605,7 +658,7 @@ val bigwig = json(&quot;residents&quot;)(1)
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-02-26 10:06:21" itemprop="dateModified" datetime="2021-02-26T10:06:21+08:00">2021-02-26</time>
+                <time title="修改时间：2021-03-12 11:05:14" itemprop="dateModified" datetime="2021-03-12T11:05:14+08:00">2021-03-12</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -683,6 +736,7 @@ val bigwig = json(&quot;residents&quot;)(1)
 <li><code>compile</code>：编译</li>
 <li><code>package</code>:打包，如果有<code>Dockfile</code>，会将镜像也做出来</li>
 <li><code>sbt evicted</code>: 查看依赖</li>
+<li><code>console</code>： 进入交互式编程界面， <code>SCALA REPL</code></li>
 </ul>
 <h3 id="sbt-配置"><a class="header-anchor" href="#sbt-配置"></a>SBT 配置</h3>
 <h4 id="仓库配置"><a class="header-anchor" href="#仓库配置"></a>仓库配置</h4>
@@ -847,7 +901,7 @@ val bigwig = json(&quot;residents&quot;)(1)
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-10-21 15:01:40" itemprop="dateModified" datetime="2020-10-21T15:01:40+08:00">2020-10-21</time>
+                <time title="修改时间：2021-03-03 10:56:38" itemprop="dateModified" datetime="2021-03-03T10:56:38+08:00">2021-03-03</time>
               </span>
 
           
@@ -882,15 +936,31 @@ val bigwig = json(&quot;residents&quot;)(1)
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>开始学习卡夫卡，工作需要，开始得有点晚了。毕竟周围很多同事已经会了。嘛，人比人气死人，进步就好 (๑•̀ㅂ•́)و✧</p>
+          <p>开始学习卡夫卡，工作需要，开始得有点晚了。毕竟周围很多同事已经会了。嘛，人比人气死人，进步就好 (๑•̀ㅂ•́)و✧<br>
+为啥没人看呢，为啥我写的没人看呢？有点郁闷，总结下来，可能是写得不够细致的缘故。</p>
 <h2 id="消息队列"><a class="header-anchor" href="#消息队列"></a>消息队列</h2>
+<blockquote>
+<p><a href="https://github.com/ZhongFuCheng3y/3y" target="_blank" rel="noopener">这位作者的系列文章，貌似已经开公众号了，所以点击会跑到微信上面去。汗一个</a></p>
+</blockquote>
 <ul>
-<li>看到一篇还不错的博客，作者层层深入，所以我觉得我也需要学习一下。</li>
-<li><a href="https://github.com/ZhongFuCheng3y/3y" target="_blank" rel="noopener">这位作者的系列文章，貌似已经开公众号了，所以点击会跑到微信上面去。汗一个</a></li>
-<li>五分钟时间看了一下，果然是好文章啊。</li>
-<li>简单来说，使用消息队列可以解耦生产者和消费者；可以实现异步，提高效率</li>
-<li>那么为什么在JAVA中已经有了很多现成的消费队列，还需要自己去写一些中间件呢？</li>
-<li>这里面的原因挺多的，但是都很好理解，比如固化，JAVA的队列都是内存里面的，一下就没了，对于产品来说，肯定不能接受；再比如数据的处理，不能重复，或者排序。基于各种需求，自然就产生了各种各样的队列</li>
+<li>感觉写得非常好啊，我只需转载就行。</li>
+</ul>
+<h3 id="什么是消息队列"><a class="header-anchor" href="#什么是消息队列"></a>什么是消息队列</h3>
+<ul>
+<li>这里的队列，就是最简单的队列是先进先出的，消息队列也不例外</li>
+</ul>
+<h3 id="为什么要使用消息队列"><a class="header-anchor" href="#为什么要使用消息队列"></a>为什么要使用消息队列</h3>
+<ul>
+<li>简单来说，使用消息队列可以解耦生产者和消费者；可以实现异步，提高效率。</li>
+<li>也就是说消费者不需要在意生产者什么时候产生了数据，生产者也不需要在意消费者消费了什么数据。大家都去操作中间的队列就可以了。</li>
+</ul>
+<h3 id="java自带的消息队列有哪些"><a class="header-anchor" href="#java自带的消息队列有哪些"></a>java自带的消息队列有哪些</h3>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/kafka/kafka_java_queue.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/kafka/kafka_java_queue_class.png" alt=""></p>
+<h3 id="为什么有了java自带的消息队列-还需要kafka"><a class="header-anchor" href="#为什么有了java自带的消息队列-还需要kafka"></a>为什么有了java自带的消息队列，还需要kafka</h3>
+<ul>
+<li>那么为什么在<code>JAVA</code>中已经有了很多现成的消费队列，还需要自己去写一些中间件呢？</li>
+<li>这里面的原因挺多的，但是都很好理解，比如固化，<code>JAVA</code>的队列都是内存里面的，一下就没了，对于产品来说，肯定不能接受；再比如数据的处理，不能重复，或者排序。基于各种需求，自然就产生了各种各样的队列</li>
 </ul>
 <h2 id="zookeeper"><a class="header-anchor" href="#zookeeper"></a>Zookeeper</h2>
 <ul>

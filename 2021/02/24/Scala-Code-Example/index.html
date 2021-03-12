@@ -20,16 +20,17 @@
     var CONFIG = {"hostname":"sallyslove.github.io","root":"/hexo_blog/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="作为一个写代码不咋地样的开发，咳，这是多年想掩饰的缺点啊。_ 虽说天下文章一大抄，总归，即使是基础的写法也是得学习的。写在这篇文档里面。 Map Map.foreach   map里面的元素在foreach的用法时候，都是二元组。_1是键值，_2是赋值 val m1 &#x3D; Map(3 -&gt; &quot;geeks&quot;, 1 -&gt; &quot;for&quot;, 2 -&gt;">
+  <meta name="description" content="虽说天下文章一大抄，总归，即使是基础的写法也是得学习的。写在这篇文档里面。 Map Map.foreach   map里面的元素在foreach的用法时候，都是二元组。_1是键值，_2是赋值 val m1 &#x3D; Map(3 -&gt; &quot;geeks&quot;, 1 -&gt; &quot;for&quot;, 2 -&gt; &quot;cs&quot;, 6 -&gt; &quot;g">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Scala代码样例">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2021/02/24/Scala-Code-Example/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="作为一个写代码不咋地样的开发，咳，这是多年想掩饰的缺点啊。_ 虽说天下文章一大抄，总归，即使是基础的写法也是得学习的。写在这篇文档里面。 Map Map.foreach   map里面的元素在foreach的用法时候，都是二元组。_1是键值，_2是赋值 val m1 &#x3D; Map(3 -&gt; &quot;geeks&quot;, 1 -&gt; &quot;for&quot;, 2 -&gt;">
+<meta property="og:description" content="虽说天下文章一大抄，总归，即使是基础的写法也是得学习的。写在这篇文档里面。 Map Map.foreach   map里面的元素在foreach的用法时候，都是二元组。_1是键值，_2是赋值 val m1 &#x3D; Map(3 -&gt; &quot;geeks&quot;, 1 -&gt; &quot;for&quot;, 2 -&gt; &quot;cs&quot;, 6 -&gt; &quot;g">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/Coding_Language/Scala_Json.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/Coding_Language/Scala_Boolean.PNG">
 <meta property="article:published_time" content="2021-02-24T02:18:27.000Z">
-<meta property="article:modified_time" content="2021-02-26T09:10:36.511Z">
+<meta property="article:modified_time" content="2021-03-12T05:53:00.810Z">
 <meta property="article:author" content="Lynn Shen">
 <meta property="article:tag" content="Language">
 <meta name="twitter:card" content="summary">
@@ -184,7 +185,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-02-26 17:10:36" itemprop="dateModified" datetime="2021-02-26T17:10:36+08:00">2021-02-26</time>
+                <time title="修改时间：2021-03-12 13:53:00" itemprop="dateModified" datetime="2021-03-12T13:53:00+08:00">2021-03-12</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -228,8 +229,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>作为一个写代码不咋地样的开发，咳，这是多年想掩饰的缺点啊。<sup>_</sup></p>
-<p>虽说天下文章一大抄，总归，即使是基础的写法也是得学习的。写在这篇文档里面。</p>
+        <p>虽说天下文章一大抄，总归，即使是基础的写法也是得学习的。写在这篇文档里面。</p>
 <h2 id="map"><a class="header-anchor" href="#map"></a>Map</h2>
 <h3 id="map-foreach"><a class="header-anchor" href="#map-foreach"></a>Map.foreach</h3>
 <ul>
@@ -241,7 +241,26 @@ val result = m1.foreach(x =&gt; println(&quot;key=&quot; + x._1 + &quot;, value=
 </code></pre>
 </li>
 </ul>
-<h2 id="how-to-call-shell-command-in-scala"><a class="header-anchor" href="#how-to-call-shell-command-in-scala"></a>how to call shell command in Scala</h2>
+<h2 id="怎么判断一个变量的类型"><a class="header-anchor" href="#怎么判断一个变量的类型"></a>怎么判断一个变量的类型</h2>
+<ul>
+<li>
+<p><code>isInstanceOf</code>，但是有一个发现：</p>
+<pre><code>scala&gt; (Boolean.box(a)).isInstanceOf[Boolean]
+res13: Boolean = true
+scala&gt; (Boolean.box(a)).isInstanceOf[scala.Boolean]
+res14: Boolean = true
+scala&gt; Boolean.box(a).getClass.getName
+res15: String = java.lang.Boolean
+</code></pre>
+</li>
+<li>
+<p>所以这样看来，还是<code>ClassName</code>比较准确。然鹅，不能使用<code>getClass.getSimpleName</code>，这样出来的，</p>
+<pre><code>scala&gt; a.getClass.getSimpleName
+res10: String = boolean
+</code></pre>
+</li>
+</ul>
+<h2 id="scala中调用shell"><a class="header-anchor" href="#scala中调用shell"></a>Scala中调用shell</h2>
 <ul>
 <li>
 <p>在<code>scala</code>里面调用<code>shell</code>命令是非常方便的，只需要引入<code>import scala.sys.process._</code>包就可以了</p>
@@ -396,6 +415,40 @@ val bigwig = json(&quot;residents&quot;)(1)
 <li><code>playjson</code>提供了接口在<code>JSONObject</code>里面新加</li>
 </ul>
 <h4 id="如何判断某个json节点是不是一个jsonlist或者jsonobject"><a class="header-anchor" href="#如何判断某个json节点是不是一个jsonlist或者jsonobject"></a>如何判断某个Json节点是不是一个JsonList或者JSONObject</h4>
+<h2 id="实践所得"><a class="header-anchor" href="#实践所得"></a>实践所得</h2>
+<h3 id="boolean"><a class="header-anchor" href="#boolean"></a>Boolean</h3>
+<ul>
+<li>工作中的一个<code>bug</code>，某个标志，在框架代码中定义的时候是<code>java</code>写的；</li>
+<li>调用的工程是<code>scala</code>的，所以直接使用了<code>scala</code>的<code>Boolean</code>。</li>
+<li>两个并不兼容。相当于框架中定义的函数并没有被调用，由于这个标志位并不是项目的测试重点，所以就漏到客户那边，才发现这个标志位在<code>GUI</code>上面没法被设置。因为框架的背景代码是<code>java</code>定义的，而<code>GUI</code>渲染时候是根据<code>annotation</code>去渲染的。就没成功。</li>
+<li>好吧，这个框架我还不够细致的了解啊。需要学习的细节太多了。<br>
+<img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/Coding_Language/Scala_Boolean.PNG" alt=""></li>
+</ul>
+<blockquote>
+<p>scala里面的Boolean定义</p>
+</blockquote>
+<h4 id="如何进行类型转换"><a class="header-anchor" href="#如何进行类型转换"></a>如何进行类型转换</h4>
+<blockquote>
+<p>里面提供了好几种方法，简单描述一下<br>
+<a href="https://stackoverflow.com/questions/9638492/conversion-of-scala-map-containing-boolean-to-java-map-containing-java-lang-bool" target="_blank" rel="noopener">scala-boolean-to-java</a></p>
+</blockquote>
+<ul>
+<li>
+<p>可以使用<code>box</code>方法得到<code>java.lang.Boolean</code></p>
+<pre><code>val b: java.util.Map[Int, java.lang.Boolean] = a.mapValues(Boolean.box)
+</code></pre>
+</li>
+<li>
+<p>可以使用<code>scala.Predef</code>中的<code>boolean2Boolean</code>函数，在上述链接里面也有类似方法的定义</p>
+<pre><code>implicit def boolMap2Java[T](m: Map[T, Boolean]): 
+java.util.Map[T, java.lang.Boolean] = m.mapValues(Boolean.box)
+val b: java.util.Map[Int, java.lang.Boolean] = a
+</code></pre>
+</li>
+<li>
+<p>还可以使用<code>JavaConversions</code>的<code>asJava</code></p>
+</li>
+</ul>
 
     </div>
 
@@ -480,7 +533,7 @@ val bigwig = json(&quot;residents&quot;)(1)
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#map"><span class="nav-number">1.</span> <span class="nav-text">Map</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#map-foreach"><span class="nav-number">1.1.</span> <span class="nav-text">Map.foreach</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#how-to-call-shell-command-in-scala"><span class="nav-number">2.</span> <span class="nav-text">how to call shell command in Scala</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#scala中处理json"><span class="nav-number">3.</span> <span class="nav-text">Scala中处理Json</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#有哪些可用的json库"><span class="nav-number">3.1.</span> <span class="nav-text">有哪些可用的JSON库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#playjson"><span class="nav-number">3.2.</span> <span class="nav-text">playjson</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#如何判断一个字符串是不是json格式"><span class="nav-number">3.2.1.</span> <span class="nav-text">如何判断一个字符串是不是JSON格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#生成json"><span class="nav-number">3.2.2.</span> <span class="nav-text">生成Json</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#得到一个json节点"><span class="nav-number">3.2.3.</span> <span class="nav-text">得到一个Json节点</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#知道路径"><span class="nav-number">3.2.3.1.</span> <span class="nav-text">知道路径</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#只知道键值"><span class="nav-number">3.2.3.2.</span> <span class="nav-text">只知道键值</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#通过index"><span class="nav-number">3.2.3.3.</span> <span class="nav-text">通过index</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#如何修改一个json节点的值"><span class="nav-number">3.2.4.</span> <span class="nav-text">如何修改一个Json节点的值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#如何判断某个json节点是不是一个jsonlist或者jsonobject"><span class="nav-number">3.2.5.</span> <span class="nav-text">如何判断某个Json节点是不是一个JsonList或者JSONObject</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#map"><span class="nav-number">1.</span> <span class="nav-text">Map</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#map-foreach"><span class="nav-number">1.1.</span> <span class="nav-text">Map.foreach</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#怎么判断一个变量的类型"><span class="nav-number">2.</span> <span class="nav-text">怎么判断一个变量的类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#scala中调用shell"><span class="nav-number">3.</span> <span class="nav-text">Scala中调用shell</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#scala中处理json"><span class="nav-number">4.</span> <span class="nav-text">Scala中处理Json</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#有哪些可用的json库"><span class="nav-number">4.1.</span> <span class="nav-text">有哪些可用的JSON库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#playjson"><span class="nav-number">4.2.</span> <span class="nav-text">playjson</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#如何判断一个字符串是不是json格式"><span class="nav-number">4.2.1.</span> <span class="nav-text">如何判断一个字符串是不是JSON格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#生成json"><span class="nav-number">4.2.2.</span> <span class="nav-text">生成Json</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#得到一个json节点"><span class="nav-number">4.2.3.</span> <span class="nav-text">得到一个Json节点</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#知道路径"><span class="nav-number">4.2.3.1.</span> <span class="nav-text">知道路径</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#只知道键值"><span class="nav-number">4.2.3.2.</span> <span class="nav-text">只知道键值</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#通过index"><span class="nav-number">4.2.3.3.</span> <span class="nav-text">通过index</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#如何修改一个json节点的值"><span class="nav-number">4.2.4.</span> <span class="nav-text">如何修改一个Json节点的值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#如何判断某个json节点是不是一个jsonlist或者jsonobject"><span class="nav-number">4.2.5.</span> <span class="nav-text">如何判断某个Json节点是不是一个JsonList或者JSONObject</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实践所得"><span class="nav-number">5.</span> <span class="nav-text">实践所得</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#boolean"><span class="nav-number">5.1.</span> <span class="nav-text">Boolean</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#如何进行类型转换"><span class="nav-number">5.1.1.</span> <span class="nav-text">如何进行类型转换</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
