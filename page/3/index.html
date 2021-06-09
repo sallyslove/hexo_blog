@@ -148,6 +148,434 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/2019/06/25/Cassandra_Maintain/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
+      <meta itemprop="name" content="Lynn Shen">
+      <meta itemprop="description" content="35岁开始的博客，有点晚哦">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="跬步">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/hexo_blog/2019/06/25/Cassandra_Maintain/" class="post-title-link" itemprop="url">Cassandra Maintain</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-06-25 17:01:57" itemprop="dateCreated datePublished" datetime="2019-06-25T17:01:57+08:00">2019-06-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-02-22 16:24:25" itemprop="dateModified" datetime="2021-02-22T16:24:25+08:00">2021-02-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/cassandra/" itemprop="url" rel="index"><span itemprop="name">cassandra</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/hexo_blog/2019/06/25/Cassandra_Maintain/" class="post-meta-item leancloud_visitors" data-flag-title="Cassandra Maintain" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/hexo_blog/2019/06/25/Cassandra_Maintain/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/hexo_blog/2019/06/25/Cassandra_Maintain/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="参考链接"><a class="header-anchor" href="#参考链接"></a>参考链接</h2>
+<ul>
+<li><a href="https://thelastpickle.com/blog/2016/07/27/about-deletes-and-tombstones.html" target="_blank" rel="noopener">关于Cassandra的删除和墓碑</a></li>
+<li><a href="http://cassandra.apache.org/doc/latest/operating/compaction.html#defragmentation" target="_blank" rel="noopener">最新官方文档，非常清楚</a></li>
+<li><a href="https://zhaoyanblog.com/archives/966.html" target="_blank" rel="noopener">有上篇文章的翻译</a></li>
+<li><a href="https://www.cnblogs.com/didda/p/4728588.html" target="_blank" rel="noopener">Cassandra 的压缩策略STCS，LCS 和 DTCS</a></li>
+</ul>
+<h2 id="delete-data"><a class="header-anchor" href="#delete-data"></a>Delete Data</h2>
+<ul>
+<li>找了一下博客，发现居然都没有一个章节是关于删除数据的</li>
+<li>事实上，<code>Cassandra</code>里面的删除是一种写操作，会插入墓碑。在上面的参加链接里面详尽描述了这个过程</li>
+<li>可以使用<code>SSTabledump</code>命令来进行查询。<strong><em>但是并没有在我们的环境中找到这个命令</em></strong></li>
+<li>需要注意的是这里讨论的都是删除之后再<code>flush</code>到<code>SSTable</code>里的情况，<code>Memtable</code>里面的数据删除会有所不痛</li>
+<li><code>gc_grace_seconds</code>：在删除数据之后会保存一段时间的墓碑，以此来保证数据同步。</li>
+</ul>
+<h3 id="删除某一行的某个数据"><a class="header-anchor" href="#删除某一行的某个数据"></a>删除某一行的某个数据</h3>
+<ul>
+<li>
+<p>可以只删除某一行的某一个数据，如下</p>
+</li>
+<li>
+<p>当删除掉某一行的某个数据的时候，使用上面的<code>SSTabledump</code>命令，这一行数据将没有<code>liveness_info</code></p>
+<pre><code>DELETE crates FROM tlp_lab.tombstones WHERE fruit='apple' AND date ='20160617';
+</code></pre>
+</li>
+</ul>
+<p>那么这个数据会显示<code>null</code></p>
+<pre><code>  alain$ echo &quot;SELECT * FROM tlp_lab.tombstones LIMIT 100;&quot; | cqlsh
+  fruit   | date     | crates
+  ---------+----------+-----------------
+  apple | 20160617 |            null
+</code></pre>
+<h3 id="删除一行的数据"><a class="header-anchor" href="#删除一行的数据"></a>删除一行的数据</h3>
+<ul>
+<li>
+<p>删除掉一行之后，这一行的数据的<code>cell</code>也将没有任何数据</p>
+<pre><code>&quot;rows&quot; : [
+{
+  &quot;type&quot; : &quot;row&quot;,
+  &quot;position&quot; : 19,
+  &quot;clustering&quot; : [ &quot;20160617&quot; ],
+  &quot;deletion_info&quot; : { &quot;marked_deleted&quot; : &quot;2016-06-16T19:31:41.142454Z&quot;, &quot;local_delete_time&quot; : &quot;2016-06-16T19:31:41Z&quot; },
+  &quot;cells&quot; : [ ]
+}
+
+&quot;rows&quot; : [
+{
+  &quot;type&quot; : &quot;row&quot;,
+  &quot;position&quot; : 125,
+  &quot;clustering&quot; : [ &quot;20160616&quot; ],
+  &quot;liveness_info&quot; : { &quot;tstamp&quot; : &quot;2016-06-16T18:52:41.903751Z&quot;, &quot;ttl&quot; : 2592000, &quot;expires_at&quot; : &quot;2016-07-16T18:52:41Z&quot;, &quot;expired&quot; : false },
+  &quot;cells&quot; : [
+    { &quot;name&quot; : &quot;crates&quot;, &quot;deletion_info&quot; : { &quot;marked_deleted&quot; : &quot;2016-06-16T18:52:41.903750Z&quot;, &quot;local_delete_time&quot; : &quot;2016-06-16T18:52:41Z&quot; } },
+    { &quot;name&quot; : &quot;crates&quot;, &quot;path&quot; : [ &quot;6&quot; ], &quot;value&quot; : &quot;&quot; },
+    { &quot;name&quot; : &quot;crates&quot;, &quot;path&quot; : [ &quot;7&quot; ], &quot;value&quot; : &quot;&quot; },
+    { &quot;name&quot; : &quot;crates&quot;, &quot;path&quot; : [ &quot;8&quot; ], &quot;value&quot; : &quot;&quot; }
+  ]
+}
+</code></pre>
+</li>
+</ul>
+<h3 id="删除一个范围内的数据"><a class="header-anchor" href="#删除一个范围内的数据"></a>删除一个范围内的数据</h3>
+<ul>
+<li>
+<p>这个含义就是，比如下面的命令，这样可以一次性删除好几行数据</p>
+<pre><code>DELETE FROM tlp_lab.tombstones WHERE fruit='apple' AND date &gt; '20160615';
+</code></pre>
+</li>
+<li>
+<p>那么存下来的数据会变为，<code>type</code>变化了</p>
+<pre><code>&quot;rows&quot; : [
+    {
+      &quot;type&quot; : &quot;range_tombstone_bound&quot;,
+      &quot;start&quot; : {
+        &quot;type&quot; : &quot;exclusive&quot;,
+        &quot;clustering&quot; : [ &quot;20160615&quot; ],
+        &quot;deletion_info&quot; : { &quot;marked_deleted&quot; : &quot;2016-06-16T19:53:21.133300Z&quot;, &quot;local_delete_time&quot; : &quot;2016-06-16T19:53:21Z&quot; }
+      }
+    },
+    {
+      &quot;type&quot; : &quot;range_tombstone_bound&quot;,
+      &quot;end&quot; : {
+        &quot;type&quot; : &quot;inclusive&quot;,
+        &quot;deletion_info&quot; : { &quot;marked_deleted&quot; : &quot;2016-06-16T19:53:21.133300Z&quot;, &quot;local_delete_time&quot; : &quot;2016-06-16T19:53:21Z&quot; }
+      }
+</code></pre>
+</li>
+</ul>
+<h3 id="删除一个partition的数据"><a class="header-anchor" href="#删除一个partition的数据"></a>删除一个partition的数据</h3>
+<ul>
+<li>
+<p>命令如下：</p>
+<pre><code>DELETE FROM tlp_lab.tombstones WHERE fruit='pickles';
+</code></pre>
+<p>会在<code>partition</code>的地方加入<code>deletion_info</code>，而通常情况下只有<code>key</code>和<code>position</code></p>
+<pre><code>{
+  &quot;partition&quot; : {
+    &quot;key&quot; : [ &quot;pickles&quot; ],
+    &quot;position&quot; : 0,
+    &quot;deletion_info&quot; : { &quot;marked_deleted&quot; : &quot;2016-06-17T09:38:52.550841Z&quot;, &quot;local_delete_time&quot; : &quot;2016-06-17T09:38:52Z&quot; }
+}
+  
+&quot;partition&quot; : {
+   &quot;key&quot; : [ &quot;apple&quot; ],
+   &quot;position&quot; : 0
+},  
+</code></pre>
+</li>
+</ul>
+<h3 id="集合数据"><a class="header-anchor" href="#集合数据"></a>集合数据</h3>
+<ul>
+<li>需要额外注意的一点是，如果使用集合数据，比如<code>list</code>，那么在更新的时候，会有一个潜在的删除操作。会将旧的数据删除，这一点非常恼人，需要注意</li>
+</ul>
+<h3 id="gc-grace-seconds参数"><a class="header-anchor" href="#gc-grace-seconds参数"></a>gc_grace_seconds参数</h3>
+<ul>
+<li><code>gc_grace_seconds</code>参数的默认值为10天，这个参数的意思就是这个数据被删除之后，相应的<code>tombstone</code>也不会立刻在<code>compaction</code>中被移除</li>
+<li>这个值的目的是为了保证删除的一致性。以防有的节点上面删除失败，出现幽灵数据。在维护操作章节中有进一步的解释。假设有删除失败，然后客户做了<code>repair</code>操作，那么这个数据会被复制到已经删除的节点上面。那么就错了。相反，如果是插墓碑，即使有节点没插上，<code>repair</code>的时候也只会复制个墓碑过去。这也就是为什么需要需要维持一阵墓碑</li>
+</ul>
+<h2 id="维护操作"><a class="header-anchor" href="#维护操作"></a>维护操作</h2>
+<ul>
+<li><code>minor compaction</code>: 这个就是<code>C#</code>自己做的压缩</li>
+<li><code>major compaction</code>: 这个就是手动的用<code>nodetool</code>做的，会对所有的当前<code>node</code>上面的<code>SSTable</code>进行压缩</li>
+<li><code>user defined compaction</code>： 客户自定义的，对部分<code>SSTable</code>进行压缩。用户可以只针对一张表来做压缩，Cassandra会对数据进行校验，使用<code>unchecked_tombstone_compaction</code> 参数可以跳过这个校验过程</li>
+<li><code>Scrub</code>: 这个操作会尝试修复<code>SSTable</code>，所以这个动作有可能会删除有效但是已经坏掉的数据，如果这个发生，得用<code>repair</code>来修复</li>
+<li>在以下的参考链接里面还有一些奇特的维护操作，暂时没学习</li>
+<li><a href="http://cassandra.apache.org/doc/latest/operating/compaction.html" target="_blank" rel="noopener">维护操作和压缩</a></li>
+</ul>
+<h2 id="compacting-sstable-data"><a class="header-anchor" href="#compacting-sstable-data"></a>Compacting SSTable Data</h2>
+<p><img src="https://docs.datastax.com/en/cassandra/3.0/cassandra/images/dml_compaction.png" alt="官网压缩数据图片"></p>
+<h3 id="为什么需要compaction"><a class="header-anchor" href="#为什么需要compaction"></a>为什么需要Compaction</h3>
+<ul>
+<li><code>cassandra</code>并不会删除数据。当需要<code>update</code>一个数据的时候，也不是在<code>SSTable</code>里面进行覆盖，而是会插入一个新的数据，带上新的<code>version</code>。</li>
+<li>这样做的话，<code>cassandra</code>写入数据会非常快，因为不需要查询，但是弊端就是会有越来越多的数据。</li>
+<li>这个时候就需要进行<code>compaction</code>。</li>
+</ul>
+<h3 id="什么是compaction"><a class="header-anchor" href="#什么是compaction"></a>什么是Compaction</h3>
+<ul>
+<li>To keep the multiple versions of the SSTables from overwhelming it, the database merges SSTables on a regular basis to get rid of the older versions of the data。 <code>cassandra</code>会在一个基础之上对旧的版本的数据进行合并，这个就是<code>compaction</code></li>
+<li><code>cassandra</code>默认会进行很多次小的<code>compaction</code>。在有新生成<code>SStable</code>的时候，或者默认5分钟会进行一次检查，需不需要进行<code>minor compaction</code></li>
+<li>会合并同一行的，不同版本的数据。不同版本带着不同的<code>timestamp</code></li>
+</ul>
+<h3 id="什么情况下墓碑会在compaction中被移除"><a class="header-anchor" href="#什么情况下墓碑会在compaction中被移除"></a>什么情况下墓碑会在Compaction中被移除</h3>
+<ul>
+<li>这也是来自上篇参考文档的。这篇文档比较清楚</li>
+<li>事实上有好几个要求：
+<ul>
+<li><code>gc_grace_seconds</code> 已经过了，这点已经在上面解释过了</li>
+<li>_If partition X contains the tombstone, the sstable containing the partition plus all sstables containing data older than the tombstone containing X must be included in the same compaction. We don’t need to care if the partition is in an sstable if we can guarantee that all data in that sstable is newer than the tombstone. If the tombstone is older than the data it cannot shadow that data._这句话实在太拗口了，含义就是说墓碑得是最老的一个，否则删除不掉？</li>
+<li><code>only_purge_repaired_tombstones</code> 这还有一个参数，如果不是repair过程中的墓碑就不删除。这个参数估计很少用吧</li>
+<li>还有一个特殊情况，就是整个<code>SSTable</code>里面都是墓碑，这种情况在以时间序列的表并且使用了<code>TTL</code>之后很容易出现。如果没有被整表删除，那么就像上一个bullet里面讲的，说明其他表里面有更老的数据。有一个工具<code>sstableexpiredblockers</code>可以进行查询。还有一个参数可以使用<code>unsafe_aggressive_sstable_expiration</code>，在使用时间压缩策略时候，这个参数可以保证删除这种表</li>
+</ul>
+</li>
+</ul>
+<h3 id="compaction的参数和命令"><a class="header-anchor" href="#compaction的参数和命令"></a>compaction的参数和命令</h3>
+<ul>
+<li>在上篇链接中有，列一部分：
+<ul>
+<li><code>log_all</code>: 可以记录压缩的日志</li>
+<li><a href="http://cassandra.apache.org/doc/latest/operating/compaction.html" target="_blank" rel="noopener">维护操作和压缩</a></li>
+</ul>
+</li>
+<li>命令在上面的链接中也有，这边也列一部分：
+<ul>
+<li><code>compactionstats</code>: 状态</li>
+<li><code>compactionhistory</code>: 历史</li>
+</ul>
+</li>
+<li>如果是在一个正在运行的系统中改变表的参数，可以使用<code>ALTER TABLE</code>命令来进行</li>
+</ul>
+<h3 id="其他一些campaction细节"><a class="header-anchor" href="#其他一些campaction细节"></a>其他一些Campaction细节</h3>
+<ul>
+<li>在<code>compaction</code>期间，<code>cassandra</code>会合并<code>key</code>和<code>column</code>，同时会将过期的墓碑删除，还会生成一个新的<code>index</code>？ <strong><em>这个index是什么东西啊</em></strong></li>
+<li>合并之后会生成一个新的<code>SSTable</code>。而不需要的数据版本和行就会留在旧的<code>SSTable</code>里面，当正在执行的读操作结束之后，就可以删除掉。</li>
+<li><code>compaction</code>期间的资源耗用会上升，但是<code>compaction</code>结束之后应该会释放空间，因为它合并了<code>SSTable</code></li>
+<li>旧的被合并的<code>table</code>会被加上<code>deletion</code>标签，并且在数据库重启或者在使用<code>reference counting mechanism</code>的时候。<strong><em>这个<code>reference counting mechanism</code>是什么啊</em></strong></li>
+<li><code>compaction</code>的算法是可以配置的，默认的是<code>size-tiered compaction</code>。这个算法会合并大小相近的table，生成大table</li>
+</ul>
+<h3 id="compaction对读数据的影响"><a class="header-anchor" href="#compaction对读数据的影响"></a>Compaction对读数据的影响</h3>
+<ul>
+<li><code>compaction</code>是<code>per-node</code>的，所以某个数据在<code>node1</code>上面的旧版本可能删除了。但是在<code>node2</code>上面还有。</li>
+<li>这样读的时候会进行一个合并，并且返回最后一个写的<code>version</code>。这个原则是<code>last-write-win</code></li>
+<li>Cassandra can read data directly from the new SSTable even before it finishes writing, instead of waiting for the entire compaction process to finish.</li>
+</ul>
+<h3 id="compaction-策略"><a class="header-anchor" href="#compaction-策略"></a>Compaction 策略</h3>
+<ul>
+<li>不同的策略决定了如何来选择<code>SSTable</code>以及压缩后的行如何插入到新的表格中</li>
+<li>我在压缩策略的道路上越走越远了啊。😂</li>
+</ul>
+<h4 id="sizetieredcompactionstrategy-stcs"><a class="header-anchor" href="#sizetieredcompactionstrategy-stcs"></a>SizeTieredCompactionStrategy (STCS)</h4>
+<h5 id="工作流程"><a class="header-anchor" href="#工作流程"></a>工作流程</h5>
+<ul>
+<li>当有4个大小相近的<code>STable</code>的时候就开始合并，所以并不是完全相同大小的</li>
+<li>将这些大小相近的<code>SSTable</code>合并成一个，当有4个更大的<code>table</code>的时候，再合并成更大的<code>SSTable</code></li>
+<li>所以会有很多大小不同的<code>SSTable</code>同时存在</li>
+</ul>
+<h4 id="参数"><a class="header-anchor" href="#参数"></a>参数</h4>
+<h5 id="优缺点"><a class="header-anchor" href="#优缺点"></a>优缺点</h5>
+<ul>
+<li>优势：写密集的工作良好。</li>
+<li>逆势：
+<ul>
+<li>可能降低读的效率。因为策略不保证同一行的数据被限制在有限的数据文件里面，这样在读取的时候会需要读取更多的数据文件。</li>
+<li>可能长期保持旧数据；不同版本的同一行会可能分布在不同的<code>SSTable</code>里面。并且不利于删除旧数据</li>
+<li>需要的内存和磁盘都会随着时间增加。磁盘在下面的问题章节中可以看到；而内存也是显而易见的，当<code>SSTable</code>的大小达到一定级别，一次压缩需要的内存会很大。因为需要<code>load SSTable</code>到内存里面</li>
+</ul>
+</li>
+</ul>
+<h5 id="问题"><a class="header-anchor" href="#问题"></a>问题</h5>
+<ul>
+<li>
+<p>在实际的工作中碰到了缺点中的问题，系统在工作3个月的时候能够在一个节点上面占用靠13G的磁盘量。</p>
+</li>
+<li>
+<p>观察下来，其实策略是在正常工作的。里面明显能够看到大小不同的data文件。</p>
+</li>
+<li>
+<p>现在客户的需求是不手动操作来解决占用磁盘的问题。总的来说，貌似不现实，毕竟多数建议是关闭自动SSTable压缩，改用手动在空闲期间进行压缩</p>
+<pre><code>total 13G
+ 115M Jan 24  2019 la-2421-big-Data.db
+ 101M Jan 24  2019 la-2443-big-Data.db
+ 453K Jan 24  2019 la-2447-big-Data.db
+ 124M Feb  3 14:47 lb-5276-big-Data.db
+ 216M Feb  3 14:54 lb-5280-big-Data.db
+ 235M Feb  3 14:54 lb-5281-big-Data.db
+ 680M Feb  4 11:24 lb-5294-big-Data.db
+ 781M Feb  4 11:36 lb-5295-big-Data.db
+ 2.8G Feb  4 11:54 lb-5296-big-Data.db
+ 3.3G Feb  4 12:52 lb-5298-big-Data.db
+ 3.5G Feb  4 12:54 lb-5297-big-Data.db
+</code></pre>
+</li>
+</ul>
+<h4 id="leveledcompactionstrategy-lcs"><a class="header-anchor" href="#leveledcompactionstrategy-lcs"></a>LeveledCompactionStrategy (LCS)</h4>
+<h5 id="工作流程-v2"><a class="header-anchor" href="#工作流程-v2"></a>工作流程</h5>
+<ul>
+<li>
+<p>LCS的工作流程是最不清晰的了。网上各类文章，有说L1的数据文件数量是L0的10倍的，有说整体大小的。我一口血都要喷显示器上面了,不带这么不严谨的好嘛 😦</p>
+</li>
+<li>
+<p>看代码其实最清楚了。应该是大小，不是数量：</p>
+</li>
+<li>
+<p>以下代码里面，maxSSTableSizeInBytes= 160M * 1024<em>1024，所以L0最大是160M</em>4</p>
+</li>
+<li>
+<p>代码在<code>org.apache.cassandra.db.compaction.LeveledCompactionStrategy</code></p>
+<pre><code>public static long maxBytesForLevel(int level, int levelFanoutSize, long maxSSTableSizeInBytes) {
+  if (level == 0) {
+      return 4L * maxSSTableSizeInBytes;
+  } else {
+      double bytes = Math.pow((double)levelFanoutSize, (double)level) * (double)maxSSTableSizeInBytes; 
+  }
+}
+</code></pre>
+</li>
+<li>
+<p><code>LCS</code>一大特点是会尽量保证在同一个层级里面，同一<code>partition key</code>的数据在同一张<code>SSTable</code>表里面。当然<code>L0</code>没法保证，因为这一层级是<code>flush</code>来的</p>
+</li>
+<li>
+<p>为了做到这一点，<code>LCS</code>在进行一次压缩的时候会包括上一级中也有这个<code>partition key</code>的数据，所以这个策略要读表啊。比如在<code>L1</code>级数据大于上限需要压缩的时候，<code>L2</code>级中包含相同<code>key</code>的表也要被一起合并，但是欣慰的是，应该也只有一张表。毕竟每一级都是这么干的。-</p>
+</li>
+<li>
+<p>我们在<code>Cassandra</code>中可以设定进行并行的压缩，那么在<code>LCS</code>策略中需要保证同一个<code>parititon key</code>的数据只在一个压缩线程中，不能有交叉重叠</p>
+</li>
+<li>
+<p>所以，压缩<code>L0</code>层级的时候，会带上所有<code>L1</code>的表一起压缩。如果<code>L0</code>很多，那么没法一次压缩做完所有<code>L0</code>的表格</p>
+</li>
+<li>
+<p>压缩时候优先考虑最高级别的。所有<code>L0</code>是最后考虑的一个层级</p>
+</li>
+<li>
+<p><code>LCS</code>有可能触发<code>major compaction</code>，这点需要进一步考察。</p>
+</li>
+<li>
+<p>如果<code>L0</code>级别的表超过32个，会进行<code>STCS</code></p>
+</li>
+</ul>
+<h5 id="相关参数"><a class="header-anchor" href="#相关参数"></a>相关参数</h5>
+<ul>
+<li><code>sstable_size_in_mb</code>: 就是上面代码里面那个<code>maxSSTableSizeInBytes</code>，第一层级的大小</li>
+<li><code>fanout_size</code>： 各个层级之间的差异，上面代码里面的<code>levelFanoutSize</code></li>
+</ul>
+<h5 id="优缺点-v2"><a class="header-anchor" href="#优缺点-v2"></a>优缺点</h5>
+<ul>
+<li>优点：
+<ul>
+<li>读比较频繁的更推荐这个算法。其实写的应该也可以。目前这应该是应用最广泛的压缩算法了。</li>
+<li>容易预测内存需求大小</li>
+<li>更容易删除旧数据</li>
+<li>需要的磁盘空间更小</li>
+</ul>
+</li>
+<li>缺点：
+<ul>
+<li>进行得更为频繁，所以需要的I/O比较多</li>
+</ul>
+</li>
+</ul>
+<h4 id="timewindowcompactionstrategy-twcs"><a class="header-anchor" href="#timewindowcompactionstrategy-twcs"></a>TimeWindowCompactionStrategy (TWCS)</h4>
+<ul>
+<li>接上文碰到的问题，刚刚好出问题的表的<code>partition key</code>是日期，所以研究得最多的就是这个策略了。而时间策略是唯一一个可以彻底删除过期的表的策略。当然，要结合下面的<code>TTL</code>一起用。</li>
+<li>需要注意的一点是：<code>TCWS</code>是从<code>Cassandra 3.0.8</code>才被引入的。而我们产品仍旧停留在<code>2.2.8</code>上，这也是为什么最后没法采用这个解决方案</li>
+</ul>
+<h5 id="工作原理"><a class="header-anchor" href="#工作原理"></a>工作原理</h5>
+<ul>
+<li>这个算法挺有意思的，而且简单好懂。就是说在一段时间内，比如一个小时内，使用<code>STCS</code>算法，然后在时间点上，一个小时结束的时候，把这个小时内的都压成一个大的数据文件。</li>
+<li>第二个小时开始的时候，重新算起，上一个小时压出来的大表就放那里不动了。</li>
+</ul>
+<h5 id="相关参数-v2"><a class="header-anchor" href="#相关参数-v2"></a>相关参数</h5>
+<ul>
+<li><code>compaction_window_unit</code>:MINUTES, HOURS, or DAYS</li>
+<li><code>compaction_window_size</code>:默认为1</li>
+<li><code>unsafe_aggressive_sstable_expiration</code>: 这个参数很有意思，就是说当一个表里面都是墓碑的时候，直接把表删除掉。这个参数是一个全局参数，是在启动<code>JVM</code>的时候设置的。因为是有风险的，有可能造成幽灵数据。同时，设置这个参数会覆盖掉<code>unchecked_tombstone_compaction</code>.</li>
+</ul>
+<h5 id="参考链接-v2"><a class="header-anchor" href="#参考链接-v2"></a>参考链接</h5>
+<ul>
+<li><a href="https://thelastpickle.com/blog/2016/12/08/TWCS-part1.html" target="_blank" rel="noopener">TWCS-part1</a></li>
+<li><a href="https://thelastpickle.com/blog/2017/01/10/twcs-part2.html" target="_blank" rel="noopener">TWCS-part2</a></li>
+</ul>
+<h3 id="ttl"><a class="header-anchor" href="#ttl"></a>TTL</h3>
+<h4 id="ttl被提出的背景"><a class="header-anchor" href="#ttl被提出的背景"></a>TTL被提出的背景</h4>
+<ul>
+<li>这是在处理产品的一个问题的时候被提出的，该问题就是，由于某个统计功能一直在写数据，然后每隔一个月左右会删除数据。</li>
+<li>表格以<code>date</code>作为<code>partition key</code>，所有数据在一个表里面，所以即使数据被删除了也没法直接<code>truncate</code>表，只能依赖<code>Cassandra</code>的<code>compaction</code>。</li>
+<li>最后越来越占磁盘。使用的策略是默认的<code>STCS</code>。然后就有大佬提了<code>TTL</code></li>
+<li>我原本在考虑加<code>crontab job</code>，但是其实没有意义，因为<code>Cassandra</code>提供的其实就是类似功能。</li>
+</ul>
+<h4 id="什么是ttl-time-to-live"><a class="header-anchor" href="#什么是ttl-time-to-live"></a>什么是TTL(time-to-live)</h4>
+<ul>
+<li><em>TTL: allows to specify an optional Time To Live (in seconds) for the inserted values. If set, the inserted values are automatically removed from the database after the specified time. Note that the TTL concerns the inserted values, not the column themselves. This means that any subsequent update of the column will also reset the TTL (to whatever TTL is specified in that update). By default, values never expire. A TTL of 0 or a negative one is equivalent to no TTL.</em></li>
+<li>其实<code>Cassandra</code>里面<code>TTL</code>的概念到处都是。但是通常说的<code>TTL</code>是指参数<code>default_time_to_live</code>，也就是说到了这个时间点，<code>Cassandra</code>会自动将数据删除掉。</li>
+<li>默认值为0，也就是<code>Cassandra</code>会认为这个数据一直有效</li>
+<li>这个参数在<code>desc tables</code>里面可以看到，但是我们产品的异步模块里面其实在代码里面进行了覆盖。<code>java</code>代码里面弄了个系统参数，在插入数据的时候代入了这个参数</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/2019/06/17/%E8%BD%AF%E4%BB%B6%E8%A1%A1%E9%87%8F%E6%A0%87%E5%87%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2148,171 +2576,6 @@ path: /<br>
 port: 80<br>
 initialDelaySeconds: 1<br>
 timeoutSeconds: 1</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://sallyslove.github.io/hexo_blog/2019/02/22/Jetty-Graceful-shutdown/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/hexo_blog/images/avatar.gif">
-      <meta itemprop="name" content="Lynn Shen">
-      <meta itemprop="description" content="35岁开始的博客，有点晚哦">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="跬步">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/hexo_blog/2019/02/22/Jetty-Graceful-shutdown/" class="post-title-link" itemprop="url">Jetty Graceful shutdown</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-02-22 15:21:42" itemprop="dateCreated datePublished" datetime="2019-02-22T15:21:42+08:00">2019-02-22</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-08-16 10:09:54" itemprop="dateModified" datetime="2019-08-16T10:09:54+08:00">2019-08-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/Other/" itemprop="url" rel="index"><span itemprop="name">Other</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/hexo_blog/2019/02/22/Jetty-Graceful-shutdown/" class="post-meta-item leancloud_visitors" data-flag-title="Jetty Graceful shutdown" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/hexo_blog/2019/02/22/Jetty-Graceful-shutdown/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/hexo_blog/2019/02/22/Jetty-Graceful-shutdown/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="jetty"><a class="header-anchor" href="#jetty"></a>Jetty</h2>
-<p>工作中需要了解Jetty启停的一些知识，可能不能看到全貌，这边记录下来。毕竟不是web的产品。了解得还不够深入啊。</p>
-<h3 id="what-is-graceful-shutdown"><a class="header-anchor" href="#what-is-graceful-shutdown"></a>what is graceful shutdown</h3>
-<ul>
-<li>Graceful shutdown of a server, context or connector is when existing request/connections are allowed to gracefully complete while no new requests and/or connections are accepted.</li>
-<li>It is configured on the Server instance with the setGracefulShutdown(long) method. Heres an example of setting this via the jetty.xml file, where we specify a “grace” period of 30000 milliseconds:<br>
-<Set name="gracefulShutdown">30000</Set></li>
-<li>The parameter may be already not used any more</li>
-</ul>
-<h3 id="how-it-works"><a class="header-anchor" href="#how-it-works"></a>How it works</h3>
-<ul>
-<li>As soon as the shutdown command is given, the container will close the connectors so that they do not accept any more inbound connections.</li>
-<li>所以在<code>ServerControllerImpl</code>里面，如果HTTP的配置参数是false，Connector确实是一上来就停掉了。但是怎么都到<code>JettyServer的</code>getContext（）`函数里面的</li>
-<li><code>ServerControllerImpl</code> 应该是HTTP server的controller</li>
-</ul>
-<pre><code> if (!ServerControllerImpl.this.configuration.isHttpEnabled()) {
-                connectorsx = ServerControllerImpl.this.jettyServer.getConnectors();
-                if (connectorsx != null) {
-                     ...
-                      this.stopConnector(backupConnector);
-                            ServerControllerImpl.this.jettyServer.removeConnector(backupConnector);
-  ...
-</code></pre>
-<ul>
-<li>This will inform most load balancers that the server is no longer part of the cluster.</li>
-<li>The contexts are closed so that they do not accept any more requests, but the requests currently inside the container will drain out and the Server instance will shutdown after the grace period expires.<br>
-not very sure here. It seems that connector and context are different. I think the connector is more related with port. But context is more related with servlet.</li>
-</ul>
-<h3 id="elements"><a class="header-anchor" href="#elements"></a>Elements</h3>
-<p>我理解在整个jetty server shutdown的时候有几个东西： connector、context、server。以下是理解，不一定准确：</p>
-<ul>
-<li>servlet 是在context里面的，context一旦stop掉，servlet也会跟着destroy。context是WebAppHttpContext，servlet是其中的一个web Element。</li>
-<li>有三个context，一个是HttpServiceContext， 一个是WebAppHttpContext，还有servlet的context。WebAppHttpContext是jetty stop context时候停掉的，每个web app对应一个。前者是jetty server停掉的时候停掉的。感觉server停掉的时候，webAppHttpContext不一定都结束了。但是jetty server停掉的时候，HttpServiceContext是停止了。servlet的context结构是servlet里面的一个internal class，跟每个uri绑定。</li>
-<li>connector是在jetty里面定义的,有几种connector，比如<code>org.eclipse.jetty.server.ssl.SslSelectChannelConnector</code>，<code>org.eclipse.jetty.server.nio.SelectChannelConnector</code>。</li>
-</ul>
-<p>在Connector的interface里面有个maxIdleTimeout的参数，标示这个connection在idle时候会等多久从ESTABLISH状态变成TIME_WAIT状态。但是并没有在代码里面找到调用的地方。</p>
-<p>___ 这个是在停的时候调用的那个吗？果然写blog要再清楚一点才好___</p>
-<ul>
-<li>Connector是在jetty的配置文件里面配置的</li>
-</ul>
-<h3 id="jetty启动过程"><a class="header-anchor" href="#jetty启动过程"></a>Jetty启动过程</h3>
-<p>大部分web容器的启动过程都差不多，分为如下几步：</p>
-<ul>
-<li>创建用于连接的connector，创建线程池</li>
-<li>扫描当前的web程序的部署目录，为他们创建上下文环境，并对他们进行path的路由设置，这个的名字是WebAppHttpContext</li>
-<li>初始化创建的web程序上下文，这里就包括创建servlet啥的。，初始化linstener啥的。并做好自己的path路由。.</li>
-<li>启动connector，开始监听，整个server开始运行</li>
-<li>没看出来HttpServiceContext是什么</li>
-<li>参考文档：
-<ul>
-<li><a href="https://blog.csdn.net/kobejayandy/article/details/20291953" target="_blank" rel="noopener">Jetty的Server创建与启动</a></li>
-</ul>
-</li>
-</ul>
-<h3 id="filter-servlet-listener顺序"><a class="header-anchor" href="#filter-servlet-listener顺序"></a>Filter、Servlet、Listener顺序</h3>
-<h4 id="启动顺序"><a class="header-anchor" href="#启动顺序"></a>启动顺序</h4>
-<ul>
-<li>filter的初始化是web server启动的时候初始化的</li>
-<li>servlet的初始化是收到对应的第一条request时候进行的</li>
-<li>执行时候是先执行filter，再执行servlet</li>
-<li>从启动日志来看，启动的顺序为listener-&gt;Filter-&gt;servlet.</li>
-</ul>
-<h4 id="停止顺序"><a class="header-anchor" href="#停止顺序"></a>停止顺序</h4>
-<ul>
-<li>容器关闭或者context重新部署，这时候servlet先destroy掉</li>
-<li>servlet之后才是filter关闭</li>
-</ul>
-<h4 id="参考资料"><a class="header-anchor" href="#参考资料"></a>参考资料</h4>
-<ul>
-<li><a href="https://www.jianshu.com/p/612c3a6673b2" target="_blank" rel="noopener">Listener、Filter、Servlet执行顺序</a></li>
 </ul>
 
       

@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"sallyslove.github.io","root":"/hexo_blog/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="Cassandra system log分析 最近一周可能都会在看Cassandra的system log，看Cassandra在干嘛。其中会涉及到cassandra的一些机制，概念记录下来。 文档名字暂时的，其中的概念可能后期会移走。 Nodetool Cassandra的状态可以用NodeTool来check，如果采用了ssl 认证，那么命令是 NodeTool --ssl Gossip Ta">
+  <meta name="description" content="了解Cassandra的system log，可以看到Cassandra在干嘛。其中会涉及到cassandra的一些机制，概念记录下来。 Nodetool Cassandra的状态可以用NodeTool来检查，如果采用了ssl认证，那么命令是 NodeTool --ssl Gossip Tasks  Apache Cassandra 3.X 系列   名字太好记 ，有没有 😃 Cassandra">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Cassandra system log分析">
+<meta property="og:title" content="Cassandra System Log Analyses">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/01/17/Cassandra%20System%20Log%20Analyses/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="Cassandra system log分析 最近一周可能都会在看Cassandra的system log，看Cassandra在干嘛。其中会涉及到cassandra的一些机制，概念记录下来。 文档名字暂时的，其中的概念可能后期会移走。 Nodetool Cassandra的状态可以用NodeTool来check，如果采用了ssl 认证，那么命令是 NodeTool --ssl Gossip Ta">
+<meta property="og:description" content="了解Cassandra的system log，可以看到Cassandra在干嘛。其中会涉及到cassandra的一些机制，概念记录下来。 Nodetool Cassandra的状态可以用NodeTool来检查，如果采用了ssl认证，那么命令是 NodeTool --ssl Gossip Tasks  Apache Cassandra 3.X 系列   名字太好记 ，有没有 😃 Cassandra">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2019-01-17T06:28:35.000Z">
-<meta property="article:modified_time" content="2021-02-22T09:16:52.857Z">
+<meta property="article:modified_time" content="2021-06-04T07:32:29.006Z">
 <meta property="article:author" content="Lynn Shen">
 <meta property="article:tag" content="Cassandra">
 <meta name="twitter:card" content="summary">
@@ -46,7 +46,7 @@
   };
 </script>
 
-  <title>Cassandra system log分析 | 跬步</title>
+  <title>Cassandra System Log Analyses | 跬步</title>
   
 
 
@@ -165,7 +165,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Cassandra system log分析
+          Cassandra System Log Analyses
         </h1>
 
         <div class="post-meta">
@@ -182,7 +182,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-02-22 17:16:52" itemprop="dateModified" datetime="2021-02-22T17:16:52+08:00">2021-02-22</time>
+                <time title="修改时间：2021-06-04 15:32:29" itemprop="dateModified" datetime="2021-06-04T15:32:29+08:00">2021-06-04</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -195,7 +195,7 @@
             </span>
 
           
-            <span id="/hexo_blog/2019/01/17/Cassandra%20System%20Log%20Analyses/" class="post-meta-item leancloud_visitors" data-flag-title="Cassandra system log分析" title="阅读次数">
+            <span id="/hexo_blog/2019/01/17/Cassandra%20System%20Log%20Analyses/" class="post-meta-item leancloud_visitors" data-flag-title="Cassandra System Log Analyses" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -226,109 +226,194 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="cassandra-system-log分析"><a class="header-anchor" href="#cassandra-system-log分析"></a>Cassandra system log分析</h2>
-<p>最近一周可能都会在看Cassandra的system log，看Cassandra在干嘛。其中会涉及到cassandra的一些机制，概念记录下来。<br>
-文档名字暂时的，其中的概念可能后期会移走。</p>
-<h3 id="nodetool"><a class="header-anchor" href="#nodetool"></a>Nodetool</h3>
-<p>Cassandra的状态可以用<code>NodeTool</code>来check，如果采用了ssl 认证，那么命令是 <code>NodeTool --ssl</code></p>
-<h3 id="gossip-tasks"><a class="header-anchor" href="#gossip-tasks"></a>Gossip Tasks</h3>
-<h4 id="pending-task-log"><a class="header-anchor" href="#pending-task-log"></a>Pending task log</h4>
-<p>名字太好记 ，有没有 😃<br>
-Cassandra 的各个节点是无中心化对待的。能做到这一点的一个关键是使用了Gossip协议。这是一个很适用于不可信网络的协议</p>
+        <p>了解<code>Cassandra</code>的<code>system log</code>，可以看到<code>Cassandra</code>在干嘛。其中会涉及到<code>cassandra</code>的一些机制，概念记录下来。</p>
+<h2 id="nodetool"><a class="header-anchor" href="#nodetool"></a>Nodetool</h2>
+<p><code>Cassandra</code>的状态可以用<code>NodeTool</code>来检查，如果采用了<code>ssl</code>认证，那么命令是 <code>NodeTool --ssl</code></p>
+<h2 id="gossip-tasks"><a class="header-anchor" href="#gossip-tasks"></a>Gossip Tasks</h2>
+<blockquote>
+<p><a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-apache-cassandra3x3/index.html" target="_blank" rel="noopener">Apache Cassandra 3.X 系列</a></p>
+</blockquote>
 <ul>
-<li>参考链接， 后续需要更为仔细深入的学习： <a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-apache-cassandra3x3/index.html" target="_blank" rel="noopener">Apache Cassandra 3.X 系列</a></li>
-<li>Cassandra中Gossip协议被实现在类<code>Gossiper</code>中。</li>
-<li>Gossiper 类维护了一个节点列表，这个列表里包括存活的和死亡的节点。</li>
+<li>名字太好记 ，有没有 😃</li>
+<li><code>Cassandra</code>的各个节点是无中心化对待的。能做到这一点的一个关键是使用了<code>Gossip</code>协议。这是一个很适用于不可信网络的协议
+<ul>
+<li><code>Cassandra</code>中<code>Gossip</code>协议被实现在类<code>Gossiper</code>中。</li>
+<li><code>Gossiper</code>类维护了一个节点列表，这个列表里包括存活的和死亡的节点。</li>
 <li><code>GossipTask</code> 是位于 <code>org.apche.cassandra.gms.Gossip</code> 类下的一个内部类。</li>
-<li>GossipTask会向其他节点发消息，默认时间是1s</li>
-<li>在log里面会有：<br>
-[GossipTasks:1] 2019-01-03 04:19:33,680 Gossiper.java:751 - Gossip stage has 378 pending tasks; skipping status check (no nodes will be marked down)</li>
+<li><code>GossipTask</code>会向其他节点发消息，默认时间是<code>1s</code></li>
 </ul>
-<h4 id="pause-error-not-making-nodes-down"><a class="header-anchor" href="#pause-error-not-making-nodes-down"></a>Pause Error: Not making Nodes Down</h4>
+</li>
+</ul>
+<h3 id="pending-task-log"><a class="header-anchor" href="#pending-task-log"></a>Pending task log</h3>
 <ul>
-<li>在log里面经常会出现:以下是说cassandra在做其他事情，导致Gossip停顿了， hang住了。但是并不标示node状态。</li>
-<li>通常是GC的时候，这一句的上一句log确实提示了一次55742ms的GC，但是GC通常也发生在有很多task的时候，所以应该看看其他在做什么task</li>
+<li>
+<p>在<code>log</code>里面会有：</p>
+<pre><code>[GossipTasks:1] 2019-01-03 04:19:33,680 Gossiper.java:751 - Gossip stage has 378 pending tasks; skipping status check (no nodes will be marked down)
+</code></pre>
+</li>
+</ul>
+<h3 id="pause-error-not-making-nodes-down"><a class="header-anchor" href="#pause-error-not-making-nodes-down"></a>Pause Error: Not making Nodes Down</h3>
+<blockquote>
+<p><a href="http://www.cnblogs.com/jobforlife/p/7092467.html" target="_blank" rel="noopener">error解释</a></p>
+</blockquote>
+<ul>
+<li>在<code>log</code>里面经常会出现</li>
+<li>含义：<code>cassandra</code>在做其他事情，导致<code>Gossip</code>停顿了， <code>hang</code>住了。但是并不标示<code>node</code>状态。</li>
+<li>通常是<code>GC</code>的时候，这一句的上一句<code>log</code>确实提示了一次<code>55742ms</code>的<code>GC</code></li>
+<li><strong><code>GC</code>通常也发生在有很多<code>task</code>的时候，所以应该看看其他在做什么<code>task</code></strong></li>
 </ul>
 <pre><code>WARN  [GossipTasks:1] 2019-01-02 00:00:04,546 FailureDetector.java:287 - Not marking nodes down due to local pause of 54491963082 &gt; 5000000000
 </code></pre>
+<h2 id="service-thread"><a class="header-anchor" href="#service-thread"></a>Service Thread</h2>
+<p>没有看到这个<code>Service Thread</code>的具体解释。从<code>log</code>里面看有很多功能</p>
+<h3 id="gcinspector"><a class="header-anchor" href="#gcinspector"></a>GCInspector</h3>
 <ul>
-<li><a href="http://www.cnblogs.com/jobforlife/p/7092467.html" target="_blank" rel="noopener">error解释</a></li>
+<li>在<code>log</code>里面是：</li>
 </ul>
-<h3 id="service-thread"><a class="header-anchor" href="#service-thread"></a>Service Thread</h3>
-<p>没有看到这个Service Thread的具体解释。从log里面看有很多功能</p>
-<h4 id="statuslogger"><a class="header-anchor" href="#statuslogger"></a>StatusLogger</h4>
-<p>如此简单的一个函数也有好几种log啦。</p>
-<h5 id="threadpoolmetrics：-stage"><a class="header-anchor" href="#threadpoolmetrics：-stage"></a>ThreadPoolMetrics： Stage</h5>
-<p>打印出各种stage的状态，一个接一个的pool的状态。真心不少啊。</p>
-<ul>
-<li>在log里面会有：</li>
-</ul>
-<pre><code>INFO  [Service Thread] 2019-01-02 00:00:04,547 StatusLogger.java:52 - Pool Name Active   Pending      Completed   Blocked  All Time Blocked
+<pre><code>INFO  [Service Thread] GCInspector.java:284 - ConcurrentMarkSweep GC in 55742ms.  CMS Old Gen: 7331643368 -&gt; 7331643360; Par Eden Space: 1006632960 -&gt; 784484600; Par Survivor Space: 125829104 -&gt; 0
 </code></pre>
 <ul>
-<li>鉴于stage比较多，另外写一篇blog来解释这堆。请看本站的stage。</li>
+<li>这句<code>log</code>的意思是：做了一次<code>CMS GC</code>。然后数字对应，<code>11</code>位是<code>G</code>，<code>9</code>位是<code>M</code>，所以 <code>eden</code>区是784M</li>
+<li>参考本站<code>GC</code>的文章了解更多<code>CMS</code>算法的内容</li>
 </ul>
-<h5 id="cache"><a class="header-anchor" href="#cache"></a>Cache</h5>
-<p>输出KeyCache 和 RowCache的状态</p>
+<h3 id="statuslogger"><a class="header-anchor" href="#statuslogger"></a>StatusLogger</h3>
+<p>如此简单的一个函数也有好几种<code>log</code>啦。</p>
+<h4 id="stage"><a class="header-anchor" href="#stage"></a>Stage</h4>
+<p>打印出各种<code>stage</code>的状态，一个接一个的<code>pool</code>的状态。真心不少啊。</p>
 <ul>
-<li>在log里面是：</li>
+<li>在<code>log</code>里面会有：</li>
 </ul>
-<pre><code>INFO  [Service Thread] 2019-01-02 00:00:05,130 StatusLogger.java:88 - Cache Type  Size Capacity KeysToSave
-INFO  [Service Thread] 2019-01-02 00:00:05,130 StatusLogger.java:90 - KeyCache   1406343  104857600
+<pre><code>INFO  [Service Thread] StatusLogger.java:52 - Pool Name Active   Pending      Completed   Blocked  All Time Blocked
+</code></pre>
+<h4 id="cache"><a class="header-anchor" href="#cache"></a>Cache</h4>
+<p>输出<code>KeyCache</code> 和 <code>RowCache</code>的状态</p>
+<ul>
+<li>在<code>log</code>里面是：</li>
+</ul>
+<pre><code>INFO  [Service Thread] StatusLogger.java:88 - Cache Type  Size Capacity KeysToSave
+INFO  [Service Thread] StatusLogger.java:90 - KeyCache   1406343  104857600
+</code></pre>
+<h4 id="memtable"><a class="header-anchor" href="#memtable"></a>memTable</h4>
+<ul>
+<li>在<code>log</code>里面是：</li>
+</ul>
+<pre><code>  [Service Thread]  StatusLogger.java:98 - Table                       Memtable        ops,data
+  [Service Thread]  StatusLogger.java:106   
+                &lt;table_name&gt;    6284,288376
 </code></pre>
 <ul>
-<li>这篇 log已经很长了。KeyCache和RowCache另开一篇log。</li>
-</ul>
-<h5 id="per-cf-stats"><a class="header-anchor" href="#per-cf-stats"></a>per-CF stats</h5>
-<p>per-CF stats是源码里面的注释，我也不知道是啥哦</p>
-<ul>
-<li>在log里面是：</li>
-</ul>
-<pre><code>INFO  [Service Thread] 2019-01-03 02:54:45,722 StatusLogger.java:106 (table_name)    6284,288376
-</code></pre>
-<ul>
-<li>Cassandra的API里面对于<code>StatusLogger</code>也没有解释。 ORZ，看来是个很直白的文件啊<br>
+<li><code>Cassandra</code>的<code>API</code>里面对于<code>StatusLogger</code>也没有解释。 ORZ，看来是个很直白的文件啊<br>
 -<code>org.apache.cassandra.utils.StatusLogger</code> 只有一个函数<code>log()</code></li>
 </ul>
 <pre><code>logger.info(String.format(&quot;%-25s%20s&quot;, &quot;Table&quot;, &quot;Memtable ops,data&quot;));
 logger.info(String.format(&quot;%-25s%20s&quot;,
                    cfs.keyspace.getName() 
 				   + &quot;.&quot; + cfs.name,                                      cfs.metric.memtableColumnsCount.getValue() 
-				   + &quot;,&quot; + cfs.metric.memtableLiveDataSize.getValue()));
-    }。
+				   + &quot;,&quot; + cfs.metric.memtableLiveDataSize.getValue())); }
 </code></pre>
 <ul>
-<li>所以，第一个数值是memTable的column的个数，第二个是data的size</li>
-<li>一个问题是： 这个column也太多了吧。。。。。。</li>
+<li>所以，第一个数值是<code>memTable</code>的<code>column</code>的个数，第二个是<code>data</code>的<code>size</code></li>
+<li>一个问题是： 这个<code>column</code>也太多了吧。。。。。。</li>
 <li>被大神吊打了。这个值是表访问次数。</li>
 </ul>
-<h4 id="gcinspector"><a class="header-anchor" href="#gcinspector"></a>GCInspector</h4>
-<p>-在log里面是：</p>
-<pre><code>INFO  [Service Thread] 2019-01-02 00:00:04,546 GCInspector.java:284 - ConcurrentMarkSweep GC in 55742ms.  CMS Old Gen: 7331643368 -&gt; 7331643360; Par Eden Space: 1006632960 -&gt; 784484600; Par Survivor Space: 125829104 -&gt; 0
+<h2 id="periodic-commit-log-syncer"><a class="header-anchor" href="#periodic-commit-log-syncer"></a>PERIODIC-COMMIT-LOG-SYNCER</h2>
+<ul>
+<li>在<code>log</code>里面是：</li>
+</ul>
+<pre><code>WARN  [PERIODIC-COMMIT-LOG-SYNCER]  AbstractCommitLogService.java:117 - Out of 5 commit log syncs over the past 573s with average duration of 9734.40ms
+
+WARNING [PERIODIC-COMMIT-LOG-SYNCER]  NoSpamLogger.java:94 - Out of 1 commit log syncs over the past 0.00s with average duration of 10508.31ms, 1 have exceeded the configured commit interval by an average of 508.31ms
 </code></pre>
 <ul>
-<li>这句log的意思是：做了一次CMS GC。然后数字对应，11位是G，9位是M，所以 eden区是784M</li>
-<li>参考本站GC的文章了解更多CMS算法的内容</li>
+<li>这个应该是将<code>commit log</code>写到<code>disk</code>上面的<code>task</code>。没有再查资料。参考本站<code>cassandra</code>写过程那篇博客</li>
 </ul>
-<h3 id="periodic-commit-log-syncer"><a class="header-anchor" href="#periodic-commit-log-syncer"></a>PERIODIC-COMMIT-LOG-SYNCER</h3>
+<h2 id="indexsummarymanager"><a class="header-anchor" href="#indexsummarymanager"></a>IndexSummaryManager</h2>
 <ul>
-<li>在log里面是：</li>
+<li>在<code>log</code>里面是：</li>
 </ul>
-<pre><code>WARN  [PERIODIC-COMMIT-LOG-SYNCER] 2019-01-03 04:04:17,232 AbstractCommitLogService.java:117 - Out of 5 commit log syncs over the past 573s with average duration of 9734.40ms...
+<pre><code>INFO  [IndexSummaryManager:1] IndexSummaryRedistribution.java:74 - Redistributing index summaries
 </code></pre>
 <ul>
-<li>这个应该是将commit log写到disk上面的task。没有再查资料。参考本站cassandra写过程那篇博客</li>
+<li><strong>Manages the fixed-size memory pool for index summaries, periodically resizing them in order to give more memory to hot sstables and less memory to cold sstables.</strong></li>
+<li>还不是很理解，就是说<code>index summary</code>一开始也是存在内存中的吗？确实在参数配置里面有<code>index_summary_capacity_in_mb</code>和<code>index_summary_resize_interval_in_minutes</code></li>
 </ul>
-<h3 id="rmi-tcp-connection-idle"><a class="header-anchor" href="#rmi-tcp-connection-idle"></a>RMI TCP Connection(idle)</h3>
-<h3 id="indexsummarymanager"><a class="header-anchor" href="#indexsummarymanager"></a>IndexSummaryManager</h3>
-<ul>
-<li>在log里面是：</li>
-</ul>
-<pre><code> INFO  [IndexSummaryManager:1] 2019-01-02 03:21:59,849 IndexSummaryRedistribution.java:74 - Redistributing index summaries
+<h2 id="compactionexecutor"><a class="header-anchor" href="#compactionexecutor"></a>CompactionExecutor</h2>
+<blockquote>
+<p><a href="https://stackoverflow.com/questions/59324352/maximum-memory-usage-reached-4294967296-cannot-allocate-chunk-of-1048576" target="_blank" rel="noopener">cannot-allocate-chunk</a></p>
+</blockquote>
+<pre><code>[CompactionExecutor:290]  AutoSavingCache.java:395 - Saved CounterCache (55 items) in 47 ms
+
+[CompactionExecutor:291]  AutoSavingCache.java:395 - Saved KeyCache (2979 items) in 55 ms
+
+[CompactionExecutor:460]  BigTableWriter.java:211 - Writing large partition 
+
+[CompactionExecutor:483]  NoSpamLogger.java:91 - Maximum memory usage reached (536870912), cannot allocate chunk of 1048576
 </code></pre>
 <ul>
-<li>Manages the fixed-size memory pool for index summaries, periodically resizing them in order to give more memory to hot sstables and less memory to cold sstables.</li>
-<li>还不是很理解，就是说index summary一开始也是存在内存中的吗？确实在参数配置里面有index_summary_capacity_in_mb和index_summary_resize_interval_in_minutes</li>
+<li>上面是<code>compactionExecutor</code>的日志，开始三行都是比较容易理解的。</li>
+<li>最后一句是关于一个<code>File Cache</code>，也叫<code>Buffer Tool</code>的。这个含义是说这个<code>Cache</code>已经满了。默认的配置就是<code>512M</code></li>
+<li>在下面的这篇链接里面有描述， <code>File Cache</code>是为了读数据的时候加速用的。如果有大批量的读数据，那么这个<code>Cache</code>就会被撑满。</li>
+<li>结合上面<code>readStage</code>的<code>exception</code>，<code>Cassandra</code>的读性能应该是下降了</li>
+</ul>
+<h2 id="stage-v2"><a class="header-anchor" href="#stage-v2"></a>Stage</h2>
+<h3 id="mutationstage"><a class="header-anchor" href="#mutationstage"></a>MutationStage</h3>
+<pre><code>[MutationStage-3]  ColumnFamilyStore.java:2187 - Truncating &lt;table_name&gt;
+</code></pre>
+<h3 id="migrationstage"><a class="header-anchor" href="#migrationstage"></a>MigrationStage</h3>
+<pre><code>[MigrationStage:1]  ColumnFamilyStore.java:427 - Initializing &lt;table_name&gt;
+
+[MigrationStage:1]  MigrationCoordinator.java:448 - Sending schema pull request to /xx.xx.xx.xx at 1621984266178 with timeout 10000
+</code></pre>
+<h3 id="readrepairstage"><a class="header-anchor" href="#readrepairstage"></a>ReadRepairStage</h3>
+<blockquote>
+<p><a href="https://stackoverflow.com/questions/50207323/cassandra3-exception-in-thread-threadreadrepairstage-operation-timed-out-r" target="_blank" rel="noopener">cassandra3-exception-in-thread-threadreadrepairstage</a></p>
+</blockquote>
+<pre><code>[ReadRepairStage:23]  CassandraDaemon.java:244 - Exception in thread Thread[ReadRepairStage:23,5,main]
+</code></pre>
+<ul>
+<li>
+<p>我们自己的日志里面只有上面一句话。<code>stackoverflow</code> 上面的有打出来的是<code>readtimeout</code>错误</p>
+<pre><code>ERROR [ReadRepairStage:12] 2018-05-07 10:35:19,056 CassandraDaemon.java:228 - Exception in thread Thread[ReadRepairStage:12,5,main]
+org.apache.cassandra.exceptions.ReadTimeoutException: Operation timed out - received only 0 responses.
+</code></pre>
+</li>
+</ul>
+<h3 id="contermutationstage"><a class="header-anchor" href="#contermutationstage"></a>ConterMutationStage</h3>
+<blockquote>
+<p><a href="https://stackoverflow.com/questions/45306061/cassandra-writetimeoutexception-exception-in-countermutationstage-node-dies-ev" target="_blank" rel="noopener">writetimeoutexception-exception-in-countermutationstage</a><br>
+<a href="https://stackoverflow.com/questions/29667596/after-high-traffic-cassandra-writetimeoutexception" target="_blank" rel="noopener">Stack Overflow - writetimeoutexception</a></p>
+</blockquote>
+<pre><code>[CounterMutationStage-227]  AbstractLocalAwareExecutorService.java:166 - Uncaught exception on thread Thread[CounterMutationStage-227,5,main]
+</code></pre>
+<ul>
+<li>不知道为啥，上面的<code>log</code>没有打出具体的信息。在我这里也叫看不到到底是什么错误了</li>
+<li>上面的链接里面是<code>WriteTimeoutException</code>，我们自己的系统里面也是<code>timeout</code>的错误。按照分析，可能是<code>I/O</code>撑不住了。这么看来也完全有可能，目前从日志里面，看不出来磁盘和内存的错误。</li>
+<li>第二个链接中的<code>Cassandra</code>的版本比较旧，还是<code>2.x</code>，日志的表头有些不同，但是也是犹豫<code>CounterMutationStage</code>导致的写时候的<code>timeout</code>，其中提到频繁的<code>GC</code>也会导致性能下降<br>
+<strong>are your Cassandra nodes experiencing high GC pressure (check pauses in gc log - especially on the other nodes, at times correlating with the WriteTimeou</strong></li>
+</ul>
+<h2 id="hintsdispatcher"><a class="header-anchor" href="#hintsdispatcher"></a>HintsDispatcher</h2>
+<pre><code>[HintsDispatcher:3]  HintsStore.java:133 - Deleted hint file 21869582-fb73-426c-827e-15a75b506223-1622088330901-1.hints
+[HintsDispatcher:3]  HintsDispatchExecutor.java:282 - Finished hinted handoff of file 21869582-fb73-426c-827e-15a75b506223-1622088330901-1.hints to endpoint /192.168.94.54: 21869582-fb73-426c-827e-15a75b506223
+</code></pre>
+<ul>
+<li>这回跑测试的时候有一个节点挂了，然后就出现了<code>hint</code>相关的日志</li>
+<li>比较有意思的是，每个节点上面都有上诉日志</li>
+</ul>
+<h2 id="scheduledtasks"><a class="header-anchor" href="#scheduledtasks"></a>ScheduledTasks</h2>
+<pre><code>[ReadStage-12]  MonitoringTask.java:93 - Scheduling monitoring task with report interval of 5000 ms, max operations 50 
+
+[ScheduledTasks:1]  NoSpamLogger.java:91 - Some operations were slow, details available at debug level (debug.log)
+</code></pre>
+<ul>
+<li>
+<p>这两句日志在源码里面是在一块的，如下：</p>
+<pre><code>logger.info(&quot;Scheduling monitoring task with report interval of {} ms, max operations {}&quot;, reportIntervalMillis, maxOperations);
+this.reportingTask = ScheduledExecutors.scheduledTasks.scheduleWithFixedDelay(() -&gt; logOperations(ApproximateTime.currentTimeMillis()),   reportIntervalMillis,                   reportIntervalMillis, TimeUnit.MILLISECONDS);
+</code></pre>
+</li>
+<li>
+<p>第二句就是在<code>logOperations</code>里面打印出来的。看起来，<code>Cassandra</code>是在加载类的时候起来的<code>MonitoringTask</code></p>
+</li>
 </ul>
 
     </div>
@@ -414,7 +499,7 @@ logger.info(String.format(&quot;%-25s%20s&quot;,
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#cassandra-system-log分析"><span class="nav-number">1.</span> <span class="nav-text">Cassandra system log分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#nodetool"><span class="nav-number">1.1.</span> <span class="nav-text">Nodetool</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gossip-tasks"><span class="nav-number">1.2.</span> <span class="nav-text">Gossip Tasks</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#pending-task-log"><span class="nav-number">1.2.1.</span> <span class="nav-text">Pending task log</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pause-error-not-making-nodes-down"><span class="nav-number">1.2.2.</span> <span class="nav-text">Pause Error: Not making Nodes Down</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#service-thread"><span class="nav-number">1.3.</span> <span class="nav-text">Service Thread</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#statuslogger"><span class="nav-number">1.3.1.</span> <span class="nav-text">StatusLogger</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#threadpoolmetrics：-stage"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">ThreadPoolMetrics： Stage</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#cache"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">Cache</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#per-cf-stats"><span class="nav-number">1.3.1.3.</span> <span class="nav-text">per-CF stats</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gcinspector"><span class="nav-number">1.3.2.</span> <span class="nav-text">GCInspector</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#periodic-commit-log-syncer"><span class="nav-number">1.4.</span> <span class="nav-text">PERIODIC-COMMIT-LOG-SYNCER</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rmi-tcp-connection-idle"><span class="nav-number">1.5.</span> <span class="nav-text">RMI TCP Connection(idle)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#indexsummarymanager"><span class="nav-number">1.6.</span> <span class="nav-text">IndexSummaryManager</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#nodetool"><span class="nav-number">1.</span> <span class="nav-text">Nodetool</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gossip-tasks"><span class="nav-number">2.</span> <span class="nav-text">Gossip Tasks</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pending-task-log"><span class="nav-number">2.1.</span> <span class="nav-text">Pending task log</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pause-error-not-making-nodes-down"><span class="nav-number">2.2.</span> <span class="nav-text">Pause Error: Not making Nodes Down</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#service-thread"><span class="nav-number">3.</span> <span class="nav-text">Service Thread</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gcinspector"><span class="nav-number">3.1.</span> <span class="nav-text">GCInspector</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#statuslogger"><span class="nav-number">3.2.</span> <span class="nav-text">StatusLogger</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#stage"><span class="nav-number">3.2.1.</span> <span class="nav-text">Stage</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#cache"><span class="nav-number">3.2.2.</span> <span class="nav-text">Cache</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#memtable"><span class="nav-number">3.2.3.</span> <span class="nav-text">memTable</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#periodic-commit-log-syncer"><span class="nav-number">4.</span> <span class="nav-text">PERIODIC-COMMIT-LOG-SYNCER</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#indexsummarymanager"><span class="nav-number">5.</span> <span class="nav-text">IndexSummaryManager</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#compactionexecutor"><span class="nav-number">6.</span> <span class="nav-text">CompactionExecutor</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#stage-v2"><span class="nav-number">7.</span> <span class="nav-text">Stage</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mutationstage"><span class="nav-number">7.1.</span> <span class="nav-text">MutationStage</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#migrationstage"><span class="nav-number">7.2.</span> <span class="nav-text">MigrationStage</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#readrepairstage"><span class="nav-number">7.3.</span> <span class="nav-text">ReadRepairStage</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#contermutationstage"><span class="nav-number">7.4.</span> <span class="nav-text">ConterMutationStage</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hintsdispatcher"><span class="nav-number">8.</span> <span class="nav-text">HintsDispatcher</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#scheduledtasks"><span class="nav-number">9.</span> <span class="nav-text">ScheduledTasks</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

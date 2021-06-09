@@ -901,7 +901,7 @@ val b: java.util.Map[Int, java.lang.Boolean] = a
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-03-03 10:56:38" itemprop="dateModified" datetime="2021-03-03T10:56:38+08:00">2021-03-03</time>
+                <time title="修改时间：2021-05-27 14:52:02" itemprop="dateModified" datetime="2021-05-27T14:52:02+08:00">2021-05-27</time>
               </span>
 
           
@@ -938,6 +938,23 @@ val b: java.util.Map[Int, java.lang.Boolean] = a
       
           <p>开始学习卡夫卡，工作需要，开始得有点晚了。毕竟周围很多同事已经会了。嘛，人比人气死人，进步就好 (๑•̀ㅂ•́)و✧<br>
 为啥没人看呢，为啥我写的没人看呢？有点郁闷，总结下来，可能是写得不够细致的缘故。</p>
+<h2 id="关于分布式系统"><a class="header-anchor" href="#关于分布式系统"></a>关于分布式系统</h2>
+<ul>
+<li>提到分布式系统，我理解就是多个节点，整那么复杂作甚。既然是多个节点了，那么就得考虑节点间的数据同步。一个系统包括以下部分：
+<ul>
+<li>节点变化的时候，其他节点怎么知道呢</li>
+<li>如果是公用的数据，只能有一份，那么如何存储</li>
+<li>负载均衡</li>
+<li>节点之间的通信<br>
+如果是中间件，或者说数据库，需要考虑的有：</li>
+<li>写数据的时候，肯定需要复制几份，否则有节点挂掉的时候就不行了</li>
+<li>读数据的时候，需要考虑节点之间的差异</li>
+<li>删数据的时候也一样需要考虑删除多份</li>
+<li>宕机之后恢复要考虑数据的丢失和恢复<br>
+简单的说，分布式系统的数据要考虑一致性啊</li>
+</ul>
+</li>
+</ul>
 <h2 id="消息队列"><a class="header-anchor" href="#消息队列"></a>消息队列</h2>
 <blockquote>
 <p><a href="https://github.com/ZhongFuCheng3y/3y" target="_blank" rel="noopener">这位作者的系列文章，貌似已经开公众号了，所以点击会跑到微信上面去。汗一个</a></p>
@@ -963,39 +980,22 @@ val b: java.util.Map[Int, java.lang.Boolean] = a
 <li>这里面的原因挺多的，但是都很好理解，比如固化，<code>JAVA</code>的队列都是内存里面的，一下就没了，对于产品来说，肯定不能接受；再比如数据的处理，不能重复，或者排序。基于各种需求，自然就产生了各种各样的队列</li>
 </ul>
 <h2 id="zookeeper"><a class="header-anchor" href="#zookeeper"></a>Zookeeper</h2>
+<blockquote>
+<p><a href="https://mp.weixin.qq.com/s?__biz=MzI4Njg5MDA5NA==&amp;mid=2247485115&amp;idx=1&amp;sn=5d269f40f820c82b460993669ca6242e&amp;chksm=ebd747badca0ceac9953f82e08b1d1a49498ebd4af77ec5d628a0682bb9f0ac5ab347411f654&amp;token=1741918942&amp;lang=zh_CN#rd" target="_blank" rel="noopener">微信的网址也太长了吧，什么是zookeeper</a></p>
+</blockquote>
 <ul>
 <li>这位博客作者真是很有意思，深入浅出而且比较搞笑。口水话和我相似啊。所为光头就能变强，自宫就能成功嘛。(≧∇≦)ﾉ</li>
-<li>仍旧参考其系列文章：<a href="https://mp.weixin.qq.com/s?__biz=MzI4Njg5MDA5NA==&amp;mid=2247485115&amp;idx=1&amp;sn=5d269f40f820c82b460993669ca6242e&amp;chksm=ebd747badca0ceac9953f82e08b1d1a49498ebd4af77ec5d628a0682bb9f0ac5ab347411f654&amp;token=1741918942&amp;lang=zh_CN#rd" target="_blank" rel="noopener">微信的IP也太长了吧，什么是zookeeper</a></li>
+<li><code>zookeeper</code>是服务于分布式系统的。上面有提到过分布式系统的一些需求，而<code>zookeeper</code>正是目前最流行的可以帮助实现这种需求的中间件之一</li>
 <li><code>zookeeper</code>的功能包括：统一配置管理、统一命名服务、分布式锁、集群管理。这些功能听上去都超超超高大上啊~</li>
-<li><code>Zookeeper</code>通过感知节点的变化，已经节点数据的变化来实现以上这些高大上的功能点</li>
+<li><code>Zookeeper</code>通过感知节点的变化，以及节点数据的变化来实现以上这些高大上的功能点</li>
 <li>集群管理大致有点感觉，既然可以感知节点的变化，那么可以建立相应的临时节点，在有新的集群机器加入的时候。</li>
 <li>分布式锁的功能就是说某个带锁的<code>zNode</code>，各个集群机器在访问这个<code>zNode</code>时候，会创建一个临时<code>node</code>，这个临时的节点上面有个带个号码，比如<code>0000001</code>，谁的最小，谁就获得访问这个特殊的<code>znode</code>的权利</li>
 <li>统一命名服务有点没看明白，后面再研究吧</li>
-</ul>
-<h2 id="kafka"><a class="header-anchor" href="#kafka"></a>Kafka</h2>
-<p><code>kafka</code>是一个消息队列，这个一句话解释感觉好拉风，一句话就说清楚了</p>
-<h3 id="基本概念"><a class="header-anchor" href="#基本概念"></a>基本概念</h3>
-<ul>
-<li><code>kafka</code>有以下几个基本概念：
-<ul>
-<li><code>topic</code>: 作为一个产品，<code>kafka</code>可以有多个消息队列，一个消息队列就是一个<code>topic</code>，有点类似数据库的表。对于一个<code>topic</code>，可以有多个生产者，也可以有多个消费者，这点很好理解。</li>
-<li><code>partition</code>：因为一个<code>topic</code>上面会有多个消费者和生产者，所以分成了多个<code>partition</code>，每个生产者往不同的<code>partition</code>上面丢数据。<strong>这边有个问题，为什么要新引入这个概念呢？ 多个<code>topic</code>不行吗？</strong></li>
-<li><code>broker</code>：那么<code>kafka</code>是支持分布式的，当然如此，也就是集群。那么集群里面可能就不止一个机器上安装了<code>kafka</code>，每个安装了<code>kafka</code>的机器就称为一个<code>broker</code>。需要注意的是，同一个<code>topic</code>的不同<code>partition</code>可能分布在不同的<code>broker</code>上面</li>
-<li><code>replica</code>:大概分布式都要复制吧，不然宕机咋整呢 😉。但是这里需要注意的是，读写都只会对主的<code>partition</code>进行，备份就是备份，老老实实做备份的含义。当主<code>partition</code>在的<code>broker</code>宕机了，会重新选一个主的出来</li>
-</ul>
-</li>
-</ul>
-<h3 id="生产者"><a class="header-anchor" href="#生产者"></a>生产者</h3>
-<ul>
-<li><code>Kafka</code>和<code>Cassandra</code>一样，也是先写到缓存里面，然后再写到磁盘里面。不过<code>Kafka</code>只允许追加写入(顺序访问)，避免缓慢的随机 <code>I/O</code>操作。<strong>这句有点不明白，啥叫追加写入</strong></li>
-</ul>
-<h3 id="消费者"><a class="header-anchor" href="#消费者"></a>消费者</h3>
-<ul>
-<li>多个消费者消费同一个<code>topic</code>的可以组成一个消费者组，消费者组里面的消费者可以每个去消费一个<code>partition</code>，这样就提高了吞吐量</li>
-<li>正常的读磁盘数据是需要将内核态数据拷贝到用户态的，而<code>Kafka</code> 通过调用<code>sendfile()</code>直接从内核空间（DMA的）到内核空间（Socket的），少做了一步拷贝的操作。昨天有同事部分分享时候说是省略了从磁盘读取。感觉这个说法不对，如果数据已经存储到了磁盘上面，是无法省略从磁盘读取的。这个需要进一步的学习</li>
-<li>当消费者组里面一个消费者宕机之后，剩下的消费者需要重新分配，将空缺没有人消费的<code>partition</code>给安排出去。这个过程叫做<code>rebalancing</code>。从<code>kafka</code>的日志里面也能看到这句话</li>
-<li>因为需要继续消费没消费完的<code>partition</code>，那么就需要知道之前的消费者消费到哪里了，就引入了偏移量这个概念。</li>
-<li>偏移量：<code>offset</code>在<code>broker</code>以内部<code>topic(__consumer_offsets)</code>的方式存储，早期的版本可能存在<code>zookeeper</code>里面</li>
+<li>知道我的博客为啥不够细致了，因为没有把自己知道的再写一遍。以下是目前我了解的：</li>
+<li><code>Zookeeper</code>是将数据按照树形结构来存储的，可以用脚本来访问<code>zkCli.sh</code>，类似文件结构</li>
+<li>每个数据节点称为一个<code>znode</code></li>
+<li><code>zookeeper</code>本身也是一个集群，那么是有集群的主节点选择机制的，有时候会出错，选出两个主节点来，之前产品里面似乎出过这方面的问题。</li>
+<li><code>zookeeper</code>支持通知机制，可以注册来关注<code>Zookeeper</code>的一个数据节点，那么当这个数据节点变化的时候会收到通知</li>
 </ul>
 <h3 id="kafka和zookeeper"><a class="header-anchor" href="#kafka和zookeeper"></a>Kafka和Zookeeper</h3>
 <ul>
@@ -1003,6 +1003,74 @@ val b: java.util.Map[Int, java.lang.Boolean] = a
 <li>探测<code>broker</code>和<code>consumer</code>的添加或移除。</li>
 <li>负责维护所有<code>partition</code>的领导者/从属者关系（主分区和备份分区），如果主分区挂了，需要选举出备份分区作为主分区。</li>
 <li>维护<code>topic、partition</code>等元配置信息</li>
+</ul>
+<h2 id="kafka"><a class="header-anchor" href="#kafka"></a>Kafka</h2>
+<p><code>kafka</code>是一个消息队列，这个一句话解释感觉好拉风，一句话就说清楚了</p>
+<blockquote>
+<p><a href="https://colobu.com/2014/08/06/kafka-quickstart/" target="_blank" rel="noopener">Kafka快速入门</a><br>
+<a href="https://scala.cool/2018/03/learning-kafka-1/" target="_blank" rel="noopener">Kafka 学习笔记</a></p>
+</blockquote>
+<ul>
+<li><code>kafka</code>有以下几个基本概念：
+<ul>
+<li><code>topic</code></li>
+<li><code>partition</code>：</li>
+<li><code>broker</code>：那么<code>kafka</code>是支持分布式的，当然如此，也就是集群。那么集群里面可能就不止一个机器上安装了<code>kafka</code>，每个安装了<code>kafka</code>的机器就称为一个<code>broker</code>。需要注意的是，同一个<code>topic</code>的不同<code>partition</code>可能分布在不同的<code>broker</code>上面</li>
+<li><code>replica</code>:</li>
+</ul>
+</li>
+</ul>
+<h3 id="主题"><a class="header-anchor" href="#主题"></a>主题</h3>
+<ul>
+<li>作为一个产品，<code>kafka</code>可以有多个消息队列，有点类似数据库的表。对于一个<code>topic</code>，可以有多个生产者，也可以有多个消费者，这点很好理解。</li>
+<li>从下面的图中看，并不是一个主题一个队列，而是一个主题多个队列。每个<code>partition</code>,即每个分区就是一个队列。</li>
+<li>综合考虑，应该图片是正确的。每个分区就是一个队列。</li>
+<li>一个主题上面会有多个消费者和生产者，分成了多个分区，每个生产者往不同的<code>partition</code>上面丢数据。每个消费者也可以消费多个分区<br>
+<img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/kafka/kafka_topic.PNG" alt="Kafka快速入门"></li>
+</ul>
+<blockquote>
+<p>Kafka topic示意图，来自参考链接“Kafka快速入门”</p>
+</blockquote>
+<h3 id="生产者"><a class="header-anchor" href="#生产者"></a>生产者</h3>
+<ul>
+<li><code>Kafka</code>和<code>Cassandra</code>一样，也是先写到缓存里面，然后再写到磁盘里面。</li>
+<li>不过<code>Kafka</code>只允许追加写入(顺序访问)，避免缓慢的随机 <code>I/O</code>操作。<strong>这句有点不明白，啥叫追加写入</strong></li>
+<li>生产者可用选择写入到哪个分区里面。这是开发时候由算法来决定的</li>
+</ul>
+<h3 id="消费者"><a class="header-anchor" href="#消费者"></a>消费者</h3>
+<ul>
+<li>正常的读磁盘数据是需要将内核态数据拷贝到用户态的，而<code>Kafka</code> 通过调用<code>sendfile()</code>直接从内核空间（DMA的）到内核空间（Socket的），少做了一步拷贝的操作。</li>
+<li>昨天有同事部分分享时候说是省略了从磁盘读取。感觉这个说法不对，如果数据已经存储到了磁盘上面，是无法省略从磁盘读取的。这个需要进一步的学习</li>
+</ul>
+<h4 id="消费者组"><a class="header-anchor" href="#消费者组"></a>消费者组</h4>
+<ul>
+<li>多个消费者消费同一个<code>topic</code>的可以组成一个消费者组，消费者组里面的消费者每个去消费一个<code>partition</code>，这样就提高了吞吐量</li>
+<li>当消费者组里面一个消费者宕机之后，剩下的消费者需要重新分配，将空缺没有人消费的<code>partition</code>给安排出去。这个过程叫做<code>rebalancing</code>。从<code>kafka</code>的日志里面也能看到这句话</li>
+</ul>
+<h4 id="消费者和偏移量"><a class="header-anchor" href="#消费者和偏移量"></a>消费者和偏移量</h4>
+<ul>
+<li>因为需要继续消费没消费完的<code>partition</code>，那么就需要知道之前的消费者消费到哪里了，就引入了偏移量这个概念。</li>
+<li>每个消费者拥有的数据其实就是偏移量，并且消费者可以调整偏移量，重新读取已经消费过的数据</li>
+</ul>
+<h3 id="分区"><a class="header-anchor" href="#分区"></a>分区</h3>
+<ul>
+<li>分区就是<code>partition</code>，引入分区可以高并发，支持分布式也必须引入分区</li>
+<li>每个服务器（<strong>这里的服务器应该指的是消费者</strong>）处理它分到的分区。<strong>那么如果我安装了一套cluster，有三个kafka instance，那么就是三个broker，也就是只有这三个服务器上面可以安装consumer？应该不是的</strong></li>
+<li>根据配置每个分区还可以复制到其它服务器作为备份容错。但是这里需要注意的是，读写都只会对主的<code>partition</code>进行，备份就是备份，老老实实做备份的含义。</li>
+<li>当主<code>partition</code>在的<code>broker</code>宕机了，会重新选一个主的出来</li>
+<li>一个服务器上面有多个分区，有的分区可以是本分区的主分区；有的分区是本分区的备份。</li>
+<li>总结起来，就是一个服务器上面装了<code>Kafka</code>的<code>instance</code>，然后可以有多个<code>topic</code>，然后可以有其中一些<code>topic</code>的分区，这些分区可能是主分区，也可能是备份。<strong>这里有个问题，一个服务器上面必定有所有主题的分区吗？应该是的，因为分区是均衡负载的。不会拉下某个可用的服务器，也就是<code>broker</code></strong></li>
+<li>每个主题分区中消息只能由消费者组中的唯一一个消费者处理，这样可以保证一个分区上面的消息肯定是按照顺序线性处理。但是没有办法保证不同分区之间的消息的顺序</li>
+</ul>
+<h3 id="偏移量"><a class="header-anchor" href="#偏移量"></a>偏移量</h3>
+<ul>
+<li>从上文可知，偏移量不一定是线性增加或者移动，完全由消费者控制</li>
+<li>偏移量：<code>offset</code>在<code>broker</code>以内部<code>topic(__consumer_offsets)</code>的方式存储，早期的版本可能存在<code>zookeeper</code>里面</li>
+<li><code>producer</code>和<code>consumer</code>之间的交流通过一条简单、高性能并且不局限某种开发语言的<code>TCP协议</code>。</li>
+</ul>
+<h2 id="消息删除"><a class="header-anchor" href="#消息删除"></a>消息删除</h2>
+<ul>
+<li><code>Kafka</code>有自己的消息维护机制，并不会校验过期的数据是否有被消费过。</li>
 </ul>
 
       
@@ -1511,7 +1579,7 @@ REDIRECT - DNAT的一个特殊场景将包重定向到本机另一个端口,重�
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/hexo_blog/2020/01/09/Linux-Command/" class="post-title-link" itemprop="url">Linux Command</a>
+            <a href="/hexo_blog/2020/01/09/Linux-Command/" class="post-title-link" itemprop="url">Linux</a>
         </h2>
 
         <div class="post-meta">
@@ -1528,7 +1596,7 @@ REDIRECT - DNAT的一个特殊场景将包重定向到本机另一个端口,重�
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-10-30 14:46:33" itemprop="dateModified" datetime="2020-10-30T14:46:33+08:00">2020-10-30</time>
+                <time title="修改时间：2021-05-24 10:23:59" itemprop="dateModified" datetime="2021-05-24T10:23:59+08:00">2021-05-24</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1541,7 +1609,7 @@ REDIRECT - DNAT的一个特殊场景将包重定向到本机另一个端口,重�
             </span>
 
           
-            <span id="/hexo_blog/2020/01/09/Linux-Command/" class="post-meta-item leancloud_visitors" data-flag-title="Linux Command" title="阅读次数">
+            <span id="/hexo_blog/2020/01/09/Linux-Command/" class="post-meta-item leancloud_visitors" data-flag-title="Linux" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -1572,7 +1640,23 @@ REDIRECT - DNAT的一个特殊场景将包重定向到本机另一个端口,重�
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>工作多年，<code>Linux</code>命令是时不时要用到的。每次都是百度之（虽然不是真的用的百度:P），记录在这里，省得每次还得去找</p>
+          <p>工作多年，<code>Linux</code>命令是时不时要用到的。每次都是百度之，记录在这里，省得每次还得去找</p>
+<h2 id="chmod"><a class="header-anchor" href="#chmod"></a>CHMOD</h2>
+<ul>
+<li>表示用户组的数字：
+<ul>
+<li>一般是三个数字：
+<ul>
+<li>第一个数字表示文件所有者的权限</li>
+<li>第二个数字表示与文件所有者同属一个用户组的其他用户的权限</li>
+<li>第三个数字表示其它用户组的权限。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>读（r=4），写（w=2），执行（x=1）</code></li>
+<li><code>T</code> 代表目录只能由当前目录的<code>owner</code>来修改</li>
+</ul>
 <h2 id="awk"><a class="header-anchor" href="#awk"></a>AWK</h2>
 <ul>
 <li><a href="https://www.cnblogs.com/ggjucheng/archive/2013/01/13/2858470.html" target="_blank" rel="noopener">linux awk命令详解</a></li>
@@ -1663,6 +1747,12 @@ fi
 <li>这句话会删除最后一个<code>/</code>以及左边的字符， 结果只留下了<code>123.htm</code></li>
 </ul>
 </li>
+</ul>
+<h2 id="aide"><a class="header-anchor" href="#aide"></a>AIDE</h2>
+<ul>
+<li>AIDE is a file integrity checking tool。</li>
+<li>Linux高级入侵检测 AIDE(Adevanced Intrusion Detection Environment,高级入侵检测环境)是个入侵检测工具，主要用途是检查文本的完整性。</li>
+<li>AIDE还能够使用下列算法：sha1、md5、rmd160、tiger，以密文形式建立每个文档的校验码或散列号</li>
 </ul>
 
       
