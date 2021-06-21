@@ -565,7 +565,7 @@ httpexposed   1         1         1            1           11m
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-10-30 15:24:31" itemprop="dateModified" datetime="2020-10-30T15:24:31+08:00">2020-10-30</time>
+                <time title="修改时间：2021-06-18 09:54:12" itemprop="dateModified" datetime="2021-06-18T09:54:12+08:00">2021-06-18</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -647,13 +647,15 @@ httpexposed   1         1         1            1           11m
 <li>参考链接：<a href="https://www.katacoda.com/courses/docker/2" target="_blank" rel="noopener">karacoda docker在线课程</a></li>
 </ul>
 <h2 id="dockerfile"><a class="header-anchor" href="#dockerfile"></a>Dockerfile</h2>
+<blockquote>
+<p><a href="https://www.joyfulbikeshedding.com/blog/2019-08-27-debugging-docker-builds.html" target="_blank" rel="noopener">Debugging Docker builds</a></p>
+</blockquote>
 <ul>
 <li>这几天正好在做<code>docker image</code>，几点经验写在下面：
 <ul>
 <li>打包： 使用原始的<code>docker build</code>命令自然是可以的，产品中就不是这样了。<code>JAVA</code>使用的自然是<code>maven</code>的<code>docker plugin</code>，这个很多年前就用过。而这回<code>SCALA</code>里面，感觉是自然带的，直接<code>sbt</code>里面<code>package</code>就可以打出，也许这个理解有差池。</li>
 <li>调试，制作<code>docker image</code>的过程我是大致明白的，其实每一步都会有一个临时的<code>image</code>，然后会在此基础上面起一个容器，在这个容器里面去执行。所以出错了，需要找到这一步的临时镜像和容器。</li>
 <li>参考以下链接，主要是用<code>docker commit 20f3e5cebec5 tempimagename</code> 将临时的镜像存储下来</li>
-<li><a href="https://www.joyfulbikeshedding.com/blog/2019-08-27-debugging-docker-builds.html" target="_blank" rel="noopener">Debugging Docker builds</a></li>
 </ul>
 </li>
 </ul>
@@ -672,18 +674,45 @@ httpexposed   1         1         1            1           11m
 </ul>
 </li>
 </ul>
-<h3 id="endpoint"><a class="header-anchor" href="#endpoint"></a>Endpoint</h3>
+<h3 id="entrypoint"><a class="header-anchor" href="#entrypoint"></a>ENTRYPOINT</h3>
 <ul>
-<li><code>endPoint</code>是执行的起点，比如<code>bash</code>, <code>mysql</code>这些。
+<li><code>ENTRYPOINT</code>是执行的起点，比如<code>bash</code>, <code>mysql</code>这些。
 <ul>
 <li>一个例子可以为<code>ENTRYPOINT [&quot;/bin/echo&quot;]</code>，<code>CMD &quot;world&quot;</code>。那么启动的时候会执行<code>echo world</code></li>
 </ul>
 </li>
 </ul>
-<h3 id="maven-docker-plugin"><a class="header-anchor" href="#maven-docker-plugin"></a>Maven Docker Plugin</h3>
+<h2 id="maven-docker-plugin"><a class="header-anchor" href="#maven-docker-plugin"></a>Maven Docker Plugin</h2>
 <ul>
 <li><code>maven</code>有好几个支持<code>Docker</code>的<code>plugin</code></li>
 <li><code>io.fabric8:docker-maven-plugin</code> 就是其中的一个</li>
+</ul>
+<h2 id="一些开源工具"><a class="header-anchor" href="#一些开源工具"></a>一些开源工具</h2>
+<h3 id="tini-a-tiny-but-valid-init-for-containers"><a class="header-anchor" href="#tini-a-tiny-but-valid-init-for-containers"></a>Tini（A tiny but valid init for containers）</h3>
+<blockquote>
+<p><a href="https://github.com/krallin/tini/" target="_blank" rel="noopener">Tini_github</a><br>
+<a href="https://zhuanlan.zhihu.com/p/59796137" target="_blank" rel="noopener">在entrypoint.sh中使用Tini的优势是什么？</a><br>
+<a href="https://link.zhihu.com/?target=https%3A//github.com/krallin/tini/issues/8%23issuecomment-146135930">上文的原文</a></p>
+</blockquote>
+<ul>
+<li>这是对所有容器有效的初始化小工具</li>
+<li>从<code>Docker1.13</code>之后，<code>Docker</code>里面已经包含<code>Tini</code>了。只需要<code>docker run</code>就可以了</li>
+<li>在第二篇链接中有阐述我为什么要使用<code>Tini</code>，来自作者的解释。尽量摘要翻译如下：
+<ul>
+<li><code>Docker</code>为容器做了资源独立分割，这是各个层面的，包括网络，内存等等。一个容器里面的进程是一个独立的进程空间。那么第一个初始化的进程叫<code>PID1</code>，也就是初始化的进程。</li>
+<li><code>ENTRYPOINT</code>其实就是<code>PID1</code>，如果没有设置<code>ENTRYPOINT</code>，那么就是<code>CMD</code>就会决定<code>PID1</code>是什么</li>
+<li>和其他的进程不一样，<code>PID1</code>需要照顾那些僵尸进程，对僵尸进程进行回收。这就是<code>Tini</code>会做的。也是<code>JVM</code>不会在意的。(自然不在意喽，<code>JVM</code>自己只是个进程，不是<code>init</code>进程来着。)</li>
+<li>
+<blockquote>
+<p>One problem is, if you run Bash as PID 1, then all signals you send to your Docker container (e.g. using docker stop or docker kill) end up sent to Bash, which does not forward them anywhere (unless you code it yourself). In other words, if you use Bash to run Jenkins, and then run docker stop, then Jenkins will never see the stop command!</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>这段有点没看明白，如果将<code>bash</code>作为<code>init</code>进程，它当然也有杀死僵尸进程的职责。但是它不会将<code>docker kill</code>这种命令发到该发的地方。<code>Tini</code>补上了这个不足，会将这个命令或者说指令发到正在运行的<code>java</code>程序里面。但是<code>docker kill</code>这种难道不应该由<code>docker demon</code>来负责吗。或者说<code>docker demon</code>会将容器杀掉，但是里面运行的应用并不知道这个事情，就变成<code>kill -9</code>那种了</strong></p>
+<ul>
+<li>还有一个好处是，假使你的程序崩溃，通常都是在<code>shell</code>里面拉起来的。那么一旦<code>java</code>程序崩了，那么<code>bash</code>会跟着退出来。并且<code>bash</code>极有可能是以<code>code 0</code>退出来的。而实际上内里的应用是崩溃式退出。当然这可以通过让<code>bash</code>来处理信号来解决，但是这会是更多的活计，而加上<code>Tini</code>是几行代码。</li>
 </ul>
 
       
