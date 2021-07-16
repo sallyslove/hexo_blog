@@ -744,7 +744,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/hexo_blog/2019/06/17/Java%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B-%E4%B8%80%E4%BA%9B%E7%89%B9%E5%88%AB%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="post-title-link" itemprop="url">Java数据类型 --- 一些特别的数据类型</a>
+            <a href="/hexo_blog/2019/06/17/Java%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B-%E4%B8%80%E4%BA%9B%E7%89%B9%E5%88%AB%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="post-title-link" itemprop="url">Java数据类型 --- 常用数据类型</a>
         </h2>
 
         <div class="post-meta">
@@ -761,7 +761,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-08-06 11:23:09" itemprop="dateModified" datetime="2019-08-06T11:23:09+08:00">2019-08-06</time>
+                <time title="修改时间：2021-07-12 14:58:08" itemprop="dateModified" datetime="2021-07-12T14:58:08+08:00">2021-07-12</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -774,7 +774,7 @@
             </span>
 
           
-            <span id="/hexo_blog/2019/06/17/Java%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B-%E4%B8%80%E4%BA%9B%E7%89%B9%E5%88%AB%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="post-meta-item leancloud_visitors" data-flag-title="Java数据类型 --- 一些特别的数据类型" title="阅读次数">
+            <span id="/hexo_blog/2019/06/17/Java%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B-%E4%B8%80%E4%BA%9B%E7%89%B9%E5%88%AB%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" class="post-meta-item leancloud_visitors" data-flag-title="Java数据类型 --- 常用数据类型" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -805,7 +805,13 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="java-util-function-supplier"><a class="header-anchor" href="#java-util-function-supplier"></a>java.Util.Function.Supplier</h3>
+          <p>一些特别的数据类型<br>
+author: Lynn Shen<br>
+categories: Java<br>
+date: 2019-06-17 13:14:34<br>
+tags:</p>
+<hr>
+<h3 id="java-util-function-supplier"><a class="header-anchor" href="#java-util-function-supplier"></a>java.Util.Function.Supplier</h3>
 <ul>
 <li>这个接口只有一个方法，Get方法。void，返回一个T</li>
 <li>把它当工厂方法看就是了。</li>
@@ -866,6 +872,19 @@
 <ul>
 <li>java7之后引进的</li>
 <li>继承自java.util.Random</li>
+</ul>
+<h3 id="queue"><a class="header-anchor" href="#queue"></a>Queue</h3>
+<h4 id="linkedblockingqueue"><a class="header-anchor" href="#linkedblockingqueue"></a>LinkedBlockingQueue</h4>
+<ul>
+<li>
+<p><code>take</code>函数会从<code>queue</code>的头部拿出一个<code>item</code>。所以首先是按照顺序取出<code>item</code>的，并且在取出后会从队列中删除</p>
+</li>
+<li>
+<p>当队列中没有数据的时候，会在<code>take</code>函数中等待，直到有数据为止</p>
+<p>while (count.get() == 0) {<br>
+notEmpty.await();<br>
+}</p>
+</li>
 </ul>
 
       

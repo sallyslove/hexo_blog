@@ -20,17 +20,19 @@
     var CONFIG = {"hostname":"sallyslove.github.io","root":"/hexo_blog/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="作为Java程序员，不会remote debug，是不现实的。实际上，几年前也用过。但是悲催的是，再次要用的时候就搞不清了。 现在还是k8s平台，端口映射就更复杂一点。三两下一绕就更不清楚了。所以还是先把remote debug搞清楚。 再去绕端口号。 什么是remote debug 服务端程序运行在一台远程服务器上，我们可以在本地服务端的代码（前提是本地的代码必须和远程服务器运行的代码一致）中设">
+  <meta name="description" content="作为Java程序员，不会remote debug，是不现实的。实际上，几年前也用过。但是悲催的是，再次要用的时候就搞不清了。 现在还是k8s平台，端口映射就更复杂一点。三两下一绕就更不清楚了。所以还是先把remote debug搞清楚。 再去绕端口号。 更加悲催的是，惊喜╰(°▽°)╯地发现自己写了博客，然后看不懂。娘的，难怪我博客没人看，╭(╯^╰)╮ 什么是remote debug 服务端程序">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java Remote Debug">
 <meta property="og:url" content="https://sallyslove.github.io/hexo_blog/2019/07/26/Java-Remote-Debug/index.html">
 <meta property="og:site_name" content="跬步">
-<meta property="og:description" content="作为Java程序员，不会remote debug，是不现实的。实际上，几年前也用过。但是悲催的是，再次要用的时候就搞不清了。 现在还是k8s平台，端口映射就更复杂一点。三两下一绕就更不清楚了。所以还是先把remote debug搞清楚。 再去绕端口号。 什么是remote debug 服务端程序运行在一台远程服务器上，我们可以在本地服务端的代码（前提是本地的代码必须和远程服务器运行的代码一致）中设">
+<meta property="og:description" content="作为Java程序员，不会remote debug，是不现实的。实际上，几年前也用过。但是悲催的是，再次要用的时候就搞不清了。 现在还是k8s平台，端口映射就更复杂一点。三两下一绕就更不清楚了。所以还是先把remote debug搞清楚。 再去绕端口号。 更加悲催的是，惊喜╰(°▽°)╯地发现自己写了博客，然后看不懂。娘的，难怪我博客没人看，╭(╯^╰)╮ 什么是remote debug 服务端程序">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/remote_debug.png">
 <meta property="article:published_time" content="2019-07-26T02:51:48.000Z">
-<meta property="article:modified_time" content="2019-08-09T09:14:21.645Z">
+<meta property="article:modified_time" content="2021-07-02T07:52:33.266Z">
 <meta property="article:author" content="Lynn Shen">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/sallyslove/Pictures/master/remote_debug.png">
 
 <link rel="canonical" href="https://sallyslove.github.io/hexo_blog/2019/07/26/Java-Remote-Debug/">
 
@@ -181,7 +183,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-08-09 17:14:21" itemprop="dateModified" datetime="2019-08-09T17:14:21+08:00">2019-08-09</time>
+                <time title="修改时间：2021-07-02 15:52:33" itemprop="dateModified" datetime="2021-07-02T15:52:33+08:00">2021-07-02</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -225,19 +227,20 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>作为Java程序员，不会remote debug，是不现实的。实际上，几年前也用过。但是悲催的是，再次要用的时候就搞不清了。<br>
-现在还是k8s平台，端口映射就更复杂一点。三两下一绕就更不清楚了。所以还是先把remote debug搞清楚。<br>
-再去绕端口号。</p>
+        <p>作为Java程序员，不会<code>remote debug</code>，是不现实的。实际上，几年前也用过。但是悲催的是，再次要用的时候就搞不清了。<br>
+现在还是<code>k8s</code>平台，端口映射就更复杂一点。三两下一绕就更不清楚了。所以还是先把<code>remote debug</code>搞清楚。<br>
+再去绕端口号。<br>
+更加悲催的是，惊喜╰(<em>°▽°</em>)╯地发现自己写了博客，然后看不懂。娘的，难怪我博客没人看，╭(╯^╰)╮</p>
 <h3 id="什么是remote-debug"><a class="header-anchor" href="#什么是remote-debug"></a>什么是remote debug</h3>
 <p>服务端程序运行在一台远程服务器上，我们可以在本地服务端的代码（前提是本地的代码必须和远程服务器运行的代码一致）中设置断点，每当有请求到远程服务器时时能够在本地知道远程服务端的此时的内部状态。</p>
 <h3 id="怎么做remote-debug"><a class="header-anchor" href="#怎么做remote-debug"></a>怎么做remote debug</h3>
 <h4 id="使用特定jvm参数运行服务端代码"><a class="header-anchor" href="#使用特定jvm参数运行服务端代码"></a>使用特定JVM参数运行服务端代码</h4>
 <ul>
-<li>不是说打包的时候，而是运行jar包的时候，java -jar带上需要的参数
+<li>不是说打包的时候，而是运行jar包的时候，<code>java -jar</code>带上需要的参数
 <ul>
 <li><code>address</code>是进行通信需要的端口。那么服务器端运行的程序会在这个端口上面开一个<code>socket</code></li>
 <li><code>socket</code>比较好理解的，通信方式</li>
-<li>所以之前进行debug mode的时候，肯定要改一下产品端module运行时候的JVM参数的</li>
+<li>所以之前进行<code>debug mode</code>的时候，肯定要改一下产品端<code>module</code>运行时候的<code>JVM</code>参数的</li>
 </ul>
 </li>
 </ul>
@@ -253,15 +256,53 @@
 <h4 id="在ide里面进行设置-本地连接远程服务器debug端口"><a class="header-anchor" href="#在ide里面进行设置-本地连接远程服务器debug端口"></a>在IDE里面进行设置，本地连接远程服务器debug端口</h4>
 <ul>
 <li>
-<p>参考链接里面的设置方法，其实就配远程服务器的地址和debug 端口</p>
+<p>参考链接里面的设置方法，其实就配远程服务器的地址和<code>debug</code>端口</p>
 </li>
 <li>
-<p>还需要点击一下debug，让本地attach上去。</p>
+<p>还需要点击一下<code>debug</code>，让本地<code>attach</code>上去。</p>
 </li>
 </ul>
+<p><img src="https://raw.githubusercontent.com/sallyslove/Pictures/master/remote_debug.png" alt="自己截的图"></p>
+<blockquote>
+<p>端口一般是5005，参数其实客户端和服务器端是一致的</p>
+</blockquote>
 <h4 id="调试代码"><a class="header-anchor" href="#调试代码"></a>调试代码</h4>
 <ul>
-<li>这时候就可以进行remote debug了。打好断点，然后往服务器发送请求就可以了</li>
+<li>
+<p>这时候就可以进行<code>remote debug</code>了。打好断点，然后往服务器发送请求就可以了</p>
+</li>
+<li>
+<p>可能碰到的问题有:</p>
+<ul>
+<li>
+<p>服务器端代码和本地不一样，那么<code>IDE</code>会进行提示，这时候进行调试会无意义</p>
+</li>
+<li>
+<p>可能碰到<code>java.net.ConnectException</code>的错误，分为两种：<br>
+<code>connection refused</code>：这种有可能是防火墙没关，或者端口没有开。</p>
+<blockquote>
+<p><a href="https://stackoverflow.com/questions/40576115/unable-to-open-debugger-port-through-intellij" target="_blank" rel="noopener">unable-to-open-debugger-port-through-intellij</a></p>
+</blockquote>
+<blockquote>
+<p>这个链接里面有一些讨论，关于这个错误</p>
+</blockquote>
+<p><code>conneciton timeout</code>: 碰到这个错误和上一个是不一样的。这个错误通常来说端口是打开的。</p>
+<blockquote>
+<p><a href="https://stackoverflow.com/questions/27405988/remote-debugging-failed-to-connect-to-remote-vm-connection-timed-out" target="_blank" rel="noopener">remote-debugging-failed-to-connect-to-remote-vm-connection-timed-out</a><br>
+<a href="https://stackoverflow.com/questions/13839728/intellij-remote-debugging-change-connection-timeout" target="_blank" rel="noopener">intellij-remote-debugging-change-connection-timeout</a></p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li>
+<p>这两个链接里面提及当<code>conntion timeout</code>的错误的时候在<code>eclipse</code>里面有<code>network conntion timeout</code>参数配置，增大这个参数可能可以解决问题</p>
+</li>
+<li>
+<p>在<code>IJ</code>里面， <code>-Djava.net.connectiontimeout=&lt;seconds&gt;</code>参数在<code>&lt;IDEA_install_path&gt;/bin/idea.vmoptions</code>文件里面可以配置，然后重启<code>IJ</code>，可能可以解决问题。</p>
+</li>
+<li>
+<p>在此之前，应该保证可以通过<code>telnet &lt;host&gt; &lt;port&gt;</code>来检验端口是否正常工作。我自己的无法正常工作，实际是因为<code>Iptable</code>里面只开放了一部分端口，在<code>Iptable</code>里面允许这个端口的访问就解决了问题</p>
+</li>
 </ul>
 
     </div>
